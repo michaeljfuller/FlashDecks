@@ -10,6 +10,9 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/netinfo": "^5.8.1",
+    "aws-amplify": "^3.0.10",
+    "aws-amplify-react-native": "^4.1.1",
     "react": "16.11.0",
     "react-native": "0.62.2"
   },
