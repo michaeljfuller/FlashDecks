@@ -1,1 +1,10 @@
-{}
+{
+	"auth": {
+		"flashdecks659617f5": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [],
+			"customAuth": false
+		}
+	}
+}
