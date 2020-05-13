@@ -1,0 +1,15 @@
+{
+    "permissions": {
+        "auth": {
+            "flashdecks659617f5": [
+                "read"
+            ]
+        },
+        "storage": {
+            "User:@model(appsync)": [
+                "create",
+                "read"
+            ]
+        }
+    }
+}
