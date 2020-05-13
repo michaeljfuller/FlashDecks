@@ -6,5 +6,23 @@
 			"dependsOn": [],
 			"customAuth": false
 		}
-	}
+	},
+	"api": {
+		"flashdecks": {
+			"service": "AppSync",
+			"providerPlugin": "awscloudformation",
+			"output": {
+				"authConfig": {
+					"additionalAuthenticationProviders": [],
+					"defaultAuthentication": {
+						"authenticationType": "AMAZON_COGNITO_USER_POOLS",
+						"userPoolConfig": {
+							"userPoolId": "authflashdecks659617f5"
+						}
+					}
+				}
+			}
+		}
+	},
+	"function": {}
 }

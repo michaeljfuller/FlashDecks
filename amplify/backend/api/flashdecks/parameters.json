@@ -1,0 +1,11 @@
+{
+    "AppSyncApiName": "flashdecks",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": "false",
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authflashdecks659617f5",
+            "Outputs.UserPoolId"
+        ]
+    }
+}
