@@ -1,0 +1,17 @@
+#
+# The user links
+# The `getUser` query is defined by the root Query, rather than the @model directive, as it hooks into a custom Lambda Resolver.
+#
+type User
+  @model(
+    queries: { get: null, list: null }, # Don't generate getUser, use custom implementation. No listUsers.
+    mutations: { create: null, delete: null }, # No create or delete.
+    subscriptions: null  # No subscriptions.
+  )
+  @auth(rules: [
+    { allow: owner, operations: [update, delete], ownerField: "id", identityClaim: "sub" } # Link owner by Cognito Subject. Only owner can update.
+  ])
+{
+  id: ID!
+  displayName: String!
+}

@@ -1,0 +1,11 @@
+#
+# Card
+#
+type Card @model
+  @auth(rules: [
+    { allow: owner, operations: [create, update, delete], ownerField: "ownerId", identityClaim: "sub" }
+  ])
+{
+  id: ID!
+  name: String!
+}
