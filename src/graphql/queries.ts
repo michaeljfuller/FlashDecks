@@ -13,6 +13,7 @@ export const getUser = /* GraphQL */ `
 export const getCard = /* GraphQL */ `
   query GetCard($id: ID!) {
     getCard(id: $id) {
+      id
       name
     }
   }
@@ -25,6 +26,7 @@ export const listCards = /* GraphQL */ `
   ) {
     listCards(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
+        id
         name
       }
       nextToken

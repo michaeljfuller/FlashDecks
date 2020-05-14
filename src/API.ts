@@ -2,16 +2,16 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type UpdateUserInput = {
-  id: string,
-  displayName?: string | null,
+export type CreateCardInput = {
+  id?: string | null,
+  name: string,
 };
 
-export type ModelUserConditionInput = {
-  displayName?: ModelStringInput | null,
-  and?: Array< ModelUserConditionInput | null > | null,
-  or?: Array< ModelUserConditionInput | null > | null,
-  not?: ModelUserConditionInput | null,
+export type ModelCardConditionInput = {
+  name?: ModelStringInput | null,
+  and?: Array< ModelCardConditionInput | null > | null,
+  or?: Array< ModelCardConditionInput | null > | null,
+  not?: ModelCardConditionInput | null,
 };
 
 export type ModelStringInput = {
@@ -54,18 +54,8 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
-export type CreateCardInput = {
-  name: string,
-};
-
-export type ModelCardConditionInput = {
-  name?: ModelStringInput | null,
-  and?: Array< ModelCardConditionInput | null > | null,
-  or?: Array< ModelCardConditionInput | null > | null,
-  not?: ModelCardConditionInput | null,
-};
-
 export type UpdateCardInput = {
+  id: string,
   name?: string | null,
 };
 
@@ -74,23 +64,27 @@ export type DeleteCardInput = {
 };
 
 export type ModelCardFilterInput = {
+  id?: ModelIDInput | null,
   name?: ModelStringInput | null,
   and?: Array< ModelCardFilterInput | null > | null,
   or?: Array< ModelCardFilterInput | null > | null,
   not?: ModelCardFilterInput | null,
 };
 
-export type UpdateUserMutationVariables = {
-  input: UpdateUserInput,
-  condition?: ModelUserConditionInput | null,
-};
-
-export type UpdateUserMutation = {
-  updateUser:  {
-    __typename: "User",
-    id: string,
-    displayName: string,
-  } | null,
+export type ModelIDInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  size?: ModelSizeInput | null,
 };
 
 export type CreateCardMutationVariables = {
@@ -101,6 +95,7 @@ export type CreateCardMutationVariables = {
 export type CreateCardMutation = {
   createCard:  {
     __typename: "Card",
+    id: string,
     name: string,
   } | null,
 };
@@ -113,6 +108,7 @@ export type UpdateCardMutationVariables = {
 export type UpdateCardMutation = {
   updateCard:  {
     __typename: "Card",
+    id: string,
     name: string,
   } | null,
 };
@@ -125,6 +121,7 @@ export type DeleteCardMutationVariables = {
 export type DeleteCardMutation = {
   deleteCard:  {
     __typename: "Card",
+    id: string,
     name: string,
   } | null,
 };
@@ -148,6 +145,7 @@ export type GetCardQueryVariables = {
 export type GetCardQuery = {
   getCard:  {
     __typename: "Card",
+    id: string,
     name: string,
   } | null,
 };
@@ -163,15 +161,21 @@ export type ListCardsQuery = {
     __typename: "ModelCardConnection",
     items:  Array< {
       __typename: "Card",
+      id: string,
       name: string,
     } | null > | null,
     nextToken: string | null,
   } | null,
 };
 
+export type OnCreateCardSubscriptionVariables = {
+  ownerId: string,
+};
+
 export type OnCreateCardSubscription = {
   onCreateCard:  {
     __typename: "Card",
+    id: string,
     name: string,
   } | null,
 };
@@ -183,6 +187,7 @@ export type OnUpdateCardSubscriptionVariables = {
 export type OnUpdateCardSubscription = {
   onUpdateCard:  {
     __typename: "Card",
+    id: string,
     name: string,
   } | null,
 };
@@ -194,6 +199,7 @@ export type OnDeleteCardSubscriptionVariables = {
 export type OnDeleteCardSubscription = {
   onDeleteCard:  {
     __typename: "Card",
+    id: string,
     name: string,
   } | null,
 };
