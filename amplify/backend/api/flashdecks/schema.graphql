@@ -4,9 +4,23 @@
 # @searchable - https://docs.amplify.aws/cli/graphql-transformer/directives#searchable
 # @function   - https://docs.amplify.aws/cli/graphql-transformer/directives#function
 
+# Custom Queries
+type Query {
+  getUser(id: ID): User
+}
+# type Mutation {}
+# type Subscription {}
+
+#
+# User
+#
 type User
-@model @auth(rules: [
-  { allow: owner, operations: [update], ownerField: "id", identityClaim: "sub" }
+@model(
+  queries: { get: null, list: null }, # Don't generate getUser, use custom implementation. No listUsers.
+  mutations: { create: null, delete: null }, # No create or delete.
+  subscriptions: null # No subscriptions.
+) @auth(rules: [
+  { allow: owner, operations: [update], ownerField: "id", identityClaim: "sub" } # Link owner by Cognito Subject. Only owner can update.
 ])
 {
   id: ID!
