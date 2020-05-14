@@ -2,9 +2,9 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateUserInput = {
-  id?: string | null,
-  displayName: string,
+export type UpdateUserInput = {
+  id: string,
+  displayName?: string | null,
 };
 
 export type ModelUserConditionInput = {
@@ -54,50 +54,30 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
-export type UpdateUserInput = {
-  id: string,
-  displayName?: string | null,
+export type CreateCardInput = {
+  name: string,
 };
 
-export type DeleteUserInput = {
+export type ModelCardConditionInput = {
+  name?: ModelStringInput | null,
+  and?: Array< ModelCardConditionInput | null > | null,
+  or?: Array< ModelCardConditionInput | null > | null,
+  not?: ModelCardConditionInput | null,
+};
+
+export type UpdateCardInput = {
+  name?: string | null,
+};
+
+export type DeleteCardInput = {
   id?: string | null,
 };
 
-export type ModelUserFilterInput = {
-  id?: ModelIDInput | null,
-  displayName?: ModelStringInput | null,
-  and?: Array< ModelUserFilterInput | null > | null,
-  or?: Array< ModelUserFilterInput | null > | null,
-  not?: ModelUserFilterInput | null,
-};
-
-export type ModelIDInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  size?: ModelSizeInput | null,
-};
-
-export type CreateUserMutationVariables = {
-  input: CreateUserInput,
-  condition?: ModelUserConditionInput | null,
-};
-
-export type CreateUserMutation = {
-  createUser:  {
-    __typename: "User",
-    id: string,
-    displayName: string,
-  } | null,
+export type ModelCardFilterInput = {
+  name?: ModelStringInput | null,
+  and?: Array< ModelCardFilterInput | null > | null,
+  or?: Array< ModelCardFilterInput | null > | null,
+  not?: ModelCardFilterInput | null,
 };
 
 export type UpdateUserMutationVariables = {
@@ -113,21 +93,44 @@ export type UpdateUserMutation = {
   } | null,
 };
 
-export type DeleteUserMutationVariables = {
-  input: DeleteUserInput,
-  condition?: ModelUserConditionInput | null,
+export type CreateCardMutationVariables = {
+  input: CreateCardInput,
+  condition?: ModelCardConditionInput | null,
 };
 
-export type DeleteUserMutation = {
-  deleteUser:  {
-    __typename: "User",
-    id: string,
-    displayName: string,
+export type CreateCardMutation = {
+  createCard:  {
+    __typename: "Card",
+    name: string,
+  } | null,
+};
+
+export type UpdateCardMutationVariables = {
+  input: UpdateCardInput,
+  condition?: ModelCardConditionInput | null,
+};
+
+export type UpdateCardMutation = {
+  updateCard:  {
+    __typename: "Card",
+    name: string,
+  } | null,
+};
+
+export type DeleteCardMutationVariables = {
+  input: DeleteCardInput,
+  condition?: ModelCardConditionInput | null,
+};
+
+export type DeleteCardMutation = {
+  deleteCard:  {
+    __typename: "Card",
+    name: string,
   } | null,
 };
 
 export type GetUserQueryVariables = {
-  id: string,
+  id?: string | null,
 };
 
 export type GetUserQuery = {
@@ -138,48 +141,59 @@ export type GetUserQuery = {
   } | null,
 };
 
-export type ListUsersQueryVariables = {
-  filter?: ModelUserFilterInput | null,
+export type GetCardQueryVariables = {
+  id: string,
+};
+
+export type GetCardQuery = {
+  getCard:  {
+    __typename: "Card",
+    name: string,
+  } | null,
+};
+
+export type ListCardsQueryVariables = {
+  filter?: ModelCardFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type ListUsersQuery = {
-  listUsers:  {
-    __typename: "ModelUserConnection",
+export type ListCardsQuery = {
+  listCards:  {
+    __typename: "ModelCardConnection",
     items:  Array< {
-      __typename: "User",
-      id: string,
-      displayName: string,
+      __typename: "Card",
+      name: string,
     } | null > | null,
     nextToken: string | null,
   } | null,
 };
 
-export type OnCreateUserSubscription = {
-  onCreateUser:  {
-    __typename: "User",
-    id: string,
-    displayName: string,
+export type OnCreateCardSubscription = {
+  onCreateCard:  {
+    __typename: "Card",
+    name: string,
   } | null,
 };
 
-export type OnUpdateUserSubscriptionVariables = {
-  id: string,
+export type OnUpdateCardSubscriptionVariables = {
+  ownerId: string,
 };
 
-export type OnUpdateUserSubscription = {
-  onUpdateUser:  {
-    __typename: "User",
-    id: string,
-    displayName: string,
+export type OnUpdateCardSubscription = {
+  onUpdateCard:  {
+    __typename: "Card",
+    name: string,
   } | null,
 };
 
-export type OnDeleteUserSubscription = {
-  onDeleteUser:  {
-    __typename: "User",
-    id: string,
-    displayName: string,
+export type OnDeleteCardSubscriptionVariables = {
+  ownerId: string,
+};
+
+export type OnDeleteCardSubscription = {
+  onDeleteCard:  {
+    __typename: "Card",
+    name: string,
   } | null,
 };
