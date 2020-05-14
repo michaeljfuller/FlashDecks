@@ -4,8 +4,46 @@
 type Card @model
   @auth(rules: [
     { allow: owner, operations: [create, update, delete], ownerField: "ownerId", identityClaim: "sub" }
+    #TODO Can we add a Privacy enum to an Item and factor that in?
   ])
+  @searchable #TODO Can we limit the fields?
 {
   id: ID!
   name: String!
+  sides: [CardSide!]
+  tags: [String!]
+  popularity: Int!
+  #TODO Deck @connection
+}
+
+# Override Mutation Input
+# Unable to set popularity
+input CreateCardInput {
+  name: String!
+  sides: [CardSideInput!]
+  tags: [String!]
+}
+input UpdateCardInput {
+  id: ID!
+  name: String
+  sides: [CardSideInput!]
+  tags: [String!]
+}
+
+# Sides to a card
+type CardSide {
+  content: [CardSideContent!]
+}
+input CardSideInput {
+  content: [CardSideContentInput!]
+}
+
+# Content on a side
+type CardSideContent {
+  type: String!
+  value: String!
+}
+input CardSideContentInput {
+  type: String!
+  value: String!
 }

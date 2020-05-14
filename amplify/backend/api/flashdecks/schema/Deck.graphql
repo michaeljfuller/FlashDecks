@@ -1,0 +1,30 @@
+#
+# Deck
+#
+type Deck @model
+  @auth(rules: [
+    { allow: owner, operations: [create, update, delete], ownerField: "ownerId", identityClaim: "sub" }
+  ])
+  @searchable # TODO Can we limit the fields?
+{
+  id: ID!
+  name: String!
+  description: String!
+  tags: [String!]
+  popularity: Int!
+  # TODO Card @connection
+}
+
+# Override Mutation Input
+# Unable to set popularity
+input CreateDeckInput {
+  name: String!
+  description: String!
+  tags: [String!]
+}
+input UpdateDeckInput {
+  id: ID
+  name: String!
+  description: String!
+  tags: [String!]
+}

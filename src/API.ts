@@ -5,10 +5,23 @@
 export type CreateCardInput = {
   id?: string | null,
   name: string,
+  sides?: Array< CardSideInput > | null,
+  tags?: Array< string > | null,
+};
+
+export type CardSideInput = {
+  content?: Array< CardSideContentInput > | null,
+};
+
+export type CardSideContentInput = {
+  type: string,
+  value: string,
 };
 
 export type ModelCardConditionInput = {
   name?: ModelStringInput | null,
+  tags?: ModelStringInput | null,
+  popularity?: ModelIntInput | null,
   and?: Array< ModelCardConditionInput | null > | null,
   or?: Array< ModelCardConditionInput | null > | null,
   not?: ModelCardConditionInput | null,
@@ -54,18 +67,62 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
 export type UpdateCardInput = {
   id: string,
   name?: string | null,
+  sides?: Array< CardSideInput > | null,
+  tags?: Array< string > | null,
 };
 
 export type DeleteCardInput = {
   id?: string | null,
 };
 
+export type CreateDeckInput = {
+  id?: string | null,
+  name: string,
+  description: string,
+  tags?: Array< string > | null,
+};
+
+export type ModelDeckConditionInput = {
+  name?: ModelStringInput | null,
+  description?: ModelStringInput | null,
+  tags?: ModelStringInput | null,
+  popularity?: ModelIntInput | null,
+  and?: Array< ModelDeckConditionInput | null > | null,
+  or?: Array< ModelDeckConditionInput | null > | null,
+  not?: ModelDeckConditionInput | null,
+};
+
+export type UpdateDeckInput = {
+  id?: string | null,
+  name: string,
+  description: string,
+  tags?: Array< string > | null,
+};
+
+export type DeleteDeckInput = {
+  id?: string | null,
+};
+
 export type ModelCardFilterInput = {
   id?: ModelIDInput | null,
   name?: ModelStringInput | null,
+  tags?: ModelStringInput | null,
+  popularity?: ModelIntInput | null,
   and?: Array< ModelCardFilterInput | null > | null,
   or?: Array< ModelCardFilterInput | null > | null,
   not?: ModelCardFilterInput | null,
@@ -87,6 +144,113 @@ export type ModelIDInput = {
   size?: ModelSizeInput | null,
 };
 
+export type ModelDeckFilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  description?: ModelStringInput | null,
+  tags?: ModelStringInput | null,
+  popularity?: ModelIntInput | null,
+  and?: Array< ModelDeckFilterInput | null > | null,
+  or?: Array< ModelDeckFilterInput | null > | null,
+  not?: ModelDeckFilterInput | null,
+};
+
+export type SearchableCardFilterInput = {
+  id?: SearchableIDFilterInput | null,
+  name?: SearchableStringFilterInput | null,
+  tags?: SearchableStringFilterInput | null,
+  popularity?: SearchableIntFilterInput | null,
+  and?: Array< SearchableCardFilterInput | null > | null,
+  or?: Array< SearchableCardFilterInput | null > | null,
+  not?: SearchableCardFilterInput | null,
+};
+
+export type SearchableIDFilterInput = {
+  ne?: string | null,
+  gt?: string | null,
+  lt?: string | null,
+  gte?: string | null,
+  lte?: string | null,
+  eq?: string | null,
+  match?: string | null,
+  matchPhrase?: string | null,
+  matchPhrasePrefix?: string | null,
+  multiMatch?: string | null,
+  exists?: boolean | null,
+  wildcard?: string | null,
+  regexp?: string | null,
+};
+
+export type SearchableStringFilterInput = {
+  ne?: string | null,
+  gt?: string | null,
+  lt?: string | null,
+  gte?: string | null,
+  lte?: string | null,
+  eq?: string | null,
+  match?: string | null,
+  matchPhrase?: string | null,
+  matchPhrasePrefix?: string | null,
+  multiMatch?: string | null,
+  exists?: boolean | null,
+  wildcard?: string | null,
+  regexp?: string | null,
+};
+
+export type SearchableIntFilterInput = {
+  ne?: number | null,
+  gt?: number | null,
+  lt?: number | null,
+  gte?: number | null,
+  lte?: number | null,
+  eq?: number | null,
+  range?: Array< number | null > | null,
+};
+
+export type SearchableCardSortInput = {
+  field?: SearchableCardSortableFields | null,
+  direction?: SearchableSortDirection | null,
+};
+
+export enum SearchableCardSortableFields {
+  id = "id",
+  name = "name",
+  tags = "tags",
+  popularity = "popularity",
+}
+
+
+export enum SearchableSortDirection {
+  asc = "asc",
+  desc = "desc",
+}
+
+
+export type SearchableDeckFilterInput = {
+  id?: SearchableIDFilterInput | null,
+  name?: SearchableStringFilterInput | null,
+  description?: SearchableStringFilterInput | null,
+  tags?: SearchableStringFilterInput | null,
+  popularity?: SearchableIntFilterInput | null,
+  and?: Array< SearchableDeckFilterInput | null > | null,
+  or?: Array< SearchableDeckFilterInput | null > | null,
+  not?: SearchableDeckFilterInput | null,
+};
+
+export type SearchableDeckSortInput = {
+  field?: SearchableDeckSortableFields | null,
+  direction?: SearchableSortDirection | null,
+};
+
+export enum SearchableDeckSortableFields {
+  id = "id",
+  name = "name",
+  description = "description",
+  tags = "tags",
+  popularity = "popularity",
+}
+
+
 export type CreateCardMutationVariables = {
   input: CreateCardInput,
   condition?: ModelCardConditionInput | null,
@@ -97,6 +261,16 @@ export type CreateCardMutation = {
     __typename: "Card",
     id: string,
     name: string,
+    sides:  Array< {
+      __typename: "CardSide",
+      content:  Array< {
+        __typename: "CardSideContent",
+        type: string,
+        value: string,
+      } > | null,
+    } > | null,
+    tags: Array< string > | null,
+    popularity: number,
   } | null,
 };
 
@@ -110,6 +284,16 @@ export type UpdateCardMutation = {
     __typename: "Card",
     id: string,
     name: string,
+    sides:  Array< {
+      __typename: "CardSide",
+      content:  Array< {
+        __typename: "CardSideContent",
+        type: string,
+        value: string,
+      } > | null,
+    } > | null,
+    tags: Array< string > | null,
+    popularity: number,
   } | null,
 };
 
@@ -123,6 +307,64 @@ export type DeleteCardMutation = {
     __typename: "Card",
     id: string,
     name: string,
+    sides:  Array< {
+      __typename: "CardSide",
+      content:  Array< {
+        __typename: "CardSideContent",
+        type: string,
+        value: string,
+      } > | null,
+    } > | null,
+    tags: Array< string > | null,
+    popularity: number,
+  } | null,
+};
+
+export type CreateDeckMutationVariables = {
+  input: CreateDeckInput,
+  condition?: ModelDeckConditionInput | null,
+};
+
+export type CreateDeckMutation = {
+  createDeck:  {
+    __typename: "Deck",
+    id: string,
+    name: string,
+    description: string,
+    tags: Array< string > | null,
+    popularity: number,
+  } | null,
+};
+
+export type UpdateDeckMutationVariables = {
+  input: UpdateDeckInput,
+  condition?: ModelDeckConditionInput | null,
+};
+
+export type UpdateDeckMutation = {
+  updateDeck:  {
+    __typename: "Deck",
+    id: string,
+    name: string,
+    description: string,
+    tags: Array< string > | null,
+    popularity: number,
+  } | null,
+};
+
+export type DeleteDeckMutationVariables = {
+  input: DeleteDeckInput,
+  condition?: ModelDeckConditionInput | null,
+};
+
+export type DeleteDeckMutation = {
+  deleteDeck:  {
+    __typename: "Deck",
+    id: string,
+    name: string,
+    description: string,
+    tags: Array< string > | null,
+    popularity: number,
   } | null,
 };
 
@@ -147,6 +389,16 @@ export type GetCardQuery = {
     __typename: "Card",
     id: string,
     name: string,
+    sides:  Array< {
+      __typename: "CardSide",
+      content:  Array< {
+        __typename: "CardSideContent",
+        type: string,
+        value: string,
+      } > | null,
+    } > | null,
+    tags: Array< string > | null,
+    popularity: number,
   } | null,
 };
 
@@ -163,8 +415,91 @@ export type ListCardsQuery = {
       __typename: "Card",
       id: string,
       name: string,
+      tags: Array< string > | null,
+      popularity: number,
     } | null > | null,
     nextToken: string | null,
+  } | null,
+};
+
+export type GetDeckQueryVariables = {
+  id: string,
+};
+
+export type GetDeckQuery = {
+  getDeck:  {
+    __typename: "Deck",
+    id: string,
+    name: string,
+    description: string,
+    tags: Array< string > | null,
+    popularity: number,
+  } | null,
+};
+
+export type ListDecksQueryVariables = {
+  filter?: ModelDeckFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListDecksQuery = {
+  listDecks:  {
+    __typename: "ModelDeckConnection",
+    items:  Array< {
+      __typename: "Deck",
+      id: string,
+      name: string,
+      description: string,
+      tags: Array< string > | null,
+      popularity: number,
+    } | null > | null,
+    nextToken: string | null,
+  } | null,
+};
+
+export type SearchCardsQueryVariables = {
+  filter?: SearchableCardFilterInput | null,
+  sort?: SearchableCardSortInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type SearchCardsQuery = {
+  searchCards:  {
+    __typename: "SearchableCardConnection",
+    items:  Array< {
+      __typename: "Card",
+      id: string,
+      name: string,
+      tags: Array< string > | null,
+      popularity: number,
+    } | null > | null,
+    nextToken: string | null,
+    total: number | null,
+  } | null,
+};
+
+export type SearchDecksQueryVariables = {
+  filter?: SearchableDeckFilterInput | null,
+  sort?: SearchableDeckSortInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type SearchDecksQuery = {
+  searchDecks:  {
+    __typename: "SearchableDeckConnection",
+    items:  Array< {
+      __typename: "Deck",
+      id: string,
+      name: string,
+      description: string,
+      tags: Array< string > | null,
+      popularity: number,
+    } | null > | null,
+    nextToken: string | null,
+    total: number | null,
   } | null,
 };
 
@@ -177,6 +512,16 @@ export type OnCreateCardSubscription = {
     __typename: "Card",
     id: string,
     name: string,
+    sides:  Array< {
+      __typename: "CardSide",
+      content:  Array< {
+        __typename: "CardSideContent",
+        type: string,
+        value: string,
+      } > | null,
+    } > | null,
+    tags: Array< string > | null,
+    popularity: number,
   } | null,
 };
 
@@ -189,6 +534,16 @@ export type OnUpdateCardSubscription = {
     __typename: "Card",
     id: string,
     name: string,
+    sides:  Array< {
+      __typename: "CardSide",
+      content:  Array< {
+        __typename: "CardSideContent",
+        type: string,
+        value: string,
+      } > | null,
+    } > | null,
+    tags: Array< string > | null,
+    popularity: number,
   } | null,
 };
 
@@ -201,5 +556,60 @@ export type OnDeleteCardSubscription = {
     __typename: "Card",
     id: string,
     name: string,
+    sides:  Array< {
+      __typename: "CardSide",
+      content:  Array< {
+        __typename: "CardSideContent",
+        type: string,
+        value: string,
+      } > | null,
+    } > | null,
+    tags: Array< string > | null,
+    popularity: number,
+  } | null,
+};
+
+export type OnCreateDeckSubscriptionVariables = {
+  ownerId: string,
+};
+
+export type OnCreateDeckSubscription = {
+  onCreateDeck:  {
+    __typename: "Deck",
+    id: string,
+    name: string,
+    description: string,
+    tags: Array< string > | null,
+    popularity: number,
+  } | null,
+};
+
+export type OnUpdateDeckSubscriptionVariables = {
+  ownerId: string,
+};
+
+export type OnUpdateDeckSubscription = {
+  onUpdateDeck:  {
+    __typename: "Deck",
+    id: string,
+    name: string,
+    description: string,
+    tags: Array< string > | null,
+    popularity: number,
+  } | null,
+};
+
+export type OnDeleteDeckSubscriptionVariables = {
+  ownerId: string,
+};
+
+export type OnDeleteDeckSubscription = {
+  onDeleteDeck:  {
+    __typename: "Deck",
+    id: string,
+    name: string,
+    description: string,
+    tags: Array< string > | null,
+    popularity: number,
   } | null,
 };

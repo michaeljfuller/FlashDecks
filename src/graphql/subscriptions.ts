@@ -7,6 +7,14 @@ export const onCreateCard = /* GraphQL */ `
     onCreateCard(ownerId: $ownerId) {
       id
       name
+      sides {
+        content {
+          type
+          value
+        }
+      }
+      tags
+      popularity
     }
   }
 `;
@@ -15,6 +23,14 @@ export const onUpdateCard = /* GraphQL */ `
     onUpdateCard(ownerId: $ownerId) {
       id
       name
+      sides {
+        content {
+          type
+          value
+        }
+      }
+      tags
+      popularity
     }
   }
 `;
@@ -23,6 +39,47 @@ export const onDeleteCard = /* GraphQL */ `
     onDeleteCard(ownerId: $ownerId) {
       id
       name
+      sides {
+        content {
+          type
+          value
+        }
+      }
+      tags
+      popularity
+    }
+  }
+`;
+export const onCreateDeck = /* GraphQL */ `
+  subscription OnCreateDeck($ownerId: String!) {
+    onCreateDeck(ownerId: $ownerId) {
+      id
+      name
+      description
+      tags
+      popularity
+    }
+  }
+`;
+export const onUpdateDeck = /* GraphQL */ `
+  subscription OnUpdateDeck($ownerId: String!) {
+    onUpdateDeck(ownerId: $ownerId) {
+      id
+      name
+      description
+      tags
+      popularity
+    }
+  }
+`;
+export const onDeleteDeck = /* GraphQL */ `
+  subscription OnDeleteDeck($ownerId: String!) {
+    onDeleteDeck(ownerId: $ownerId) {
+      id
+      name
+      description
+      tags
+      popularity
     }
   }
 `;
