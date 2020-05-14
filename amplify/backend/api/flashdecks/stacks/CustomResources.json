@@ -40,7 +40,7 @@
 				"ServiceRoleArn": { "Fn::GetAtt": [ "GetUserLambdaDataSourceRole", "Arn" ] },
 				"LambdaConfig": {
 					"LambdaFunctionArn": {
-						"Fn::Sub": [ "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:FlashDecks_GetUser-${env}", { "env": { "Ref": "env" } } ]
+						"Fn::Sub": [ "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:FlashDecks-GetUser-${env}", { "env": { "Ref": "env" } } ]
 					}
 				}
 			}
@@ -64,7 +64,7 @@
 						"Statement": [ {
 							"Effect": "Allow",
 							"Action": [ "lambda:invokeFunction" ],
-							"Resource": [ { "Fn::Sub": [ "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:FlashDecks_GetUser-${env}", { "env": { "Ref": "env" } } ] } ]
+							"Resource": [ { "Fn::Sub": [ "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:FlashDecks-GetUser-${env}", { "env": { "Ref": "env" } } ] } ]
 						} ]
 					}
 				} ]

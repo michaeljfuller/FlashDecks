@@ -41,12 +41,12 @@
 				"FunctionName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"FlashDecks_GetUser",
+						"FlashDecks-GetUser",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"FlashDecks_GetUser",
+									"FlashDecks-GetUser",
 									"-",
 									{
 										"Ref": "env"
@@ -107,8 +107,8 @@
 				"Runtime": "nodejs12.x",
 				"Timeout": "25",
 				"Code": {
-					"S3Bucket": "amplify-flashdecks-dev-195942-deployment",
-					"S3Key": "amplify-builds/GetUser-6c6f4b4f45356d366c4e-build.zip"
+					"S3Bucket": "amplify-flashdecks-initial-152936-deployment",
+					"S3Key": "amplify-builds/GetUser-46456d33525169753948-build.zip"
 				}
 			}
 		},
@@ -118,12 +118,12 @@
 				"RoleName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"flashdecksLambdaRole239be008",
+						"flashdecksLambdaRole1fad7007",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"flashdecksLambdaRole239be008",
+									"flashdecksLambdaRole1fad7007",
 									"-",
 									{
 										"Ref": "env"
@@ -260,7 +260,9 @@
 								"dynamodb:List*",
 								"dynamodb:Describe*",
 								"dynamodb:Scan",
-								"dynamodb:Query"
+								"dynamodb:Query",
+								"dynamodb:Update*",
+								"dynamodb:RestoreTable*"
 							],
 							"Resource": [
 								{
