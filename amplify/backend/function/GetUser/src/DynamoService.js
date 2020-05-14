@@ -70,16 +70,18 @@ module.exports = class DynamoService {
           [
             'displayName = if_not_exists(displayName, :displayName)',
             'createdAt = if_not_exists(createdAt, :createdAt)',
-            'modifiedAt = :now',
+            'updatedAt = :updatedAt',
+            '__typename = :__typename',
           ].join(', '),
         ExpressionAttributeValues: {
           ':displayName': {S: userName},
           ':createdAt': {S: createdAt},
-          ':now': {S: now.toISOString()},
+          ':updatedAt': {S: now.toISOString()},
+          ':__typename': {S: 'User'},
         },
       })
       .promise();
-    const user = isEmpty(result && result.Attributes) ? null : result.Attributes;
-    return this.transformUser(user);
+    if (isEmpty(result && result.Attributes)) return null;
+    return this.transformUser(result.Attributes);
   }
 };
