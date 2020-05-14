@@ -41,8 +41,7 @@
                     "category": "api",
                     "resourceName": "flashdecks",
                     "attributes": [
-                        "GraphQLAPIIdOutput",
-                        "GraphQLAPIEndpointOutput"
+                        "GraphQLAPIIdOutput"
                     ]
                 }
             ]

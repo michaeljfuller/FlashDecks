@@ -108,7 +108,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "amplify-flashdecks-dev-195942-deployment",
-					"S3Key": "amplify-builds/GetUser-64733154413330376d2f-build.zip"
+					"S3Key": "amplify-builds/GetUser-6c6f4b4f45356d366c4e-build.zip"
 				}
 			}
 		},
@@ -118,12 +118,12 @@
 				"RoleName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"flashdecksLambdaRole841ccfc2",
+						"flashdecksLambdaRole239be008",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"flashdecksLambdaRole841ccfc2",
+									"flashdecksLambdaRole239be008",
 									"-",
 									{
 										"Ref": "env"
