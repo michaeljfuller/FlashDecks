@@ -7,13 +7,15 @@ type Card @model
     #TODO Can we add a Privacy enum to an Item and factor that in?
   ])
   @searchable #TODO Can we limit the fields?
+  @key(name: "byDeck", fields: ["deckID", "id"]) # https://docs.amplify.aws/cli/graphql-transformer/directives#has-many
 {
   id: ID!
   name: String!
   sides: [CardSide!]
   tags: [String!]
   popularity: Int!
-  #TODO Deck @connection
+  deck: Deck! @connection(fields: ["deckID"]) # https://docs.amplify.aws/cli/graphql-transformer/directives#belongs-to
+  deckID: ID!
 }
 
 # Override Mutation Input
@@ -22,12 +24,14 @@ input CreateCardInput {
   name: String!
   sides: [CardSideInput!]
   tags: [String!]
+  deckID: ID!
 }
 input UpdateCardInput {
   id: ID!
   name: String
   sides: [CardSideInput!]
   tags: [String!]
+  deckID: ID!
 }
 
 # Sides to a card

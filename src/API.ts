@@ -3,10 +3,10 @@
 //  This file was automatically generated and should not be edited.
 
 export type CreateCardInput = {
-  id?: string | null,
   name: string,
   sides?: Array< CardSideInput > | null,
   tags?: Array< string > | null,
+  deckID: string,
 };
 
 export type CardSideInput = {
@@ -22,6 +22,7 @@ export type ModelCardConditionInput = {
   name?: ModelStringInput | null,
   tags?: ModelStringInput | null,
   popularity?: ModelIntInput | null,
+  deckID?: ModelIDInput | null,
   and?: Array< ModelCardConditionInput | null > | null,
   or?: Array< ModelCardConditionInput | null > | null,
   not?: ModelCardConditionInput | null,
@@ -79,11 +80,28 @@ export type ModelIntInput = {
   attributeType?: ModelAttributeTypes | null,
 };
 
+export type ModelIDInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  size?: ModelSizeInput | null,
+};
+
 export type UpdateCardInput = {
   id: string,
   name?: string | null,
   sides?: Array< CardSideInput > | null,
   tags?: Array< string > | null,
+  deckID: string,
 };
 
 export type DeleteCardInput = {
@@ -91,7 +109,6 @@ export type DeleteCardInput = {
 };
 
 export type CreateDeckInput = {
-  id?: string | null,
   name: string,
   description: string,
   tags?: Array< string > | null,
@@ -123,25 +140,10 @@ export type ModelCardFilterInput = {
   name?: ModelStringInput | null,
   tags?: ModelStringInput | null,
   popularity?: ModelIntInput | null,
+  deckID?: ModelIDInput | null,
   and?: Array< ModelCardFilterInput | null > | null,
   or?: Array< ModelCardFilterInput | null > | null,
   not?: ModelCardFilterInput | null,
-};
-
-export type ModelIDInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  size?: ModelSizeInput | null,
 };
 
 export type ModelDeckFilterInput = {
@@ -160,6 +162,7 @@ export type SearchableCardFilterInput = {
   name?: SearchableStringFilterInput | null,
   tags?: SearchableStringFilterInput | null,
   popularity?: SearchableIntFilterInput | null,
+  deckID?: SearchableIDFilterInput | null,
   and?: Array< SearchableCardFilterInput | null > | null,
   or?: Array< SearchableCardFilterInput | null > | null,
   not?: SearchableCardFilterInput | null,
@@ -217,6 +220,7 @@ export enum SearchableCardSortableFields {
   name = "name",
   tags = "tags",
   popularity = "popularity",
+  deckID = "deckID",
 }
 
 
@@ -271,6 +275,19 @@ export type CreateCardMutation = {
     } > | null,
     tags: Array< string > | null,
     popularity: number,
+    deck:  {
+      __typename: "Deck",
+      id: string,
+      name: string,
+      description: string,
+      tags: Array< string > | null,
+      popularity: number,
+      cards:  {
+        __typename: "ModelCardConnection",
+        nextToken: string | null,
+      } | null,
+    },
+    deckID: string,
   } | null,
 };
 
@@ -294,6 +311,19 @@ export type UpdateCardMutation = {
     } > | null,
     tags: Array< string > | null,
     popularity: number,
+    deck:  {
+      __typename: "Deck",
+      id: string,
+      name: string,
+      description: string,
+      tags: Array< string > | null,
+      popularity: number,
+      cards:  {
+        __typename: "ModelCardConnection",
+        nextToken: string | null,
+      } | null,
+    },
+    deckID: string,
   } | null,
 };
 
@@ -317,6 +347,19 @@ export type DeleteCardMutation = {
     } > | null,
     tags: Array< string > | null,
     popularity: number,
+    deck:  {
+      __typename: "Deck",
+      id: string,
+      name: string,
+      description: string,
+      tags: Array< string > | null,
+      popularity: number,
+      cards:  {
+        __typename: "ModelCardConnection",
+        nextToken: string | null,
+      } | null,
+    },
+    deckID: string,
   } | null,
 };
 
@@ -333,6 +376,18 @@ export type CreateDeckMutation = {
     description: string,
     tags: Array< string > | null,
     popularity: number,
+    cards:  {
+      __typename: "ModelCardConnection",
+      items:  Array< {
+        __typename: "Card",
+        id: string,
+        name: string,
+        tags: Array< string > | null,
+        popularity: number,
+        deckID: string,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -349,6 +404,18 @@ export type UpdateDeckMutation = {
     description: string,
     tags: Array< string > | null,
     popularity: number,
+    cards:  {
+      __typename: "ModelCardConnection",
+      items:  Array< {
+        __typename: "Card",
+        id: string,
+        name: string,
+        tags: Array< string > | null,
+        popularity: number,
+        deckID: string,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -365,6 +432,18 @@ export type DeleteDeckMutation = {
     description: string,
     tags: Array< string > | null,
     popularity: number,
+    cards:  {
+      __typename: "ModelCardConnection",
+      items:  Array< {
+        __typename: "Card",
+        id: string,
+        name: string,
+        tags: Array< string > | null,
+        popularity: number,
+        deckID: string,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -399,6 +478,19 @@ export type GetCardQuery = {
     } > | null,
     tags: Array< string > | null,
     popularity: number,
+    deck:  {
+      __typename: "Deck",
+      id: string,
+      name: string,
+      description: string,
+      tags: Array< string > | null,
+      popularity: number,
+      cards:  {
+        __typename: "ModelCardConnection",
+        nextToken: string | null,
+      } | null,
+    },
+    deckID: string,
   } | null,
 };
 
@@ -417,6 +509,15 @@ export type ListCardsQuery = {
       name: string,
       tags: Array< string > | null,
       popularity: number,
+      deck:  {
+        __typename: "Deck",
+        id: string,
+        name: string,
+        description: string,
+        tags: Array< string > | null,
+        popularity: number,
+      },
+      deckID: string,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -434,6 +535,18 @@ export type GetDeckQuery = {
     description: string,
     tags: Array< string > | null,
     popularity: number,
+    cards:  {
+      __typename: "ModelCardConnection",
+      items:  Array< {
+        __typename: "Card",
+        id: string,
+        name: string,
+        tags: Array< string > | null,
+        popularity: number,
+        deckID: string,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -453,6 +566,10 @@ export type ListDecksQuery = {
       description: string,
       tags: Array< string > | null,
       popularity: number,
+      cards:  {
+        __typename: "ModelCardConnection",
+        nextToken: string | null,
+      } | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -474,6 +591,15 @@ export type SearchCardsQuery = {
       name: string,
       tags: Array< string > | null,
       popularity: number,
+      deck:  {
+        __typename: "Deck",
+        id: string,
+        name: string,
+        description: string,
+        tags: Array< string > | null,
+        popularity: number,
+      },
+      deckID: string,
     } | null > | null,
     nextToken: string | null,
     total: number | null,
@@ -497,6 +623,10 @@ export type SearchDecksQuery = {
       description: string,
       tags: Array< string > | null,
       popularity: number,
+      cards:  {
+        __typename: "ModelCardConnection",
+        nextToken: string | null,
+      } | null,
     } | null > | null,
     nextToken: string | null,
     total: number | null,
@@ -522,6 +652,19 @@ export type OnCreateCardSubscription = {
     } > | null,
     tags: Array< string > | null,
     popularity: number,
+    deck:  {
+      __typename: "Deck",
+      id: string,
+      name: string,
+      description: string,
+      tags: Array< string > | null,
+      popularity: number,
+      cards:  {
+        __typename: "ModelCardConnection",
+        nextToken: string | null,
+      } | null,
+    },
+    deckID: string,
   } | null,
 };
 
@@ -544,6 +687,19 @@ export type OnUpdateCardSubscription = {
     } > | null,
     tags: Array< string > | null,
     popularity: number,
+    deck:  {
+      __typename: "Deck",
+      id: string,
+      name: string,
+      description: string,
+      tags: Array< string > | null,
+      popularity: number,
+      cards:  {
+        __typename: "ModelCardConnection",
+        nextToken: string | null,
+      } | null,
+    },
+    deckID: string,
   } | null,
 };
 
@@ -566,6 +722,19 @@ export type OnDeleteCardSubscription = {
     } > | null,
     tags: Array< string > | null,
     popularity: number,
+    deck:  {
+      __typename: "Deck",
+      id: string,
+      name: string,
+      description: string,
+      tags: Array< string > | null,
+      popularity: number,
+      cards:  {
+        __typename: "ModelCardConnection",
+        nextToken: string | null,
+      } | null,
+    },
+    deckID: string,
   } | null,
 };
 
@@ -581,6 +750,18 @@ export type OnCreateDeckSubscription = {
     description: string,
     tags: Array< string > | null,
     popularity: number,
+    cards:  {
+      __typename: "ModelCardConnection",
+      items:  Array< {
+        __typename: "Card",
+        id: string,
+        name: string,
+        tags: Array< string > | null,
+        popularity: number,
+        deckID: string,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -596,6 +777,18 @@ export type OnUpdateDeckSubscription = {
     description: string,
     tags: Array< string > | null,
     popularity: number,
+    cards:  {
+      __typename: "ModelCardConnection",
+      items:  Array< {
+        __typename: "Card",
+        id: string,
+        name: string,
+        tags: Array< string > | null,
+        popularity: number,
+        deckID: string,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -611,5 +804,17 @@ export type OnDeleteDeckSubscription = {
     description: string,
     tags: Array< string > | null,
     popularity: number,
+    cards:  {
+      __typename: "ModelCardConnection",
+      items:  Array< {
+        __typename: "Card",
+        id: string,
+        name: string,
+        tags: Array< string > | null,
+        popularity: number,
+        deckID: string,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };

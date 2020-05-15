@@ -23,6 +23,17 @@ export const getCard = /* GraphQL */ `
       }
       tags
       popularity
+      deck {
+        id
+        name
+        description
+        tags
+        popularity
+        cards {
+          nextToken
+        }
+      }
+      deckID
     }
   }
 `;
@@ -38,6 +49,14 @@ export const listCards = /* GraphQL */ `
         name
         tags
         popularity
+        deck {
+          id
+          name
+          description
+          tags
+          popularity
+        }
+        deckID
       }
       nextToken
     }
@@ -51,6 +70,16 @@ export const getDeck = /* GraphQL */ `
       description
       tags
       popularity
+      cards {
+        items {
+          id
+          name
+          tags
+          popularity
+          deckID
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -67,6 +96,9 @@ export const listDecks = /* GraphQL */ `
         description
         tags
         popularity
+        cards {
+          nextToken
+        }
       }
       nextToken
     }
@@ -90,6 +122,14 @@ export const searchCards = /* GraphQL */ `
         name
         tags
         popularity
+        deck {
+          id
+          name
+          description
+          tags
+          popularity
+        }
+        deckID
       }
       nextToken
       total
@@ -115,6 +155,9 @@ export const searchDecks = /* GraphQL */ `
         description
         tags
         popularity
+        cards {
+          nextToken
+        }
       }
       nextToken
       total

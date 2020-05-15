@@ -12,7 +12,7 @@ type Deck @model
   description: String!
   tags: [String!]
   popularity: Int!
-  # TODO Card @connection
+  cards: [Card!] @connection(keyName: "byDeck", fields: ["id"]) # https://docs.amplify.aws/cli/graphql-transformer/directives#has-many
 }
 
 # Override Mutation Input

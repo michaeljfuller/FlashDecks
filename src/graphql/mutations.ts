@@ -18,6 +18,17 @@ export const createCard = /* GraphQL */ `
       }
       tags
       popularity
+      deck {
+        id
+        name
+        description
+        tags
+        popularity
+        cards {
+          nextToken
+        }
+      }
+      deckID
     }
   }
 `;
@@ -37,6 +48,17 @@ export const updateCard = /* GraphQL */ `
       }
       tags
       popularity
+      deck {
+        id
+        name
+        description
+        tags
+        popularity
+        cards {
+          nextToken
+        }
+      }
+      deckID
     }
   }
 `;
@@ -56,6 +78,17 @@ export const deleteCard = /* GraphQL */ `
       }
       tags
       popularity
+      deck {
+        id
+        name
+        description
+        tags
+        popularity
+        cards {
+          nextToken
+        }
+      }
+      deckID
     }
   }
 `;
@@ -70,6 +103,16 @@ export const createDeck = /* GraphQL */ `
       description
       tags
       popularity
+      cards {
+        items {
+          id
+          name
+          tags
+          popularity
+          deckID
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -84,6 +127,16 @@ export const updateDeck = /* GraphQL */ `
       description
       tags
       popularity
+      cards {
+        items {
+          id
+          name
+          tags
+          popularity
+          deckID
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -98,6 +151,16 @@ export const deleteDeck = /* GraphQL */ `
       description
       tags
       popularity
+      cards {
+        items {
+          id
+          name
+          tags
+          popularity
+          deckID
+        }
+        nextToken
+      }
     }
   }
 `;
