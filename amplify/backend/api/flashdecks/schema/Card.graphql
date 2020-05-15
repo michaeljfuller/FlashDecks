@@ -1,0 +1,61 @@
+#
+# The flash card.
+# Can have multiple "sides" to display different "content".
+#
+type Card @model
+  @auth(rules: [ #TODO Can we add a Privacy enum to an Item and factor that in?
+    { allow: owner, operations: [create, update, delete], ownerField: "ownerId", identityClaim: "sub" }
+  ])
+  @key(name: "byDeck", fields: ["deckID", "id"]) # https://docs.amplify.aws/cli/graphql-transformer/directives#has-many
+  @searchable
+{
+  id: ID!
+  ownerId: ID!
+  owner: User @function(name: "FlashDecks-GetUser-${env}")
+  name: String!
+  sides: [CardSide!]
+  tags: [String!]
+  popularity: Int
+  deck: Deck! @connection(fields: ["deckID"]) # https://docs.amplify.aws/cli/graphql-transformer/directives#belongs-to
+  deckID: ID!
+}
+
+# Override Mutation Input
+# Unable to set popularity
+input CreateCardInput {
+  name: String!
+  sides: [CardSideInput!]
+  tags: [String!]
+  deckID: ID!
+}
+input UpdateCardInput {
+  id: ID!
+  name: String
+  sides: [CardSideInput!]
+  tags: [String!]
+  deckID: ID
+}
+
+#
+# A Side of a card that can have multiple Content items of different types.
+#
+type CardSide {
+  content: [CardSideContent!]
+}
+input CardSideInput {
+  content: [CardSideContentInput!]
+}
+
+#
+# The content that goes on a CardSide.
+# Has a `type` field to help determine how to handle the `value`.
+#
+type CardSideContent {
+  type: CardSideContentType!
+  value: String!
+}
+input CardSideContentInput {
+  type: CardSideContentType!
+  value: String!
+}
+enum CardSideContentType { Text, Image, Video, Link }
