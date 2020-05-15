@@ -1,6 +1,7 @@
 #
 # The user links
-# The `getUser` query is defined by the root Query, rather than the @model directive, as it hooks into a custom Lambda Resolver.
+# The `getUser` query is defined by the root Query, rather than the @model directive,
+# as it hooks into a custom Lambda Resolver which adds the user from Cognito if it doesn't exist.
 #
 type User
   @model(
@@ -14,6 +15,6 @@ type User
 {
   id: ID!
   displayName: String!
-  # TODO favouriteCards @connection Not able to modify (use addFavouriteCard Mutator)
-  # TODO favouriteDecks @connection Not able to modify (use addFavouriteDeck Mutator)
+  # TODO favouriteCards @connection Not able to modify (create setFavouriteCards Mutator which also updates the Card's popularity)
+  # TODO favouriteDecks @connection Not able to modify (create setFavouriteDecks Mutator which also updates the Deck's popularity)
 }

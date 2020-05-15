@@ -1,13 +1,13 @@
 #
-# Card
+# The flash card.
+# Can have multiple "sides" to display different "content".
 #
 type Card @model
-  @auth(rules: [
+  @auth(rules: [ #TODO Can we add a Privacy enum to an Item and factor that in?
     { allow: owner, operations: [create, update, delete], ownerField: "ownerId", identityClaim: "sub" }
-    #TODO Can we add a Privacy enum to an Item and factor that in?
   ])
-  @searchable #TODO Can we limit the fields?
   @key(name: "byDeck", fields: ["deckID", "id"]) # https://docs.amplify.aws/cli/graphql-transformer/directives#has-many
+  @searchable
 {
   id: ID!
   ownerId: ID!
@@ -36,7 +36,9 @@ input UpdateCardInput {
   deckID: ID
 }
 
-# Sides to a card
+#
+# A Side of a card that can have multiple Content items of different types.
+#
 type CardSide {
   content: [CardSideContent!]
 }
@@ -44,12 +46,16 @@ input CardSideInput {
   content: [CardSideContentInput!]
 }
 
-# Content on a side
+#
+# The content that goes on a CardSide.
+# Has a `type` field to help determine how to handle the `value`.
+#
 type CardSideContent {
-  type: String!
+  type: CardSideContentType!
   value: String!
 }
 input CardSideContentInput {
-  type: String!
+  type: CardSideContentType!
   value: String!
 }
+enum CardSideContentType { Text, Image, Video, Link }
