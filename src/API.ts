@@ -101,7 +101,7 @@ export type UpdateCardInput = {
   name?: string | null,
   sides?: Array< CardSideInput > | null,
   tags?: Array< string > | null,
-  deckID: string,
+  deckID?: string | null,
 };
 
 export type DeleteCardInput = {
@@ -137,6 +137,7 @@ export type DeleteDeckInput = {
 
 export type ModelCardFilterInput = {
   id?: ModelIDInput | null,
+  ownerId?: ModelIDInput | null,
   name?: ModelStringInput | null,
   tags?: ModelStringInput | null,
   popularity?: ModelIntInput | null,
@@ -148,6 +149,7 @@ export type ModelCardFilterInput = {
 
 export type ModelDeckFilterInput = {
   id?: ModelIDInput | null,
+  ownerId?: ModelIDInput | null,
   name?: ModelStringInput | null,
   description?: ModelStringInput | null,
   tags?: ModelStringInput | null,
@@ -159,6 +161,7 @@ export type ModelDeckFilterInput = {
 
 export type SearchableCardFilterInput = {
   id?: SearchableIDFilterInput | null,
+  ownerId?: SearchableIDFilterInput | null,
   name?: SearchableStringFilterInput | null,
   tags?: SearchableStringFilterInput | null,
   popularity?: SearchableIntFilterInput | null,
@@ -217,6 +220,7 @@ export type SearchableCardSortInput = {
 
 export enum SearchableCardSortableFields {
   id = "id",
+  ownerId = "ownerId",
   name = "name",
   tags = "tags",
   popularity = "popularity",
@@ -232,6 +236,7 @@ export enum SearchableSortDirection {
 
 export type SearchableDeckFilterInput = {
   id?: SearchableIDFilterInput | null,
+  ownerId?: SearchableIDFilterInput | null,
   name?: SearchableStringFilterInput | null,
   description?: SearchableStringFilterInput | null,
   tags?: SearchableStringFilterInput | null,
@@ -248,6 +253,7 @@ export type SearchableDeckSortInput = {
 
 export enum SearchableDeckSortableFields {
   id = "id",
+  ownerId = "ownerId",
   name = "name",
   description = "description",
   tags = "tags",
@@ -264,6 +270,7 @@ export type CreateCardMutation = {
   createCard:  {
     __typename: "Card",
     id: string,
+    ownerId: string,
     name: string,
     sides:  Array< {
       __typename: "CardSide",
@@ -278,6 +285,7 @@ export type CreateCardMutation = {
     deck:  {
       __typename: "Deck",
       id: string,
+      ownerId: string,
       name: string,
       description: string,
       tags: Array< string > | null,
@@ -300,6 +308,7 @@ export type UpdateCardMutation = {
   updateCard:  {
     __typename: "Card",
     id: string,
+    ownerId: string,
     name: string,
     sides:  Array< {
       __typename: "CardSide",
@@ -314,6 +323,7 @@ export type UpdateCardMutation = {
     deck:  {
       __typename: "Deck",
       id: string,
+      ownerId: string,
       name: string,
       description: string,
       tags: Array< string > | null,
@@ -336,6 +346,7 @@ export type DeleteCardMutation = {
   deleteCard:  {
     __typename: "Card",
     id: string,
+    ownerId: string,
     name: string,
     sides:  Array< {
       __typename: "CardSide",
@@ -350,6 +361,7 @@ export type DeleteCardMutation = {
     deck:  {
       __typename: "Deck",
       id: string,
+      ownerId: string,
       name: string,
       description: string,
       tags: Array< string > | null,
@@ -372,6 +384,7 @@ export type CreateDeckMutation = {
   createDeck:  {
     __typename: "Deck",
     id: string,
+    ownerId: string,
     name: string,
     description: string,
     tags: Array< string > | null,
@@ -381,6 +394,7 @@ export type CreateDeckMutation = {
       items:  Array< {
         __typename: "Card",
         id: string,
+        ownerId: string,
         name: string,
         tags: Array< string > | null,
         popularity: number,
@@ -400,6 +414,7 @@ export type UpdateDeckMutation = {
   updateDeck:  {
     __typename: "Deck",
     id: string,
+    ownerId: string,
     name: string,
     description: string,
     tags: Array< string > | null,
@@ -409,6 +424,7 @@ export type UpdateDeckMutation = {
       items:  Array< {
         __typename: "Card",
         id: string,
+        ownerId: string,
         name: string,
         tags: Array< string > | null,
         popularity: number,
@@ -428,6 +444,7 @@ export type DeleteDeckMutation = {
   deleteDeck:  {
     __typename: "Deck",
     id: string,
+    ownerId: string,
     name: string,
     description: string,
     tags: Array< string > | null,
@@ -437,6 +454,7 @@ export type DeleteDeckMutation = {
       items:  Array< {
         __typename: "Card",
         id: string,
+        ownerId: string,
         name: string,
         tags: Array< string > | null,
         popularity: number,
@@ -467,6 +485,7 @@ export type GetCardQuery = {
   getCard:  {
     __typename: "Card",
     id: string,
+    ownerId: string,
     name: string,
     sides:  Array< {
       __typename: "CardSide",
@@ -481,6 +500,7 @@ export type GetCardQuery = {
     deck:  {
       __typename: "Deck",
       id: string,
+      ownerId: string,
       name: string,
       description: string,
       tags: Array< string > | null,
@@ -506,12 +526,14 @@ export type ListCardsQuery = {
     items:  Array< {
       __typename: "Card",
       id: string,
+      ownerId: string,
       name: string,
       tags: Array< string > | null,
       popularity: number,
       deck:  {
         __typename: "Deck",
         id: string,
+        ownerId: string,
         name: string,
         description: string,
         tags: Array< string > | null,
@@ -531,6 +553,7 @@ export type GetDeckQuery = {
   getDeck:  {
     __typename: "Deck",
     id: string,
+    ownerId: string,
     name: string,
     description: string,
     tags: Array< string > | null,
@@ -540,6 +563,7 @@ export type GetDeckQuery = {
       items:  Array< {
         __typename: "Card",
         id: string,
+        ownerId: string,
         name: string,
         tags: Array< string > | null,
         popularity: number,
@@ -562,6 +586,7 @@ export type ListDecksQuery = {
     items:  Array< {
       __typename: "Deck",
       id: string,
+      ownerId: string,
       name: string,
       description: string,
       tags: Array< string > | null,
@@ -588,12 +613,14 @@ export type SearchCardsQuery = {
     items:  Array< {
       __typename: "Card",
       id: string,
+      ownerId: string,
       name: string,
       tags: Array< string > | null,
       popularity: number,
       deck:  {
         __typename: "Deck",
         id: string,
+        ownerId: string,
         name: string,
         description: string,
         tags: Array< string > | null,
@@ -619,6 +646,7 @@ export type SearchDecksQuery = {
     items:  Array< {
       __typename: "Deck",
       id: string,
+      ownerId: string,
       name: string,
       description: string,
       tags: Array< string > | null,
@@ -641,6 +669,7 @@ export type OnCreateCardSubscription = {
   onCreateCard:  {
     __typename: "Card",
     id: string,
+    ownerId: string,
     name: string,
     sides:  Array< {
       __typename: "CardSide",
@@ -655,6 +684,7 @@ export type OnCreateCardSubscription = {
     deck:  {
       __typename: "Deck",
       id: string,
+      ownerId: string,
       name: string,
       description: string,
       tags: Array< string > | null,
@@ -676,6 +706,7 @@ export type OnUpdateCardSubscription = {
   onUpdateCard:  {
     __typename: "Card",
     id: string,
+    ownerId: string,
     name: string,
     sides:  Array< {
       __typename: "CardSide",
@@ -690,6 +721,7 @@ export type OnUpdateCardSubscription = {
     deck:  {
       __typename: "Deck",
       id: string,
+      ownerId: string,
       name: string,
       description: string,
       tags: Array< string > | null,
@@ -711,6 +743,7 @@ export type OnDeleteCardSubscription = {
   onDeleteCard:  {
     __typename: "Card",
     id: string,
+    ownerId: string,
     name: string,
     sides:  Array< {
       __typename: "CardSide",
@@ -725,6 +758,7 @@ export type OnDeleteCardSubscription = {
     deck:  {
       __typename: "Deck",
       id: string,
+      ownerId: string,
       name: string,
       description: string,
       tags: Array< string > | null,
@@ -746,6 +780,7 @@ export type OnCreateDeckSubscription = {
   onCreateDeck:  {
     __typename: "Deck",
     id: string,
+    ownerId: string,
     name: string,
     description: string,
     tags: Array< string > | null,
@@ -755,6 +790,7 @@ export type OnCreateDeckSubscription = {
       items:  Array< {
         __typename: "Card",
         id: string,
+        ownerId: string,
         name: string,
         tags: Array< string > | null,
         popularity: number,
@@ -773,6 +809,7 @@ export type OnUpdateDeckSubscription = {
   onUpdateDeck:  {
     __typename: "Deck",
     id: string,
+    ownerId: string,
     name: string,
     description: string,
     tags: Array< string > | null,
@@ -782,6 +819,7 @@ export type OnUpdateDeckSubscription = {
       items:  Array< {
         __typename: "Card",
         id: string,
+        ownerId: string,
         name: string,
         tags: Array< string > | null,
         popularity: number,
@@ -800,6 +838,7 @@ export type OnDeleteDeckSubscription = {
   onDeleteDeck:  {
     __typename: "Deck",
     id: string,
+    ownerId: string,
     name: string,
     description: string,
     tags: Array< string > | null,
@@ -809,6 +848,7 @@ export type OnDeleteDeckSubscription = {
       items:  Array< {
         __typename: "Card",
         id: string,
+        ownerId: string,
         name: string,
         tags: Array< string > | null,
         popularity: number,

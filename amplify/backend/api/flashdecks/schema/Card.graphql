@@ -10,6 +10,7 @@ type Card @model
   @key(name: "byDeck", fields: ["deckID", "id"]) # https://docs.amplify.aws/cli/graphql-transformer/directives#has-many
 {
   id: ID!
+  ownerId: ID!
   name: String!
   sides: [CardSide!]
   tags: [String!]
@@ -31,7 +32,7 @@ input UpdateCardInput {
   name: String
   sides: [CardSideInput!]
   tags: [String!]
-  deckID: ID!
+  deckID: ID
 }
 
 # Sides to a card

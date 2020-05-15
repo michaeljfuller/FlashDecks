@@ -6,6 +6,7 @@ export const onCreateCard = /* GraphQL */ `
   subscription OnCreateCard($ownerId: String!) {
     onCreateCard(ownerId: $ownerId) {
       id
+      ownerId
       name
       sides {
         content {
@@ -17,6 +18,7 @@ export const onCreateCard = /* GraphQL */ `
       popularity
       deck {
         id
+        ownerId
         name
         description
         tags
@@ -33,6 +35,7 @@ export const onUpdateCard = /* GraphQL */ `
   subscription OnUpdateCard($ownerId: String!) {
     onUpdateCard(ownerId: $ownerId) {
       id
+      ownerId
       name
       sides {
         content {
@@ -44,6 +47,7 @@ export const onUpdateCard = /* GraphQL */ `
       popularity
       deck {
         id
+        ownerId
         name
         description
         tags
@@ -60,6 +64,7 @@ export const onDeleteCard = /* GraphQL */ `
   subscription OnDeleteCard($ownerId: String!) {
     onDeleteCard(ownerId: $ownerId) {
       id
+      ownerId
       name
       sides {
         content {
@@ -71,6 +76,7 @@ export const onDeleteCard = /* GraphQL */ `
       popularity
       deck {
         id
+        ownerId
         name
         description
         tags
@@ -87,6 +93,7 @@ export const onCreateDeck = /* GraphQL */ `
   subscription OnCreateDeck($ownerId: String!) {
     onCreateDeck(ownerId: $ownerId) {
       id
+      ownerId
       name
       description
       tags
@@ -94,6 +101,7 @@ export const onCreateDeck = /* GraphQL */ `
       cards {
         items {
           id
+          ownerId
           name
           tags
           popularity
@@ -108,6 +116,7 @@ export const onUpdateDeck = /* GraphQL */ `
   subscription OnUpdateDeck($ownerId: String!) {
     onUpdateDeck(ownerId: $ownerId) {
       id
+      ownerId
       name
       description
       tags
@@ -115,6 +124,7 @@ export const onUpdateDeck = /* GraphQL */ `
       cards {
         items {
           id
+          ownerId
           name
           tags
           popularity
@@ -129,6 +139,7 @@ export const onDeleteDeck = /* GraphQL */ `
   subscription OnDeleteDeck($ownerId: String!) {
     onDeleteDeck(ownerId: $ownerId) {
       id
+      ownerId
       name
       description
       tags
@@ -136,6 +147,7 @@ export const onDeleteDeck = /* GraphQL */ `
       cards {
         items {
           id
+          ownerId
           name
           tags
           popularity

@@ -9,6 +9,7 @@ export const createCard = /* GraphQL */ `
   ) {
     createCard(input: $input, condition: $condition) {
       id
+      ownerId
       name
       sides {
         content {
@@ -20,6 +21,7 @@ export const createCard = /* GraphQL */ `
       popularity
       deck {
         id
+        ownerId
         name
         description
         tags
@@ -39,6 +41,7 @@ export const updateCard = /* GraphQL */ `
   ) {
     updateCard(input: $input, condition: $condition) {
       id
+      ownerId
       name
       sides {
         content {
@@ -50,6 +53,7 @@ export const updateCard = /* GraphQL */ `
       popularity
       deck {
         id
+        ownerId
         name
         description
         tags
@@ -69,6 +73,7 @@ export const deleteCard = /* GraphQL */ `
   ) {
     deleteCard(input: $input, condition: $condition) {
       id
+      ownerId
       name
       sides {
         content {
@@ -80,6 +85,7 @@ export const deleteCard = /* GraphQL */ `
       popularity
       deck {
         id
+        ownerId
         name
         description
         tags
@@ -99,6 +105,7 @@ export const createDeck = /* GraphQL */ `
   ) {
     createDeck(input: $input, condition: $condition) {
       id
+      ownerId
       name
       description
       tags
@@ -106,6 +113,7 @@ export const createDeck = /* GraphQL */ `
       cards {
         items {
           id
+          ownerId
           name
           tags
           popularity
@@ -123,6 +131,7 @@ export const updateDeck = /* GraphQL */ `
   ) {
     updateDeck(input: $input, condition: $condition) {
       id
+      ownerId
       name
       description
       tags
@@ -130,6 +139,7 @@ export const updateDeck = /* GraphQL */ `
       cards {
         items {
           id
+          ownerId
           name
           tags
           popularity
@@ -147,6 +157,7 @@ export const deleteDeck = /* GraphQL */ `
   ) {
     deleteDeck(input: $input, condition: $condition) {
       id
+      ownerId
       name
       description
       tags
@@ -154,6 +165,7 @@ export const deleteDeck = /* GraphQL */ `
       cards {
         items {
           id
+          ownerId
           name
           tags
           popularity
