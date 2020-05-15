@@ -15,6 +15,10 @@ export const getCard = /* GraphQL */ `
     getCard(id: $id) {
       id
       ownerId
+      owner {
+        id
+        displayName
+      }
       name
       sides {
         content {
@@ -27,6 +31,10 @@ export const getCard = /* GraphQL */ `
       deck {
         id
         ownerId
+        owner {
+          id
+          displayName
+        }
         name
         description
         tags
@@ -49,6 +57,10 @@ export const listCards = /* GraphQL */ `
       items {
         id
         ownerId
+        owner {
+          id
+          displayName
+        }
         name
         tags
         popularity
@@ -71,6 +83,10 @@ export const getDeck = /* GraphQL */ `
     getDeck(id: $id) {
       id
       ownerId
+      owner {
+        id
+        displayName
+      }
       name
       description
       tags
@@ -99,6 +115,10 @@ export const listDecks = /* GraphQL */ `
       items {
         id
         ownerId
+        owner {
+          id
+          displayName
+        }
         name
         description
         tags
@@ -127,6 +147,10 @@ export const searchCards = /* GraphQL */ `
       items {
         id
         ownerId
+        owner {
+          id
+          displayName
+        }
         name
         tags
         popularity
@@ -161,6 +185,10 @@ export const searchDecks = /* GraphQL */ `
       items {
         id
         ownerId
+        owner {
+          id
+          displayName
+        }
         name
         description
         tags

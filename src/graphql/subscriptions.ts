@@ -7,6 +7,10 @@ export const onCreateCard = /* GraphQL */ `
     onCreateCard(ownerId: $ownerId) {
       id
       ownerId
+      owner {
+        id
+        displayName
+      }
       name
       sides {
         content {
@@ -19,6 +23,10 @@ export const onCreateCard = /* GraphQL */ `
       deck {
         id
         ownerId
+        owner {
+          id
+          displayName
+        }
         name
         description
         tags
@@ -36,6 +44,10 @@ export const onUpdateCard = /* GraphQL */ `
     onUpdateCard(ownerId: $ownerId) {
       id
       ownerId
+      owner {
+        id
+        displayName
+      }
       name
       sides {
         content {
@@ -48,6 +60,10 @@ export const onUpdateCard = /* GraphQL */ `
       deck {
         id
         ownerId
+        owner {
+          id
+          displayName
+        }
         name
         description
         tags
@@ -65,6 +81,10 @@ export const onDeleteCard = /* GraphQL */ `
     onDeleteCard(ownerId: $ownerId) {
       id
       ownerId
+      owner {
+        id
+        displayName
+      }
       name
       sides {
         content {
@@ -77,6 +97,10 @@ export const onDeleteCard = /* GraphQL */ `
       deck {
         id
         ownerId
+        owner {
+          id
+          displayName
+        }
         name
         description
         tags
@@ -94,6 +118,10 @@ export const onCreateDeck = /* GraphQL */ `
     onCreateDeck(ownerId: $ownerId) {
       id
       ownerId
+      owner {
+        id
+        displayName
+      }
       name
       description
       tags
@@ -117,6 +145,10 @@ export const onUpdateDeck = /* GraphQL */ `
     onUpdateDeck(ownerId: $ownerId) {
       id
       ownerId
+      owner {
+        id
+        displayName
+      }
       name
       description
       tags
@@ -140,6 +172,10 @@ export const onDeleteDeck = /* GraphQL */ `
     onDeleteDeck(ownerId: $ownerId) {
       id
       ownerId
+      owner {
+        id
+        displayName
+      }
       name
       description
       tags

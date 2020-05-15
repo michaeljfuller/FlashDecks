@@ -9,10 +9,11 @@ type Deck @model
 {
   id: ID!
   ownerId: ID!
+  owner: User @function(name: "FlashDecks-GetUser-${env}")
   name: String!
   description: String!
   tags: [String!]
-  popularity: Int!
+  popularity: Int
   cards: [Card!] @connection(keyName: "byDeck", fields: ["id"]) # https://docs.amplify.aws/cli/graphql-transformer/directives#has-many
 }
 

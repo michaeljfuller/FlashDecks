@@ -10,6 +10,10 @@ export const createCard = /* GraphQL */ `
     createCard(input: $input, condition: $condition) {
       id
       ownerId
+      owner {
+        id
+        displayName
+      }
       name
       sides {
         content {
@@ -22,6 +26,10 @@ export const createCard = /* GraphQL */ `
       deck {
         id
         ownerId
+        owner {
+          id
+          displayName
+        }
         name
         description
         tags
@@ -42,6 +50,10 @@ export const updateCard = /* GraphQL */ `
     updateCard(input: $input, condition: $condition) {
       id
       ownerId
+      owner {
+        id
+        displayName
+      }
       name
       sides {
         content {
@@ -54,6 +66,10 @@ export const updateCard = /* GraphQL */ `
       deck {
         id
         ownerId
+        owner {
+          id
+          displayName
+        }
         name
         description
         tags
@@ -74,6 +90,10 @@ export const deleteCard = /* GraphQL */ `
     deleteCard(input: $input, condition: $condition) {
       id
       ownerId
+      owner {
+        id
+        displayName
+      }
       name
       sides {
         content {
@@ -86,6 +106,10 @@ export const deleteCard = /* GraphQL */ `
       deck {
         id
         ownerId
+        owner {
+          id
+          displayName
+        }
         name
         description
         tags
@@ -106,6 +130,10 @@ export const createDeck = /* GraphQL */ `
     createDeck(input: $input, condition: $condition) {
       id
       ownerId
+      owner {
+        id
+        displayName
+      }
       name
       description
       tags
@@ -132,6 +160,10 @@ export const updateDeck = /* GraphQL */ `
     updateDeck(input: $input, condition: $condition) {
       id
       ownerId
+      owner {
+        id
+        displayName
+      }
       name
       description
       tags
@@ -158,6 +190,10 @@ export const deleteDeck = /* GraphQL */ `
     deleteDeck(input: $input, condition: $condition) {
       id
       ownerId
+      owner {
+        id
+        displayName
+      }
       name
       description
       tags
