@@ -9,7 +9,36 @@ export const createCard = /* GraphQL */ `
   ) {
     createCard(input: $input, condition: $condition) {
       id
+      ownerId
+      owner {
+        id
+        displayName
+      }
       name
+      sides {
+        content {
+          type
+          value
+        }
+      }
+      tags
+      popularity
+      deck {
+        id
+        ownerId
+        owner {
+          id
+          displayName
+        }
+        name
+        description
+        tags
+        popularity
+        cards {
+          nextToken
+        }
+      }
+      deckID
     }
   }
 `;
@@ -20,7 +49,36 @@ export const updateCard = /* GraphQL */ `
   ) {
     updateCard(input: $input, condition: $condition) {
       id
+      ownerId
+      owner {
+        id
+        displayName
+      }
       name
+      sides {
+        content {
+          type
+          value
+        }
+      }
+      tags
+      popularity
+      deck {
+        id
+        ownerId
+        owner {
+          id
+          displayName
+        }
+        name
+        description
+        tags
+        popularity
+        cards {
+          nextToken
+        }
+      }
+      deckID
     }
   }
 `;
@@ -31,7 +89,126 @@ export const deleteCard = /* GraphQL */ `
   ) {
     deleteCard(input: $input, condition: $condition) {
       id
+      ownerId
+      owner {
+        id
+        displayName
+      }
       name
+      sides {
+        content {
+          type
+          value
+        }
+      }
+      tags
+      popularity
+      deck {
+        id
+        ownerId
+        owner {
+          id
+          displayName
+        }
+        name
+        description
+        tags
+        popularity
+        cards {
+          nextToken
+        }
+      }
+      deckID
+    }
+  }
+`;
+export const createDeck = /* GraphQL */ `
+  mutation CreateDeck(
+    $input: CreateDeckInput!
+    $condition: ModelDeckConditionInput
+  ) {
+    createDeck(input: $input, condition: $condition) {
+      id
+      ownerId
+      owner {
+        id
+        displayName
+      }
+      name
+      description
+      tags
+      popularity
+      cards {
+        items {
+          id
+          ownerId
+          name
+          tags
+          popularity
+          deckID
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const updateDeck = /* GraphQL */ `
+  mutation UpdateDeck(
+    $input: UpdateDeckInput!
+    $condition: ModelDeckConditionInput
+  ) {
+    updateDeck(input: $input, condition: $condition) {
+      id
+      ownerId
+      owner {
+        id
+        displayName
+      }
+      name
+      description
+      tags
+      popularity
+      cards {
+        items {
+          id
+          ownerId
+          name
+          tags
+          popularity
+          deckID
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const deleteDeck = /* GraphQL */ `
+  mutation DeleteDeck(
+    $input: DeleteDeckInput!
+    $condition: ModelDeckConditionInput
+  ) {
+    deleteDeck(input: $input, condition: $condition) {
+      id
+      ownerId
+      owner {
+        id
+        displayName
+      }
+      name
+      description
+      tags
+      popularity
+      cards {
+        items {
+          id
+          ownerId
+          name
+          tags
+          popularity
+          deckID
+        }
+        nextToken
+      }
     }
   }
 `;
