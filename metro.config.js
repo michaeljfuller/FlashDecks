@@ -1,17 +1,11 @@
-/**
- * Metro configuration for React Native
- * https://github.com/facebook/react-native
- *
- * @format
- */
+// Blacklist is a function that takes an array of RegExes and combines them with the default blacklist to return a single RegEx.
+const blacklist = require('metro-config/src/defaults/blacklist');
 
 module.exports = {
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: false,
-      },
-    }),
-  },
+    resolver: {
+        blacklistRE: blacklist([
+            /dist\/.*/,
+            /amplify\/.*/
+        ])
+    }
 };
