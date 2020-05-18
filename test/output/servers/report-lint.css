@@ -1,0 +1,17 @@
+table {
+    background-color: white;
+    max-width: none;
+    margin: 5px;
+    width: calc(100% - 10px);
+    border-radius: 0;
+}
+th {
+    font-family: monospace;
+}
+
+#overview {
+    padding: 15px 5px;
+}
+#overview h1 {
+    font-size: 2em;
+}

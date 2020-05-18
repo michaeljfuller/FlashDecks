@@ -1,0 +1,21 @@
+body {
+    background-color: dimgray;
+    color: lightgray;
+    padding: 5px;
+}
+header:first-child {
+    margin-top: 12px;
+}
+#timestamp, #summary {
+    color: #bbb;
+}
+
+.suite-table,
+.suite-consolelog,
+.suite-info {
+    overflow: auto;
+}
+
+.jesthtml-content > table {
+    display: block;
+}
