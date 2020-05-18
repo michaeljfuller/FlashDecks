@@ -4,18 +4,18 @@ import { getUser } from '../graphql/queries';
 
 export interface AppRootProps {}
 export interface AppRootState {
-    user?: User,
-    cognitoUser?: CognitoUser
+    user?: User;
+    cognitoUser?: CognitoUser;
 }
 
 interface AuthEvent {
-    channel: 'auth',
-    source: 'Auth',
+    channel: 'auth';
+    source: 'Auth';
     payload: {
-        event: AuthEventType,
-        message: string,
-        data: any|CognitoUser
-    }
+        event: AuthEventType;
+        message: string;
+        data: any|CognitoUser;
+    };
 }
 enum AuthEventType { SIGN_IN = 'signIn', SIGN_UP = 'signUp', SIGN_OUT = 'signOut' }
 
