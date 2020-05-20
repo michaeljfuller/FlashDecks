@@ -1,23 +1,36 @@
 import React from "react";
-import {Text, Button} from "react-native";
+import {Text, Button, View} from "react-native";
 import {AppRootBase} from './AppRootBase';
 import AppAuthenticator from './Authenticator/AppAuthenticator';
+import ErrorBoundary from '../utils/hoc/ErrorBoundary/ErrorBoundary';
+import NavigationRoot from '../navigation/NavigationRoot';
 
 export class AppRoot extends AppRootBase {
 
-    handleSignOut = () => {
-        return this.signOut();
+    render() {
+        return <ErrorBoundary>
+            {this.renderAuth() || this.renderApp()}
+        </ErrorBoundary>;
     }
 
-    render() {
-        const { cognitoUser, user } =  this.state;
-        if (!cognitoUser) {
+    renderAuth() {
+        if (!this.state.cognitoUser) {
             return <AppAuthenticator />;
         }
-        if (!user) {
+        if (!this.state.user) {
             return <Text>Getting user data...</Text>;
         }
-        return <Button title={`Log out ${user.displayName}`} onPress={this.handleSignOut} />;
+        return null
     }
+
+    renderApp() {
+        const { displayName = 'User' } = this.state.user || {};
+        return <View>
+            {/* TODO Add user to store, and listen for user being nullified to signOut. */}
+            <Button title={`Log out ${displayName}`} onPress={this.handleSignOut}/>
+            <NavigationRoot />
+        </View>;
+    }
+    handleSignOut = () => this.signOut();
 
 }
