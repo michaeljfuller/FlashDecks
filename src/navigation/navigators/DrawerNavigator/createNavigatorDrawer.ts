@@ -4,7 +4,7 @@ import {
     DrawerRouteConfigMap,
     DrawerNavigatorConfig
 } from "./createNavigatorDrawer_types";
-import DrawerNavigator, {DrawerNavigatorViewProps} from './components/DrawerNavigator';
+import {MaterialUiDrawer, MaterialUiDrawerProps} from './components/MaterialUiDrawer';
 import {DrawerRouter} from "react-navigation-drawer";
 
 /**
@@ -15,7 +15,7 @@ export function createNavigatorDrawer(
     routes: DrawerRouteConfigMap,
     routeConfig: CreateDrawerNavigatorConfig = {}
 ): NavigationNavigator<
-    DrawerNavigatorViewProps,
+    MaterialUiDrawerProps,
     NavigationProp<NavigationState>
 > {
     const DefaultDrawerConfig: DrawerNavigatorConfig = {};
@@ -23,7 +23,7 @@ export function createNavigatorDrawer(
     const drawerRouter = DrawerRouter(routes, mergedConfig); // TODO Custom router
 
     // TODO: "don't have time to fix it right now" - From react-navigation-drawer, on typings.
-    return createNavigator(DrawerNavigator as any, drawerRouter, mergedConfig);
+    return createNavigator(MaterialUiDrawer as any, drawerRouter, mergedConfig);
 }
 
 // export * from './createCustomDrawerNavigator.native'; // Uncomment to use Native implementation.
