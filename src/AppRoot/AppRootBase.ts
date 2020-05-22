@@ -47,14 +47,6 @@ export abstract class AppRootBase extends React.Component<AppRootProps, AppRootS
         this.setState({ user: undefined, cognitoUser: undefined });
     }
 
-    signOut = async () => {
-        try {
-            await Auth.signOut();
-        } catch(e) {
-            console.error("Error signing out user", e);
-        }
-    }
-
     /**
      * Try to add `cognitoUser` & `user` to the state.
      */
