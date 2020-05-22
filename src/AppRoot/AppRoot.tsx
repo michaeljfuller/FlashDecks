@@ -1,15 +1,19 @@
 import React from "react";
-import {Text, Button, View, StyleSheet} from "react-native";
+import {Text, View, StyleSheet} from "react-native";
+import {Provider as ReduxProvider} from 'react-redux';
 import {AppRootBase} from './AppRootBase';
 import AppAuthenticator from './Authenticator/AppAuthenticator';
 import ErrorBoundary from '../utils/hoc/ErrorBoundary/ErrorBoundary';
 import NavigationRoot from '../navigation/NavigationRoot';
+import store from '../store/store';
 
 export class AppRoot extends AppRootBase {
 
     render() {
         return <ErrorBoundary>
-            {this.renderAuth() || this.renderApp()}
+            <ReduxProvider store={store}>
+                {this.renderAuth() || this.renderApp()}
+            </ReduxProvider>
         </ErrorBoundary>;
     }
 
