@@ -28,14 +28,8 @@ export class AppRoot extends AppRootBase {
     }
 
     renderApp() {
-        const { displayName = 'User' } = this.state.user || {};
-        return <React.Fragment>
-            {/* TODO Add user to store, and listen for user being nullified to signOut. */}
-            <Button title={`Log out ${displayName}`} onPress={this.handleSignOut}/>
-            <NavigationRoot />
-        </React.Fragment>;
+        return <NavigationRoot />;
     }
-    handleSignOut = () => this.signOut();
 
 }
 export default AppRoot;
