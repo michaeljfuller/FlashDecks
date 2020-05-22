@@ -15,6 +15,6 @@ export type AppStore = typeof store;
 export default store;
 
 // Barrel
-export {StoreState} from './store_manifest';
+export * from './store_manifest';
 export * from './store_actions';
 export * from './loggedInUser/loggedInUser_actions';
