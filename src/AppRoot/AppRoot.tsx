@@ -1,7 +1,7 @@
 import React from "react";
-import {View, Text, Button} from "react-native";
-import {AppRootBase, AppRootProps, AppRootState} from './AppRootBase';
-import { Authenticator, AmplifyTheme } from 'aws-amplify-react';
+import {Text, Button} from "react-native";
+import {AppRootBase} from './AppRootBase';
+import AppAuthenticator from './Authenticator/AppAuthenticator';
 
 export class AppRoot extends AppRootBase {
 
@@ -12,29 +12,12 @@ export class AppRoot extends AppRootBase {
     render() {
         const { cognitoUser, user } =  this.state;
         if (!cognitoUser) {
-            return <Authenticator {...{theme: authenticatorTheme}} />;
+            return <AppAuthenticator />;
         }
         if (!user) {
             return <Text>Getting user data...</Text>;
         }
-
         return <Button title={`Log out ${user.displayName}`} onPress={this.handleSignOut} />;
     }
 
-}
-
-const authenticatorTheme = {
-    ...AmplifyTheme,
-    button: {
-        ...AmplifyTheme.button,
-        backgroundColor: '#f90'
-    },
-    sectionHeader: {
-        ...AmplifyTheme.sectionHeader,
-        backgroundColor: "var(--squidInk)"
-    },
-    navBar: {
-        ...AmplifyTheme.navBar,
-        backgroundColor: "#ffc0cb"
-    }
 }

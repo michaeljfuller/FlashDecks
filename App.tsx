@@ -1,9 +1,11 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import Amplify from 'aws-amplify';
+import Amplify, {Analytics} from 'aws-amplify';
+// @ts-ignore
 import config from './aws-exports';
 Amplify.configure(config);
+Analytics.disable(); // Prevent warning about not being configured.
 
 import {AppRoot} from './src/AppRoot/AppRoot'
 

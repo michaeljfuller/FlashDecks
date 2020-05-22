@@ -26,7 +26,7 @@ export abstract class AppRootBase extends React.Component<AppRootProps, AppRootS
     };
 
     componentDidMount() {
-        this.getUserData().finally();
+        this.fetchUserData();
         Hub.listen('auth', data => this.onAuthEvent(data as AuthEvent));
     }
 
@@ -36,7 +36,7 @@ export abstract class AppRootBase extends React.Component<AppRootProps, AppRootS
     onAuthEvent(data: AuthEvent) {
         console.info('AppRoot.onAuthEvent', data);
         switch(data.payload.event) {
-            case AuthEventType.SIGN_IN: return this.getUserData().finally();
+            case AuthEventType.SIGN_IN: return this.fetchUserData();
             case AuthEventType.SIGN_UP: return;
             case AuthEventType.SIGN_OUT: return this.clearUser();
             default: console.warn('AppRoot.onAuthEvent', 'No handled case for', data.payload.event);
@@ -55,27 +55,42 @@ export abstract class AppRootBase extends React.Component<AppRootProps, AppRootS
         }
     }
 
-    async getUserData() {
-        try {
-            // Get user from Cognito.
-            const cognitoUser: CognitoUser = await Auth.currentAuthenticatedUser();
-            console.info('AppRoot.getUserData', cognitoUser);
-            this.setState({ cognitoUser: cognitoUser || undefined });
+    /**
+     * Try to add `cognitoUser` & `user` to the state.
+     */
+    async fetchUserData(): Promise<boolean> {
+        let cognitoUser: CognitoUser|undefined = undefined;
+        let user: User|undefined = undefined;
 
-            // Get user data from DataBase.
-            if (cognitoUser) {
+        // Get user from Cognito.
+        try {
+            cognitoUser = await Auth.currentAuthenticatedUser();
+            console.info('AppRoot.fetchUserData', cognitoUser);
+            this.setState({ cognitoUser: cognitoUser || undefined });
+        } catch (e) {
+            console.log('AppRoot.fetchUserData cognito error:', e);
+        }
+
+        // Get user data from DataBase.
+        if (cognitoUser) {
+            try {
                 const result: any = await API.graphql(graphqlOperation(getUser, {
                     id: cognitoUser.attributes.sub
                 }));
-                console.info('AppRoot.getUserData result', result);
-                const user = (result && result.data && result.data.getUser) || undefined;
-                this.setState({ user });
-                console.info('AppRoot.getUserData user', user);
+                user = (result && result.data && result.data.getUser);
+                console.info('AppRoot.fetchUserData user', user);
+            } catch (e) {
+                console.warn('AppRoot.fetchUserData user API error:', e);
             }
-        } catch (e) {
-            console.warn('AppRoot.getUserData', e);
-            this.clearUser();
         }
+
+        // Update state
+        if (cognitoUser && user) {
+            this.setState({ user, cognitoUser });
+            return true;
+        }
+        this.clearUser();
+        return false;
     }
 
 }
