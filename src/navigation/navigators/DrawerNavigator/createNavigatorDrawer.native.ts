@@ -5,7 +5,7 @@ import { CreateDrawerNavigatorConfig, DrawerRouteConfigMap } from "./createNavig
  * Create a Drawer with `react-navigation-drawer`.
  * @link https://github.com/react-navigation/drawer/blob/master/src/navigators/createDrawerNavigator.tsx
  */
-export function createCustomDrawerNavigator(
+export function createNavigatorDrawer(
     routes: DrawerRouteConfigMap,
     routeConfig: CreateDrawerNavigatorConfig = {}
 ) {

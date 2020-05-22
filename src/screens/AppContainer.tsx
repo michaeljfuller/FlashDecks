@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button} from "react-native";
+import {Button, Text} from "react-native";
 import AppNavigator from './AppContainer_navigator';
 import AppDrawer from './AppDrawer';
 import NavigationContainer from "../navigation/NavigationContainer";
@@ -22,7 +22,7 @@ export class AppContainer extends Component<AppContainerProps, AppContainerState
 
     render() {
         return <NavigationContainer>
-            <h1>AppContainer</h1>
+            <Text>AppContainer</Text>
             <Button title="Sidebar" onPress={this.toggleSidebar} />
             <AppDrawer navigation={this.props.navigation} />
         </NavigationContainer>;
