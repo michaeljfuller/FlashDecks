@@ -26,4 +26,4 @@ export function createNavigatorDrawer(
     return createNavigator(MaterialUiDrawer as any, drawerRouter, mergedConfig);
 }
 
-// export * from './createCustomDrawerNavigator.native'; // Uncomment to use Native implementation.
+// export * from './createNavigatorDrawer.native'; // Uncomment to use Native implementation.
