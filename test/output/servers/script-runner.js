@@ -12,7 +12,7 @@ const corsOptions = {};
 
 app.get('/run/:cmd', (req, res) => {
     console.log(`Running ${req.params.cmd}...`);
-    exec(`gulp --gulpfile ./gulp.testing.js ${req.params.cmd}`, (error, stdout, stderr) => {
+    exec(`gulp --gulpfile ./gulpfile.testing.js ${req.params.cmd}`, (error, stdout, stderr) => {
         console.info(stdout);
         if (stderr) console.error(stderr);
         if (error && error.code) {
