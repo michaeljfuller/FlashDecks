@@ -1,6 +1,7 @@
 import React from "react";
 import { Auth, Hub, API, graphqlOperation } from 'aws-amplify';
 import { getUser } from '../graphql/queries';
+import LoggedInUserStore from '../store/loggedInUser/LoggedInUserStore';
 
 export interface AppRootProps {}
 export interface AppRootState {
@@ -45,6 +46,7 @@ export abstract class AppRootBase extends React.Component<AppRootProps, AppRootS
 
     protected clearUser() {
         this.setState({ user: undefined, cognitoUser: undefined });
+        LoggedInUserStore.clear();
     }
 
     /**
@@ -79,6 +81,7 @@ export abstract class AppRootBase extends React.Component<AppRootProps, AppRootS
         // Update state
         if (cognitoUser && user) {
             this.setState({ user, cognitoUser });
+            LoggedInUserStore.update(user);
             return true;
         }
         this.clearUser();
