@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, {Component} from "react";
 import {Text, View} from "react-native";
 import {NavigationScreenProps} from "../../navigation/navigation_types";
 import {reduxConnector, TempScreenStoreProps} from "./TempScreen_redux";
@@ -11,7 +11,7 @@ export enum TestIds {
 
 export type TempScreenProps = NavigationScreenProps;
 
-export class TempScreen extends React.Component<TempScreenProps & TempScreenStoreProps>
+export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps>
 {
     render() {
         const {loggedInUser} = this.props;

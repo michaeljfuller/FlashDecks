@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {Component} from 'react';
 import {View, Text, Button} from "react-native";
 import {NavigationState, NavigationRoute, SceneView} from "react-navigation";
 import {NavigationDrawerState} from "react-navigation-drawer";
@@ -17,7 +17,7 @@ export interface DrawerNavigatorViewState {
  * The Drawer component that displays DrawerNavigatorItems for each route.
  * @link https://github.com/react-navigation/drawer/blob/master/src/views/DrawerView.tsx
  */
-class DrawerNavigator extends React.Component<DrawerNavigatorViewProps, DrawerNavigatorViewState> {
+class DrawerNavigator extends Component<DrawerNavigatorViewProps, DrawerNavigatorViewState> {
     state: DrawerNavigatorViewState = {
         isOpen: false
     };
