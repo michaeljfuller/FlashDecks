@@ -1,21 +1,22 @@
 import React from "react";
 import { Auth, Hub, API, graphqlOperation } from 'aws-amplify';
 import { getUser } from '../graphql/queries';
+import LoggedInUserStore from '../store/loggedInUser/LoggedInUserStore';
 
 export interface AppRootProps {}
 export interface AppRootState {
-    user?: User,
-    cognitoUser?: CognitoUser
+    user?: User;
+    cognitoUser?: CognitoUser;
 }
 
 interface AuthEvent {
-    channel: 'auth',
-    source: 'Auth',
+    channel: 'auth';
+    source: 'Auth';
     payload: {
-        event: AuthEventType,
-        message: string,
-        data: any|CognitoUser
-    }
+        event: AuthEventType;
+        message: string;
+        data: any|CognitoUser;
+    };
 }
 enum AuthEventType { SIGN_IN = 'signIn', SIGN_UP = 'signUp', SIGN_OUT = 'signOut' }
 
@@ -45,14 +46,7 @@ export abstract class AppRootBase extends React.Component<AppRootProps, AppRootS
 
     protected clearUser() {
         this.setState({ user: undefined, cognitoUser: undefined });
-    }
-
-    signOut = async () => {
-        try {
-            await Auth.signOut();
-        } catch(e) {
-            console.error("Error signing out user", e);
-        }
+        LoggedInUserStore.clear();
     }
 
     /**
@@ -87,6 +81,7 @@ export abstract class AppRootBase extends React.Component<AppRootProps, AppRootS
         // Update state
         if (cognitoUser && user) {
             this.setState({ user, cognitoUser });
+            LoggedInUserStore.update(user);
             return true;
         }
         this.clearUser();
