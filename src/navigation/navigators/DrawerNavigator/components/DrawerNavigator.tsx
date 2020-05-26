@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import {View, Text, Button} from "react-native";
+import {View, Text} from "react-native";
 import {NavigationState, NavigationRoute, SceneView} from "react-navigation";
 import {NavigationDrawerState} from "react-navigation-drawer";
 import {DrawerNavigatorConfig} from '../createNavigatorDrawer_types';
 import DrawerNavigatorItem from './DrawerNavigatorItem';
 import {NavigatorComponentProps} from '../../navigator_types';
+import Button from '../../../../components/button/Button';
 
 export interface DrawerNavigatorViewProps extends NavigatorComponentProps<NavigationDrawerState> {
     navigationConfig: DrawerNavigatorConfig;
@@ -85,7 +86,7 @@ class DrawerNavigator extends Component<DrawerNavigatorViewProps, DrawerNavigato
             height: '100vh',
             backgroundColor: '#DEF'
         }}>
-            <Button title="Toggle" onPress={this.handleTogglePress} />
+            <Button title="Toggle" onClick={this.handleTogglePress} />
             {this.renderButtons()}
         </div>;
     }
@@ -103,7 +104,7 @@ class DrawerNavigator extends Component<DrawerNavigatorViewProps, DrawerNavigato
             key={route.key}
             title={route.routeName}
             disabled={isActive}
-            onPress={() => this.navigateTo(route)}
+            onClick={() => this.navigateTo(route)}
         />;
     }
 
