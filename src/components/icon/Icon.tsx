@@ -20,6 +20,7 @@ export function Icon(props: IconProps) {
         style: {
             width: style.width,
             height: style.height,
+            color: style.color,
         }
     }
     switch (props.type) {

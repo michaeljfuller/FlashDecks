@@ -10,4 +10,5 @@ export interface IconProps {
 export interface IconStyles {
     width?: number;
     height?: number;
+    color?: string;
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Text} from 'react-native';
 import MaterialButton from '@material-ui/core/IconButton';
 import {withStyles} from '@material-ui/core/styles';
 
@@ -20,17 +21,17 @@ const StyledButton = withStyles({
 })(MaterialButton) as typeof MaterialButton;
 
 export function IconButton(props: IconButtonProps) {
-    const { onClick, disabled, icon, style } = iconButtonPropsWithDefaults(props);
+    const { onClick, disabled, icon, style, text } = iconButtonPropsWithDefaults(props);
     return <StyledButton
         onClick={onClick}
         disabled={disabled}
         style={{
             width: style.width,
-            height: style.height,
-            color: style.color,
+            height: style.height
         }}
     >
-        <Icon type={icon} />
+        <Icon type={icon} style={{ color: style.color }} />
+        {text && <Text style={{ color: style.color }}>{text}</Text>}
     </StyledButton>;
 }
 export default IconButton;
