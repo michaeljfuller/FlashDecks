@@ -3,7 +3,8 @@
   "scripts": {
     "start": "expo start --web",
     "start:prod": "expo start --web --no-dev --minify",
-    "expo:eject": "expo eject"
+    "expo:eject": "expo eject",
+    "postinstall": "react-native link"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.14",
@@ -15,6 +16,7 @@
     "aws-amplify-react": "^4.1.10",
     "aws-amplify-react-native": "^4.1.2",
     "expo": "~37.0.3",
+    "native-base": "^2.13.12",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.1.tar.gz",
