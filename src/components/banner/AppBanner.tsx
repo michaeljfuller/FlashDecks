@@ -9,8 +9,8 @@ import Slide from '@material-ui/core/Slide';
 import TextButton from "../button/TextButton";
 import {IconButton, IconType} from "../button/IconButton";
 
-import {AppBannerProps} from "./AppBanner.common";
 import AppBreadcrumbs from "./breadcrumbs/AppBreadcrumbs";
+import {AppBannerProps} from "./AppBanner.common";
 export {AppBannerProps} from "./AppBanner.common";
 
 export function AppBanner(props: AppBannerProps) {
