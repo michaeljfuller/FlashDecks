@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {Component} from 'react';
 import {View, Text} from "react-native";
 import {NavigationState, NavigationRoute, SceneView} from "react-navigation";
 import {NavigationDrawerState} from "react-navigation-drawer";
@@ -21,7 +21,7 @@ export interface MaterialUiDrawerState {
  * The Drawer component that displays an Item for each route.
  * @link https://github.com/react-navigation/drawer/blob/master/src/views/DrawerView.tsx
  */
-export class MaterialUiDrawer extends React.Component<MaterialUiDrawerProps, MaterialUiDrawerState> {
+export class MaterialUiDrawer extends Component<MaterialUiDrawerProps, MaterialUiDrawerState> {
     state: MaterialUiDrawerState = {
         isOpen: false
     };

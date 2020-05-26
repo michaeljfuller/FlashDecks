@@ -1,10 +1,11 @@
-import * as React from 'react';
-import {View, Text, Button} from "react-native";
+import React, {Component} from 'react';
+import {View, Text} from "react-native";
 import {NavigationState, NavigationRoute, SceneView} from "react-navigation";
 import {NavigationDrawerState} from "react-navigation-drawer";
 import {DrawerNavigatorConfig} from '../createNavigatorDrawer_types';
 import DrawerNavigatorItem from './DrawerNavigatorItem';
 import {NavigatorComponentProps} from '../../navigator_types';
+import Button from '../../../../components/button/Button';
 
 export interface DrawerNavigatorViewProps extends NavigatorComponentProps<NavigationDrawerState> {
     navigationConfig: DrawerNavigatorConfig;
@@ -17,7 +18,7 @@ export interface DrawerNavigatorViewState {
  * The Drawer component that displays DrawerNavigatorItems for each route.
  * @link https://github.com/react-navigation/drawer/blob/master/src/views/DrawerView.tsx
  */
-class DrawerNavigator extends React.Component<DrawerNavigatorViewProps, DrawerNavigatorViewState> {
+class DrawerNavigator extends Component<DrawerNavigatorViewProps, DrawerNavigatorViewState> {
     state: DrawerNavigatorViewState = {
         isOpen: false
     };
@@ -85,7 +86,7 @@ class DrawerNavigator extends React.Component<DrawerNavigatorViewProps, DrawerNa
             height: '100vh',
             backgroundColor: '#DEF'
         }}>
-            <Button title="Toggle" onPress={this.handleTogglePress} />
+            <Button title="Toggle" onClick={this.handleTogglePress} />
             {this.renderButtons()}
         </div>;
     }
@@ -103,7 +104,7 @@ class DrawerNavigator extends React.Component<DrawerNavigatorViewProps, DrawerNa
             key={route.key}
             title={route.routeName}
             disabled={isActive}
-            onPress={() => this.navigateTo(route)}
+            onClick={() => this.navigateTo(route)}
         />;
     }
 
