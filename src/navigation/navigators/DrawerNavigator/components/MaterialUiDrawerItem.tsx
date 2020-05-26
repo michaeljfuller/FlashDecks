@@ -2,6 +2,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button, {ButtonProps} from '@material-ui/core/Button';
 import withDefaultProps from '../../../../utils/hoc/withDefaultProps/withDefaultProps';
+import {DarkColor, LightColor, DisabledColor} from "../../../../styles/Color";
 
 // The `withStyles()` higher-order component is injecting a `classes`
 // prop that is used by the `Button` component.
@@ -9,16 +10,17 @@ const MaterialUiDrawerItem = withStyles({
     root: {
         borderRadius: 0,
         border: 0,
-        color: 'blue',
+        color: DarkColor.Blue,
         height: 48,
         padding: '0 30px',
         justifyContent: 'flex-start',
         '&$disabled': {
-            background: 'grey',
-            color: 'white',
+            background: DisabledColor.Black,
+            color: DisabledColor.White,
         },
         '&:hover': {
-            backgroundColor: '#cceeff'
+            backgroundColor: LightColor.Blue,
+            color: LightColor.White,
         }
     },
     disabled: {
@@ -26,6 +28,7 @@ const MaterialUiDrawerItem = withStyles({
     },
     label: {
         textTransform: 'capitalize',
+        fontWeight: "bold"
     },
 })(Button);
 export default withDefaultProps(MaterialUiDrawerItem, {

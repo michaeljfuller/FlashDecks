@@ -2,6 +2,7 @@ import React from 'react';
 import {TextStyle} from "react-native";
 import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} from 'native-base';
 
+import {Color, LightColor} from '../../styles/Color';
 import {ButtonProps, buttonPropsWithDefaults, ButtonVariation} from './Button.common';
 export * from './Button.common';
 
@@ -20,15 +21,15 @@ export default Button;
 
 //<editor-fold desc="Styles">
 const backgroundStyles: Record<string, RnViewStyleProp> = {
-    red: {   backgroundColor: '#F44' },
-    green: { backgroundColor: '#4b3' },
-    blue: {  backgroundColor: '#46F' },
+    red: {   backgroundColor: Color.Red },
+    green: { backgroundColor: Color.Green },
+    blue: {  backgroundColor: Color.Blue },
 };
 
 const textStyles: Record<string, TextStyle> = {
-    red: {   color: 'white' },
-    green: { color: 'white' },
-    blue: {  color: 'white' },
+    red: {   color: LightColor.White },
+    green: { color: LightColor.White },
+    blue: {  color: LightColor.White },
 };
 function getBackgroundStyle(props: ButtonProps) {
     const {variation, style, flat} = props;
@@ -39,8 +40,8 @@ function getBackgroundStyle(props: ButtonProps) {
         shadowOffset: {
             height: 3, width: 3
         },
-        shadowOpacity: 100,
-        shadowColor: 'blue'
+        // shadowOpacity: 100,
+        shadowColor: LightColor.Black
     }];
     switch (variation) {
         default:                       result.push(backgroundStyles.blue); break;

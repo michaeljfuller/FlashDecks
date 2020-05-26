@@ -6,6 +6,7 @@ import {DrawerNavigatorConfig} from '../createNavigatorDrawer_types';
 import DrawerNavigatorItem from './DrawerNavigatorItem';
 import {NavigatorComponentProps} from '../../navigator_types';
 import Button from '../../../../components/button/Button';
+import {DarkColor} from "../../../../styles/Color";
 
 export interface DrawerNavigatorViewProps extends NavigatorComponentProps<NavigationDrawerState> {
     navigationConfig: DrawerNavigatorConfig;
@@ -84,7 +85,7 @@ class DrawerNavigator extends Component<DrawerNavigatorViewProps, DrawerNavigato
             left: 0,
             width: this.props.navigationConfig.drawerWidth as number,
             height: '100vh',
-            backgroundColor: '#DEF'
+            backgroundColor: DarkColor.White
         }}>
             <Button title="Toggle" onClick={this.handleTogglePress} />
             {this.renderButtons()}
