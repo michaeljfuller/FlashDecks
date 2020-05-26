@@ -29,7 +29,8 @@
     "react-navigation-drawer": "^2.4.13",
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
-    "underscore": "^1.10.2"
+    "underscore": "^1.10.2",
+    "expo-font": "~8.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
