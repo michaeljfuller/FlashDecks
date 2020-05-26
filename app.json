@@ -2,27 +2,18 @@
   "expo": {
     "name": "FlashDecks",
     "slug": "FlashDecks",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "description": "FlashDecks",
+    "platforms": [ "ios", "android", "web" ],
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    }
+    "updates": { "fallbackToCacheTimeout": 0 },
+    "assetBundlePatterns": [ "**/*" ],
+    "ios": { "supportsTablet": true }
   }
 }
