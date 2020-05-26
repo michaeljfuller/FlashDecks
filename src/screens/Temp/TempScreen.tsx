@@ -1,8 +1,12 @@
-import React, {Component} from "react";
+import React, {Component, PropsWithChildren} from "react";
 import {Text, View} from "react-native";
 import {NavigationScreenProps} from "../../navigation/navigation_types";
 import {reduxConnector, TempScreenStoreProps} from "./TempScreen_redux";
 import {envName} from "../../env";
+
+import {Button, ButtonVariation} from "../../components/button/Button";
+import {TextButton} from "../../components/button/TextButton";
+import {IconButton, IconType} from "../../components/button/IconButton";
 
 export enum TestIds {
     User='TempScreen_User',
@@ -15,14 +19,61 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
 {
     render() {
         const {loggedInUser} = this.props;
+        const noop = () => {};
         return (
             <View>
-                <Text>Temp</Text>
+                <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{this.constructor.name}</Text>
                 <Text testID={TestIds.User}>User: {loggedInUser && loggedInUser.displayName || '?'}</Text>
                 <Text testID={TestIds.Env}>Environment: &quot;{envName}&quot;</Text>
+
+                <Row>
+                    <Button title="Button" onClick={noop} />
+                    <TextButton title="TextButton" onClick={noop} />
+                    <IconButton icon={IconType.QuestionMark} onClick={noop} />
+                </Row>
+                <Row borderColor='red' backgroundColor='#fee'>
+                    <Button title="Button" onClick={noop} variation={ButtonVariation.Red} flat={true} />
+                    <TextButton title="TextButton" onClick={noop} style={{ color: 'red' }} />
+                    <IconButton icon={IconType.QuestionMark} onClick={noop} style={{ width: 50, color: 'red' }} />
+                </Row>
+                <Row borderColor='green' backgroundColor='#efe'>
+                    <Button title="Button" onClick={noop} variation={ButtonVariation.Green} />
+                    <TextButton title="TextButton" onClick={noop} style={{ color: 'green' }} />
+                    <IconButton icon={IconType.QuestionMark} onClick={noop} style={{ width: 100, color: 'green' }} />
+                </Row>
+                <Row borderColor='grey' backgroundColor='#eee'>
+                    <Button title="Disabled Button" />
+                    <TextButton title="Disabled TextButton" onClick={noop} disabled={true} style={{ color: 'grey' }} />
+                    <IconButton icon={IconType.Menu} style={{ color: 'grey' }} />
+                </Row>
             </View>
         );
     }
+}
+
+function Row(props: PropsWithChildren<{
+    borderColor?: string;
+    backgroundColor?: string;
+    marginHorizontal?: number;
+    marginVertical?: number;
+    borderWidth?: number;
+}>) {
+    const {
+        borderColor = 'black',
+        marginHorizontal = 100,
+        marginVertical = 2,
+        borderWidth = 1,
+        backgroundColor = 'white',
+    } = props;
+    return <View style={{
+        marginHorizontal,
+        marginVertical,
+        borderColor,
+        borderWidth,
+        backgroundColor,
+        display: 'flex',
+        flexDirection: 'row'
+    }}>{props.children}</View>
 }
 
 export default reduxConnector(TempScreen);

@@ -7,7 +7,7 @@ export default class DashboardScreen extends Component<NavigationScreenProps>
     render() {
         return (
             <View>
-                <Text>Dashboard</Text>
+                <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{this.constructor.name}</Text>
             </View>
         );
     }
