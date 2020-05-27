@@ -6,6 +6,7 @@ import AppDrawer from './AppDrawer';
 import NavigationContainer from "../navigation/NavigationContainer";
 import {NavigationScreenProps} from "../navigation/navigation_types";
 import AppBanner from "../components/banner/AppBanner";
+import InfoBanner from "../components/banner/InfoBanner";
 
 export interface AppContainerProps extends NavigationScreenProps {}
 export interface AppContainerState {}
@@ -31,10 +32,7 @@ export class AppContainer extends Component<AppContainerProps, AppContainerState
                 onSignOutClick={this.handleSignOut}
                 onToggleSidebar={this.handleToggleSidebar}
             />
-            <View style={{ display: 'flex', flexDirection: 'row',  }}>
-                <View style={{flex: 1, paddingRight: 1 }}><Button title="Sidebar" onPress={this.handleToggleSidebar} /></View>
-                <View style={{flex: 1, paddingLeft: 1 }}><Button title="Sign Out" onPress={this.handleSignOut} /></View>
-            </View>
+            <InfoBanner />
             <AppDrawer navigation={this.props.navigation} />
         </NavigationContainer>;
     }
