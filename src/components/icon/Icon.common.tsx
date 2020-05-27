@@ -1,7 +1,9 @@
 export enum IconType {
     QuestionMark,
     Menu,
-    Home
+    Home,
+    Exit,
+    Back
 }
 export interface IconProps {
     type: IconType;
@@ -10,4 +12,5 @@ export interface IconProps {
 export interface IconStyles {
     width?: number;
     height?: number;
+    color?: string;
 }

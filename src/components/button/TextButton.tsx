@@ -3,6 +3,7 @@ import MaterialButton from '@material-ui/core/Button';
 import {withStyles} from '@material-ui/core/styles';
 
 import {TextButtonProps, textButtonPropsWithDefaults} from './TextButton.common';
+import {Color} from "../../styles/Color";
 export * from './TextButton.common';
 
 const StyledButton = withStyles({
@@ -25,7 +26,7 @@ export function TextButton(props: TextButtonProps) {
         onClick={onClick}
         disabled={disabled}
         style={{
-            color: style.color || '#000'
+            color: style.color || Color.Grey
         }}
     >{title}</StyledButton>;
 }

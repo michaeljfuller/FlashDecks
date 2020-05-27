@@ -3,6 +3,7 @@ export {IconType} from '../icon/Icon';
 
 export interface IconButtonProps {
     icon?: IconType;
+    text?: string;
     onClick?: () => void;
     disabled?: boolean;
     style?: IconButtonStyle;
@@ -19,10 +20,11 @@ export function iconButtonPropsWithDefaults(props: IconButtonProps) {
         onClick = noop,
         disabled = false,
         icon = IconType.QuestionMark,
+        text = '',
         style = {}
     } = props;
     return {
-        onClick, icon, style,
+        onClick, icon, style, text,
         disabled: disabled || !props.onClick,
     };
 }

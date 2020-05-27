@@ -3,20 +3,23 @@ import MaterialButton from '@material-ui/core/Button';
 import {withStyles} from '@material-ui/core/styles';
 
 import {ButtonProps, buttonPropsWithDefaults, ButtonVariation} from './Button.common';
+import {Color, LightColor, HoverColor, DisabledColor} from "../../styles/Color";
 export * from './Button.common';
 
 //<editor-fold desc="Variations">
 const RedButton = withStyles({
     root: {
         justifyContent: 'flex-start',
-        color: '#FFF',
-        backgroundColor: '#F44',
+        color: LightColor.White,
+        backgroundColor: Color.Red,
         '&:hover': {
-            backgroundColor: '#D33',
+            color: Color.White,
+            backgroundColor: HoverColor.Red,
         },
         '&:disabled': {
-            color: '#FFF',
-            opacity: 0.5
+            color: DisabledColor.White,
+            backgroundColor: DisabledColor.Red,
+            // opacity: 0.8
         }
     },
     label: {
@@ -27,14 +30,16 @@ const RedButton = withStyles({
 const GreenButton = withStyles({
     root: {
         justifyContent: 'flex-start',
-        color: '#FFF',
-        backgroundColor: '#4b3',
+        color: LightColor.White,
+        backgroundColor: Color.Green,
         '&:hover': {
-            backgroundColor: '#392',
+            color: Color.White,
+            backgroundColor: HoverColor.Green,
         },
         '&:disabled': {
-            color: '#FFF',
-            opacity: 0.5
+            color: DisabledColor.White,
+            backgroundColor: DisabledColor.Green,
+            // opacity: 0.8
         }
     },
     label: {
@@ -45,14 +50,16 @@ const GreenButton = withStyles({
 const BlueButton = withStyles({
     root: {
         justifyContent: 'flex-start',
-        color: '#FFF',
-        backgroundColor: '#46F',
+        color: LightColor.White,
+        backgroundColor: Color.Blue,
         '&:hover': {
-            backgroundColor: '#35D',
+            color: Color.White,
+            backgroundColor: HoverColor.Blue,
         },
         '&:disabled': {
-            color: '#FFF',
-            opacity: 0.5
+            color: DisabledColor.White,
+            backgroundColor: DisabledColor.Blue,
+            // opacity: 0.8
         }
     },
     label: {

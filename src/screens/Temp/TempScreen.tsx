@@ -1,5 +1,6 @@
 import React, {Component, PropsWithChildren} from "react";
 import {Text, View} from "react-native";
+import ScreenContainer from "../ScreenContainer";
 import {NavigationScreenProps} from "../../navigation/navigation_types";
 import {reduxConnector, TempScreenStoreProps} from "./TempScreen_redux";
 import {envName} from "../../env";
@@ -7,6 +8,7 @@ import {envName} from "../../env";
 import {Button, ButtonVariation} from "../../components/button/Button";
 import {TextButton} from "../../components/button/TextButton";
 import {IconButton, IconType} from "../../components/button/IconButton";
+import {repeat} from "../../utils/array";
 
 export enum TestIds {
     User='TempScreen_User',
@@ -21,7 +23,7 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
         const {loggedInUser} = this.props;
         const noop = () => {};
         return (
-            <View>
+            <ScreenContainer>
                 <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{this.constructor.name}</Text>
                 <Text testID={TestIds.User}>User: {loggedInUser && loggedInUser.displayName || '?'}</Text>
                 <Text testID={TestIds.Env}>Environment: &quot;{envName}&quot;</Text>
@@ -34,19 +36,23 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                 <Row borderColor='red' backgroundColor='#fee'>
                     <Button title="Button" onClick={noop} variation={ButtonVariation.Red} flat={true} />
                     <TextButton title="TextButton" onClick={noop} style={{ color: 'red' }} />
-                    <IconButton icon={IconType.QuestionMark} onClick={noop} style={{ width: 50, color: 'red' }} />
+                    <IconButton icon={IconType.Home} onClick={noop} text="Home" style={{ color: 'red' }} />
                 </Row>
                 <Row borderColor='green' backgroundColor='#efe'>
                     <Button title="Button" onClick={noop} variation={ButtonVariation.Green} />
                     <TextButton title="TextButton" onClick={noop} style={{ color: 'green' }} />
-                    <IconButton icon={IconType.QuestionMark} onClick={noop} style={{ width: 100, color: 'green' }} />
+                    <IconButton icon={IconType.Menu} onClick={noop}  text="Menu" style={{ color: 'green' }} />
                 </Row>
                 <Row borderColor='grey' backgroundColor='#eee'>
                     <Button title="Disabled Button" />
                     <TextButton title="Disabled TextButton" onClick={noop} disabled={true} style={{ color: 'grey' }} />
-                    <IconButton icon={IconType.Menu} style={{ color: 'grey' }} />
+                    <IconButton icon={IconType.QuestionMark} style={{ color: 'grey' }} />
                 </Row>
-            </View>
+
+                {repeat(30, index => {
+                    return <Text key={index} style={{ fontSize: 50, textAlign: 'center', color: '#79F' }}>{index+1}</Text>
+                })}
+            </ScreenContainer>
         );
     }
 }
@@ -60,7 +66,7 @@ function Row(props: PropsWithChildren<{
 }>) {
     const {
         borderColor = 'black',
-        marginHorizontal = 100,
+        marginHorizontal = 20,
         marginVertical = 2,
         borderWidth = 1,
         backgroundColor = 'white',

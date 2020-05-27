@@ -6,18 +6,21 @@ import Toolbar from '@material-ui/core/Toolbar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Slide from '@material-ui/core/Slide';
-import TextButton from "../button/TextButton";
 import {IconButton, IconType} from "../button/IconButton";
 
 import AppBreadcrumbs from "./breadcrumbs/AppBreadcrumbs";
 import {AppBannerProps} from "./AppBanner.common";
+import {LightColor} from "../../styles/Color";
+
 export {AppBannerProps} from "./AppBanner.common";
 
 export function AppBanner(props: AppBannerProps) {
     const {loggedInUser, onToggleSidebar, onSignOutClick} = props;
     const {displayName = 'guest'} = loggedInUser || {};
 
-    const signOutButton = loggedInUser && <TextButton title="Sign Out" onClick={onSignOutClick} />;
+    const signOutButton = loggedInUser && <IconButton text="Sign Out" icon={IconType.Exit} onClick={onSignOutClick} style={{
+        color: LightColor.White
+    }} />;
     // TODO signInButton signUpButton when not auth blocking whole AppRoot
 
     const bannerHeight = 36;
@@ -33,7 +36,7 @@ export function AppBanner(props: AppBannerProps) {
                     <View style={{ flexGrow: 1 }}>
                         <AppBreadcrumbs navigation={props.navigation} />
                     </View>
-                    <Text style={styles.bannerText}>User: ”{displayName}”</Text>
+                    <Text style={[styles.bannerText, { marginRight: 15 }]}>User: ”{displayName}”</Text>
                     {signOutButton}
 
                 </Toolbar>
