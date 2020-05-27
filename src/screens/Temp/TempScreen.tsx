@@ -1,5 +1,6 @@
 import React, {Component, PropsWithChildren} from "react";
 import {Text, View} from "react-native";
+import ScreenContainer from "../ScreenContainer";
 import {NavigationScreenProps} from "../../navigation/navigation_types";
 import {reduxConnector, TempScreenStoreProps} from "./TempScreen_redux";
 import {envName} from "../../env";
@@ -7,6 +8,7 @@ import {envName} from "../../env";
 import {Button, ButtonVariation} from "../../components/button/Button";
 import {TextButton} from "../../components/button/TextButton";
 import {IconButton, IconType} from "../../components/button/IconButton";
+import {repeat} from "../../utils/array";
 
 export enum TestIds {
     User='TempScreen_User',
@@ -21,7 +23,7 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
         const {loggedInUser} = this.props;
         const noop = () => {};
         return (
-            <View>
+            <ScreenContainer>
                 <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{this.constructor.name}</Text>
                 <Text testID={TestIds.User}>User: {loggedInUser && loggedInUser.displayName || '?'}</Text>
                 <Text testID={TestIds.Env}>Environment: &quot;{envName}&quot;</Text>
@@ -46,7 +48,11 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                     <TextButton title="Disabled TextButton" onClick={noop} disabled={true} style={{ color: 'grey' }} />
                     <IconButton icon={IconType.QuestionMark} style={{ color: 'grey' }} />
                 </Row>
-            </View>
+
+                {repeat(30, index => {
+                    return <Text key={index} style={{ fontSize: 50, textAlign: 'center', color: '#79F' }}>{index+1}</Text>
+                })}
+            </ScreenContainer>
         );
     }
 }
