@@ -1,7 +1,9 @@
 export enum IconType {
     QuestionMark,
     Menu,
-    Home
+    Home,
+    Exit,
+    Back
 }
 export interface IconProps {
     type: IconType;

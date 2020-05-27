@@ -13,8 +13,9 @@ export function IconButton(props: IconButtonProps) {
         onPress={onClick}
         disabled={disabled}
         style={{
-            width: style.width || (textElement ? undefined : 50),
+            width: style.width,
             height: style.height,
+            paddingHorizontal: 5,
         }}
         transparent
         iconLeft

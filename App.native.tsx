@@ -21,7 +21,7 @@ export default class App extends React.Component<any, any> {
     }
 
     componentDidMount() {
-        StatusBar.setBackgroundColor('#adf');
+        // StatusBar.setBackgroundColor('#adf');
         this.loadFonts().catch((err: Error) => console.error('Failed to load fonts', err));
     }
 
@@ -37,7 +37,7 @@ export default class App extends React.Component<any, any> {
     render() {
         return <View style={{
             flex: 1,
-            marginTop: StatusBar.currentHeight !== undefined ? StatusBar.currentHeight : 20
+            // marginTop: StatusBar.currentHeight !== undefined ? StatusBar.currentHeight : 20
         }}>
             {this.isReady ? <AppRoot /> : this.renderLoading()}
         </View>;

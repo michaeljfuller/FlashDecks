@@ -1,29 +1,34 @@
 import React from "react";
-import {Text, View} from "react-native";
-
-import TextButton from "../button/TextButton";
+import {Body, Header, Title, Left, Right} from 'native-base';
 import {IconButton, IconType} from "../button/IconButton";
-
-import AppBreadcrumbs from "./breadcrumbs/AppBreadcrumbs";
 import {AppBannerProps} from "./AppBanner.common";
+import AppBreadcrumbs from "./breadcrumbs/AppBreadcrumbs";
+import {Color, DarkColor} from "../../styles/Color";
+
 export {AppBannerProps} from "./AppBanner.common";
 
 export function AppBanner(props: AppBannerProps) {
     const {loggedInUser, onToggleSidebar, onSignOutClick} = props;
     const {displayName = 'guest'} = loggedInUser || {};
+    const onClickBack = () => props.navigation.goBack();
+    const color = Color.White;
+    const backgroundColor = DarkColor.Blue;
 
-    const signOutButton = loggedInUser && <TextButton title="Sign Out" onClick={onSignOutClick} />;
-    // TODO signInButton signUpButton when not auth blocking whole AppRoot
-
-    return <View>
-
-        <IconButton icon={IconType.Menu} onClick={onToggleSidebar} />
-        <View style={{ flexGrow: 1 }}>
-            <AppBreadcrumbs navigation={props.navigation} />
-        </View>
-        <Text>User: ”{displayName}”</Text>
-        {signOutButton}
-
-    </View>;
+    return <Header androidStatusBarColor={backgroundColor} style={{ backgroundColor, paddingHorizontal: 15 }}>
+        <Left style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            maxWidth: 70,
+            paddingRight: 15
+        }}>
+            <IconButton icon={IconType.Menu} onClick={onToggleSidebar} style={{ color }} />
+            <IconButton icon={IconType.Back} onClick={onClickBack} style={{ color }} />
+        </Left>
+        <AppBreadcrumbs navigation={props.navigation} />
+        <Right>
+            <Body><Title style={{ color, textAlign: 'right' }}>{displayName}</Title></Body>
+            {loggedInUser && <IconButton icon={IconType.Exit} onClick={onSignOutClick} style={{ color }} />}
+        </Right>
+    </Header>;
 }
 export default AppBanner;
