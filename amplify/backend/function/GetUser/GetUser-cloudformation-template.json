@@ -108,7 +108,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "amplify-flashdecks-initial-152936-deployment",
-					"S3Key": "amplify-builds/GetUser-755a31456c7a38466630-build.zip"
+					"S3Key": "amplify-builds/GetUser-653233653778434a5230-build.zip"
 				}
 			}
 		},

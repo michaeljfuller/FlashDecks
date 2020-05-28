@@ -18,6 +18,7 @@ const Region = getEnvVar('REGION');
 const TableName = getEnvVar('API_FLASHDECKS_USERTABLE_NAME');
 const UserPoolId = getEnvVar('AUTH_FLASHDECKS659617F5_USERPOOLID');
 
+const Logging = require('./logging');
 const CognitoService = require('./CognitoService');
 const DynamoService = require('./DynamoService');
 const dynamo = new DynamoService(Region, TableName);
@@ -40,9 +41,9 @@ const cognito = new CognitoService(UserPoolId);
  * @returns {DynamoUser}
  */
 exports.handler = async event => {
-  console.log('GetUser event', event);
+  Logging.log('GetUser event', event);
   const userId = getUserId(event);
-  console.log('GetUser ID', {userId, Region, TableName});
+  Logging.log('GetUser ID', {userId, Region, TableName});
   if (!userId) throw new Error('No ID found on GetUser');
 
   let result = null;
@@ -50,19 +51,25 @@ exports.handler = async event => {
     result = await dynamo.getUserById(userId); // Get existing user data
     if (isEmpty(result)) result = await addCognitoUserToDynamo(userId);
   } catch (e) {
-    console.log('GetUser error', userId, e);
+    Logging.error('GetUser error', userId, e);
     throw e;
   }
-  console.log('GetUser result', userId, result);
+  Logging.log('GetUser result', userId, result);
   return result;
 };
 
+/**
+ * Get the user's ID, from whichever event type.
+ * @param event
+ * @return {*}
+ */
 function getUserId(event) {
   const idArgument = getProperty(event, 'arguments', 'id'); // Get ID passed as a Query argument.
   if (idArgument) return idArgument; // If has an ID from arguments, use that.
   if (event.fieldName) return getUserIdFromField(event); // If a resolver for a field, get from ID already present on another field.
   return getProperty(event, 'identity', 'sub'); // Otherwise, use logged in user.
 }
+
 /**
  * Get userId from sister field.
  * If this field is "ownerData", sister might be "owner".
@@ -78,17 +85,22 @@ function getUserIdFromField(event) {
   return getValueWithSuffix(source, sourceFieldName, ['Id', 'ID', 'Sub', '']); // If sourceFieldName is "owner", try getting the ID with a few prefixes first (i.e. "ownerId").
 }
 
+/**
+ * Add the user to the Table, from Cognito.
+ * @param userId
+ * @return {Promise<null|{displayName: string, id: string}>}
+ */
 async function addCognitoUserToDynamo(userId) {
-  console.log('GetUser Get from Cognito', userId);
+  Logging.log('GetUser Get from Cognito', userId);
   const cognitoUser = await cognito.getUserById(userId); // Get user data from cognito
   if (!isEmpty(cognitoUser)) {
-    console.log('GetUser Add to Dynamo', userId, cognitoUser.userName);
+    Logging.log('GetUser Add to Dynamo', userId, cognitoUser.userName);
     return dynamo.addUser(
       cognitoUser.id,
       cognitoUser.userName,
       cognitoUser.createdAt,
     ); // Add user data to database
   }
-  console.log('GetUser User does not exist', userId);
+  Logging.warning('GetUser User does not exist', userId);
   return null;
 }
