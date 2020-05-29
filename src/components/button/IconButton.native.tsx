@@ -6,7 +6,7 @@ import {IconButtonProps, iconButtonPropsWithDefaults} from './IconButton.common'
 export * from './IconButton.common';
 
 export function IconButton(props: IconButtonProps) {
-    const { onClick, text, disabled, icon, style } = iconButtonPropsWithDefaults(props);
+    const { onClick, text, disabled, icon, style, transparent } = iconButtonPropsWithDefaults(props);
     const textElement = text ? <NativeBaseText style={{ color: style.color }}>{text}</NativeBaseText> : null;
 
     return <NativeBaseButton
@@ -17,7 +17,7 @@ export function IconButton(props: IconButtonProps) {
             height: style.height,
             paddingHorizontal: 5,
         }}
-        transparent
+        transparent={transparent}
         iconLeft
     >
         <Icon type={icon} style={{ color: style.color }} />

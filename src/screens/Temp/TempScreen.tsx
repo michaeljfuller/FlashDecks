@@ -36,17 +36,17 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                 <Row borderColor='red' backgroundColor='#fee'>
                     <Button title="Button" onClick={noop} variation={ButtonVariation.Red} flat={true} />
                     <TextButton title="TextButton" onClick={noop} style={{ color: 'red' }} />
-                    <IconButton icon={IconType.Home} onClick={noop} text="Home" style={{ color: 'red' }} />
+                    <IconButton transparent icon={IconType.Home} onClick={noop} text="Home" style={{ color: 'red' }} />
                 </Row>
                 <Row borderColor='green' backgroundColor='#efe'>
                     <Button title="Button" onClick={noop} variation={ButtonVariation.Green} />
                     <TextButton title="TextButton" onClick={noop} style={{ color: 'green' }} />
-                    <IconButton icon={IconType.Menu} onClick={noop}  text="Menu" style={{ color: 'green' }} />
+                    <IconButton transparent icon={IconType.Menu} onClick={noop}  text="Menu" style={{ color: 'green' }} />
                 </Row>
                 <Row borderColor='grey' backgroundColor='#eee'>
                     <Button title="Disabled Button" />
                     <TextButton title="Disabled TextButton" onClick={noop} disabled={true} style={{ color: 'grey' }} />
-                    <IconButton icon={IconType.QuestionMark} style={{ color: 'grey' }} />
+                    <IconButton transparent icon={IconType.QuestionMark} style={{ color: 'grey' }} />
                 </Row>
 
                 {repeat(30, index => {

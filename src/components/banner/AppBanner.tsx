@@ -18,7 +18,7 @@ export function AppBanner(props: AppBannerProps) {
     const {loggedInUser, onToggleSidebar, onSignOutClick} = props;
     const {displayName = 'guest'} = loggedInUser || {};
 
-    const signOutButton = loggedInUser && <IconButton text="Sign Out" icon={IconType.Exit} onClick={onSignOutClick} style={{
+    const signOutButton = loggedInUser && <IconButton transparent text="Sign Out" icon={IconType.Exit} onClick={onSignOutClick} style={{
         color: LightColor.White
     }} />;
     // TODO signInButton signUpButton when not auth blocking whole AppRoot
@@ -32,7 +32,7 @@ export function AppBanner(props: AppBannerProps) {
             <AppBar style={bannerSizeStyle}>
                 <Toolbar style={bannerSizeStyle}>
 
-                    <IconButton icon={IconType.Menu} onClick={onToggleSidebar} />
+                    <IconButton transparent icon={IconType.Menu} onClick={onToggleSidebar} />
                     <View style={{ flexGrow: 1 }}>
                         <AppBreadcrumbs navigation={props.navigation} />
                     </View>

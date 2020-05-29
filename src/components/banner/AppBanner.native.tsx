@@ -21,13 +21,13 @@ export function AppBanner(props: AppBannerProps) {
             maxWidth: 70,
             paddingRight: 15
         }}>
-            <IconButton icon={IconType.Menu} onClick={onToggleSidebar} style={{ color }} />
-            <IconButton icon={IconType.Back} onClick={onClickBack} style={{ color }} />
+            <IconButton transparent icon={IconType.Menu} onClick={onToggleSidebar} style={{ color }} />
+            <IconButton transparent icon={IconType.Back} onClick={onClickBack} style={{ color }} />
         </Left>
         <AppBreadcrumbs navigation={props.navigation} />
         <Right>
             <Body><Title style={{ color, textAlign: 'right' }}>{displayName}</Title></Body>
-            {loggedInUser && <IconButton icon={IconType.Exit} onClick={onSignOutClick} style={{ color }} />}
+            {loggedInUser && <IconButton transparent icon={IconType.Exit} onClick={onSignOutClick} style={{ color }} />}
         </Right>
     </Header>;
 }
