@@ -1,5 +1,6 @@
 import {IconType} from '../icon/Icon';
 import {ColorKey} from "../../styles/Color";
+import {DefaultTheme} from "../../styles/UIColorTheme";
 export {IconType} from '../icon/Icon';
 
 export interface IconButtonProps {
@@ -17,14 +18,14 @@ export interface IconButtonStyle {
 }
 
 const noop = () => {};
-export function iconButtonPropsWithDefaults(props: IconButtonProps) {
+export function iconButtonPropsWithDefaults(props: IconButtonProps): Required<IconButtonProps> {
     const {
         onClick = noop,
         disabled = false,
         transparent = false,
         icon = IconType.QuestionMark,
         text = '',
-        color = props.transparent ? 'Blue' : 'White',
+        color = DefaultTheme.primary.key,
         style = {}
     } = props;
     return {

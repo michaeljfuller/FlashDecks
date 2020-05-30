@@ -2,7 +2,7 @@ import React from 'react';
 import {TextStyle} from "react-native";
 import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} from 'native-base';
 
-import {Color} from '../../styles/Color';
+import {Color, getUIColorTheme} from '../../styles/UIColorTheme';
 import {ButtonProps, buttonPropsWithDefaults} from './Button.common';
 export * from './Button.common';
 
@@ -20,48 +20,26 @@ export function Button(props: ButtonProps) {
 export default Button;
 
 //<editor-fold desc="Styles">
-const backgroundStyles: Record<string, RnViewStyleProp> = {
-    red: {   backgroundColor: Color.Red },
-    green: { backgroundColor: Color.Green },
-    blue: {  backgroundColor: Color.Blue },
-};
 
-const textStyles: Record<string, TextStyle> = {
-    red: {   color: Color.White },
-    green: { color: Color.White },
-    blue: {  color: Color.White },
-};
-function getBackgroundStyle(props: ButtonProps) {
+function getBackgroundStyle(props: ButtonProps): RnViewStyleProp {
     const {color, style, flat} = props;
-    const result: Array<RnViewStyleProp> = [{
+    const theme = getUIColorTheme(color);
+    return {
         width: style?.width,
         height: style?.height,
+        backgroundColor: theme.primary.base,
+
         // TODO handle shadow/flat
-        shadowOffset: {
-            height: 3, width: 3
-        },
+        shadowOffset: { height: 3, width: 3 },
+        shadowColor: Color.Black,
         // shadowOpacity: 100,
-        shadowColor: Color.Black
-    }];
-    switch (color) {
-        default:                       result.push(backgroundStyles.blue); break;
-        // case ButtonVariation.Standard: result.push(backgroundStyles.blue); break;
-        // case ButtonVariation.Red:      result.push(backgroundStyles.red); break;
-        // case ButtonVariation.Green:    result.push(backgroundStyles.green); break;
-        // case ButtonVariation.Blue:     result.push(backgroundStyles.blue); break;
-    }
-    return result;
+    };
 }
-function getTextStyle(props: ButtonProps) {
+function getTextStyle(props: ButtonProps): TextStyle {
     const {color} = props;
-    const result: RnViewStyleProp[] = [];
-    switch (color) {
-        default:                       result.push(textStyles.blue); break;
-        // case ButtonVariation.Standard: result.push(textStyles.blue); break;
-        // case ButtonVariation.Red:      result.push(textStyles.red); break;
-        // case ButtonVariation.Green:    result.push(textStyles.green); break;
-        // case ButtonVariation.Blue:     result.push(textStyles.blue); break;
-    }
-    return result;
+    const theme = getUIColorTheme(color);
+    return {
+        color: theme.secondary.base
+    };
 }
 //</editor-fold>

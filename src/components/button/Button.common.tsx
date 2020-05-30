@@ -1,4 +1,5 @@
 import {ColorKey} from "../../styles/Color";
+import {DefaultTheme} from "../../styles/UIColorTheme";
 
 export interface ButtonProps {
     onClick?: () => void;
@@ -14,14 +15,14 @@ export interface ButtonStyle {
 }
 
 const noop = () => {};
-export function buttonPropsWithDefaults(props: ButtonProps) {
+export function buttonPropsWithDefaults(props: ButtonProps): Required<ButtonProps> {
     const {
         onClick = noop,
         disabled = false,
         title = '',
         flat = false,
         style = {},
-        color = 'Blue',
+        color = DefaultTheme.primary.key,
     } = props;
     return {
         onClick, title, flat, style, color,

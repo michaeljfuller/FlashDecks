@@ -1,4 +1,5 @@
 import {ColorKey} from "../../styles/Color";
+import {DefaultTheme} from "../../styles/UIColorTheme";
 
 export interface TextButtonProps {
     onClick?: () => void;
@@ -8,12 +9,12 @@ export interface TextButtonProps {
 }
 
 const noop = () => {};
-export function textButtonPropsWithDefaults(props: TextButtonProps) {
+export function textButtonPropsWithDefaults(props: TextButtonProps): Required<TextButtonProps> {
     const {
         onClick = noop,
         disabled = false,
         title = '',
-        color = 'Blue'
+        color = DefaultTheme.primary.key
     } = props;
     return {
         onClick, title, color,

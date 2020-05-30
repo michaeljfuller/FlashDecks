@@ -8,20 +8,20 @@ import withDefaultProps from "../../../utils/hoc/withDefaultProps/withDefaultPro
 
 /** Get a Button component for a given variation. */
 export function getStyledButtonBase(color: ColorKey): ExtendButtonBase<any> {
-    return styleMaterialContainedButton(color || "Blue");
+    return styleMaterialContainedButton(color);
 }
 
 /** Get an Icon Button component for a given variation. */
 export function getStyledIconButtonBase(color: ColorKey, transparent = false, hasText = false): ExtendButtonBase<any> {
     if (transparent) {
-        return hasText ? getStyledTextButtonBase(color || "Blue") : StandardIconButton;
+        return hasText ? getStyledTextButtonBase(color ) : StandardIconButton;
     }
-    return getStyledButtonBase(color || "Blue");
+    return getStyledButtonBase(color);
 }
 
 /** Get a Text Button component for a given variation. */
 export function getStyledTextButtonBase(color: ColorKey): ExtendButtonBase<any> {
-    return styleMaterialTextButton(color || "Blue");
+    return styleMaterialTextButton(color);
 }
 
 //<editor-fold desc="MaterialIconButton Variations">
