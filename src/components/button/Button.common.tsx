@@ -1,20 +1,16 @@
+import {ColorKey} from "../../styles/Color";
+
 export interface ButtonProps {
     onClick?: () => void;
     disabled?: boolean;
     title?: string;
     flat?: boolean;
     style?: ButtonStyle;
-    variation?: ButtonVariation;
+    color?: ColorKey;
 }
 export interface ButtonStyle {
     width?: number;
     height?: number;
-}
-export enum ButtonVariation {
-    Standard,
-    Red,
-    Green,
-    Blue
 }
 
 const noop = () => {};
@@ -25,10 +21,10 @@ export function buttonPropsWithDefaults(props: ButtonProps) {
         title = '',
         flat = false,
         style = {},
-        variation = ButtonVariation.Standard
+        color = 'Blue',
     } = props;
     return {
-        onClick, title, flat, style, variation,
+        onClick, title, flat, style, color,
         disabled: disabled || !props.onClick,
     };
 }

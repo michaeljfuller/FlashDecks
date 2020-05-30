@@ -5,7 +5,7 @@ import {NavigationScreenProps} from "../../navigation/navigation_types";
 import {reduxConnector, TempScreenStoreProps} from "./TempScreen_redux";
 import {envName} from "../../env";
 
-import {Button, ButtonVariation} from "../../components/button/Button";
+import {Button} from "../../components/button/Button";
 import {TextButton} from "../../components/button/TextButton";
 import {IconButton, IconType} from "../../components/button/IconButton";
 import {repeat} from "../../utils/array";
@@ -30,23 +30,27 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
 
                 <Row>
                     <Button title="Button" onClick={noop} />
-                    <TextButton title="TextButton" onClick={noop} />
-                    <IconButton icon={IconType.QuestionMark} onClick={noop} />
+                    <TextButton title="TextButton" onClick={noop} color="Blue" />
+                    <IconButton icon={IconType.QuestionMark} onClick={noop} color="Blue" text="Blue" />
+                    <IconButton icon={IconType.QuestionMark} onClick={noop} color="Blue" transparent />
                 </Row>
                 <Row borderColor='red' backgroundColor='#fee'>
-                    <Button title="Button" onClick={noop} variation={ButtonVariation.Red} flat={true} />
-                    <TextButton title="TextButton" onClick={noop} style={{ color: 'red' }} />
-                    <IconButton transparent icon={IconType.Home} onClick={noop} text="Home" style={{ color: 'red' }} />
+                    <Button title="Button" onClick={noop} color="Red" flat={true} />
+                    <TextButton title="TextButton" onClick={noop} color="Red" />
+                    <IconButton icon={IconType.Home} onClick={noop} text="Red" color="Red" />
+                    <IconButton icon={IconType.Home} onClick={noop} text="Home" color="Red" transparent />
                 </Row>
                 <Row borderColor='green' backgroundColor='#efe'>
-                    <Button title="Button" onClick={noop} variation={ButtonVariation.Green} />
-                    <TextButton title="TextButton" onClick={noop} style={{ color: 'green' }} />
-                    <IconButton transparent icon={IconType.Menu} onClick={noop}  text="Menu" style={{ color: 'green' }} />
+                    <Button title="Button" onClick={noop} color="Green" />
+                    <TextButton title="TextButton" onClick={noop} color="Green" />
+                    <IconButton icon={IconType.Menu} onClick={noop} text="Green" color="Green" />
+                    <IconButton icon={IconType.Menu} onClick={noop} text="Menu" color="Green" transparent />
                 </Row>
                 <Row borderColor='grey' backgroundColor='#eee'>
                     <Button title="Disabled Button" />
-                    <TextButton title="Disabled TextButton" onClick={noop} disabled={true} style={{ color: 'grey' }} />
-                    <IconButton transparent icon={IconType.QuestionMark} style={{ color: 'grey' }} />
+                    <TextButton title="Disabled TextButton" onClick={noop} disabled={true} color="Grey" />
+                    <IconButton icon={IconType.QuestionMark} color="White" />
+                    <IconButton icon={IconType.QuestionMark} color="Black" transparent />
                 </Row>
 
                 {repeat(30, index => {

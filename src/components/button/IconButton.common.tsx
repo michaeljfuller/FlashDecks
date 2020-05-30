@@ -1,4 +1,5 @@
 import {IconType} from '../icon/Icon';
+import {ColorKey} from "../../styles/Color";
 export {IconType} from '../icon/Icon';
 
 export interface IconButtonProps {
@@ -8,11 +9,11 @@ export interface IconButtonProps {
     disabled?: boolean;
     transparent?: boolean;
     style?: IconButtonStyle;
+    color?: ColorKey;
 }
 export interface IconButtonStyle {
     width?: number;
     height?: number;
-    color?: string;
 }
 
 const noop = () => {};
@@ -23,10 +24,11 @@ export function iconButtonPropsWithDefaults(props: IconButtonProps) {
         transparent = false,
         icon = IconType.QuestionMark,
         text = '',
+        color = props.transparent ? 'Blue' : 'White',
         style = {}
     } = props;
     return {
-        onClick, icon, style, text, transparent,
+        onClick, icon, style, text, transparent, color,
         disabled: disabled || !props.onClick,
     };
 }

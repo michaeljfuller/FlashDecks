@@ -2,8 +2,8 @@ import React from 'react';
 import {TextStyle} from "react-native";
 import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} from 'native-base';
 
-import {Color, LightColor} from '../../styles/Color';
-import {ButtonProps, buttonPropsWithDefaults, ButtonVariation} from './Button.common';
+import {Color} from '../../styles/Color';
+import {ButtonProps, buttonPropsWithDefaults} from './Button.common';
 export * from './Button.common';
 
 export function Button(props: ButtonProps) {
@@ -27,12 +27,12 @@ const backgroundStyles: Record<string, RnViewStyleProp> = {
 };
 
 const textStyles: Record<string, TextStyle> = {
-    red: {   color: LightColor.White },
-    green: { color: LightColor.White },
-    blue: {  color: LightColor.White },
+    red: {   color: Color.White },
+    green: { color: Color.White },
+    blue: {  color: Color.White },
 };
 function getBackgroundStyle(props: ButtonProps) {
-    const {variation, style, flat} = props;
+    const {color, style, flat} = props;
     const result: Array<RnViewStyleProp> = [{
         width: style?.width,
         height: style?.height,
@@ -41,26 +41,26 @@ function getBackgroundStyle(props: ButtonProps) {
             height: 3, width: 3
         },
         // shadowOpacity: 100,
-        shadowColor: LightColor.Black
+        shadowColor: Color.Black
     }];
-    switch (variation) {
+    switch (color) {
         default:                       result.push(backgroundStyles.blue); break;
-        case ButtonVariation.Standard: result.push(backgroundStyles.blue); break;
-        case ButtonVariation.Red:      result.push(backgroundStyles.red); break;
-        case ButtonVariation.Green:    result.push(backgroundStyles.green); break;
-        case ButtonVariation.Blue:     result.push(backgroundStyles.blue); break;
+        // case ButtonVariation.Standard: result.push(backgroundStyles.blue); break;
+        // case ButtonVariation.Red:      result.push(backgroundStyles.red); break;
+        // case ButtonVariation.Green:    result.push(backgroundStyles.green); break;
+        // case ButtonVariation.Blue:     result.push(backgroundStyles.blue); break;
     }
     return result;
 }
 function getTextStyle(props: ButtonProps) {
-    const {variation} = props;
+    const {color} = props;
     const result: RnViewStyleProp[] = [];
-    switch (variation) {
+    switch (color) {
         default:                       result.push(textStyles.blue); break;
-        case ButtonVariation.Standard: result.push(textStyles.blue); break;
-        case ButtonVariation.Red:      result.push(textStyles.red); break;
-        case ButtonVariation.Green:    result.push(textStyles.green); break;
-        case ButtonVariation.Blue:     result.push(textStyles.blue); break;
+        // case ButtonVariation.Standard: result.push(textStyles.blue); break;
+        // case ButtonVariation.Red:      result.push(textStyles.red); break;
+        // case ButtonVariation.Green:    result.push(textStyles.green); break;
+        // case ButtonVariation.Blue:     result.push(textStyles.blue); break;
     }
     return result;
 }

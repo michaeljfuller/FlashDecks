@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, ButtonProps, ButtonVariation} from '../../../../components/button/Button';
+import {Button, ButtonProps} from '../../../../components/button/Button';
 import withDefaultProps from '../../../../utils/hoc/withDefaultProps/withDefaultProps';
 
 /**
@@ -7,6 +7,6 @@ import withDefaultProps from '../../../../utils/hoc/withDefaultProps/withDefault
  */
 export default withDefaultProps(Button, {
     flat: true,
-    variation: ButtonVariation.Blue
+    color: 'Blue'
 } as ButtonProps ) as typeof Button;
 

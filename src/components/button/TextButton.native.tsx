@@ -5,14 +5,14 @@ import {TextButtonProps, textButtonPropsWithDefaults} from './TextButton.common'
 export * from './TextButton.common';
 
 export function TextButton(props: TextButtonProps) {
-    const { onClick, disabled, title, style } = textButtonPropsWithDefaults(props);
+    const { onClick, disabled, title, color } = textButtonPropsWithDefaults(props);
 
     return <NativeBaseButton
         onPress={onClick}
         disabled={disabled}
         transparent
     >
-        <NativeBaseText style={{ color: style.color }}>{title}</NativeBaseText>
+        <NativeBaseText style={{ color: 'red' }}>{title}</NativeBaseText>
     </NativeBaseButton>;
 }
 export default TextButton;

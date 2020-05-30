@@ -1,11 +1,10 @@
+import {ColorKey} from "../../styles/Color";
+
 export interface TextButtonProps {
     onClick?: () => void;
     disabled?: boolean;
     title?: string;
-    style?: TextButtonStyle;
-}
-export interface TextButtonStyle {
-    color?: string;
+    color?: ColorKey;
 }
 
 const noop = () => {};
@@ -14,10 +13,10 @@ export function textButtonPropsWithDefaults(props: TextButtonProps) {
         onClick = noop,
         disabled = false,
         title = '',
-        style = {}
+        color = 'Blue'
     } = props;
     return {
-        onClick, title, style,
+        onClick, title, color,
         disabled: disabled || !props.onClick,
     };
 }

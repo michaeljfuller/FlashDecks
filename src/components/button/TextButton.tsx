@@ -4,6 +4,7 @@ import {withStyles} from '@material-ui/core/styles';
 
 import {TextButtonProps, textButtonPropsWithDefaults} from './TextButton.common';
 import {Color} from "../../styles/Color";
+import {getStyledTextButtonBase} from "./material-ui/StyledButtonBase";
 export * from './TextButton.common';
 
 const StyledButton = withStyles({
@@ -20,14 +21,11 @@ const StyledButton = withStyles({
 })(MaterialButton) as typeof MaterialButton;
 
 export function TextButton(props: TextButtonProps) {
-    const { onClick, disabled, title, style } = textButtonPropsWithDefaults(props);
+    const { onClick, disabled, title, color } = textButtonPropsWithDefaults(props);
+    const StyledButton = getStyledTextButtonBase(color);
     return <StyledButton
-        variant="text"
         onClick={onClick}
         disabled={disabled}
-        style={{
-            color: style.color || Color.Grey
-        }}
     >{title}</StyledButton>;
 }
 export default TextButton;
