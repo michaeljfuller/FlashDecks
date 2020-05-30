@@ -78,6 +78,7 @@ function styleMaterialTextButton(color: ColorKey) {
                 color: theme.primary.base,
                 justifyContent: 'flex-start',
                 borderRadius: 0,
+                minWidth: 0,
                 '&:hover': { color: theme.primary.hover },
                 '&:disabled': { color: theme.primary.disabled }
             },
