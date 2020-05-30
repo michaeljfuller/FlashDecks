@@ -1,10 +1,12 @@
 import React from "react";
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import {withStyles} from "@material-ui/core/styles";
 
 import TextButton, {TextButtonProps} from '../../button/TextButton';
 import withDefaultProps from '../../../utils/hoc/withDefaultProps/withDefaultProps';
 import {getCurrentRoutes} from '../../../navigation/navigation_utils';
 import {AppBreadcrumbsProps} from './AppBreadcrumbs.common';
+import {Color} from "../../../styles/Color";
 
 export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
     const {navigation} = props;
@@ -19,9 +21,13 @@ export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
         />;
     });
 
-    return <Breadcrumbs maxItems={3}>{items}</Breadcrumbs>;
+    return <StyledBreadcrumbs maxItems={3}>{items}</StyledBreadcrumbs>;
 }
 
 export const BreadcrumbButton = withDefaultProps(TextButton, {
-    style: { color: 'skyblue' }
+    color: "White"
 } as TextButtonProps) as typeof TextButton;
+
+const StyledBreadcrumbs = withStyles({
+    separator: { color: Color.White  }
+})(Breadcrumbs) as typeof Breadcrumbs;
