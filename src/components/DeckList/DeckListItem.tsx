@@ -11,29 +11,39 @@ import IconButton, {IconType} from "../button/IconButton";
 import {DeckListItemProps} from "./DeckListItem.common";
 import {repeat} from "../../utils/array";
 import Avatar from "../avatar/Avatar";
+import {UIColorThemeMap} from "../../styles/UIColorTheme";
 
+const headerTheme = UIColorThemeMap.Blue;
 const useStyles = makeStyles({
     root: {
         maxWidth: 345,
         margin: 5
+    },
+    header: {
+        backgroundColor: headerTheme.primary.base,
+        color: headerTheme.secondary.base,
     }
 });
 
+/**
+ * An item in DeckList representing a Deck.
+ */
 export default function DeckListItem(props: DeckListItemProps) {
     const classes = useStyles();
 
     const {deck, showActions, onActions, onClick} = props;
     const {owner} = deck;
 
-    // TODO Custom Avatar component
+    // Button to show actions
     const actionsButton = showActions ? <IconButton
-        transparent
         icon={IconType.More}
         onClick={onActions ? (event => onActions(deck, event)) : undefined}
+        color={"White"}
     /> : null;
 
     return <UICard className={classes.root}>
         <CardHeader
+            className={classes.header}
             avatar={<Avatar user={owner} />}
             action={actionsButton}
             title={deck.name}
@@ -47,11 +57,11 @@ export default function DeckListItem(props: DeckListItemProps) {
                 <Typography gutterBottom variant="h5" component="h2">
                     {deck.id}
                 </Typography>
-                <Typography variant="body1" color="textSecondary" component="p">
+                <Typography variant="body1" component="p">
                     {deck.description}
                 </Typography>
-                <Typography variant="body1" color="textSecondary" component="p">{ repeat(
-                    // Math.floor(Math.random() * 15) + 1,
+                {/* Sample text */}
+                <Typography variant="body1" component="p">{ repeat(
                     parseInt(deck.id.split('-').pop() || '')-1 || 0,
                     i => `Test sentence number #${i+1} for testing varying paragraph lengths across all decks.`
                 ).join(' ')}</Typography>
