@@ -14,9 +14,9 @@ export function getStyledButtonBase(color: ColorKey): ExtendButtonBase<any> {
 /** Get an Icon Button component for a given variation. */
 export function getStyledIconButtonBase(color: ColorKey, transparent = false, hasText = false): ExtendButtonBase<any> {
     if (transparent) {
-        return hasText ? getStyledTextButtonBase(color ) : StandardIconButton;
+        return hasText ? styleMaterialTextButton(color) : StandardIconButton;
     }
-    return getStyledButtonBase(color);
+    return hasText ? styleMaterialContainedButton(color) : styleMaterialContainedRoundButton(color);
 }
 
 /** Get a Text Button component for a given variation. */
@@ -65,6 +65,38 @@ function styleMaterialContainedButton(color: ColorKey): typeof MaterialButton {
     return containedButtonCache[color];
 }
 const containedButtonCache = {} as Record<string, ExtendButtonBase<any>>;
+
+//</editor-fold>
+//<editor-fold desc="Contained Icon Button Variations">
+
+/** Create a styled Button based on a color theme. */
+function styleMaterialContainedRoundButton(color: ColorKey): typeof MaterialButton {
+    if (!containedRoundButtonCache[color]) {
+        const theme = getUIColorTheme(color);
+        const styled = withStyles({
+            root: {
+                justifyContent: 'flex-start',
+                backgroundColor: theme.primary.base,
+                color: theme.secondary.base,
+                borderRadius: '100%',
+                padding: 0,
+                minWidth: 0,
+                '&:hover': {
+                    backgroundColor: theme.primary.hover,
+                    color: theme.secondary.hover,
+                },
+                '&:disabled': {
+                    backgroundColor: theme.primary.disabled,
+                    color: theme.secondary.disabled,
+                }
+            },
+            label: {textTransform: 'none'}
+        })(MaterialButton) as typeof MaterialButton;
+        containedRoundButtonCache[color] = withDefaultProps(styled, { variant: "contained" } as ButtonProps);
+    }
+    return containedRoundButtonCache[color];
+}
+const containedRoundButtonCache = {} as Record<string, ExtendButtonBase<any>>;
 
 //</editor-fold>
 //<editor-fold desc="Text Button Variations">
