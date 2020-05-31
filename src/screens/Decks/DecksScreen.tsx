@@ -5,11 +5,13 @@ import {NavigationScreenProps} from "../../navigation/navigation_types";
 import DeckList from "../../components/DeckList/DeckList";
 import {repeat} from "../../utils/array";
 
+import {reduxConnector, DecksScreenStoreProps} from "./DecksScreen_redux";
+
 export interface DecksScreenProps extends NavigationScreenProps {}
 export interface DecksScreenState {
     decks: Deck[];
 }
-export default class DecksScreen extends Component<DecksScreenProps, DecksScreenState>
+export class DecksScreen extends Component<DecksScreenProps & DecksScreenStoreProps, DecksScreenState>
 {
     state = {
         decks: repeat(7, index => ({
@@ -25,9 +27,11 @@ export default class DecksScreen extends Component<DecksScreenProps, DecksScreen
         return (
             <ScreenContainer>
                 <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{this.constructor.name}</Text>
-                <DeckList decks={this.state.decks} />
+                <DeckList decks={this.state.decks} loggedInUser={this.props.loggedInUser} />
             </ScreenContainer>
         );
     }
-    
+
 }
+
+export default reduxConnector(DecksScreen);
