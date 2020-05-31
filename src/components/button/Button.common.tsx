@@ -1,8 +1,9 @@
+import React from "React";
 import {ColorKey} from "../../styles/Color";
 import {DefaultTheme} from "../../styles/UIColorTheme";
 
 export interface ButtonProps {
-    onClick?: () => void;
+    onClick?: (event: React.MouseEvent) => void;
     disabled?: boolean;
     title?: string;
     flat?: boolean;

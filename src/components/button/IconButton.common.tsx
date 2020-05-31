@@ -1,12 +1,13 @@
 import {IconType} from '../icon/Icon';
 import {ColorKey} from "../../styles/Color";
 import {DefaultTheme} from "../../styles/UIColorTheme";
+import React from "react";
 export {IconType} from '../icon/Icon';
 
 export interface IconButtonProps {
     icon?: IconType;
     text?: string;
-    onClick?: () => void;
+    onClick?: (event: React.MouseEvent) => void;
     disabled?: boolean;
     transparent?: boolean;
     style?: IconButtonStyle;
