@@ -11,7 +11,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import EditIcon from '@material-ui/icons/Edit';
-import VisibilityIcon from '@material-ui/icons/Visibility';
+import DeleteIcon from '@material-ui/icons/Delete';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const componentMap = {
     [IconType.QuestionMark]: HelpIcon,
@@ -20,7 +21,8 @@ const componentMap = {
     [IconType.Exit]: ExitToAppIcon,
     [IconType.Back]: NavigateBeforeIcon,
     [IconType.Edit]: EditIcon,
-    [IconType.View]: VisibilityIcon,
+    [IconType.Delete]: DeleteIcon,
+    [IconType.More]: MoreVertIcon,
 } as Record<IconType, React.ElementType>;
 
 /**

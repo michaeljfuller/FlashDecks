@@ -3,7 +3,6 @@ import React from "react";
 export interface DeckListItemProps {
     deck: Deck;
     showActions?: boolean;
-    onClick?: (deck: Deck) => void;
-    onEdit?: (deck: Deck) => void;
-    onView?: (deck: Deck) => void;
+    onClick?: (deck: Deck, event: React.MouseEvent) => void;
+    onActions?: (deck: Deck, event: React.MouseEvent) => void;
 }

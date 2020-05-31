@@ -12,7 +12,8 @@ const nameMap = {
     [IconType.Exit]: "md-exit",
     [IconType.Back]: "md-return-left",
     [IconType.Edit]: "md-create",
-    [IconType.View]: "md-eye",
+    [IconType.Delete]: "md-trash",
+    [IconType.More]: "md-more",
 } as Record<IconType, string>;
 
 /**
