@@ -1,12 +1,11 @@
 import {Icon, IconProps} from "../../icon/Icon";
 import withDefaultProps from "../../../utils/hoc/withDefaultProps/withDefaultProps";
-import {ColorKey, getUIColorTheme, UIColorThemeStates} from "../../../styles/UIColorTheme";
+import {UIColorTheme, UIColorThemeStates} from "../../../styles/UIColorTheme";
 
 /**
  * Get an Icon component for a given variation.
  */
-export function getStyledButtonIcon(color: ColorKey, transparent: boolean): typeof Icon {
-    const theme = getUIColorTheme(color);
+export function getStyledButtonIcon(theme: UIColorTheme, transparent: boolean): typeof Icon {
     if (transparent) {
         return styleIcon(theme.primary);
     } else {

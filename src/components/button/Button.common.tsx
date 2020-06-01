@@ -9,6 +9,7 @@ export interface ButtonProps {
     flat?: boolean;
     style?: ButtonStyle;
     color?: ColorKey;
+    invertColor?: boolean;
 }
 export interface ButtonStyle {
     width?: number;
@@ -24,9 +25,10 @@ export function buttonPropsWithDefaults(props: ButtonProps): Required<ButtonProp
         flat = false,
         style = {},
         color = DefaultTheme.primary.key,
+        invertColor = false,
     } = props;
     return {
-        onClick, title, flat, style, color,
+        onClick, title, flat, style, color, invertColor,
         disabled: disabled || !props.onClick,
     };
 }

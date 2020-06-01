@@ -12,6 +12,7 @@ export interface IconButtonProps {
     transparent?: boolean;
     style?: IconButtonStyle;
     color?: ColorKey;
+    invertColor?: boolean;
 }
 export interface IconButtonStyle {
     width?: number;
@@ -27,10 +28,11 @@ export function iconButtonPropsWithDefaults(props: IconButtonProps): Required<Ic
         icon = IconType.QuestionMark,
         text = '',
         color = DefaultTheme.primary.key,
+        invertColor = false,
         style = {}
     } = props;
     return {
-        onClick, icon, style, text, transparent, color,
+        onClick, icon, style, text, transparent, color, invertColor,
         disabled: disabled || !props.onClick,
     };
 }

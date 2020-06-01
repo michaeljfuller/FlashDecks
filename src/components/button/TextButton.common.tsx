@@ -7,6 +7,7 @@ export interface TextButtonProps {
     disabled?: boolean;
     title?: string;
     color?: ColorKey;
+    invertColor?: boolean;
 }
 
 const noop = () => {};
@@ -15,10 +16,11 @@ export function textButtonPropsWithDefaults(props: TextButtonProps): Required<Te
         onClick = noop,
         disabled = false,
         title = '',
-        color = DefaultTheme.primary.key
+        color = DefaultTheme.primary.key,
+        invertColor = false,
     } = props;
     return {
-        onClick, title, color,
+        onClick, title, color, invertColor,
         disabled: disabled || !props.onClick,
     };
 }

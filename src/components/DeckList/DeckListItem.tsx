@@ -49,7 +49,7 @@ export default function DeckListItem(props: DeckListItemProps) {
     const actionsButton = showActions ? <IconButton
         icon={IconType.More}
         onClick={onActions ? (event => onActions(deck, event)) : undefined}
-        color={"White"}
+        color="Blue" invertColor={true}
     /> : null;
 
     return <UICard className={classes.root}>

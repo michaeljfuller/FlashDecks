@@ -1,12 +1,11 @@
 import {Text, TextProps} from 'react-native';
 import withDefaultProps from "../../../utils/hoc/withDefaultProps/withDefaultProps";
-import {ColorKey, getUIColorTheme, UIColorThemeStates} from "../../../styles/UIColorTheme";
+import {UIColorTheme, UIColorThemeStates} from "../../../styles/UIColorTheme";
 
 /**
  * Get a Text component for a given variation.
  */
-export function getStyledButtonText(color: ColorKey, transparent: boolean): typeof Text {
-    const theme = getUIColorTheme(color);
+export function getStyledButtonText(theme: UIColorTheme, transparent: boolean): typeof Text {
     if (transparent) {
         return styleText(theme.primary);
     } else {

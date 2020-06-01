@@ -4,14 +4,16 @@ import {getStyledButtonText} from './material-ui/StyledButtonText';
 import {getStyledButtonIcon} from './material-ui/StyledButtonIcon';
 
 import {IconButtonProps, iconButtonPropsWithDefaults} from './IconButton.common';
+import {getUIColorTheme} from "../../styles/UIColorTheme";
 export * from './IconButton.common';
 
 export function IconButton(props: IconButtonProps) {
-    const { onClick, disabled, icon, style, text, transparent, color } = iconButtonPropsWithDefaults(props);
+    const { onClick, disabled, icon, style, text, transparent, color, invertColor } = iconButtonPropsWithDefaults(props);
+    const theme = getUIColorTheme(color, invertColor);
 
-    const ContainerButton = getStyledIconButtonBase(color, transparent, !!text);
-    const IconComponent = getStyledButtonIcon(color, transparent);
-    const TextComponent = getStyledButtonText(color, transparent);
+    const ContainerButton = getStyledIconButtonBase(theme, transparent, !!text);
+    const IconComponent = getStyledButtonIcon(theme, transparent);
+    const TextComponent = getStyledButtonText(theme, transparent);
 
     return <ContainerButton
         onClick={onClick}
