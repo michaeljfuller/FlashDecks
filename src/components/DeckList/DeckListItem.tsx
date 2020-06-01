@@ -16,10 +16,14 @@ import Fadeout from "../layout/Fadeout";
 
 const contentBackgroundColor = Color.White;
 
+export const listItemMaxWidth = 345;
+export const listItemMaxHeight = 345;
+export const listItemActionMaxHeight = 165;
+
 const headerTheme = UIColorThemeMap.Blue;
 const useStyles = makeStyles({
     root: {
-        maxWidth: 345,
+        maxWidth: listItemMaxWidth,
         margin: 0
     },
     header: {
@@ -60,7 +64,7 @@ export default function DeckListItem(props: DeckListItemProps) {
                 onClick={onClick ? (event => onClick(deck, event)) : undefined}
                 disabled={!onClick}
             >
-                <Fadeout maxHeight={165} fadeColor={contentBackgroundColor}>
+                <Fadeout maxHeight={listItemActionMaxHeight} fadeColor={contentBackgroundColor}>
                     <CardContent className={classes.content}>
                         <Typography variant="body1" component="p">
                             {deck.description}
