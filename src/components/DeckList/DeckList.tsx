@@ -1,8 +1,11 @@
 import React from "react";
-import {View, Text} from "react-native";
+import {View} from "react-native";
 
 import Popover from '@material-ui/core/Popover';
 import {withStyles} from "@material-ui/core/styles";
+
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
 
 import {IconType} from "../icon/Icon.common";
 import IconButton from "../button/IconButton";
@@ -39,14 +42,19 @@ export default class DeckList extends DeckListBase<DeckListState> {
 
     render() {
         return <View>
-            {this.props.decks.map(deck => <View key={deck.id}>
-                <DeckListItem
-                    deck={deck}
-                    onClick={this.handleClick}
-                    onActions={this.handleActions}
-                    showActions={this.canShowActions(deck)}
-                />
-            </View>)}
+            <GridList
+                cols={3}
+                cellHeight={245}
+            >
+                {this.props.decks.map(deck => <GridListTile key={deck.id}>
+                    <DeckListItem
+                        deck={deck}
+                        onClick={this.handleClick}
+                        onActions={this.handleActions}
+                        showActions={this.canShowActions(deck)}
+                    />
+                </GridListTile>)}
+            </GridList>
 
             <DeckListActionsMenu
                 deck={this.state.actionsDeck}

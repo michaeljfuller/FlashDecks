@@ -1,0 +1,16 @@
+.fd-Fadeout-root {
+    position: relative;
+    overflow-y: hidden;
+}
+.fd-Fadeout-children {
+    padding: 0;
+    margin: 0;
+}
+.fd-Fadeout-cover {
+    position: absolute;
+    bottom: 0;
+    background-image: linear-gradient(to bottom, transparent, white);
+    width: 100%;
+    height: 2em;
+    pointer-events: none;
+}

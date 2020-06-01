@@ -11,18 +11,25 @@ import IconButton, {IconType} from "../button/IconButton";
 import {DeckListItemProps} from "./DeckListItem.common";
 import {repeat} from "../../utils/array";
 import Avatar from "../avatar/Avatar";
-import {UIColorThemeMap} from "../../styles/UIColorTheme";
+import {Color, UIColorThemeMap} from "../../styles/UIColorTheme";
+import Fadeout from "../layout/Fadeout";
+
+const contentBackgroundColor = Color.White;
 
 const headerTheme = UIColorThemeMap.Blue;
 const useStyles = makeStyles({
     root: {
         maxWidth: 345,
-        margin: 5
+        margin: 0
     },
     header: {
         backgroundColor: headerTheme.primary.base,
         color: headerTheme.secondary.base,
-    }
+    },
+    content: {
+        padding: 5,
+        backgroundColor: contentBackgroundColor,
+    },
 });
 
 /**
@@ -49,23 +56,23 @@ export default function DeckListItem(props: DeckListItemProps) {
             title={deck.name}
             subheader={owner.displayName}
         />
-        <CardCardActionArea
-            onClick={onClick ? (event => onClick(deck, event)) : undefined}
-            disabled={!onClick}
-        >
-            <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                    {deck.id}
-                </Typography>
-                <Typography variant="body1" component="p">
-                    {deck.description}
-                </Typography>
-                {/* Sample text */}
-                <Typography variant="body1" component="p">{ repeat(
-                    parseInt(deck.id.split('-').pop() || '')-1 || 0,
-                    i => `Test sentence number #${i+1} for testing varying paragraph lengths across all decks.`
-                ).join(' ')}</Typography>
-            </CardContent>
-        </CardCardActionArea>
+            <CardCardActionArea
+                onClick={onClick ? (event => onClick(deck, event)) : undefined}
+                disabled={!onClick}
+            >
+                <Fadeout maxHeight={165} fadeColor={contentBackgroundColor}>
+                    <CardContent className={classes.content}>
+                        <Typography variant="body1" component="p">
+                            {deck.description}
+                        </Typography>
+                        <Typography variant="body1" component="p">
+                            {repeat(
+                                parseInt(deck.id.split('-').pop() || '')-1 || 0,
+                                i => `Test sentence number #${i+1} for testing varying paragraph lengths across all decks.`
+                            ).join(' ')}
+                        </Typography>
+                    </CardContent>
+                </Fadeout>
+            </CardCardActionArea>
     </UICard>;
 }
