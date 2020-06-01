@@ -3,7 +3,7 @@ import {DefaultTheme} from "../../styles/UIColorTheme";
 import React from "react";
 
 export interface TextButtonProps {
-    onClick?: (event: React.MouseEvent) => void;
+    onClick?: (event?: React.MouseEvent) => void;
     disabled?: boolean;
     title?: string;
     color?: ColorKey;

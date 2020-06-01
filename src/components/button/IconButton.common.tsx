@@ -7,7 +7,7 @@ export {IconType} from '../icon/Icon';
 export interface IconButtonProps {
     icon?: IconType;
     text?: string;
-    onClick?: (event: React.MouseEvent) => void;
+    onClick?: (event?: React.MouseEvent) => void;
     disabled?: boolean;
     transparent?: boolean;
     style?: IconButtonStyle;

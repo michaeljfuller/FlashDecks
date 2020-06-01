@@ -36,8 +36,8 @@ export default class DeckList extends DeckListBase<DeckListState> {
         window.removeEventListener('resize', this.handleResize);
     }
 
-    handleActions = (deck: Deck, event: React.MouseEvent) => {
-        this.setState({ actionsDeck: deck, actionsAnchor: event.nativeEvent.target as Element });
+    handleActions = (deck: Deck, event?: React.MouseEvent) => {
+        this.setState({ actionsDeck: deck, actionsAnchor: event?.nativeEvent.target as Element });
     };
     handleCloseActions = () => {
         this.setState({ actionsDeck: undefined, actionsAnchor: undefined });
