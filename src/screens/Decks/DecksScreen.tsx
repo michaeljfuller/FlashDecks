@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Text} from "react-native";
+import {Text, View} from "react-native";
 import ScreenContainer from "../ScreenContainer";
 import {NavigationScreenProps} from "../../navigation/navigation_types";
 import DeckList from "../../components/DeckList/DeckList";
@@ -27,7 +27,9 @@ export class DecksScreen extends Component<DecksScreenProps & DecksScreenStorePr
         return (
             <ScreenContainer>
                 <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{this.constructor.name}</Text>
-                <DeckList decks={this.state.decks} loggedInUser={this.props.loggedInUser} />
+                <View style={{ padding: 5 }}>
+                    <DeckList decks={this.state.decks} loggedInUser={this.props.loggedInUser} />
+                </View>
             </ScreenContainer>
         );
     }
