@@ -14,9 +14,8 @@ export function getStyledButtonText(theme: UIColorTheme, transparent: boolean): 
 }
 
 function styleText(themeStates: UIColorThemeStates): typeof Text {
-    const cacheKey = JSON.stringify(themeStates);
-    if (!cache[cacheKey]) {
-        cache[cacheKey] = withDefaultProps(
+    if (!cache[themeStates.key]) {
+        cache[themeStates.key] = withDefaultProps(
             Text, {
                 style: {
                     color: themeStates.base
@@ -24,6 +23,6 @@ function styleText(themeStates: UIColorThemeStates): typeof Text {
             } as TextProps
         ) as any;
     }
-    return cache[cacheKey];
+    return cache[themeStates.key];
 }
 const cache = {} as Record<string, typeof Text>;

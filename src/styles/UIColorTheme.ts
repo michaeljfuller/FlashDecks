@@ -16,12 +16,12 @@ export interface UIColorThemeStates {
  */
 export class UIColorTheme {
     /** A string with the name of the primary and secondary colors */
-    readonly name: string;
+    readonly ref: string;
     readonly primary: UIColorThemeStates;
     readonly secondary: UIColorThemeStates;
 
     constructor(primary: ColorKey, secondary: ColorKey) {
-        this.name = primary + '_' + secondary;
+        this.ref = primary + '_' + secondary;
         this.primary = Object.freeze({
             key: primary,
             base: Color[primary],

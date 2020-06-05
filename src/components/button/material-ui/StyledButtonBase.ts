@@ -41,7 +41,7 @@ const StandardIconButton = withStyles({
 
 /** Create a styled Button based on a color theme. */
 function styleMaterialContainedButton(theme: UIColorTheme): typeof MaterialButton {
-    if (!containedButtonCache[theme.name]) {
+    if (!containedButtonCache[theme.ref]) {
         const styled = withStyles({
             root: {
                 justifyContent: 'flex-start',
@@ -59,9 +59,9 @@ function styleMaterialContainedButton(theme: UIColorTheme): typeof MaterialButto
             },
             label: {textTransform: 'none'}
         })(MaterialButton) as typeof MaterialButton;
-        containedButtonCache[theme.name] = withDefaultProps(styled, { variant: "contained" } as ButtonProps);
+        containedButtonCache[theme.ref] = withDefaultProps(styled, { variant: "contained" } as ButtonProps);
     }
-    return containedButtonCache[theme.name];
+    return containedButtonCache[theme.ref];
 }
 const containedButtonCache = {} as Record<string, ExtendButtonBase<any>>;
 
@@ -70,7 +70,7 @@ const containedButtonCache = {} as Record<string, ExtendButtonBase<any>>;
 
 /** Create a styled Button based on a color theme. */
 function styleMaterialContainedRoundButton(theme: UIColorTheme): typeof MaterialButton {
-    if (!containedRoundButtonCache[theme.name]) {
+    if (!containedRoundButtonCache[theme.ref]) {
         const styled = withStyles({
             root: {
                 justifyContent: 'flex-start',
@@ -90,9 +90,9 @@ function styleMaterialContainedRoundButton(theme: UIColorTheme): typeof Material
             },
             label: {textTransform: 'none'}
         })(MaterialButton) as typeof MaterialButton;
-        containedRoundButtonCache[theme.name] = withDefaultProps(styled, { variant: "contained" } as ButtonProps);
+        containedRoundButtonCache[theme.ref] = withDefaultProps(styled, { variant: "contained" } as ButtonProps);
     }
-    return containedRoundButtonCache[theme.name];
+    return containedRoundButtonCache[theme.ref];
 }
 const containedRoundButtonCache = {} as Record<string, ExtendButtonBase<any>>;
 
@@ -101,7 +101,7 @@ const containedRoundButtonCache = {} as Record<string, ExtendButtonBase<any>>;
 
 /** Create a styled Text Button based on a color theme. */
 function styleMaterialTextButton(theme: UIColorTheme) {
-    if (!textButtonCache[theme.name]) {
+    if (!textButtonCache[theme.ref]) {
         const styled = withStyles({
             root: {
                 color: theme.primary.base,
@@ -115,9 +115,9 @@ function styleMaterialTextButton(theme: UIColorTheme) {
                 textTransform: 'none'
             }
         })(MaterialButton) as typeof MaterialButton;
-        textButtonCache[theme.name] = withDefaultProps(styled, { variant: "text" } as ButtonProps);
+        textButtonCache[theme.ref] = withDefaultProps(styled, { variant: "text" } as ButtonProps);
     }
-    return textButtonCache[theme.name];
+    return textButtonCache[theme.ref];
 }
 const textButtonCache = {} as Record<string, ExtendButtonBase<any>>;
 

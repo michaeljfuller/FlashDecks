@@ -14,9 +14,8 @@ export function getStyledButtonIcon(theme: UIColorTheme, transparent: boolean): 
 }
 
 function styleIcon(themeStates: UIColorThemeStates): typeof Icon {
-    const cacheKey = JSON.stringify(themeStates);
-    if (!cache[cacheKey]) {
-        cache[cacheKey] = withDefaultProps(
+    if (!cache[themeStates.key]) {
+        cache[themeStates.key] = withDefaultProps(
             Icon, {
                 style: {
                     color: themeStates.base
@@ -24,6 +23,6 @@ function styleIcon(themeStates: UIColorThemeStates): typeof Icon {
             } as IconProps
         );
     }
-    return cache[cacheKey];
+    return cache[themeStates.key];
 }
 const cache = {} as Record<string, typeof Icon>;
