@@ -1,6 +1,5 @@
 import React from "React";
-import {ColorKey} from "../../styles/Color";
-import {DefaultTheme} from "../../styles/UIColorTheme";
+import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
 
 export interface ButtonProps {
     onClick?: (event?: React.MouseEvent) => void;
@@ -8,7 +7,7 @@ export interface ButtonProps {
     title?: string;
     flat?: boolean;
     style?: ButtonStyle;
-    color?: ColorKey;
+    color?: GetUIColorThemeInput;
     invertColor?: boolean;
 }
 export interface ButtonStyle {

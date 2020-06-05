@@ -5,11 +5,12 @@ import {Icon, IconStyles} from '../icon/Icon';
 import {IconButtonProps, iconButtonPropsWithDefaults, IconButtonStyle} from './IconButton.common';
 import {getUIColorTheme, UIColorTheme} from "../../styles/UIColorTheme";
 import {TextStyle} from "react-native";
+
 export * from './IconButton.common';
 
 export function IconButton(props: IconButtonProps) {
-    const { onClick, text, disabled, icon, style, transparent, color } = iconButtonPropsWithDefaults(props);
-    const theme = getUIColorTheme(color);
+    const { onClick, text, disabled, icon, style, transparent, color, invertColor } = iconButtonPropsWithDefaults(props);
+    const theme = getUIColorTheme(color, invertColor);
 
     return <NativeBaseButton
         onPress={onClick}

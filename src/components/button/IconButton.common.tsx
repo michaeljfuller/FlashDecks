@@ -1,7 +1,7 @@
 import {IconType} from '../icon/Icon';
-import {ColorKey} from "../../styles/Color";
-import {DefaultTheme} from "../../styles/UIColorTheme";
+import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
 import React from "react";
+
 export {IconType} from '../icon/Icon';
 
 export interface IconButtonProps {
@@ -11,7 +11,7 @@ export interface IconButtonProps {
     disabled?: boolean;
     transparent?: boolean;
     style?: IconButtonStyle;
-    color?: ColorKey;
+    color?: GetUIColorThemeInput;
     invertColor?: boolean;
 }
 export interface IconButtonStyle {

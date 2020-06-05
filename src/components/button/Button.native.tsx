@@ -2,8 +2,9 @@ import React from 'react';
 import {TextStyle} from "react-native";
 import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} from 'native-base';
 
-import {Color, getUIColorTheme} from '../../styles/UIColorTheme';
 import {ButtonProps, buttonPropsWithDefaults} from './Button.common';
+import {Color, getUIColorTheme} from "../../styles/UIColorTheme";
+
 export * from './Button.common';
 
 export function Button(props: ButtonProps) {
@@ -22,8 +23,8 @@ export default Button;
 //<editor-fold desc="Styles">
 
 function getBackgroundStyle(props: ButtonProps): RnViewStyleProp {
-    const {color, style, flat} = props;
-    const theme = getUIColorTheme(color);
+    const {color, invertColor, style, flat} = buttonPropsWithDefaults(props);
+    const theme = getUIColorTheme(color, invertColor);
     return {
         width: style?.width,
         height: style?.height,
@@ -36,8 +37,8 @@ function getBackgroundStyle(props: ButtonProps): RnViewStyleProp {
     };
 }
 function getTextStyle(props: ButtonProps): TextStyle {
-    const {color} = props;
-    const theme = getUIColorTheme(color);
+    const {color, invertColor} = buttonPropsWithDefaults(props);
+    const theme = getUIColorTheme(color, invertColor);
     return {
         color: theme.secondary.base
     };
