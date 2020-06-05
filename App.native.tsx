@@ -2,6 +2,7 @@ import React from 'react';
 import {Text, View, StatusBar} from 'react-native';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
+import { Root as NativeBaseRoot } from "native-base";
 
 import Amplify, {Analytics} from 'aws-amplify';
 // @ts-ignore
@@ -35,12 +36,14 @@ export default class App extends React.Component<any, any> {
     }
 
     render() {
-        return <View style={{
-            flex: 1,
-            // marginTop: StatusBar.currentHeight !== undefined ? StatusBar.currentHeight : 20
-        }}>
-            {this.isReady ? <AppRoot /> : this.renderLoading()}
-        </View>;
+        return <NativeBaseRoot>
+            <View style={{
+                flex: 1,
+                // marginTop: StatusBar.currentHeight !== undefined ? StatusBar.currentHeight : 20
+            }}>
+                {this.isReady ? <AppRoot /> : this.renderLoading()}
+            </View>
+        </NativeBaseRoot>;
     }
 
     renderLoading() {
