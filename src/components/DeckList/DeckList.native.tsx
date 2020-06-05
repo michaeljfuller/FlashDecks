@@ -4,6 +4,12 @@ import DeckListItem from "./DeckListItem";
 import DeckListBase from "./DeckList.common";
 
 export default class DeckList extends DeckListBase {
+
+    handleClick = (deck: Deck) => this.gotToDeck(deck);
+    handleActions = (deck: Deck) => console.log('Actions for', deck);
+    handleEdit = (deck: Deck) => this.editDeck(deck);
+    handleDelete = (deck: Deck) => this.deleteDeck(deck);
+
     render() {
         const {decks, loggedInUser} = this.props;
         return <View>
@@ -12,8 +18,7 @@ export default class DeckList extends DeckListBase {
                 key={deck.id}
                 deck={deck}
                 onClick={this.handleClick}
-                onEdit={this.handleEdit}
-                onView={this.handleView}
+                onActions={this.handleActions}
                 showActions={this.canShowActions(deck)}
             />)}
         </View>;

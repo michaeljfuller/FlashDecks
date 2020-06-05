@@ -4,10 +4,10 @@ import IconButton, {IconType} from "../button/IconButton";
 import {DeckListItemProps} from "./DeckListItem.common";
 
 export default function DeckListItem(props: DeckListItemProps) {
-    const {deck} = props;
+    const {deck, onActions, onClick} = props;
     const {owner} = deck;
-    const handleEdit = () => console.log('Clicked Edit', deck);
-    const handleView = () => console.log('Clicked View', deck);
+    const handleActions = onActions ? (() => onActions(deck)) : undefined;
+    const handleClick = onClick ? (() => onClick(deck)) : undefined;
 
     return <View
         style={{
@@ -32,10 +32,10 @@ export default function DeckListItem(props: DeckListItemProps) {
             <View style={{ flex: 1, flexDirection: 'column-reverse' }}>
                 <View style={{ flexDirection: 'row' }}>
                     <View style={{ paddingRight: 5 }}>
-                        <IconButton text="Edit" icon={IconType.Edit} onClick={handleEdit} />
+                        <IconButton text="View" icon={IconType.QuestionMark} onClick={handleClick} />
                     </View>
                     <View>
-                        <IconButton text="View" icon={IconType.View} onClick={handleView} />
+                        <IconButton text="Actions" icon={IconType.More} onClick={handleActions} />
                     </View>
                 </View>
             </View>

@@ -5,7 +5,7 @@ export interface DeckListProps {
     loggedInUser: User|null;
 }
 
-export default class DeckListBase<State> extends React.Component<DeckListProps, State>{
+export default class DeckListBase<State = {}> extends React.Component<DeckListProps, State>{
     gotToDeck(deck: Deck) {
         console.log('DeckListBase', 'goToDeck', deck);
     }
