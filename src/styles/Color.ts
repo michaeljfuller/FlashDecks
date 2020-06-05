@@ -9,7 +9,7 @@ export const Color = Object.freeze({
     Blue: '#46F',
 });
 export const HoverColor = setColors({
-    White: '#BBB',
+    White: '#EEE',
     Grey: '#555',
     Black: '#000',
     Red: '#D33',
