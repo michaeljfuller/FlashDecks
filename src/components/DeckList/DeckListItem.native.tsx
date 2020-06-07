@@ -1,45 +1,66 @@
 import React from "react";
-import {Text, View} from "react-native";
+import {View} from "react-native";
+
+import {
+    // This component adds a box-shadow by default.
+    // Also provides default spacing and alignment between cards.
+    Card as UICard,
+    // This is the child component of Card.
+    // Works very similar to the list items of list.
+    // Takes input such as: Text, Button, Image, Thumbnail, Icon.
+    // Card takes any number of CardItem.
+    CardItem as UICardItem,
+    Text
+} from 'native-base';
+
+import {DefaultTheme} from "../../styles/UIColorTheme";
 import IconButton, {IconType} from "../button/IconButton";
 import {DeckListItemProps} from "./DeckListItem.common";
+import Avatar from "../avatar/Avatar";
+import {repeat} from "../../utils/array";
+
+const headerColor = DefaultTheme.primary.base;
+const headerTextColor = DefaultTheme.secondary.base;
 
 export default function DeckListItem(props: DeckListItemProps) {
-    const {deck, onActions, onClick} = props;
+    const {deck, showActions, onActions, onClick} = props;
     const {owner} = deck;
     const handleActions = onActions ? (() => onActions(deck)) : undefined;
     const handleClick = onClick ? (() => onClick(deck)) : undefined;
 
-    return <View
-        style={{
-        margin: 5,
-        padding: 2,
-        borderWidth: 1,
-        borderColor: 'red',
-        flexDirection: 'row'
-    }}>
-        {/* Left */}
-        <View style={{ flex: 1 }}>
-            <Text>{deck.name}</Text>
-            <Text>{deck.description}</Text>
+    return <UICard>
+
+        {/* Header */}
+        <View style={{ backgroundColor: headerColor, flexDirection: 'row' }}>
+
+            <UICardItem button bordered onPress={handleClick} style={{ backgroundColor: headerColor, flexGrow: 1 }}>
+                <Text style={{ color: headerTextColor }}>{deck.name}</Text>
+            </UICardItem>
+
+            <UICardItem style={{ backgroundColor: headerColor }}>
+                <Text style={{ color: headerTextColor }}>{owner.displayName}</Text>
+                <Avatar user={owner} />
+            </UICardItem>
+
+            {showActions && <IconButton
+                icon={IconType.More}
+                color={DefaultTheme} invertColor
+                onClick={handleActions}
+                style={{ width: 40 }}
+            />}
 
         </View>
-        {/* Right */}
-        <View style={{ flex: 1 }}>
 
-            <Text>{owner.displayName}</Text>
+        {/* Body */}
+        <UICardItem button bordered onPress={handleClick}>
+            <Text>{deck.description + repeat(
+                parseInt(deck.id.split('-').pop() || '')-1 || 0, // Get repeat count based on `deck.id`
+                i => `${!i&&'\n'}Test sentence number #${i+1} for testing varying paragraph lengths across all decks.`
+            ).join(' ')}</Text>
+        </UICardItem>
 
-            {/* Actions */}
-            <View style={{ flex: 1, flexDirection: 'column-reverse' }}>
-                <View style={{ flexDirection: 'row' }}>
-                    <View style={{ paddingRight: 5 }}>
-                        <IconButton text="View" icon={IconType.QuestionMark} onClick={handleClick} />
-                    </View>
-                    <View>
-                        <IconButton text="Actions" icon={IconType.More} onClick={handleActions} />
-                    </View>
-                </View>
-            </View>
+        {/* Footer */}
+        {/*<UICardItem footer bordered><Text>{owner.displayName}</Text></UICardItem>*/}
 
-        </View>
-    </View>;
+    </UICard>;
 }

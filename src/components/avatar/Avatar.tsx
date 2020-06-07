@@ -15,6 +15,6 @@ const Tooltip = withStyles({
 export default function Avatar(props: AvatarProps) {
     const {user} = props;
     return <Tooltip arrow title={user ? user.displayName : 'Unknown'}>
-        <MaterialAvatar>{user ? user.displayName.substr(0, 2) : '?'}</MaterialAvatar>
+        <MaterialAvatar src="https://picsum.photos/200">{user ? user.displayName.substr(0, 2) : '?'}</MaterialAvatar>
     </Tooltip>;
 }
