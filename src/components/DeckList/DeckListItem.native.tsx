@@ -42,12 +42,14 @@ export default function DeckListItem(props: DeckListItemProps) {
                 <Avatar user={owner} />
             </UICardItem>
 
-            {showActions && <IconButton
-                icon={IconType.More}
-                color={DefaultTheme} invertColor
-                onClick={handleActions}
-                style={{ width: 40 }}
-            />}
+            {showActions && <View style={{ paddingTop: 5, paddingRight: 5 }}>
+                <IconButton
+                    icon={IconType.More}
+                    color={DefaultTheme} invertColor
+                    onClick={handleActions}
+                    style={{ height: 25 }}
+                />
+            </View>}
 
         </View>
 
