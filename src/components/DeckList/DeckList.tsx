@@ -9,7 +9,7 @@ import GridListTile from '@material-ui/core/GridListTile';
 
 import {IconType} from "../icon/Icon.common";
 import IconButton from "../button/IconButton";
-import DeckListItem, {listItemMaxWidth} from "./DeckListItem";
+import DeckListItem, {listItemMaxWidth} from "./DeckListItem/DeckListItem";
 import DeckListBase from "./DeckList.common";
 
 export interface DeckListState {

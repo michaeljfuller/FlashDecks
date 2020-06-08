@@ -2,7 +2,7 @@ import React from "react";
 import {View, Text} from "react-native";
 import {ActionSheet} from "native-base";
 
-import DeckListItem from "./DeckListItem";
+import DeckListItem from "./DeckListItem/DeckListItem";
 import DeckListBase from "./DeckList.common";
 
 export default class DeckList extends DeckListBase {
