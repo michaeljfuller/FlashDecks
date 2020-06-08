@@ -1,17 +1,17 @@
 import React, {Component} from "react";
 import {Text, View} from "react-native";
-import ScreenContainer from "../ScreenContainer";
-import {NavigationScreenProps} from "../../navigation/navigation_types";
-import DeckList from "../../components/DeckList/DeckList";
-import {repeat} from "../../utils/array";
+import ScreenContainer from "../../ScreenContainer";
+import {NavigationScreenProps} from "../../../navigation/navigation_types";
+import DeckList from "../../../components/DeckList/DeckList";
+import {repeat} from "../../../utils/array";
 
-import {reduxConnector, DecksScreenStoreProps} from "./DecksScreen_redux";
+import {reduxConnector, DeckListScreenStoreProps} from "./DeckListScreen_redux";
 
-export interface DecksScreenProps extends NavigationScreenProps {}
-export interface DecksScreenState {
+export interface DeckListScreenProps extends NavigationScreenProps {}
+export interface DeckListScreenState {
     decks: Deck[];
 }
-export class DecksScreen extends Component<DecksScreenProps & DecksScreenStoreProps, DecksScreenState>
+export class DeckListScreen extends Component<DeckListScreenProps & DeckListScreenStoreProps, DeckListScreenState>
 {
     state = {
         decks: repeat(7, index => ({
@@ -21,7 +21,7 @@ export class DecksScreen extends Component<DecksScreenProps & DecksScreenStorePr
             ownerId: `user-${index+1}`,
             owner: { id: `user-${index}`, displayName: `User${index+1}` }
         } as Deck))
-    } as DecksScreenState;
+    } as DeckListScreenState;
 
     render() {
         return (
@@ -36,4 +36,4 @@ export class DecksScreen extends Component<DecksScreenProps & DecksScreenStorePr
 
 }
 
-export default reduxConnector(DecksScreen);
+export default reduxConnector(DeckListScreen);

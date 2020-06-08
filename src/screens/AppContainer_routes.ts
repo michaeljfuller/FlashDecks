@@ -2,7 +2,7 @@ import { createRouteConfig } from "../navigation/navigation_utils";
 import AppRoutes from "./AppRoutes";
 import DashboardScreen from "./Dashboard/DashboardScreen";
 import TempScreen from "./Temp/TempScreen";
-import DecksScreen from "./Decks/DecksScreen";
+import DeckRouteContainer from "./Deck/DeckRouteContainer";
 
 /**
  * Map route keys to components & paths.
@@ -10,7 +10,7 @@ import DecksScreen from "./Decks/DecksScreen";
 export const routes = {
     [AppRoutes.Home]: createRouteConfig(DashboardScreen, ''),
     [AppRoutes.Temp]: createRouteConfig(TempScreen, 'temp'),
-    [AppRoutes.Decks]: createRouteConfig(DecksScreen, 'decks'),
+    [AppRoutes.Decks]: createRouteConfig(DeckRouteContainer, 'deck'),
 };
 
 /**
