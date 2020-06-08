@@ -13,8 +13,13 @@ const Tooltip = withStyles({
 })(MaterialTooltip) as typeof MaterialTooltip;
 
 export default function Avatar(props: AvatarProps) {
-    const {user} = props;
+    const {user, style} = props;
+    const {size=40} = style||{};
     return <Tooltip arrow title={user ? user.displayName : 'Unknown'}>
-        <MaterialAvatar src="https://picsum.photos/200">{user ? user.displayName.substr(0, 2) : '?'}</MaterialAvatar>
+        <MaterialAvatar src="https://picsum.photos/200" style={{
+            width: size, height: size,
+        }}>
+            {user ? user.displayName.substr(0, 2) : '?'}
+        </MaterialAvatar>
     </Tooltip>;
 }

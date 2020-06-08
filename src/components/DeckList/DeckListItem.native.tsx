@@ -31,15 +31,15 @@ export default function DeckListItem(props: DeckListItemProps) {
     return <UICard>
 
         {/* Header */}
-        <View style={{ backgroundColor: headerColor, flexDirection: 'row' }}>
+        <View style={{ backgroundColor: headerColor, flexDirection: 'row', height: 40 }}>
 
             <UICardItem button bordered onPress={handleClick} style={{ backgroundColor: headerColor, flexGrow: 1 }}>
                 <Text style={{ color: headerTextColor }}>{deck.name}</Text>
             </UICardItem>
 
             <UICardItem style={{ backgroundColor: headerColor }}>
-                <Text style={{ color: headerTextColor }}>{owner.displayName}</Text>
-                <Avatar user={owner} />
+                <Text style={{ color: headerTextColor, paddingRight: 5 }}>{owner.displayName}</Text>
+                <Avatar user={owner} style={{ size: 30 }} />
             </UICardItem>
 
             {showActions && <View style={{ paddingTop: 5, paddingRight: 5 }}>
@@ -47,7 +47,7 @@ export default function DeckListItem(props: DeckListItemProps) {
                     icon={IconType.More}
                     color={DefaultTheme} invertColor
                     onClick={handleActions}
-                    style={{ height: 25 }}
+                    style={{ height: 30 }}
                 />
             </View>}
 
