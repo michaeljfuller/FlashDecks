@@ -41,3 +41,8 @@ export type MapToObjectCallback<
     key?: KeysOut;
     skip?: boolean;
 };
+
+/** A safe way of calling hasOwnProperty, now objects can have a different prototype via Object.create(). */
+export function hasProperty(obj: Record<string, any>, key: string): boolean {
+    return Object.prototype.hasOwnProperty.call(obj, key);
+}

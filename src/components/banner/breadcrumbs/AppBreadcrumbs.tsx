@@ -2,6 +2,7 @@ import React from "react";
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import {withStyles} from "@material-ui/core/styles";
 
+import {getBaseRouteFromKey} from '../../../routes';
 import TextButton, {TextButtonProps} from '../../button/TextButton';
 import withDefaultProps from '../../../utils/hoc/withDefaultProps/withDefaultProps';
 import {getCurrentRoutes} from '../../../navigation/navigation_utils';
@@ -12,12 +13,15 @@ export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
     const {navigation} = props;
     const currentRoutes = getCurrentRoutes(navigation);
     const lastRoute = currentRoutes[currentRoutes.length-1]; // Get the top-most route in the current stack
+    const lastBaseRouteKey = lastRoute ? getBaseRouteFromKey(lastRoute.key) : ''; // Get the leaf route from that
 
     const items = currentRoutes.map(route => {
+        const targetRouteKey = getBaseRouteFromKey(route.key); // Get the leaf route for this route
         return <BreadcrumbButton
             key={route.key}
             title={route.routeName}
-            onClick={() => console.warn('TODO BreadcrumbButton click', route)}
+            disabled={targetRouteKey === lastBaseRouteKey}
+            onClick={() => navigation.navigate(targetRouteKey)}
         />;
     });
 

@@ -1,11 +1,13 @@
 import React, {Component} from "react";
 import {Text} from "react-native";
 import ScreenContainer from "../../ScreenContainer";
-import {NavigationScreenProps} from "../../../navigation/navigation_types";
+import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
 
 import {reduxConnector, DeckEditScreenStoreProps} from "./DeckEditScreen_redux";
 
-export interface DeckEditScreenProps extends NavigationScreenProps {}
+export interface DeckEditScreenProps extends NavigationScreenProps<
+    NavigationScreenState, { deckId: string }
+> {}
 export interface DeckEditScreenState {
     deck: Deck;
 }
@@ -27,6 +29,14 @@ export class DeckEditScreen extends Component<DeckEditScreenProps & DeckEditScre
             }]
         }
     } as DeckEditScreenState;
+
+    componentDidMount() {
+        const {deckId} = this.props.navigation.state.params || {};
+        if (!deckId) {
+            console.warn('No ID'); // TODO Redirect
+            return;
+        }
+    }
 
     render() {
         return (
