@@ -3,14 +3,16 @@ import React from "react";
 export interface DeckListProps {
     decks: Deck[];
     loggedInUser: User|null;
+    goToEdit: (deck: Deck) => void;
+    goToView: (deck: Deck) => void;
 }
 
 export default class DeckListBase<State = {}> extends React.Component<DeckListProps, State>{
     gotToDeck(deck: Deck) {
-        console.log('DeckListBase', 'goToDeck', deck);
+        this.props.goToView(deck);
     }
     editDeck(deck: Deck) {
-        console.log('DeckListBase', 'editDeck', deck);
+        this.props.goToEdit(deck);
     }
     deleteDeck(deck: Deck) {
         console.log('DeckListBase', 'deleteDeck', deck);

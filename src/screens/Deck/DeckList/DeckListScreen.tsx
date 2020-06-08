@@ -6,6 +6,7 @@ import DeckList from "../../../components/DeckList/DeckList";
 import {repeat} from "../../../utils/array";
 
 import {reduxConnector, DeckListScreenStoreProps} from "./DeckListScreen_redux";
+import DeckRoutes from "../DeckRoutes";
 
 export interface DeckListScreenProps extends NavigationScreenProps {}
 export interface DeckListScreenState {
@@ -23,12 +24,25 @@ export class DeckListScreen extends Component<DeckListScreenProps & DeckListScre
         } as Deck))
     } as DeckListScreenState;
 
+    goTo(routeName: string, deck: Deck) {
+        this.props.navigation.state.params = {}; // Clear Navigation params
+        this.props.navigation.navigate({ routeName, params: {deckId: deck.id} });
+    }
+
+    goToEdit = (deck: Deck) => this.goTo(DeckRoutes.Edit, deck);
+    goToView = (deck: Deck) => this.goTo(DeckRoutes.View, deck);
+
     render() {
         return (
             <ScreenContainer>
                 <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{this.constructor.name}</Text>
                 <View style={{ padding: 5 }}>
-                    <DeckList decks={this.state.decks} loggedInUser={this.props.loggedInUser} />
+                    <DeckList
+                        decks={this.state.decks}
+                        loggedInUser={this.props.loggedInUser}
+                        goToEdit={this.goToEdit}
+                        goToView={this.goToView}
+                    />
                 </View>
             </ScreenContainer>
         );

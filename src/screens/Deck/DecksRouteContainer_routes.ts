@@ -5,9 +5,9 @@ import DeckListScreen from "./DeckList/DeckListScreen";
 import DeckViewScreen from "./DeckView/DeckViewScreen";
 
 export const routes = {
-    [DeckRoutes.Edit]: createRouteConfig(DeckEditScreen, 'edit'),
     [DeckRoutes.List]: createRouteConfig(DeckListScreen, 'list'),
-    [DeckRoutes.View]: createRouteConfig(DeckViewScreen, 'view'),
+    [DeckRoutes.Edit]: createRouteConfig(DeckEditScreen, 'edit/:deckId'),
+    [DeckRoutes.View]: createRouteConfig(DeckViewScreen, 'view/:deckId'),
 };
 
 export const routeConfig = {

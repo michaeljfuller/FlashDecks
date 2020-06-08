@@ -17,7 +17,7 @@ export const routes = {
  * The route configuration, specifying the default route and display order.
  */
 export const routeConfig = {
-    initialRouteName: AppRoutes.Temp,
+    initialRouteName: AppRoutes.Decks,
     order: [
         AppRoutes.Home,
         AppRoutes.Temp,

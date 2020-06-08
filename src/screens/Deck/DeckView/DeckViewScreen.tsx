@@ -32,7 +32,12 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
         return (
             <ScreenContainer>
                 <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{this.constructor.name}</Text>
-                <Text>{JSON.stringify(this.state.deck, null, 2)}</Text>
+
+                <Text style={{ fontWeight: 'bold' }}>this.props.navigation.state</Text>
+                <Text style={{ marginBottom: 20 }}>{JSON.stringify(this.props.navigation.state, null, 2)}</Text>
+
+                <Text style={{ fontWeight: 'bold' }}>this.state.deck</Text>
+                <Text style={{ marginBottom: 20 }}>{JSON.stringify(this.state.deck, null, 2)}</Text>
             </ScreenContainer>
         );
     }
