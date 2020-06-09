@@ -20,15 +20,15 @@ export function IconButton(props: IconButtonProps) {
         transparent={transparent}
         iconLeft
     >
-        <Icon type={icon} style={getIconStyle(theme, transparent)} />
-        {text ? <NativeBaseText style={getTextStyle(theme, transparent)}>{text}</NativeBaseText> : undefined}
+        <Icon type={icon} style={getIconStyle(theme, transparent, disabled)} />
+        {text ? <NativeBaseText style={getTextStyle(theme, transparent, disabled)}>{text}</NativeBaseText> : undefined}
     </NativeBaseButton>
 }
 export default IconButton;
 
 function getButtonStyle(style: IconButtonStyle, theme: UIColorTheme, transparent: boolean, round: boolean): RnViewStyleProp {
     if (round) {
-        const defaultSize = 30;
+        const defaultSize = 50;
         const width = style.width || style.height || defaultSize;
         const height = style.height || style.width || defaultSize;
         return {
@@ -47,9 +47,17 @@ function getButtonStyle(style: IconButtonStyle, theme: UIColorTheme, transparent
         };
     }
 }
-function getIconStyle(theme: UIColorTheme, transparent: boolean): IconStyles {
-    return { color: transparent ? theme.primary.base : theme.secondary.base };
+function getIconStyle(theme: UIColorTheme, transparent: boolean, disabled: boolean): IconStyles {
+    if (transparent) {
+        return { color: disabled ? theme.primary.disabled : theme.primary.base };
+    } else {
+        return { color: disabled ? theme.secondary.disabled : theme.secondary.base };
+    }
 }
-function getTextStyle(theme: UIColorTheme, transparent: boolean): TextStyle {
-    return { color: transparent ? theme.primary.base : theme.secondary.base };
+function getTextStyle(theme: UIColorTheme, transparent: boolean, disabled: boolean): TextStyle {
+    if (transparent) {
+        return { color: disabled ? theme.primary.disabled : theme.primary.base };
+    } else {
+        return { color: disabled ? theme.secondary.disabled : theme.secondary.base };
+    }
 }
