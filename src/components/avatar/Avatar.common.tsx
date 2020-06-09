@@ -1,5 +1,5 @@
 export interface AvatarProps {
-    user: User;
+    user: User|null|undefined;
     style?: AvatarStyle;
 }
 export interface AvatarStyle {
