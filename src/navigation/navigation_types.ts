@@ -3,7 +3,8 @@ import {
     NavigationOpenDrawerAction,
     NavigationCloseDrawerAction,
     NavigationToggleDrawerAction,
-    NavigationParams
+    NavigationParams,
+    NavigationState
 } from "react-navigation";
 
 export {
@@ -23,7 +24,7 @@ export interface RootNavigationProperties {
  * A navigation object with definable state and extra properties (defaulting to root navigator).
  */
 export type Navigation<
-    State = {},
+    State = NavigationState,
     Props = RootNavigationProperties & NavigationParams
 > = NavigationScreenProp<State, Props>;
 
@@ -35,7 +36,7 @@ export interface NavigationScreenProps<
     State = NavigationScreenState,
     Props = RootNavigationProperties
 > {
-    navigation: Navigation<State, Props>;
+    navigation: Navigation<State & NavigationState, Props>;
 }
 
 export interface NavigationScreenState {
