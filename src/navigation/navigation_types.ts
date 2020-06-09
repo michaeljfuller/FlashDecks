@@ -25,8 +25,9 @@ export interface RootNavigationProperties {
  */
 export type Navigation<
     State = NavigationState,
-    Props = RootNavigationProperties & NavigationParams
-> = NavigationScreenProp<State, Props>;
+    Props = NavigationParams,
+    Extras = RootNavigationProperties
+> = NavigationScreenProp<State, Props> & Extras;
 
 /**
  * Adds `navigation` to a Screen component's Properties.
@@ -34,9 +35,9 @@ export type Navigation<
  */
 export interface NavigationScreenProps<
     State = NavigationScreenState,
-    Props = RootNavigationProperties
+    Props = {}
 > {
-    navigation: Navigation<State & NavigationState, Props>;
+    navigation: Navigation<State & NavigationState, Props & NavigationParams>;
 }
 
 export interface NavigationScreenState {
