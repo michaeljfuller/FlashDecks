@@ -1,25 +1,21 @@
+import {mapToObject} from "../utils/object";
+
 export const Color = Object.freeze({
-    White: '#EEE',
+    White: '#FFF',
     Grey: '#777',
-    Black: '#111',
+    Black: '#000',
     Red: '#F44',
     Green: '#4b3',
     Blue: '#46F',
 });
-export const LightColor = setColors({
-    White: '#FFF',
-    Grey: '#999',
-    Black: '#444',
-});
-export const DarkColor = setColors({
-    White: '#BBB',
+export const HoverColor = setColors({
+    White: '#EEE',
     Grey: '#555',
     Black: '#000',
     Red: '#D33',
     Green: '#392',
     Blue: '#35D',
 });
-export const HoverColor = setColors({}, DarkColor);
 export const DisabledColor = setColors({
     White: '#EEE',
     Grey: '#999',
@@ -29,8 +25,12 @@ export const DisabledColor = setColors({
     Blue: '#88C'
 });
 
+export type IColor = typeof Color;
+export type ColorKey = keyof IColor;
+export const ColorKeys = mapToObject<IColor, ColorKey, ColorKey, any>(Color, (_, key) => ({ value: key as ColorKey }));
+
 /** Set new colour values, with defaults. */
-function setColors(input: Partial<typeof Color>, baseColour = Color): typeof Color {
+function setColors(input: Partial<IColor>, baseColour = Color): IColor {
     return Object.freeze(
         Object.assign({}, baseColour, input)
     );

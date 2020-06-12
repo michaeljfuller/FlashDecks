@@ -1,37 +1,27 @@
 import React from 'react';
-import {Text} from 'react-native';
-import MaterialButton from '@material-ui/core/IconButton';
-import {withStyles} from '@material-ui/core/styles';
+import {getStyledIconButtonBase} from './material-ui/StyledButtonBase';
+import {getStyledButtonText} from './material-ui/StyledButtonText';
+import {getStyledButtonIcon} from './material-ui/StyledButtonIcon';
 
-import {Icon} from '../icon/Icon';
 import {IconButtonProps, iconButtonPropsWithDefaults} from './IconButton.common';
+import {getUIColorTheme} from "../../styles/UIColorTheme";
 export * from './IconButton.common';
 
-const StyledButton = withStyles({
-    root: {
-        // justifyContent: 'flex-start', // left: 'flex-start', right: 'flex-end', center: 'center'
-        padding: 0,
-        '&:disabled': {
-            opacity: 0.5
-        }
-    },
-    label: {
-        textTransform: 'none'
-    }
-})(MaterialButton) as typeof MaterialButton;
-
 export function IconButton(props: IconButtonProps) {
-    const { onClick, disabled, icon, style, text } = iconButtonPropsWithDefaults(props);
-    return <StyledButton
+    const { onClick, disabled, icon, style, text, transparent, color, invertColor } = iconButtonPropsWithDefaults(props);
+    const theme = getUIColorTheme(color, invertColor);
+
+    const ContainerButton = getStyledIconButtonBase(theme, transparent, !!text);
+    const IconComponent = getStyledButtonIcon(theme, transparent);
+    const TextComponent = getStyledButtonText(theme, transparent);
+
+    return <ContainerButton
         onClick={onClick}
         disabled={disabled}
-        style={{
-            width: style.width,
-            height: style.height
-        }}
+        style={{ width: style.width, height: style.height, textAlign: "center" }}
     >
-        <Icon type={icon} style={{ color: style.color }} />
-        {text && <Text style={{ color: style.color }}>{text}</Text>}
-    </StyledButton>;
+        <IconComponent type={icon} />
+        {text && <TextComponent>{text}</TextComponent>}
+    </ContainerButton>;
 }
 export default IconButton;

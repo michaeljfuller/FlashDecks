@@ -1,23 +1,25 @@
+import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
+import React from "react";
+
 export interface TextButtonProps {
-    onClick?: () => void;
+    onClick?: (event?: React.MouseEvent) => void;
     disabled?: boolean;
     title?: string;
-    style?: TextButtonStyle;
-}
-export interface TextButtonStyle {
-    color?: string;
+    color?: GetUIColorThemeInput;
+    invertColor?: boolean;
 }
 
 const noop = () => {};
-export function textButtonPropsWithDefaults(props: TextButtonProps) {
+export function textButtonPropsWithDefaults(props: TextButtonProps): Required<TextButtonProps> {
     const {
         onClick = noop,
         disabled = false,
         title = '',
-        style = {}
+        color = DefaultTheme.primary.key,
+        invertColor = false,
     } = props;
     return {
-        onClick, title, style,
+        onClick, title, color, invertColor,
         disabled: disabled || !props.onClick,
     };
 }

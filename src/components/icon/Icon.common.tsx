@@ -3,7 +3,10 @@ export enum IconType {
     Menu,
     Home,
     Exit,
-    Back
+    Back,
+    Edit,
+    Delete,
+    More
 }
 export interface IconProps {
     type: IconType;

@@ -1,34 +1,33 @@
+import React from "React";
+import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
+
 export interface ButtonProps {
-    onClick?: () => void;
+    onClick?: (event?: React.MouseEvent) => void;
     disabled?: boolean;
     title?: string;
     flat?: boolean;
     style?: ButtonStyle;
-    variation?: ButtonVariation;
+    color?: GetUIColorThemeInput;
+    invertColor?: boolean;
 }
 export interface ButtonStyle {
     width?: number;
     height?: number;
 }
-export enum ButtonVariation {
-    Standard,
-    Red,
-    Green,
-    Blue
-}
 
 const noop = () => {};
-export function buttonPropsWithDefaults(props: ButtonProps) {
+export function buttonPropsWithDefaults(props: ButtonProps): Required<ButtonProps> {
     const {
         onClick = noop,
         disabled = false,
         title = '',
         flat = false,
         style = {},
-        variation = ButtonVariation.Standard
+        color = DefaultTheme.primary.key,
+        invertColor = false,
     } = props;
     return {
-        onClick, title, flat, style, variation,
+        onClick, title, flat, style, color, invertColor,
         disabled: disabled || !props.onClick,
     };
 }

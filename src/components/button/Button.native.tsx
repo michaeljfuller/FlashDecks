@@ -2,8 +2,9 @@ import React from 'react';
 import {TextStyle} from "react-native";
 import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} from 'native-base';
 
-import {Color, LightColor} from '../../styles/Color';
-import {ButtonProps, buttonPropsWithDefaults, ButtonVariation} from './Button.common';
+import {ButtonProps, buttonPropsWithDefaults} from './Button.common';
+import {Color, getUIColorTheme} from "../../styles/UIColorTheme";
+
 export * from './Button.common';
 
 export function Button(props: ButtonProps) {
@@ -20,48 +21,26 @@ export function Button(props: ButtonProps) {
 export default Button;
 
 //<editor-fold desc="Styles">
-const backgroundStyles: Record<string, RnViewStyleProp> = {
-    red: {   backgroundColor: Color.Red },
-    green: { backgroundColor: Color.Green },
-    blue: {  backgroundColor: Color.Blue },
-};
 
-const textStyles: Record<string, TextStyle> = {
-    red: {   color: LightColor.White },
-    green: { color: LightColor.White },
-    blue: {  color: LightColor.White },
-};
-function getBackgroundStyle(props: ButtonProps) {
-    const {variation, style, flat} = props;
-    const result: Array<RnViewStyleProp> = [{
+function getBackgroundStyle(props: ButtonProps): RnViewStyleProp {
+    const {color, invertColor, style, flat} = buttonPropsWithDefaults(props);
+    const theme = getUIColorTheme(color, invertColor);
+    return {
         width: style?.width,
         height: style?.height,
+        backgroundColor: theme.primary.base,
+
         // TODO handle shadow/flat
-        shadowOffset: {
-            height: 3, width: 3
-        },
+        shadowOffset: { height: 3, width: 3 },
+        shadowColor: Color.Black,
         // shadowOpacity: 100,
-        shadowColor: LightColor.Black
-    }];
-    switch (variation) {
-        default:                       result.push(backgroundStyles.blue); break;
-        case ButtonVariation.Standard: result.push(backgroundStyles.blue); break;
-        case ButtonVariation.Red:      result.push(backgroundStyles.red); break;
-        case ButtonVariation.Green:    result.push(backgroundStyles.green); break;
-        case ButtonVariation.Blue:     result.push(backgroundStyles.blue); break;
-    }
-    return result;
+    };
 }
-function getTextStyle(props: ButtonProps) {
-    const {variation} = props;
-    const result: RnViewStyleProp[] = [];
-    switch (variation) {
-        default:                       result.push(textStyles.blue); break;
-        case ButtonVariation.Standard: result.push(textStyles.blue); break;
-        case ButtonVariation.Red:      result.push(textStyles.red); break;
-        case ButtonVariation.Green:    result.push(textStyles.green); break;
-        case ButtonVariation.Blue:     result.push(textStyles.blue); break;
-    }
-    return result;
+function getTextStyle(props: ButtonProps): TextStyle {
+    const {color, invertColor} = buttonPropsWithDefaults(props);
+    const theme = getUIColorTheme(color, invertColor);
+    return {
+        color: theme.secondary.base
+    };
 }
 //</editor-fold>

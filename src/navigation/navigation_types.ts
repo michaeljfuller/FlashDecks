@@ -1,9 +1,10 @@
 import {
     NavigationScreenProp,
-    NavigationState,
     NavigationOpenDrawerAction,
     NavigationCloseDrawerAction,
-    NavigationToggleDrawerAction
+    NavigationToggleDrawerAction,
+    NavigationParams,
+    NavigationState
 } from "react-navigation";
 
 export {
@@ -24,16 +25,22 @@ export interface RootNavigationProperties {
  */
 export type Navigation<
     State = NavigationState,
-    Props = RootNavigationProperties
-> = NavigationScreenProp<State> & Props;
+    Props = NavigationParams,
+    Extras = RootNavigationProperties
+> = NavigationScreenProp<State, Props> & Extras;
 
 /**
  * Adds `navigation` to a Screen component's Properties.
  * Can define the state and extra properties (defaulting to root navigator).
  */
 export interface NavigationScreenProps<
-    State = NavigationState,
-    Props = RootNavigationProperties
+    State = NavigationScreenState,
+    Props = {}
 > {
-    navigation: Navigation<State, Props>;
+    navigation: Navigation<State & NavigationState, Props & NavigationParams>;
+}
+
+export interface NavigationScreenState {
+    key: string;
+    routeName: string;
 }

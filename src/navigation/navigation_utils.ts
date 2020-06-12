@@ -16,7 +16,7 @@ export function createRouteConfig(component: Function, path: string, navigationO
  */
 export function getCurrentRoutes(navigation: Navigation): NavigationRoute[] {
     return uniq([
-        navigation.state.routes[0]
+        navigation.state.routes[0] // Prepend Home
     ].concat(
         getCurrentRoutesFromNavigationState(navigation.state)
     ));
