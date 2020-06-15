@@ -4,7 +4,8 @@ import {Provider as ReduxProvider} from 'react-redux';
 import {AppRootBase} from './AppRootBase';
 import AppAuthenticator from './Authenticator/AppAuthenticator';
 import ErrorBoundary from '../utils/hoc/ErrorBoundary/ErrorBoundary';
-import NavigationRoot from '../navigation/NavigationRoot';
+import InfoBanner from "../components/banner/InfoBanner";
+import AppNavigation from "../screens/AppNavigation";
 import store from '../store/store';
 
 export class AppRoot extends AppRootBase {
@@ -32,7 +33,10 @@ export class AppRoot extends AppRootBase {
     }
 
     renderApp() {
-        return <NavigationRoot />;
+        return <View style={{ flex: 1 }}>
+            <InfoBanner />
+            <AppNavigation />
+        </View>;
     }
 
 }
