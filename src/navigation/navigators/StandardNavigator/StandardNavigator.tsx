@@ -1,6 +1,6 @@
 import React from "react";
-import NavigatorContainer from "../../NavigationContainer";
 import {NavigatorBase} from "../NavigatorBase";
+import {View} from "react-native";
 export * from '../setNavigator';
 
 export enum TestID {
@@ -18,16 +18,16 @@ export enum TestID {
  */
 export abstract class StandardNavigator<Props = any, State = any> extends NavigatorBase<Props, State> {
     render() {
-        return <NavigatorContainer testID={TestID.Root}>
+        return <View testID={TestID.Root} style={{ flex: 1 }}>
             {this.renderContents()}
-        </NavigatorContainer>;
+        </View>;
     }
 
     /** Render the contents of the selected route. */
     renderContents() {
         const NavigatorContents = this.navigator;
-        return (<NavigatorContainer testID={TestID.Contents}>
+        return (<View testID={TestID.Contents} style={{ flex: 1 }}>
             <NavigatorContents navigation={this.props.navigation} />
-        </NavigatorContainer>);
+        </View>);
     }
 }
