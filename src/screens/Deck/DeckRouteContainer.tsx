@@ -1,8 +1,17 @@
 import React from "react";
-import {setNavigator} from "../../navigation/navigators/setNavigator";
-import {StandardNavigator} from "../../navigation/navigators/StandardNavigator/StandardNavigator";
-import DeckRouteNavigator from "./DeckRouteContainer_navigator";
+import { createStackNavigator } from '@react-navigation/stack';
 
-@setNavigator(DeckRouteNavigator)
-export default class DeckRouteContainer extends StandardNavigator {
+import {DeckRoutes, DeckRoutesTree} from "./DeckRouteTree";
+import {DeckListScreen} from "./DeckList/DeckListScreen";
+import {DeckViewScreen} from "./DeckView/DeckViewScreen";
+import {DeckEditScreen} from "./DeckEdit/DeckEditScreen";
+const {Navigator, Screen} = createStackNavigator();
+
+export function DeckRouteContainer() {
+    return <Navigator headerMode="none" initialRouteName={DeckRoutesTree.base}>
+        <Screen name={DeckRoutes.List} component={DeckListScreen} />
+        <Screen name={DeckRoutes.View} component={DeckViewScreen} />
+        <Screen name={DeckRoutes.Edit} component={DeckEditScreen} />
+    </Navigator>;
 }
+export default DeckRouteContainer;

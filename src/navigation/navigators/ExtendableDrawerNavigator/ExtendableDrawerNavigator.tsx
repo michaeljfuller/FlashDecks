@@ -59,7 +59,7 @@ type DrawerNavigationEventMap = {
  * @link https://reactnavigation.org/docs/custom-navigators/
  */
 export function ExtendableDrawerNavigator(props: PropsWithChildren<ExtendableDrawerProps>) {
-    const { render = defaultRender } = props;
+    const { render = defaultRender, initialRouteName } = props;
     const attr = useNavigationBuilder<
         DrawerRouterState,
         DrawerRouterOptions,
@@ -77,7 +77,7 @@ export function ExtendableDrawerNavigator(props: PropsWithChildren<ExtendableDra
     return <NavigationHelpersContext.Provider value={navigation}>
         {render(
             <DrawerView {...attr} />,
-            {navigation: navigation as any, state, descriptors}
+            {navigation: navigation as any, state, descriptors, initialRouteName}
         )}
     </NavigationHelpersContext.Provider>;
 }

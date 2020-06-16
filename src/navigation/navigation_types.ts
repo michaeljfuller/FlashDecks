@@ -7,8 +7,13 @@ import {
     NavigationState
 } from "react-navigation";
 import {NavigationState as NavigationRouteState} from '@react-navigation/routers';
-import {Descriptor} from "@react-navigation/native";
+import {Descriptor, Route} from "@react-navigation/native";
+
+export {NavigationState as NavigationRouteState} from '@react-navigation/routers';
 export {NavigationRoute} from "react-navigation";
+
+/** Get a Route with state, as found in the NavigationState's Route chain. */
+export type StatefulRoute = NavigationRouteState['routes'][0];
 
 /**
  * The actions on the Root navigator (Drawer).
@@ -34,9 +39,10 @@ export type Navigation<
  */
 export interface NavigationScreenProps<
     State = NavigationScreenState,
-    Props = {}
+    Props extends object|undefined = undefined
 > {
     navigation: Navigation<State & NavigationState, Props & NavigationParams>;
+    route: Route<string> & { params: Props };
 }
 
 export interface NavigationScreenState {
@@ -68,4 +74,5 @@ export interface NavigationRouterDetails<
     navigation: Nav;
     state: State;
     descriptors: Descriptors;
+    initialRouteName?: string;
 }

@@ -13,6 +13,9 @@ import {
 } from "../navigation/navigators/ExtendableDrawerNavigator/ExtendableDrawerNavigator";
 import AppBanner from "../components/banner/AppBanner";
 import InfoBanner from "../components/banner/InfoBanner";
+import DashboardScreen from "./Dashboard/DashboardScreen";
+import {TempScreen} from "./Temp/TempScreen";
+import DeckRouteContainer from "./Deck/DeckRouteContainer";
 const {Navigator, Screen} = createExtendableDrawerNavigator();
 
 export const appNavigation = React.createRef<NavigationContainerRef>();
@@ -59,33 +62,14 @@ export class AppNavigation extends React.Component<any, AppNavigationState> {
                     }}
                     render={this.renderContents}
                 >
-                    <Screen name={AppRoutes.Home}  component={createScreen(AppRoutes.Home, this)} options={{title: 'Overview'}}/>
-                    <Screen name={AppRoutes.Temp}  component={createScreen(AppRoutes.Temp, this)}/>
-                    <Screen name={AppRoutes.Decks} component={createScreen(AppRoutes.Decks, this)}/>
+
+                    <Screen name={AppRoutes.Home}  component={DashboardScreen} options={{icon: null} /* TODO Add icon to options */}/>
+                    <Screen name={AppRoutes.Temp}  component={TempScreen}/>
+                    <Screen name={AppRoutes.Decks} component={DeckRouteContainer}/>
+
                 </Navigator>
             </NavigationContainer>
         </React.Fragment>;
     }
 }
 export default AppNavigation;
-
-function createScreen(name: string, parent: AppNavigation) {
-    return function TestScreenComponent(props: any){
-        console.log(name, props, props.navigation.dangerouslyGetState());
-        const rand = (digits = 4) => Math.floor(
-            Math.random() * Math.pow(10, digits)
-        ).toString().padStart(digits, '0');
-
-        return <View>
-            <Text style={{ fontWeight: 'bold' }}>AppNavigator {name}</Text>
-            <Text>{JSON.stringify(props, null, 4)}</Text>
-
-            <Button title="Navigate home"  onPress={() => props.navigation.navigate('Home', {cameFrom: name})} disabled={name === 'Home'} />
-            <Button title="Go back"        onPress={() => props.navigation.goBack()} disabled={!props.navigation.canGoBack()} />
-            <Button title="Change title"   onPress={() => props.navigation.setOptions({ title: props.route.name+': '+rand() })} />
-            <Button title="Log Navigation" onPress={() => console.log('navigation', appNavigation.current)} />
-            <Button title="Log State"      onPress={() => console.log('state', parent.state)} />
-        </View>;
-    }
-}
-
