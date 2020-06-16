@@ -2,15 +2,17 @@ import React from "react";
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import {withStyles} from "@material-ui/core/styles";
 
-import {getBaseRouteFromKey} from '../../../routes';
 import TextButton, {TextButtonProps} from '../../button/TextButton';
 import withDefaultProps from '../../../utils/hoc/withDefaultProps/withDefaultProps';
-import {getCurrentRoutes} from '../../../navigation/navigation_utils';
 import {AppBreadcrumbsProps} from './AppBreadcrumbs.common';
 import {Color} from "../../../styles/Color";
 
 export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
-    const {navigation} = props;
+    const {navigation, state, descriptors} = props.routerDetails;
+
+    const items = navigation && [] as React.ReactElement[];
+
+    /*
     const currentRoutes = getCurrentRoutes(navigation);
     const lastRoute = currentRoutes[currentRoutes.length-1]; // Get the top-most route in the current stack
     const lastBaseRouteKey = lastRoute ? getBaseRouteFromKey(lastRoute.key) : ''; // Get the leaf route from that
@@ -24,6 +26,15 @@ export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
             onClick={() => navigation.navigate(targetRouteKey)}
         />;
     });
+    */
+
+    const route = state.routes[state.index];
+    const descriptor = descriptors[route.key];
+    items.push(<BreadcrumbButton
+        key={route.key}
+        title={descriptor.options.title}
+        disabled
+    />);
 
     return <StyledBreadcrumbs maxItems={3}>{items}</StyledBreadcrumbs>;
 }

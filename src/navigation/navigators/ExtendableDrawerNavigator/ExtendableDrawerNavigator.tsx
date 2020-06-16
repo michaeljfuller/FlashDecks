@@ -6,20 +6,23 @@ import {
     createNavigatorFactory,
     DefaultNavigatorOptions,
     DrawerActions,
-    DrawerNavigationState,
+    DrawerNavigationState as DrawerRouterState,
     DrawerRouter,
     DrawerRouterOptions,
     NavigationHelpersContext,
     useNavigationBuilder,
     DrawerActionType,
-    Descriptor,
 } from '@react-navigation/native';
 import {DrawerView, DrawerNavigationOptions} from '@react-navigation/drawer';
 import {DrawerNavigationConfig} from "@react-navigation/drawer/lib/typescript/src/types";
-import {Navigation} from "../../navigation_types";
+import {Navigation, NavigationRouteDescriptors, NavigationRouterDetails} from "../../navigation_types";
 
 //</editor-fold>
 //<editor-fold desc="Types">
+
+export type ExtendableDrawerRouterDetails = NavigationRouterDetails<
+    ExtendableDrawerNavigation, DrawerRouterState, ExtendableDrawerNavigationRouteDescriptors
+>;
 
 /** Properties for the component, extending DrawerNavigationOptions. */
 export type ExtendableDrawerProps = DefaultNavigatorOptions<DrawerNavigationOptions>
@@ -27,28 +30,21 @@ export type ExtendableDrawerProps = DefaultNavigatorOptions<DrawerNavigationOpti
     & DrawerNavigationConfig
     & {
         /** Returns a wrapper around the passed contents. */
-        render?: RenderContentsFunction;
+        render?: ExtendableDrawerRender;
     };
 
 /** Definition of the render function. */
-export interface RenderContentsFunction {
-    (
-        contents: React.ReactElement,
-        navigation: ExtendableDrawerNavigation,
-        state: DrawerNavigationState,
-        descriptors: ExtendableDrawerNavigationRouteDescriptors,
-    ): React.ReactElement;
+export interface ExtendableDrawerRender {
+    (contents: React.ReactElement, routerDetails: ExtendableDrawerRouterDetails): React.ReactElement;
 }
 
 /** The Navigation type for the Drawer. */
 export type ExtendableDrawerNavigation = Navigation & {
-    dispatch(action: DrawerActionType | ((state: DrawerNavigationState) => DrawerActionType)): void;
+    dispatch(action: DrawerActionType | ((state: DrawerRouterState) => DrawerActionType)): void;
 }
 
 /** The descriptors for the Drawer routes. */
-export interface ExtendableDrawerNavigationRouteDescriptors {
-    [routeKey: string]: Descriptor<Record<string, object | undefined>, string, DrawerNavigationState, DrawerNavigationOptions, {}>;
-}
+export type ExtendableDrawerNavigationRouteDescriptors = NavigationRouteDescriptors<DrawerRouterState, DrawerNavigationOptions>
 
  /** Copied from source, since it's not exported. */
 type DrawerNavigationEventMap = {
@@ -65,7 +61,7 @@ type DrawerNavigationEventMap = {
 export function ExtendableDrawerNavigator(props: PropsWithChildren<ExtendableDrawerProps>) {
     const { render = defaultRender } = props;
     const attr = useNavigationBuilder<
-        DrawerNavigationState,
+        DrawerRouterState,
         DrawerRouterOptions,
         DrawerNavigationOptions,
         DrawerNavigationEventMap
@@ -81,20 +77,13 @@ export function ExtendableDrawerNavigator(props: PropsWithChildren<ExtendableDra
     return <NavigationHelpersContext.Provider value={navigation}>
         {render(
             <DrawerView {...attr} />,
-            navigation as any,
-            state,
-            descriptors
+            {navigation: navigation as any, state, descriptors}
         )}
     </NavigationHelpersContext.Provider>;
 }
 export const createExtendableDrawerNavigator = createNavigatorFactory(ExtendableDrawerNavigator);
 
-const defaultRender: RenderContentsFunction = (
-    contents: React.ReactElement,
-    navigation: ExtendableDrawerNavigation,
-    state: DrawerNavigationState,
-    descriptors: ExtendableDrawerNavigationRouteDescriptors,
-) => {
+const defaultRender: ExtendableDrawerRender = (contents, {navigation, state, descriptors}) => {
     const breadcrumbs = state.history.map(item => item.type === 'route' && descriptors[item.key]?.options.title).filter(v => v);
     const logSettings = () => {
         console.group('ExtendableDrawerNavigator.defaultRender');

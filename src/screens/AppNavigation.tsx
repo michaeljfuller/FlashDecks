@@ -1,7 +1,18 @@
 import React from "react";
 import {Text, View, Button} from "react-native";
-import {NavigationContainer, NavigationContainerRef, DrawerActions} from '@react-navigation/native';
-import {createExtendableDrawerNavigator} from "../navigation/navigators/ExtendableDrawerNavigator/ExtendableDrawerNavigator";
+import {
+    NavigationContainer,
+    NavigationContainerRef,
+    DrawerActions,
+} from '@react-navigation/native';
+import {Auth} from "aws-amplify";
+import {AppRoutes, AppRoutesTree} from "./AppRouteTree";
+import {
+    createExtendableDrawerNavigator,
+    ExtendableDrawerRender
+} from "../navigation/navigators/ExtendableDrawerNavigator/ExtendableDrawerNavigator";
+import AppBanner from "../components/banner/AppBanner";
+import InfoBanner from "../components/banner/InfoBanner";
 const {Navigator, Screen} = createExtendableDrawerNavigator();
 
 export const appNavigation = React.createRef<NavigationContainerRef>();
@@ -20,21 +31,37 @@ export interface AppNavigationState {}
  */
 export class AppNavigation extends React.Component<any, AppNavigationState> {
 
+    renderContents: ExtendableDrawerRender = (contents, routerDetails) => {
+        const toggleDrawer = () => routerDetails.navigation.dispatch(DrawerActions.toggleDrawer());
+        const signOut = () => Auth.signOut().catch(e => console.warn('Error signing out', e)); // TODO Add toast
+
+        return <React.Fragment> {/* TODO Use React context for navigation settings? */}
+            <AppBanner
+                routerDetails={routerDetails}
+                onToggleSidebar={toggleDrawer}
+                onSignOutClick={signOut}
+            />
+            <InfoBanner />
+            {contents}
+        </React.Fragment>;
+    };
+
     render() {
         return <React.Fragment>
             <NavigationContainer ref={appNavigation}>
                 <Navigator
-                    initialRouteName="Home"
+                    initialRouteName={AppRoutesTree.base}
                     screenOptions={({route}) => {
                         const params: AppNavigationParams = route.params || {};
                         return {
                             title: params.title || route.name
                         };
                     }}
+                    render={this.renderContents}
                 >
-                    <Screen name="Home" component={createScreen('Home', this)} options={{title: 'Overview'}}/>
-                    <Screen name="Details" component={createScreen('Details', this)}/>
-                    <Screen name="Info" component={createScreen('Info', this)}/>
+                    <Screen name={AppRoutes.Home}  component={createScreen(AppRoutes.Home, this)} options={{title: 'Overview'}}/>
+                    <Screen name={AppRoutes.Temp}  component={createScreen(AppRoutes.Temp, this)}/>
+                    <Screen name={AppRoutes.Decks} component={createScreen(AppRoutes.Decks, this)}/>
                 </Navigator>
             </NavigationContainer>
         </React.Fragment>;

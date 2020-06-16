@@ -1,6 +1,7 @@
-import {NavigationScreenProps} from "../../navigation/navigation_types";
+import {NavigationRouterDetails} from "../../navigation/navigation_types";
 
-export interface AppBannerProps extends NavigationScreenProps {
+export interface AppBannerProps {
+    routerDetails: NavigationRouterDetails;
     loggedInUser?: User|null;
     onToggleSidebar: () => void;
     onSignOutClick: () => void;

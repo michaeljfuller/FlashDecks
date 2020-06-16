@@ -33,10 +33,7 @@ export class AppRoot extends AppRootBase {
     }
 
     renderApp() {
-        return <View style={{ flex: 1 }}>
-            <InfoBanner />
-            <AppNavigation />
-        </View>;
+        return <AppNavigation />;
     }
 
 }

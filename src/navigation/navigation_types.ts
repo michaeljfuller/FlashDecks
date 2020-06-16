@@ -6,10 +6,9 @@ import {
     NavigationParams,
     NavigationState
 } from "react-navigation";
-
-export {
-    NavigationRoute
-} from "react-navigation";
+import {NavigationState as NavigationRouteState} from '@react-navigation/routers';
+import {Descriptor} from "@react-navigation/native";
+export {NavigationRoute} from "react-navigation";
 
 /**
  * The actions on the Root navigator (Drawer).
@@ -43,4 +42,30 @@ export interface NavigationScreenProps<
 export interface NavigationScreenState {
     key: string;
     routeName: string;
+}
+
+export interface NavigationRouteDescriptors<
+    State extends NavigationRouteState = NavigationRouteState,
+    ScreenOptions extends object = any
+> {
+    [routeKey: string]: Descriptor<
+        Record<string, object | undefined>, // ParamList extends ParamListBase
+        string,                             // RouteName extends keyof ParamList = string
+        State,                              // State extends NavigationState = NavigationState
+        ScreenOptions,                      // ScreenOptions extends object = {}
+        {}                                  // EventMap extends EventMapBase = {}
+    >;
+}
+
+/**
+ * Collection of router details.
+ */
+export interface NavigationRouterDetails<
+    Nav extends Navigation = Navigation,
+    State extends NavigationRouteState = NavigationRouteState,
+    Descriptors extends NavigationRouteDescriptors = NavigationRouteDescriptors
+> {
+    navigation: Nav;
+    state: State;
+    descriptors: Descriptors;
 }
