@@ -6,14 +6,25 @@ import {
 } from "../../../navigation/navigation_types";
 import {getBaseRouteFromName} from '../../../routes';
 
-export {getBaseRouteFromName} from '../../../routes';
-
 export interface AppBreadcrumbsProps {
     routerDetails: NavigationRouterDetails;
 }
 
 /** Return the active routes from the given state. */
-export function getCurrentRoutes(state: NavigationRouteState): StatefulRoute[] {
+export function getCurrentRoutes(state: NavigationRouteState, options?: { filterInitial?: boolean }): StatefulRoute[] {
+    const { filterInitial = false } = options || {};
+    let result = _getCurrentRoutes(state);
+
+    if (filterInitial) { // Don't include if this is the initialRoute of the previous route.
+        result = result.filter((route, index) => {
+            const previousRoute = index - 1 >= 0 ? result[index - 1] : null;
+            return !(previousRoute && getBaseRouteFromName(previousRoute.name) === route.name);
+        });
+    }
+
+    return result;
+}
+function _getCurrentRoutes(state: NavigationRouteState): StatefulRoute[] {
     const {index, routes} = state;
     const route = routes[index];
     if (!route) return [];

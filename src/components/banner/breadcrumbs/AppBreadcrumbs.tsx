@@ -10,15 +10,16 @@ import {Color} from "../../../styles/Color";
 export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
     const {navigation, state, initialRouteName} = props.routerDetails;
     const initialRoute = state.routes.find(route => route.name === initialRouteName) || state.routes[0];
-    const currentRoutes = getCurrentRoutes(state);
+    const currentRoutes = getCurrentRoutes(state, {filterInitial:true});
 
+    // Convert routes to breadcrumbs
     const items = currentRoutes.map((route, index) => {
         return <BreadcrumbButton
             key={route.key}
             title={route.name}
             disabled={index+1 >= currentRoutes.length}
             onClick={() => navigateTo(currentRoutes.slice(0, index+1), navigation)}
-        />
+        />;
     });
 
     // Add Home to breadcrumbs
