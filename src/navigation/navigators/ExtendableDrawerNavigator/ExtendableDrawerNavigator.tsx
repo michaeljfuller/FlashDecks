@@ -31,6 +31,8 @@ export type ExtendableDrawerProps = DefaultNavigatorOptions<DrawerNavigationOpti
     & {
         /** Returns a wrapper around the passed contents. */
         render?: ExtendableDrawerRender;
+        /** Pass on RouterDetails */
+        onRouterDetails?: (details: ExtendableDrawerRouterDetails) => void;
     };
 
 /** Definition of the render function. */
@@ -59,7 +61,7 @@ type DrawerNavigationEventMap = {
  * @link https://reactnavigation.org/docs/custom-navigators/
  */
 export function ExtendableDrawerNavigator(props: PropsWithChildren<ExtendableDrawerProps>) {
-    const { render = defaultRender, initialRouteName } = props;
+    const { render = defaultRender, initialRouteName, onRouterDetails } = props;
     const attr = useNavigationBuilder<
         DrawerRouterState,
         DrawerRouterOptions,
@@ -73,11 +75,21 @@ export function ExtendableDrawerNavigator(props: PropsWithChildren<ExtendableDra
         screenOptions: props.screenOptions,
     });
     const {navigation, state, descriptors} = attr;
+    const routerDetails: ExtendableDrawerRouterDetails = {
+        navigation: navigation as any,
+        state,
+        descriptors,
+        initialRouteName
+    };
+
+    if (onRouterDetails) {
+        React.useEffect(() => onRouterDetails(routerDetails), [routerDetails.state]);
+    }
 
     return <NavigationHelpersContext.Provider value={navigation}>
         {render(
             <DrawerView {...attr} />,
-            {navigation: navigation as any, state, descriptors, initialRouteName}
+            routerDetails
         )}
     </NavigationHelpersContext.Provider>;
 }

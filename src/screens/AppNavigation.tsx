@@ -1,5 +1,4 @@
 import React from "react";
-import {Text, View, Button} from "react-native";
 import {
     NavigationContainer,
     NavigationContainerRef,
@@ -9,7 +8,8 @@ import {Auth} from "aws-amplify";
 import {AppRoutes, AppRoutesTree} from "./AppRouteTree";
 import {
     createExtendableDrawerNavigator,
-    ExtendableDrawerRender
+    ExtendableDrawerRender,
+    ExtendableDrawerRouterDetails,
 } from "../navigation/navigators/ExtendableDrawerNavigator/ExtendableDrawerNavigator";
 import AppBanner from "../components/banner/AppBanner";
 import InfoBanner from "../components/banner/InfoBanner";
@@ -27,12 +27,15 @@ export const getRootState = () => appNavigation.current?.getRootState();
 export interface AppNavigationParams {
     title?: string;
 }
-export interface AppNavigationState {}
+export interface AppNavigationState {
+    routerDetails?: ExtendableDrawerRouterDetails;
+}
 
 /**
  * A component defining the root navigation for the app.
  */
-export class AppNavigation extends React.Component<any, AppNavigationState> {
+export class AppNavigation extends React.Component<AppNavigationParams, AppNavigationState> {
+    state = {} as AppNavigationState;
 
     renderContents: ExtendableDrawerRender = (contents, routerDetails) => {
         const toggleDrawer = () => routerDetails.navigation.dispatch(DrawerActions.toggleDrawer());
@@ -49,6 +52,27 @@ export class AppNavigation extends React.Component<any, AppNavigationState> {
         </React.Fragment>;
     };
 
+    onRouterDetails = (routerDetails: ExtendableDrawerRouterDetails) => {
+        this.setState({routerDetails});
+    };
+
+    /**
+     * Create a screen that will be destroyed when navigating away.
+     */
+    createScreen(
+        name: string,
+        Component: typeof React.Component
+    ) {
+        const {state} = this.state.routerDetails || {};
+        const {routes, index = 0} = state || {};
+        const currentRoute = routes ? routes[index].name : '';
+        const isCurrentRoute = currentRoute === name;
+        return <Screen
+            name={name}
+            component={isCurrentRoute ? Component : () => null}
+        />;
+    }
+
     render() {
         return <React.Fragment>
             <NavigationContainer ref={appNavigation}>
@@ -61,11 +85,12 @@ export class AppNavigation extends React.Component<any, AppNavigationState> {
                         };
                     }}
                     render={this.renderContents}
+                    onRouterDetails={this.onRouterDetails}
                 >
 
                     <Screen name={AppRoutes.Home}  component={DashboardScreen} options={{icon: null} /* TODO Add icon to options */}/>
-                    <Screen name={AppRoutes.Temp}  component={TempScreen}/>
-                    <Screen name={AppRoutes.Decks} component={DeckRouteContainer}/>
+                    {this.createScreen(AppRoutes.Temp, TempScreen)}
+                    {this.createScreen(AppRoutes.Decks, DeckRouteContainer)}
 
                 </Navigator>
             </NavigationContainer>
