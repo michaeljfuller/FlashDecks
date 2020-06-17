@@ -61,7 +61,7 @@ export class AppNavigation extends React.Component<AppNavigationParams, AppNavig
      */
     createScreen(
         name: string,
-        Component: typeof React.Component
+        Component: React.FunctionComponent|typeof React.Component
     ) {
         const {state} = this.state.routerDetails || {};
         const {routes, index = 0} = state || {};
