@@ -1,8 +1,7 @@
 import DeckRoutes from './DeckRoutes';
-import {routeConfig} from './DecksRouteContainer_routes';
 
 export const DeckRoutesTree = {
-    base: routeConfig.initialRouteName,
+    base: DeckRoutes.List,
     children: {
         [DeckRoutes.List]: null,
         [DeckRoutes.Edit]: null,
