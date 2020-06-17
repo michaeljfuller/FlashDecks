@@ -12,7 +12,7 @@ interface IRouteTree {
 }
 
 /** Get the leaf route from a branch route. */
-export function getBaseRouteFromKey(routeKey: string, tree: IRouteTree = appTree.AppRoutesTree): string {
+export function getBaseRouteFromName(routeKey: string, tree: IRouteTree = appTree.AppRoutesTree): string {
     // Found route, now find base.
     if (hasProperty(tree.children, routeKey)) {
         const childTree = tree.children[routeKey];
@@ -23,7 +23,7 @@ export function getBaseRouteFromKey(routeKey: string, tree: IRouteTree = appTree
     for (const key in tree.children) {
         const childTree = tree.children[key];
         if (childTree) {
-            const result = getBaseRouteFromKey(routeKey, childTree);
+            const result = getBaseRouteFromName(routeKey, childTree);
             if (result) return result;
         }
     }

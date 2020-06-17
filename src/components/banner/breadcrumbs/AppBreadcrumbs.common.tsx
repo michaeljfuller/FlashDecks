@@ -4,7 +4,9 @@ import {
     NavigationRouteState,
     StatefulRoute
 } from "../../../navigation/navigation_types";
-import {getBaseRouteFromKey} from '../../../routes';
+import {getBaseRouteFromName} from '../../../routes';
+
+export {getBaseRouteFromName} from '../../../routes';
 
 export interface AppBreadcrumbsProps {
     routerDetails: NavigationRouterDetails;
@@ -31,7 +33,7 @@ export function navigateTo(routes: StatefulRoute[], navigation: Navigation) {
     const subRoutes = routes.slice(1); // Remove rootRoute
 
     // See if there's a leaf route (i.e. initialRouteName) we should be using.
-    const leafRouteName = getBaseRouteFromKey(rootRoute.name);
+    const leafRouteName = getBaseRouteFromName(rootRoute.name);
     const rootRoutes = rootRoute.state?.routes as StatefulRoute[];
     if (leafRouteName && rootRoutes) {
         const leafRoute = rootRoutes.find((route: StatefulRoute) => route.name === leafRouteName);
@@ -56,7 +58,7 @@ export function navigateTo(routes: StatefulRoute[], navigation: Navigation) {
         rootRoute.params,
         subRoutes.reduceRight<NavigateParams|undefined>(
             (result, route) => ({
-                screen: getBaseRouteFromKey(route.name),
+                screen: getBaseRouteFromName(route.name),
                 params: Object.assign({}, route.params, result)
             }),
             undefined
