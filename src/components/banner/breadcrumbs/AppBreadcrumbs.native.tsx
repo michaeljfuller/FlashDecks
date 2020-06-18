@@ -1,15 +1,14 @@
 import React from "react";
-import {Body, Subtitle, Title} from 'native-base';
+import {Body, Title} from 'native-base';
 
-import {getCurrentRoutes} from '../../../navigation/navigation_utils';
-import {AppBreadcrumbsProps} from './AppBreadcrumbs.common';
+import {AppBreadcrumbsProps, getCurrentRoutes} from './AppBreadcrumbs.common';
 
 export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
-    const {navigation} = props;
-    const currentRoute = getCurrentRoutes(navigation).pop();
+    const {state} = props.routerDetails;
+    const currentRoute = getCurrentRoutes(state, {filterInitial:true}).pop();
     return <Body>
         <Title style={{
             marginLeft: 0
-        }}>{currentRoute?.routeName}</Title>
+        }}>{currentRoute?.name || ''}</Title>
     </Body>;
 }

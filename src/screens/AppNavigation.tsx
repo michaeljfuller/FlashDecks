@@ -41,7 +41,7 @@ export class AppNavigation extends React.Component<AppNavigationParams, AppNavig
         const toggleDrawer = () => routerDetails.navigation.dispatch(DrawerActions.toggleDrawer());
         const signOut = () => Auth.signOut().catch(e => console.warn('Error signing out', e)); // TODO Add toast
 
-        return <React.Fragment> {/* TODO Use React context for navigation settings? */}
+        return <React.Fragment>
             <AppBanner
                 routerDetails={routerDetails}
                 onToggleSidebar={toggleDrawer}

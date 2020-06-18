@@ -12,7 +12,9 @@ const color = Color.White;
 const backgroundColor = Color.Blue;
 
 export function AppBanner(props: AppBannerProps) {
-    const {loggedInUser, onToggleSidebar, onSignOutClick} = props;
+    const {
+        loggedInUser, onToggleSidebar, onSignOutClick, routerDetails
+    } = props;
 
     return <Header androidStatusBarColor={backgroundColor} style={{ backgroundColor, paddingHorizontal: 15, height: 35 }}>
         <Left style={{
@@ -23,7 +25,7 @@ export function AppBanner(props: AppBannerProps) {
         }}>
             <IconButton icon={IconType.Menu} onClick={onToggleSidebar} transparent color="White" />
         </Left>
-        <AppBreadcrumbs navigation={props.navigation} />
+        <AppBreadcrumbs routerDetails={routerDetails} />
         <Right>
             <AppBannerUserDisplay user={loggedInUser} onSignOutClick={onSignOutClick} />
         </Right>
