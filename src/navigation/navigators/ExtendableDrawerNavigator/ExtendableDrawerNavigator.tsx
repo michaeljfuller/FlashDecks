@@ -16,6 +16,8 @@ import {
 import {DrawerView, DrawerNavigationOptions} from '@react-navigation/drawer';
 import {DrawerNavigationConfig} from "@react-navigation/drawer/lib/typescript/src/types";
 import {Navigation, NavigationRouteDescriptors, NavigationRouterDetails} from "../../navigation_types";
+import {DrawerContentComponentProps} from "@react-navigation/drawer/src/types";
+import ExtendableDrawerContents from "./ExtendableDrawerContents";
 
 //</editor-fold>
 //<editor-fold desc="Types">
@@ -88,7 +90,7 @@ export function ExtendableDrawerNavigator(props: PropsWithChildren<ExtendableDra
 
     return <NavigationHelpersContext.Provider value={navigation}>
         {render(
-            <DrawerView {...attr} />,
+            <DrawerView {...attr} drawerContent={ExtendableDrawerContents} />,
             routerDetails
         )}
     </NavigationHelpersContext.Provider>;
