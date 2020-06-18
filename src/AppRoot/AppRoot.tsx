@@ -4,7 +4,6 @@ import {Provider as ReduxProvider} from 'react-redux';
 import {AppRootBase} from './AppRootBase';
 import AppAuthenticator from './Authenticator/AppAuthenticator';
 import ErrorBoundary from '../utils/hoc/ErrorBoundary/ErrorBoundary';
-import InfoBanner from "../components/banner/InfoBanner";
 import AppNavigation from "../screens/AppNavigation";
 import store from '../store/store';
 
