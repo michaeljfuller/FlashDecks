@@ -35,7 +35,6 @@ export default class DeckList extends DeckListBase {
     render() {
         const {decks, loggedInUser} = this.props;
         return <View>
-            <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>DeckList ({loggedInUser?.id})</Text>
             {decks.map(deck => <DeckListItem
                 key={deck.id}
                 deck={deck}

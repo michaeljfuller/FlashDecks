@@ -1,9 +1,8 @@
-import AppRoutes from './AppRoutes';
-import {routeConfig} from './AppContainer_routes';
+import {AppRoutes} from './AppRoutes';
 import DeckRouteTree from './Deck/DeckRouteTree';
 
 export const AppRoutesTree = {
-    base: routeConfig.initialRouteName,
+    base: AppRoutes.Home,
     children: {
         [AppRoutes.Home]: null,
         [AppRoutes.Temp]: null,

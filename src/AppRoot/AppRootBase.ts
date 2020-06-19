@@ -70,10 +70,9 @@ export abstract class AppRootBase extends React.Component<AppRootProps, AppRootS
         // Get user from Cognito.
         try {
             cognitoUser = await Auth.currentAuthenticatedUser();
-            console.info('AppRoot.fetchUserData', cognitoUser);
             this.setState({ cognitoUser: cognitoUser || undefined });
         } catch (e) {
-            console.log('AppRoot.fetchUserData cognito error:', e);
+            console.log('AppRoot.fetchUserData cognito error:', e); // TODO Toast
         }
 
         // Get user data from DataBase.
@@ -83,9 +82,8 @@ export abstract class AppRootBase extends React.Component<AppRootProps, AppRootS
                     id: cognitoUser.attributes.sub
                 }));
                 user = (result && result.data && result.data.getUser);
-                console.info('AppRoot.fetchUserData user', user);
             } catch (e) {
-                console.warn('AppRoot.fetchUserData user API error:', e);
+                console.warn('AppRoot.fetchUserData user API error:', e); // TODO Toast
             }
         }
 

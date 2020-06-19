@@ -31,7 +31,7 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
     } as DeckViewScreenState;
 
     componentDidMount() {
-        const {deckId} = this.props.navigation.state.params || {};
+        const {deckId} = this.props.route.params || {};
         if (!deckId) {
             console.warn('No ID'); // TODO Redirect
             return;

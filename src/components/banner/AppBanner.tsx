@@ -14,7 +14,9 @@ import {AppBannerProps} from "./AppBanner.common";
 export {AppBannerProps} from "./AppBanner.common";
 
 export function AppBanner(props: AppBannerProps) {
-    const {loggedInUser, onToggleSidebar, onSignOutClick} = props;
+    const {
+        loggedInUser, onToggleSidebar, onSignOutClick, routerDetails
+    } = props;
     const {displayName = 'guest'} = loggedInUser || {};
 
     const signOutButton = loggedInUser && <IconButton
@@ -33,7 +35,7 @@ export function AppBanner(props: AppBannerProps) {
 
                     <IconButton icon={IconType.Menu} onClick={onToggleSidebar} transparent color="White" />
                     <View style={{ flexGrow: 1 }}>
-                        <AppBreadcrumbs navigation={props.navigation} />
+                        <AppBreadcrumbs routerDetails={routerDetails} />
                     </View>
                     <Text style={[styles.bannerText, { marginRight: 15 }]}>User: ”{displayName}”</Text>
                     {signOutButton}

@@ -6,10 +6,14 @@ import {
     NavigationParams,
     NavigationState
 } from "react-navigation";
+import {NavigationState as NavigationRouteState} from '@react-navigation/routers';
+import {Descriptor, Route} from "@react-navigation/native";
 
-export {
-    NavigationRoute
-} from "react-navigation";
+export {NavigationState as NavigationRouteState} from '@react-navigation/routers';
+export {NavigationRoute} from "react-navigation";
+
+/** Get a Route with state, as found in the NavigationState's Route chain. */
+export type StatefulRoute = NavigationRouteState['routes'][0];
 
 /**
  * The actions on the Root navigator (Drawer).
@@ -35,12 +39,40 @@ export type Navigation<
  */
 export interface NavigationScreenProps<
     State = NavigationScreenState,
-    Props = {}
+    Props extends object|undefined = undefined
 > {
     navigation: Navigation<State & NavigationState, Props & NavigationParams>;
+    route: Route<string> & { params: Props };
 }
 
 export interface NavigationScreenState {
     key: string;
     routeName: string;
+}
+
+export interface NavigationRouteDescriptors<
+    State extends NavigationRouteState = NavigationRouteState,
+    ScreenOptions extends object = any
+> {
+    [routeKey: string]: Descriptor<
+        Record<string, object | undefined>, // ParamList extends ParamListBase
+        string,                             // RouteName extends keyof ParamList = string
+        State,                              // State extends NavigationState = NavigationState
+        ScreenOptions,                      // ScreenOptions extends object = {}
+        {}                                  // EventMap extends EventMapBase = {}
+    >;
+}
+
+/**
+ * Collection of router details.
+ */
+export interface NavigationRouterDetails<
+    Nav extends Navigation = Navigation,
+    State extends NavigationRouteState = NavigationRouteState,
+    Descriptors extends NavigationRouteDescriptors = NavigationRouteDescriptors
+> {
+    navigation: Nav;
+    state: State;
+    descriptors: Descriptors;
+    initialRouteName?: string;
 }

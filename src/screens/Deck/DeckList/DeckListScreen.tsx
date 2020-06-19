@@ -25,14 +25,14 @@ export class DeckListScreen extends Component<DeckListScreenProps & DeckListScre
     } as DeckListScreenState;
 
     goTo(routeName: string, deck: Deck) {
-        this.props.navigation.state.params = {}; // Clear Navigation params
-        this.props.navigation.navigate({ routeName, params: {deckId: deck.id} });
+        this.props.navigation.navigate(routeName, {deckId: deck.id})
     }
 
     goToEdit = (deck: Deck) => this.goTo(DeckRoutes.Edit, deck);
     goToView = (deck: Deck) => this.goTo(DeckRoutes.View, deck);
 
     render() {
+        console.log(this.constructor.name, this.props);
         return (
             <ScreenContainer>
                 <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{this.constructor.name}</Text>

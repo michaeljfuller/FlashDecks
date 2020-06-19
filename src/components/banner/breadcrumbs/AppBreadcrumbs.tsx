@@ -2,28 +2,35 @@ import React from "react";
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import {withStyles} from "@material-ui/core/styles";
 
-import {getBaseRouteFromKey} from '../../../routes';
 import TextButton, {TextButtonProps} from '../../button/TextButton';
 import withDefaultProps from '../../../utils/hoc/withDefaultProps/withDefaultProps';
-import {getCurrentRoutes} from '../../../navigation/navigation_utils';
-import {AppBreadcrumbsProps} from './AppBreadcrumbs.common';
+import {AppBreadcrumbsProps, getCurrentRoutes, navigateTo} from './AppBreadcrumbs.common';
 import {Color} from "../../../styles/Color";
 
 export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
-    const {navigation} = props;
-    const currentRoutes = getCurrentRoutes(navigation);
-    const lastRoute = currentRoutes[currentRoutes.length-1]; // Get the top-most route in the current stack
-    const lastBaseRouteKey = lastRoute ? getBaseRouteFromKey(lastRoute.key) : ''; // Get the leaf route from that
+    const {navigation, state, initialRouteName} = props.routerDetails;
+    const initialRoute = state.routes.find(route => route.name === initialRouteName) || state.routes[0];
+    const currentRoutes = getCurrentRoutes(state, {filterInitial:true});
 
-    const items = currentRoutes.map(route => {
-        const targetRouteKey = getBaseRouteFromKey(route.key); // Get the leaf route for this route
+    // Convert routes to breadcrumbs
+    const items = currentRoutes.map((route, index) => {
         return <BreadcrumbButton
             key={route.key}
-            title={route.routeName}
-            disabled={targetRouteKey === lastBaseRouteKey}
-            onClick={() => navigation.navigate(targetRouteKey)}
+            title={route.name}
+            disabled={index+1 >= currentRoutes.length}
+            onClick={() => navigateTo(currentRoutes.slice(0, index+1), navigation)}
         />;
     });
+
+    // Add Home to breadcrumbs
+    if (!currentRoutes.length || currentRoutes[0].key !== initialRoute.key) {
+        items.unshift(<BreadcrumbButton
+            key={initialRoute.key}
+            title={initialRoute.name}
+            disabled={currentRoutes.length === 0}
+            onClick={() => navigateTo([initialRoute], navigation)}
+        />)
+    }
 
     return <StyledBreadcrumbs maxItems={3}>{items}</StyledBreadcrumbs>;
 }

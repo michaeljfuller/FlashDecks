@@ -31,7 +31,7 @@ export class DeckEditScreen extends Component<DeckEditScreenProps & DeckEditScre
     } as DeckEditScreenState;
 
     componentDidMount() {
-        const {deckId} = this.props.navigation.state.params || {};
+        const {deckId} = this.props.route.params || {};
         if (!deckId) {
             console.warn('No ID'); // TODO Redirect
             return;
