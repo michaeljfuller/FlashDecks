@@ -1,2 +1,2 @@
-import {View} from "react-native";
-export default View;
+import {ScrollView} from "react-native";
+export default ScrollView;
