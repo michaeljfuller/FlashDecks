@@ -25,6 +25,7 @@ export function ExtendableDrawerContents(props: DrawerContentComponentProps) {
             >
                 <NativeBaseText
                     style={disabled ? disabledTextStyle : textStyle}
+                    uppercase={false}
                 >{route.name}</NativeBaseText>
             </NativeBaseButton>;
         })}

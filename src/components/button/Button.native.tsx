@@ -15,7 +15,7 @@ export function Button(props: ButtonProps) {
         disabled={disabled}
         style={getBackgroundStyle(props)}
     >
-        <NativeBaseText style={getTextStyle(props)}>{title}</NativeBaseText>
+        <NativeBaseText style={getTextStyle(props)} uppercase={false}>{title}</NativeBaseText>
     </NativeBaseButton>;
 }
 export default Button;
