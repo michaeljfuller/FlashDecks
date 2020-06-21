@@ -13,6 +13,7 @@ import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import InfoOutlined from '@material-ui/icons/InfoOutlined';
 
 const componentMap = {
     [IconType.QuestionMark]: HelpIcon,
@@ -23,6 +24,7 @@ const componentMap = {
     [IconType.Edit]: EditIcon,
     [IconType.Delete]: DeleteIcon,
     [IconType.More]: MoreVertIcon,
+    [IconType.Info]: InfoOutlined,
 } as Record<IconType, React.ElementType>;
 
 /**
