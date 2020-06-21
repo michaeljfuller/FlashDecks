@@ -1,8 +1,8 @@
 import React, {Component} from "react";
-import {Text} from "react-native";
+import {Text, View} from "react-native";
 import ScreenContainer from "../../ScreenContainer";
+import DeckView from "../../../components/deck/DeckView";
 import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
-
 import {reduxConnector, DeckViewScreenStoreProps} from "./DeckViewScreen_redux";
 
 export interface DeckViewScreenProps extends NavigationScreenProps<
@@ -22,8 +22,18 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
             ownerId: `owner-id`,
             owner: { id: `owner-id`, displayName: `Owner displayName` },
             cards: [{
-                id: 'card-id',
-                name: 'Card name',
+                id: 'card-id-1',
+                name: 'Card name 1',
+                ownerId: `owner-id`,
+                owner: { id: `owner-id`, displayName: `Owner displayName` },
+            },{
+                id: 'card-id-2',
+                name: 'Card name 2',
+                ownerId: `owner-id`,
+                owner: { id: `owner-id`, displayName: `Owner displayName` },
+            },{
+                id: 'card-id-3',
+                name: 'Card name 3',
                 ownerId: `owner-id`,
                 owner: { id: `owner-id`, displayName: `Owner displayName` },
             }]
@@ -40,14 +50,9 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
 
     render() {
         return (
-            <ScreenContainer>
-                <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{this.constructor.name}</Text>
-
-                <Text style={{ fontWeight: 'bold' }}>this.props.navigation.state</Text>
-                <Text style={{ marginBottom: 20 }}>{JSON.stringify(this.props.navigation.state, null, 2)}</Text>
-
-                <Text style={{ fontWeight: 'bold' }}>this.state.deck</Text>
-                <Text style={{ marginBottom: 20 }}>{JSON.stringify(this.state.deck, null, 2)}</Text>
+            <ScreenContainer style={{ padding: 5 }}>
+                <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>DeckViewScreen</Text>
+                <DeckView item={this.state.deck} />
             </ScreenContainer>
         );
     }
