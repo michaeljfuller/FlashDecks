@@ -9,14 +9,14 @@ import {TextStyle} from "react-native";
 export * from './IconButton.common';
 
 export function IconButton(props: IconButtonProps) {
-    const { onClick, text, disabled, icon, style, transparent, color, invertColor } = iconButtonPropsWithDefaults(props);
+    const { onClick, text, disabled, icon, style, transparent, flat, color, invertColor } = iconButtonPropsWithDefaults(props);
     const theme = getUIColorTheme(color, invertColor);
     const round = !text;
 
     return <NativeBaseButton
         onPress={onClick}
         disabled={disabled}
-        style={getButtonStyle(style, theme, transparent, round)}
+        style={getButtonStyle(style, theme, transparent, flat, round)}
         transparent={transparent}
         iconLeft
     >
@@ -26,7 +26,7 @@ export function IconButton(props: IconButtonProps) {
 }
 export default IconButton;
 
-function getButtonStyle(style: IconButtonStyle, theme: UIColorTheme, transparent: boolean, round: boolean): RnViewStyleProp {
+function getButtonStyle(style: IconButtonStyle, theme: UIColorTheme, transparent: boolean, flat: boolean, round: boolean): RnViewStyleProp {
     if (round) {
         const defaultSize = 50;
         const width = style.width || style.height || defaultSize;
@@ -36,14 +36,16 @@ function getButtonStyle(style: IconButtonStyle, theme: UIColorTheme, transparent
             height,
             backgroundColor: transparent ? undefined : theme.primary.base,
             borderRadius: Math.min(width, height),
-            justifyContent: 'center'
+            justifyContent: 'center',
+            shadowOpacity: flat ? 0 : undefined,
         };
     } else {
         return {
-            width : style.width,
-            height : style.height,
+            width: style.width,
+            height: style.height,
             paddingHorizontal: 5,
             backgroundColor: transparent ? undefined : theme.primary.base,
+            shadowOpacity: flat ? 0 : undefined,
         };
     }
 }

@@ -10,6 +10,7 @@ export interface IconButtonProps {
     onClick?: (event?: React.MouseEvent) => void;
     disabled?: boolean;
     transparent?: boolean;
+    flat?: boolean;
     style?: IconButtonStyle;
     color?: GetUIColorThemeInput;
     invertColor?: boolean;
@@ -25,6 +26,7 @@ export function iconButtonPropsWithDefaults(props: IconButtonProps): Required<Ic
         onClick = noop,
         disabled = false,
         transparent = false,
+        flat = false,
         icon = IconType.QuestionMark,
         text = '',
         color = DefaultTheme.primary.key,
@@ -32,7 +34,7 @@ export function iconButtonPropsWithDefaults(props: IconButtonProps): Required<Ic
         style = {}
     } = props;
     return {
-        onClick, icon, style, text, transparent, color, invertColor,
+        onClick, icon, style, text, transparent, flat, color, invertColor,
         disabled: disabled || !props.onClick,
     };
 }

@@ -32,6 +32,8 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                     <Button title="Button" onClick={noop} />
                     <TextButton title="TextButton" onClick={noop} color="Blue" />
                     <IconButton icon={IconType.QuestionMark} onClick={noop} color="Blue" text="Blue" />
+                    <IconButton icon={IconType.QuestionMark} onClick={noop} color="Blue" />
+                    <IconButton icon={IconType.QuestionMark} onClick={noop} color="Blue" flat />
                     <IconButton icon={IconType.QuestionMark} onClick={noop} color="Blue" transparent />
                 </Row>
                 <Row borderColor='red' backgroundColor='#fee'>
