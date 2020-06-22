@@ -3,7 +3,7 @@ import {Text, View, StyleSheet} from "react-native";
 import {Provider as ReduxProvider} from 'react-redux';
 import {AppRootBase} from './AppRootBase';
 import AppAuthenticator from './Authenticator/AppAuthenticator';
-import ErrorBoundary from '../utils/hoc/ErrorBoundary/ErrorBoundary';
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import AppNavigation from "../screens/AppNavigation";
 import store from '../store/store';
 
