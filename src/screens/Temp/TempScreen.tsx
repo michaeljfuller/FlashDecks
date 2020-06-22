@@ -9,16 +9,44 @@ import {Button} from "../../components/button/Button";
 import {TextButton} from "../../components/button/TextButton";
 import {IconButton, IconType} from "../../components/button/IconButton";
 import {repeat} from "../../utils/array";
+import createModals from "../../components/modal/createModals";
 
 export enum TestIds {
     User='TempScreen_User',
     Env='TempScreen_Env'
 }
 
-export type TempScreenProps = NavigationScreenProps;
+const TestContext = React.createContext('TestContext');
 
-export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps>
+export type TempScreenProps = NavigationScreenProps;
+interface TempScreenState {
+    contextValue1: number;
+    contextValue2: number;
+    showModelFoo: boolean;
+    showModelBar: boolean;
+}
+
+function TestModal(props: any) {
+    const {children, ...others} = props;
+    return <View style={{ borderWidth: 2, borderColor: 'red' }}>
+        <Text style={{ color: 'red' }}>TestModal - {JSON.stringify(others)}</Text>
+        {children}
+    </View>;
+}
+const TempModal = createModals({
+    Foo: TestModal,
+    Bar: TestModal
+});
+
+export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps, TempScreenState>
 {
+    state = {
+        contextValue1: 1,
+        contextValue2: 2,
+        showModelFoo: false,
+        showModelBar: false,
+    } as TempScreenState;
+
     render() {
         const {loggedInUser} = this.props;
         const noop = () => {};
@@ -55,9 +83,34 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                     <IconButton icon={IconType.QuestionMark} color="Black" transparent />
                 </Row>
 
+                <View style={{ borderWidth: 2 }}>
+                    <TempModal.ModalContainer>
+                        <Text>ModelProvider</Text>
+                        <Button title={'showModelFoo ' + this.state.showModelFoo} onClick={() => this.setState({ showModelFoo: !this.state.showModelFoo })} />
+                        <Button title={'showModelBar ' + this.state.showModelBar} onClick={() => this.setState({ showModelBar: !this.state.showModelBar })} />
+                        <TempModal.ModelState id='Foo' show={this.state.showModelFoo}>
+                            <Text>Child Of ModelFoo</Text>
+                        </TempModal.ModelState>
+                        <TempModal.ModelState id='Bar' show={this.state.showModelBar} payload={{ bar: 1 }} />
+                    </TempModal.ModalContainer>
+                </View>
+
+                <TestContext.Provider value={'TestContext1: '+this.state.contextValue1}>
+                    <TestContext.Consumer>
+                        {value => <TextButton title={value} onClick={() => this.setState({ contextValue1: this.state.contextValue1 + 1})} />}
+                    </TestContext.Consumer>
+                    <TestContext.Provider value={'TestContext2: '+this.state.contextValue2}>
+                        <TestContext.Consumer>
+                            {value => <TextButton title={value} onClick={() => this.setState({ contextValue2: this.state.contextValue2 + 1})} />}
+                        </TestContext.Consumer>
+                    </TestContext.Provider>
+                </TestContext.Provider>
+
                 {repeat(30, index => {
                     return <Text key={index} style={{ fontSize: 50, textAlign: 'center', color: '#79F' }}>{index+1}</Text>
                 })}
+
+
             </ScreenContainer>
         );
     }
