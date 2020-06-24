@@ -9,7 +9,7 @@ import {Button} from "../../components/button/Button";
 import {TextButton} from "../../components/button/TextButton";
 import {IconButton, IconType} from "../../components/button/IconButton";
 import {repeat} from "../../utils/array";
-import createModals from "../../components/modal/createModals";
+import createModals, {ModalProps} from "../../components/modal/createModals";
 
 export enum TestIds {
     User='TempScreen_User',
@@ -26,16 +26,18 @@ interface TempScreenState {
     showModelBar: boolean;
 }
 
-function TestModal(props: any) {
-    const {children, ...others} = props;
-    return <View style={{ borderWidth: 2, borderColor: 'red' }}>
-        <Text style={{ color: 'red' }}>TestModal - {JSON.stringify(others)}</Text>
-        {children}
-    </View>;
-}
 const TempModal = createModals({
-    Foo: TestModal,
-    Bar: TestModal
+    Foo: function FooModel({children, ...others}: ModalProps) {
+        return <View style={{ borderWidth: 2, borderColor: 'red' }}>
+            <Text style={{ color: 'red' }}>FooModel - {JSON.stringify(others)}</Text>
+            {children}
+        </View>;
+    },
+    Bar: function BarModel(props: ModalProps<{ text: string }>) {
+        return <View style={{ borderWidth: 2, borderColor: 'orange' }}>
+            <Text style={{ color: 'orange' }}>BarModel - {props.payload?.text}</Text>
+        </View>;
+    },
 });
 
 export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps, TempScreenState>
@@ -88,10 +90,10 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                         <Text>ModelProvider</Text>
                         <Button title={'showModelFoo ' + this.state.showModelFoo} onClick={() => this.setState({ showModelFoo: !this.state.showModelFoo })} />
                         <Button title={'showModelBar ' + this.state.showModelBar} onClick={() => this.setState({ showModelBar: !this.state.showModelBar })} />
-                        <TempModal.ModelState id='Foo' show={this.state.showModelFoo}>
+                        <TempModal.ModelState modelKey='Foo' show={this.state.showModelFoo}>
                             <Text>Child Of ModelFoo</Text>
                         </TempModal.ModelState>
-                        <TempModal.ModelState id='Bar' show={this.state.showModelBar} payload={{ bar: 1 }} />
+                        <TempModal.ModelState modelKey='Bar' show={this.state.showModelBar} payload={{ text: 'Hello' }} />
                     </TempModal.ModalContainer>
                 </View>
 
