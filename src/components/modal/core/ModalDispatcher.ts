@@ -1,13 +1,13 @@
 import React from "react";
-import {ModalPayload, ModelContents} from "../createModals";
+import {ModalContents} from "../createModals";
 import ModalManager from "./ModalManager";
 
 export interface ModelDispatcherProps<ModalKey extends string|number = string|number>{
     manager: ModalManager<ModalKey>;
     show: boolean;
     modelKey: ModalKey;
-    payload?: ModalPayload;
-    contents?: ModelContents;
+    payload?: any;
+    contents?: ModalContents;
 }
 
 export function ModelDispatcher<

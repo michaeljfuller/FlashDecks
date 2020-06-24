@@ -1,17 +1,17 @@
 import React, {Provider} from "react";
 import {Text} from "react-native";
-import {ModalComponent, ModalComponentMap} from "../createModals";
+import {ModalComponent, ModalComponentMap, ModalContents} from "../createModals";
 import ModalManager from "./ModalManager";
 import ModalRenderer from "./ModalRenderer";
 
-interface ModalSelectorProps<ModalKey extends string|number> {
+export interface ModalSelectorProps<ModalKey extends string|number> {
     Provider: Provider<ModalManager<ModalKey>>;
     modals: ModalComponentMap;
 }
-interface ModalSelectorState<ModalKey extends string|number> {
+export interface ModalSelectorState<ModalKey extends string|number> {
     currentKey: ModalKey|undefined;
     currentPayload: any;
-    currentContents?: React.ReactChildren;
+    currentContents?: ModalContents;
 }
 
 export class ModalSelector<ModalKey extends string|number> extends React.Component<

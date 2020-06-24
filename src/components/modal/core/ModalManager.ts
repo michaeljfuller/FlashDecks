@@ -1,37 +1,40 @@
 import React from "react";
-import {ModalPayload, ModelContents} from "../createModals";
+import {BehaviorSubject} from "rxjs";
+import {ModalSelectorState} from "./ModalSelector";
+import {ModalContents} from "../createModals";
 
-interface ModalManagerState<ModalKey extends string|number> {
-    currentKey?: ModalKey;
-    currentPayload?: ModalPayload;
-    currentContents?: ModelContents;
-}
+type Container<ModalKey extends string|number = string|number> = React.Component<any, ModalSelectorState<ModalKey>>
 
 /** Object passed down to allow operations. */
 export class ModalManager<ModalKey extends string|number = string|number> {
-    constructor(
-        readonly container: React.Component<any, ModalManagerState<ModalKey>>,
-    ) {}
+    constructor(readonly selector: Container<ModalKey>) {}
+
     get currentModal() {
-        return this.container.state.currentKey;
+        return this.selector.state.currentKey;
     }
-    open(modalKey: ModalKey, payload?: ModalPayload, contents?: ModelContents) {
-        this.close();
-        this.container.setState({
+    onChange = new BehaviorSubject(this.selector.state);
+
+    setSelectorState(modalKey: ModalKey|undefined, payload: any|undefined, contents: ModalContents|undefined) {
+        const state = {
             currentKey: modalKey,
             currentPayload: payload,
             currentContents: contents,
-        });
+        } as ModalSelectorState<ModalKey>;
+
+        this.selector.setState(state);
+        this.onChange.next(state);
     }
+
+    open(modalKey: ModalKey, payload?: any, contents?: ModalContents) {
+        this.setSelectorState(modalKey, payload, contents);
+    }
+
     close(modalKey?: ModalKey) {
-        if (!modalKey || this.container.state.currentKey === modalKey) {
-            this.container.setState({
-                currentKey: undefined,
-                currentPayload: undefined,
-                currentContents: undefined,
-            });
+        if (!modalKey || this.currentModal === modalKey) {
+            this.setSelectorState(undefined, undefined, undefined);
         }
     }
+
     isOpen(modalKey?: string) {
         return modalKey === undefined ? this.currentModal !== undefined : this.currentModal === modalKey;
     }

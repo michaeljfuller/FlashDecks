@@ -26,7 +26,7 @@ interface TempScreenState {
     showModelBar: boolean;
 }
 
-const TempModal = createModals({
+const TempModals = createModals({
     Foo: function FooModel({children, ...others}: ModalProps) {
         return <View style={{ borderWidth: 2, borderColor: 'red' }}>
             <Text style={{ color: 'red' }}>FooModel - {JSON.stringify(others)}</Text>
@@ -86,15 +86,16 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                 </Row>
 
                 <View style={{ borderWidth: 2 }}>
-                    <TempModal.ModalContainer>
-                        <Text>ModelProvider</Text>
+                    <TempModals.Container>
+                        <Text>TempModals.Container</Text>
+                        <TempModals.Watcher>{({modalKey, payload}) => <Text>TempModals.Watcher: {modalKey || 'none'} {JSON.stringify(payload)}</Text> }</TempModals.Watcher>
                         <Button title={'showModelFoo ' + this.state.showModelFoo} onClick={() => this.setState({ showModelFoo: !this.state.showModelFoo })} />
                         <Button title={'showModelBar ' + this.state.showModelBar} onClick={() => this.setState({ showModelBar: !this.state.showModelBar })} />
-                        <TempModal.ModelState modelKey='Foo' show={this.state.showModelFoo}>
+                        <TempModals.Modal modelKey='Foo' show={this.state.showModelFoo}>
                             <Text>Child Of ModelFoo</Text>
-                        </TempModal.ModelState>
-                        <TempModal.ModelState modelKey='Bar' show={this.state.showModelBar} payload={{ text: 'Hello' }} />
-                    </TempModal.ModalContainer>
+                        </TempModals.Modal>
+                        <TempModals.Modal modelKey='Bar' show={this.state.showModelBar} payload={{ text: 'Hello' }} />
+                    </TempModals.Container>
                 </View>
 
                 <TestContext.Provider value={'TestContext1: '+this.state.contextValue1}>
