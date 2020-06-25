@@ -85,16 +85,27 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                     <IconButton icon={IconType.QuestionMark} color="Black" transparent />
                 </Row>
 
-                <View style={{ borderWidth: 2 }}>
+                <View style={{ borderWidth: 2, margin: 2, padding: 2 }}>
                     <TempModals.Container>
-                        <Text>TempModals.Container</Text>
+                        <Text style={{ fontWeight: 'bold' }}>TempModals.Container</Text>
                         <TempModals.Watcher>{({modalKey, payload}) => <Text>TempModals.Watcher: {modalKey || 'none'} {JSON.stringify(payload)}</Text> }</TempModals.Watcher>
                         <Button title={'showModelFoo ' + this.state.showModelFoo} onClick={() => this.setState({ showModelFoo: !this.state.showModelFoo })} />
                         <Button title={'showModelBar ' + this.state.showModelBar} onClick={() => this.setState({ showModelBar: !this.state.showModelBar })} />
-                        <TempModals.Modal modelKey='Foo' show={this.state.showModelFoo}>
+                        <TempModals.Modal
+                            modelKey='Foo'
+                            show={this.state.showModelFoo}
+                            onClose={() => { this.setState({ showModelFoo: false }); console.log('Closed Foo'); }}
+                            onOpen={() => console.log('Opened Foo')}
+                        >
                             <Text>Child Of ModelFoo</Text>
                         </TempModals.Modal>
-                        <TempModals.Modal modelKey='Bar' show={this.state.showModelBar} payload={{ text: 'Hello' }} />
+                        <TempModals.Modal
+                            modelKey='Bar'
+                            show={this.state.showModelBar}
+                            payload={{ text: 'Hello' }}
+                            onClose={() => { this.setState({ showModelBar: false }); console.log('Closed Bar'); }}
+                            onOpen={() => console.log('Opened Bar')}
+                        />
                     </TempModals.Container>
                 </View>
 

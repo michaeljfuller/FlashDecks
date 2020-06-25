@@ -1,6 +1,6 @@
 import React, {ConsumerProps, PropsWithChildren, Provider} from 'react';
 import ModalSelector from './core/ModalSelector';
-import ModalManager from "./core/ModalManager";
+import ModalManager, {ModalManagerStatus} from "./core/ModalManager";
 import ModelDispatcher from "./core/ModalDispatcher";
 
 export type ModalContents = React.ReactNode;
@@ -38,14 +38,19 @@ export interface ModalComponentMap {
  *  });
  *  -------
  *  <Modals.Container>
- *      {...}
- *      <Modals.Watcher>{({modalKey}) => <Text>The current modal is: {modalKey || 'none'}</Text>}</Modals.Watcher>
- *      <Modals.Model modelKey='Foo' show={this.state.showModalFoo}>
+ *      <Text>Modals Example</Text>
+ *      <Modals.Watcher>{
+ *          ({modalKey}) => <Text>The current modal is: {modalKey || 'none'}</Text>
+ *      }</Modals.Watcher>
+ *      <Modals.Model modelKey='Foo' show={this.state.showModalFoo} onClose={() => this.setState({ showModalFoo: false })}>
  *          <Text>Text to show inside of ModalFoo as a child.</Text>
  *      </Modals.Model>
- *      <Modals.Model modelKey='Bar' show={this.state.showModalBar} payload={{
- *          text: 'Text to show inside of ModalBar as a property.'
- *      }} />
+ *      <Modals.Model
+ *          modelKey='Bar'
+ *          show={this.state.showModalBar}
+ *          onClose={() => this.setState({ showModalBar: false })}
+ *          payload={{ text: 'Text to show inside of ModalBar as a property.' }}
+ *      />
  *  </Modals.Container>
  */
 export function createModals(modals: ModalComponentMap) {
@@ -66,29 +71,55 @@ export function createModals(modals: ModalComponentMap) {
     }
 
     // The ModelState passes the state info to have dispatcher to have it rendered.
-    function Modal<Payload=any>(props: PropsWithChildren<{
+    interface ModalProps {
         modelKey: ModalKey;
         show: boolean;
-        payload?: Payload;
-        // onClose?: () => void; // TODO Close when other modal opened. Listen/Observe dispatcher?
-    }>) {
-        return <Context.Consumer>{
-            manager => <ModelDispatcher<ModalKey>
-                manager={manager}
-                modelKey={props.modelKey}
-                show={props.show}
-                payload={props.payload}
-                contents={props.children}
-            />
-        }</Context.Consumer>;
+        payload?: any;
+        onOpen?: () => void;
+        onClose?: () => void;
+    }
+    class Modal extends React.Component<ModalProps>
+    {
+        // Bind ModalManager.
+        static contextType = Context;
+        get manager(): ThisModalManager {
+            return this.context;
+        }
+
+        // Subscribe to manager.
+        componentDidMount() {
+            this.manager.onChange.subscribe({
+                next: state => {
+                    if (state.current.modalKey !== state.previous?.modalKey) {
+                        this.onModalChange(state.current, state.previous);
+                    }
+                },
+            });
+        }
+
+        // On modal change, call callbacks.
+        onModalChange(current: ModalManagerStatus, previous?: ModalManagerStatus) {
+            if (this.props.onOpen && current.modalKey === this.props.modelKey) {
+                this.props.onOpen();
+            }
+            if (this.props.onClose && previous?.modalKey === this.props.modelKey) {
+                this.props.onClose();
+            }
+        }
+
+        render() {
+            return <ModelDispatcher<ModalKey>
+                manager={this.manager}
+                modelKey={this.props.modelKey}
+                show={this.props.show}
+                payload={this.props.payload}
+                contents={this.props.children}
+            />;
+        }
     }
 
     // The Watcher lets you see the current state of the modals.
-    interface WatcherState {
-        modalKey?: ModalKey|undefined;
-        payload?: any;
-        contents?: ModalContents;
-    }
+    type WatcherState = ModalManagerStatus;
     type WatcherProps = ConsumerProps<WatcherState>;
     class Watcher extends React.Component<WatcherProps, WatcherState> {
         state: WatcherState = {};
@@ -102,11 +133,7 @@ export function createModals(modals: ModalComponentMap) {
         // Subscribe to manager
         componentDidMount() {
             this.manager.onChange.subscribe({
-                next: state => this.setState({
-                    modalKey: state.currentKey,
-                    payload: state.currentPayload,
-                    contents: state.currentContents,
-                }),
+                next: state => this.setState(state.current),
             });
         }
 
