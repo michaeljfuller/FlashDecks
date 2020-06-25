@@ -1,12 +1,12 @@
 import React, {Provider} from "react";
 import {Text} from "react-native";
-import {ModalComponent, ModalComponentMap, ModalContents} from "../createModals";
+import {ModalTemplate, ModalTemplateMap, ModalContents} from "../createModals";
 import ModalManager from "./ModalManager";
 import ModalRenderer from "./ModalRenderer";
 
 export interface ModalSelectorProps<ModalKey extends string|number> {
     Provider: Provider<ModalManager<ModalKey>>;
-    modals: ModalComponentMap;
+    modals: ModalTemplateMap;
 }
 export interface ModalSelectorState<ModalKey extends string|number> {
     currentKey: ModalKey|undefined;
@@ -24,7 +24,7 @@ export class ModalSelector<ModalKey extends string|number> extends React.Compone
     render() {
         const {Provider, modals} = this.props;
         const {currentKey, currentPayload, currentContents} = this.state;
-        const CurrentModal = currentKey && modals[currentKey] as ModalComponent;
+        const CurrentModal = currentKey && modals[currentKey] as ModalTemplate;
 
         return <Provider value={this.dispatcher}>
             <Text>Modals: [{Object.keys(this.props.modals).join(', ')}]</Text>

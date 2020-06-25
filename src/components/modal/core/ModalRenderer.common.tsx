@@ -1,8 +1,8 @@
 import React from "react";
-import {ModalComponent, ModalContents} from "../createModals";
+import {ModalTemplate, ModalContents} from "../createModals";
 
 export interface ModalRendererProps {
-    Component?: ModalComponent;
+    Component?: ModalTemplate;
     modalKey?: string|number;
     payload?: any;
     contents?: ModalContents;

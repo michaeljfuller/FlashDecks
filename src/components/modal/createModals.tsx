@@ -9,12 +9,12 @@ export type ModalProps<Payload = any> = PropsWithChildren<{
     modalKey?: string|number;
     payload?: Payload;
 }>;
-export type ModalComponent = React.ComponentType<ModalProps>;
+export type ModalTemplate = React.ComponentType<ModalProps>;
 
 /** Input to createModals, mapping components to keys. */
-export interface ModalComponentMap {
-    [key: string]: ModalComponent;
-    [num: number]: ModalComponent;
+export interface ModalTemplateMap {
+    [key: string]: ModalTemplate;
+    [num: number]: ModalTemplate;
 }
 
 /**
@@ -37,7 +37,7 @@ export interface ModalComponentMap {
  *      },
  *  });
  *  -------
- *  <Modals.Container>
+ *  <Modals.Group>
  *      <Text>Modals Example</Text>
  *      <Modals.Watcher>{
  *          ({modalKey}) => <Text>The current modal is: {modalKey || 'none'}</Text>
@@ -51,9 +51,9 @@ export interface ModalComponentMap {
  *          onClose={() => this.setState({ showModalBar: false })}
  *          payload={{ text: 'Text to show inside of ModalBar as a property.' }}
  *      />
- *  </Modals.Container>
+ *  </Modals.Group>
  */
-export function createModals(modals: ModalComponentMap) {
+export function createModals(modals: ModalTemplateMap) {
     // Create current types
     type ModalKey = keyof (typeof modals); // Keys of the passed modals.
     type ThisModalManager = ModalManager<ModalKey>;
@@ -62,8 +62,8 @@ export function createModals(modals: ModalComponentMap) {
     const Context = React.createContext<ThisModalManager>(null as any); // Provider always sets a Dispatcher.
     Context.displayName = `createModels(${Object.keys(modals).join('|')})`;
 
-    // The ModalContainer holds the Context Provider with the Dispatcher, and renders the modals.
-    function Container(props: PropsWithChildren<{}>) {
+    // The Group holds the Context Provider managing the state with the Dispatcher, the ModalSelector to render the modals.
+    function ModalGroup(props: PropsWithChildren<{}>) {
         return <ModalSelector<ModalKey>
             Provider={Context.Provider as Provider<ThisModalManager>}
             modals={modals}
@@ -71,14 +71,14 @@ export function createModals(modals: ModalComponentMap) {
     }
 
     // The ModelState passes the state info to have dispatcher to have it rendered.
-    interface ModalProps {
+    interface ModalStateProps {
         modelKey: ModalKey;
         show: boolean;
         payload?: any;
         onOpen?: () => void;
         onClose?: () => void;
     }
-    class Modal extends React.Component<ModalProps>
+    class ModalState extends React.Component<ModalStateProps>
     {
         // Bind ModalManager.
         static contextType = Context;
@@ -119,10 +119,10 @@ export function createModals(modals: ModalComponentMap) {
     }
 
     // The Watcher lets you see the current state of the modals.
-    type WatcherState = ModalManagerStatus;
-    type WatcherProps = ConsumerProps<WatcherState>;
-    class Watcher extends React.Component<WatcherProps, WatcherState> {
-        state: WatcherState = {};
+    type ModalWatcherState = ModalManagerStatus;
+    type ModalWatcherProps = ConsumerProps<ModalWatcherState>;
+    class ModalWatcher extends React.Component<ModalWatcherProps, ModalWatcherState> {
+        state: ModalWatcherState = {};
 
         // Bind ModalManager
         static contextType = Context;
@@ -144,9 +144,9 @@ export function createModals(modals: ModalComponentMap) {
     }
 
     return {
-        Container,
-        Modal,
-        Watcher,
+        Group: ModalGroup,
+        Modal: ModalState,
+        Watcher: ModalWatcher,
     };
 }
 export default createModals;

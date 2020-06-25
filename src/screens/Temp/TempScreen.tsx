@@ -86,8 +86,8 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                 </Row>
 
                 <View style={{ borderWidth: 2, margin: 2, padding: 2 }}>
-                    <TempModals.Container>
-                        <Text style={{ fontWeight: 'bold' }}>TempModals.Container</Text>
+                    <TempModals.Group>
+                        <Text style={{ fontWeight: 'bold' }}>TempModals.Group</Text>
                         <TempModals.Watcher>{({modalKey, payload}) => <Text>TempModals.Watcher: {modalKey || 'none'} {JSON.stringify(payload)}</Text> }</TempModals.Watcher>
                         <Button title={'showModelFoo ' + this.state.showModelFoo} onClick={() => this.setState({ showModelFoo: !this.state.showModelFoo })} />
                         <Button title={'showModelBar ' + this.state.showModelBar} onClick={() => this.setState({ showModelBar: !this.state.showModelBar })} />
@@ -106,7 +106,7 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                             onClose={() => { this.setState({ showModelBar: false }); console.log('Closed Bar'); }}
                             onOpen={() => console.log('Opened Bar')}
                         />
-                    </TempModals.Container>
+                    </TempModals.Group>
                 </View>
 
                 <TestContext.Provider value={'TestContext1: '+this.state.contextValue1}>
