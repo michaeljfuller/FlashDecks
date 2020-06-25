@@ -36,6 +36,7 @@ const TempModals = createModals({
     Bar: function BarModel(props: ModalProps<{ text: string }>) {
         return <View style={{ borderWidth: 2, borderColor: 'orange' }}>
             <Text style={{ color: 'orange' }}>BarModel - {props.payload?.text}</Text>
+            <Button onClick={props.close} title="Close" />
         </View>;
     },
 });

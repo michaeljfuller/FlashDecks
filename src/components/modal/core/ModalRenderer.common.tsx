@@ -2,8 +2,9 @@ import React from "react";
 import {ModalTemplate, ModalContents} from "../createModals";
 
 export interface ModalRendererProps {
-    Component?: ModalTemplate;
+    template?: ModalTemplate;
     modalKey?: string|number;
     payload?: any;
     contents?: ModalContents;
+    close: () => void;
 }

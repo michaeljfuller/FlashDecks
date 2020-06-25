@@ -6,8 +6,12 @@ import ModelDispatcher from "./core/ModalDispatcher";
 export type ModalContents = React.ReactNode;
 
 export type ModalProps<Payload = any> = PropsWithChildren<{
-    modalKey?: string|number;
-    payload?: Payload;
+    /** The key used to open this template. */
+    modalKey: string|number;
+    /** The data passed to this template. */
+    payload: Payload;
+    /** A function to those this instance. */
+    close: () => void;
 }>;
 export type ModalTemplate = React.ComponentType<ModalProps>;
 
@@ -33,6 +37,7 @@ export interface ModalTemplateMap {
  *      Bar: function BarModel(props: ModalProps<{ text: string }>) {
  *          return <View style={{ borderWidth: 2, borderColor: 'orange' }}>
  *              <Text style={{ color: 'orange' }}>BarModel - {props.payload?.text}</Text>
+ *              <Button onClick={props.close} title="Close" />
  *          </View>;
  *      },
  *  });
