@@ -47,10 +47,10 @@ export interface ModalTemplateMap {
  *      <Modals.Watcher>{
  *          ({modalKey}) => <Text>The current modal is: {modalKey || 'none'}</Text>
  *      }</Modals.Watcher>
- *      <Modals.Model modelKey='Foo' show={this.state.showModalFoo} onClose={() => this.setState({ showModalFoo: false })}>
+ *      <Modals.Instance modelKey='Foo' show={this.state.showModalFoo} onClose={() => this.setState({ showModalFoo: false })}>
  *          <Text>Text to show inside of ModalFoo as a child.</Text>
- *      </Modals.Model>
- *      <Modals.Model
+ *      </Modals.Instance>
+ *      <Modals.Instance
  *          modelKey='Bar'
  *          show={this.state.showModalBar}
  *          onClose={() => this.setState({ showModalBar: false })}
@@ -76,15 +76,16 @@ export function createModals(modals: ModalTemplateMap) {
     }
 
     // The ModelState passes the state info to have dispatcher to have it rendered.
-    interface ModalStateProps {
+    interface ModalInstanceProps<Payload> {
         modelKey: ModalKey;
         show: boolean;
-        payload?: any;
+        payload?: Payload;
         onOpen?: () => void;
         onClose?: () => void;
     }
-    class ModalState extends React.Component<ModalStateProps>
-    {
+    class ModalInstance<Payload = any> extends React.Component<
+        ModalInstanceProps<Payload>
+    > {
         // Bind ModalManager.
         static contextType = Context;
         get manager(): ThisModalManager {
@@ -150,7 +151,7 @@ export function createModals(modals: ModalTemplateMap) {
 
     return {
         Group: ModalGroup,
-        Modal: ModalState,
+        Instance: ModalInstance,
         Watcher: ModalWatcher,
     };
 }

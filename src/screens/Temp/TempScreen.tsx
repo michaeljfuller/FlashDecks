@@ -92,15 +92,15 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                         <TempModals.Watcher>{({modalKey, payload}) => <Text>TempModals.Watcher: {modalKey || 'none'} {JSON.stringify(payload)}</Text> }</TempModals.Watcher>
                         <Button title={'showModelFoo ' + this.state.showModelFoo} onClick={() => this.setState({ showModelFoo: !this.state.showModelFoo })} />
                         <Button title={'showModelBar ' + this.state.showModelBar} onClick={() => this.setState({ showModelBar: !this.state.showModelBar })} />
-                        <TempModals.Modal
+                        <TempModals.Instance
                             modelKey='Foo'
                             show={this.state.showModelFoo}
                             onClose={() => { this.setState({ showModelFoo: false }); console.log('Closed Foo'); }}
                             onOpen={() => console.log('Opened Foo')}
                         >
                             <Text>Child Of ModelFoo</Text>
-                        </TempModals.Modal>
-                        <TempModals.Modal
+                        </TempModals.Instance>
+                        <TempModals.Instance<{text: string}>
                             modelKey='Bar'
                             show={this.state.showModelBar}
                             payload={{ text: 'Hello' }}
