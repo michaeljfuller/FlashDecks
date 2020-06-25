@@ -89,7 +89,12 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                 <View style={{ borderWidth: 2, margin: 2, padding: 2 }}>
                     <TempModals.Group>
                         <Text style={{ fontWeight: 'bold' }}>TempModals.Group</Text>
-                        <TempModals.Watcher>{({modalKey, payload}) => <Text>TempModals.Watcher: {modalKey || 'none'} {JSON.stringify(payload)}</Text> }</TempModals.Watcher>
+                        <TempModals.Status>{
+                            ({modalKey, payload, contents}) => <View style={{ borderWidth: 2 }}>
+                                <Text>TempModals.Watcher: {modalKey || 'none'} {JSON.stringify(payload)}</Text>
+                                <View style={{ borderWidth: 1, margin: 1, padding: 1 }}>{contents}</View>
+                            </View>
+                        }</TempModals.Status>
                         <Button title={'showModelFoo ' + this.state.showModelFoo} onClick={() => this.setState({ showModelFoo: !this.state.showModelFoo })} />
                         <Button title={'showModelBar ' + this.state.showModelBar} onClick={() => this.setState({ showModelBar: !this.state.showModelBar })} />
                         <TempModals.Instance

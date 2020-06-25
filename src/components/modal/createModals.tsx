@@ -125,10 +125,10 @@ export function createModals(modals: ModalTemplateMap) {
     }
 
     // The Watcher lets you see the current state of the modals.
-    type ModalWatcherState = ModalManagerStatus;
-    type ModalWatcherProps = ConsumerProps<ModalWatcherState>;
-    class ModalWatcher extends React.Component<ModalWatcherProps, ModalWatcherState> {
-        state: ModalWatcherState = {};
+    type ModalStatusState = ModalManagerStatus;
+    type ModalStatusProps = ConsumerProps<ModalStatusState>;
+    class ModalStatus extends React.Component<ModalStatusProps, ModalStatusState> {
+        state: ModalStatusState = {};
 
         // Bind ModalManager
         static contextType = Context;
@@ -152,7 +152,7 @@ export function createModals(modals: ModalTemplateMap) {
     return {
         Group: ModalGroup,
         Instance: ModalInstance,
-        Watcher: ModalWatcher,
+        Status: ModalStatus,
     };
 }
 export default createModals;
