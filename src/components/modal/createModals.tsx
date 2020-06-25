@@ -24,39 +24,6 @@ export interface ModalTemplateMap {
 /**
  * Create a context to display modals with.
  * Web implementation uses a Material-UI Modal, while Mobile will use a React-Navigation Stack.
- * @example
- *  const Modals = createModals({
- *      // FooModel shows the children and anything else passed.
- *      Foo: function FooModel({children, ...others}: ModalProps) {
- *          return <View style={{ borderWidth: 2, borderColor: 'red' }}>
- *              <Text style={{ color: 'red' }}>FooModel - {JSON.stringify(others)}</Text>
- *              {children}
- *          </View>;
- *      },
- *      // Bar Model shows the payload text.
- *      Bar: function BarModel(props: ModalProps<{ text: string }>) {
- *          return <View style={{ borderWidth: 2, borderColor: 'orange' }}>
- *              <Text style={{ color: 'orange' }}>BarModel - {props.payload?.text}</Text>
- *              <Button onClick={props.close} title="Close" />
- *          </View>;
- *      },
- *  });
- *  -------
- *  <Modals.Group>
- *      <Text>Modals Example</Text>
- *      <Modals.Watcher>{
- *          ({modalKey}) => <Text>The current modal is: {modalKey || 'none'}</Text>
- *      }</Modals.Watcher>
- *      <Modals.Instance modelKey='Foo' show={this.state.showModalFoo} onClose={() => this.setState({ showModalFoo: false })}>
- *          <Text>Text to show inside of ModalFoo as a child.</Text>
- *      </Modals.Instance>
- *      <Modals.Instance
- *          modelKey='Bar'
- *          show={this.state.showModalBar}
- *          onClose={() => this.setState({ showModalBar: false })}
- *          payload={{ text: 'Text to show inside of ModalBar as a property.' }}
- *      />
- *  </Modals.Group>
  */
 export function createModals(modals: ModalTemplateMap) {
     // Create current types
