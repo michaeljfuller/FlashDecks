@@ -75,7 +75,7 @@ export class AppNavigation extends React.Component<AppNavigationParams, AppNavig
 
     render() {
         return <React.Fragment>
-            <NavigationContainer ref={appNavigation}>
+            <NavigationContainer independent={true} ref={appNavigation}>
                 <Navigator
                     initialRouteName={AppRoutesTree.base}
                     screenOptions={({route}) => {

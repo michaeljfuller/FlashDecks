@@ -6,13 +6,16 @@ import AppAuthenticator from './Authenticator/AppAuthenticator';
 import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import AppNavigation from "../screens/AppNavigation";
 import store from '../store/store';
+import Modals from './AppModals';
 
 export class AppRoot extends AppRootBase {
 
     render() {
         return <ErrorBoundary>
             <ReduxProvider store={store}>
-                {this.renderAuth() || this.renderApp()}
+                <Modals.Group>
+                    {this.renderAuth() || this.renderApp()}
+                </Modals.Group>
             </ReduxProvider>
         </ErrorBoundary>;
     }

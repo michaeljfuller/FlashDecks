@@ -1,5 +1,5 @@
 import React, {Provider} from "react";
-import {ModalTemplate, ModalTemplateMap, ModalContents} from "../createModals";
+import {ModalTemplateMap, ModalContents} from "../createModals";
 import ModalManager from "./ModalManager";
 import ModalRenderer from "./ModalRenderer";
 
@@ -24,15 +24,16 @@ export class ModalSelector<ModalKey extends string|number> extends React.Compone
     render() {
         const {Provider, modals} = this.props;
         const {currentKey, currentPayload, currentContents} = this.state;
-        const CurrentModal = currentKey && modals[currentKey] as ModalTemplate;
+        const currentModal = currentKey && modals[currentKey];
 
         return <Provider value={this.manager}>
-            {this.props.children}
             <ModalRenderer
-                template={CurrentModal}
+                modals={modals}
+                template={currentModal}
                 modalKey={currentKey}
                 payload={currentPayload}
                 contents={currentContents}
+                background={this.props.children}
                 close={this.closeCurrent}
             />
         </Provider>;
