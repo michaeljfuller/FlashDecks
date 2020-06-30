@@ -1,39 +1,54 @@
-import {ModalProps} from "../createModals";
 import {Text, View, ScrollView} from "react-native";
 import React from "react";
 import Button from "../../button/Button";
-import {UIColorThemeKey, UIColorThemeMap} from "../../../styles/UIColorTheme";
+import Modal, {ModalProps} from "../core/Modal";
+import styles from "./DebugModal.styles";
 
-const theme = UIColorThemeMap.Grey;
+export type DebugModalProps = {
+    /** A title to add to the modal. */
+    title?: string;
+    /** The message to add to the modal. */
+    message?: string;
+    /** The data to show. */
+    data?: any;
+} & ModalProps;
 
-export default function DebugModal(props: ModalProps) {
-    return <View style={{
-        backgroundColor: theme.secondary.base,
-        maxHeight: 500,
-        minWidth: 200,
-    }}>
-        <View style={{ backgroundColor: theme.primary.base, }}>
-            <Text style={{
-                fontWeight: 'bold',
-                textAlign: 'center',
-                color: theme.secondary.base
-            }}>{props.modalKey}</Text>
-        </View>
+/**
+ * A modal that displays the passed `data` as a JSON string.
+ */
+export class DebugModal extends Modal<DebugModalProps> {
+    renderModal() {
+        const {title, message, data, children, onClose} = this.props;
 
-        <ScrollView style={{
-            padding: 5,
-        }}>
-            <View>{props.children}</View>
-            <View style={{
-                borderWidth: 1,
-                borderColor: 'grey',
-                padding: 2,
-                margin: 2,
-            }}>
-                <Text>{JSON.stringify(props.payload, null, 2)}</Text>
-            </View>
-        </ScrollView>
+        let dataElement;
+        if (data) {
+            try {
+                dataElement = <View style={styles.data}>
+                    <Text>{JSON.stringify(data, null, 2)}</Text>
+                </View>
+            } catch (error) {
+                dataElement = <View style={styles.data}>
+                    <Text style={styles.errorText}>{error.name}</Text>
+                    <Text style={styles.errorText}>{error.message}</Text>
+                </View>;
+            }
+        }
 
-        <Button title="Close" onClick={props.close} color={UIColorThemeKey.Grey} />
-    </View>
+        return <View style={styles.root}>
+
+            {title && <View style={styles.titleView}>
+                <Text style={styles.titleText}>{title}</Text>
+            </View>}
+
+            <ScrollView style={styles.contents}>
+                {message && <View>{message}</View>}
+                {children && <View>{children}</View>}
+                {dataElement && <View>{dataElement}</View>}
+            </ScrollView>
+
+            <Button title="Close" onClick={onClose}/>
+
+        </View>;
+    }
 }
+

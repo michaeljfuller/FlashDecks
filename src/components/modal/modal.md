@@ -3,103 +3,59 @@ This module serves as a bridge to allow web and native builds to have different 
 For web builds, we want to use a popup component.
 For native builds, we want to use a full-screen navigation stack.
 
-## createModals(modals: ModalComponentMap)
-This function creates the components to be used.  
-It's passed an object containing the components to be used as templates for the modals.   
-The returned object contains the `Container`, `Modal` and `Watcher`.
+## <ModalRoot>
+A ModalRoot is required to host a ModalManager and define where Modals are rendered.    
 
-### ModalTemplate
-The template is passed these properties:
-* `modalKey` - The key of the instance using this template.
-* `payload` - Instance data passed to the template.
-* `close` - A function that will close the instance.
+### ModalManager
+The ModalManager is responsible for opening and closing Modals.
 
-### Example
+### ModalRenderer
+The ModalManager determines how the Modals are structured on the page.  
+For a Web build, a Material-UI Modal is centered on the screen.
+For a Native build, a React-Navigation Stack is used to represent the modal as an overlaying page.
+
+## <Modal>
+The abstract class for implemented Modals. Uses the ModalManager of the nearest parent ModalRoot to manage its state.  
+It has a required `open` property to determine if the modal should be shown.  
+It has optional `onOpen` and `onClose` properties to ensure the variable used in `open` always gets updated.  
+
+Child classes be placed anywhere under a <ModalRoot>.  
+Their render function should return null, as their rendering is deferred to another time and place.
+Instead, they have a `renderModal()` method which is called by ModalRenderer when appropriate.
+
+### AlertModal
+The standard modal to display a message and close button.
+Has optional text and title properties, and will render any children.
+
+#### Example 
 ```tsx
-import React from "react";
-import {Text, View, Button} from "react-native";
-import createModals, {ModalProps} from "../../components/modal/createModals";
-
-// FooModel shows the children and anything else passed.
-function TestModel({children, ...others}: ModalProps) {
-     return <View style={{ borderWidth: 2, borderColor: 'red' }}>
-         <Text>TestModel</Text>
-         <Text>{JSON.stringify(others)}</Text>
-         {children}
-     </View>;
- }
- // Bar Model shows the payload text.
-interface MessagePayload { text: string }
-function MessageModal(props: ModalProps<MessagePayload>) {
-     return <View style={{ borderWidth: 2, borderColor: 'orange' }}>
-        <Text>MessageModal</Text>
-        <Text>{props.payload?.text}</Text>
-        <Button title="OK" onPress={props.close} />
-     </View>;
- }
-
- const Modals = createModals({
-     test: TestModel,
-     message: MessageModal,
- });
+<ModalRoot>
+    <View>
+        <Button title="Load" onClick={() => this.setState({showMessage: true})} />
+        <AlertModal 
+            title="Hello World" 
+            message="This is a message." 
+            open={this.state.showMessage} 
+            onClose={() => this.setState({showMessage: false})} 
+        />
+    </View>
+</ModalRoot>
 ```
 
-## Group
-A Group holds the state of which modal is currently open. Each Group has its own state and there can be multiple.  
-It is also the place where the modals get rendered when they open.  
-All other Modal components must be in a Group, but a Group can contain other elements too.
+### DebugModal
+Like the AlertModal, but can be passed a `data` object to be displayed as JSON.
 
-## Instance
-The modal Instance controls which modal is open. There can only be one modal open per Group.  
-
-### Properties
-* `modalKey` (Required) - A key in the object passed to `createModals()`, specifying which template to use.
-* `show` (Required) - Defines whether the modal is open or note. 
-* `payload` - Data passed to the template for it to use.
-* `onOpen` - A callback for when the modal is opened.
-* `onClose` - A callback for when the modal is closed. Good for updating any state used in `show`.
-The children are also passed through to the modal template.
-
-### Example
+#### Example 
 ```tsx
-<Modals.Group>
-    <Text>Modals Example</Text>
-    <Button 
-        title={`${this.state.showTest ? 'Hide' : 'Show'} Test`} 
-        onPress={() => this.setState({ showTest: this.state.showTest })} 
-    />
-    <Button 
-        title={`${this.state.showTest ? 'Hide' : 'Show'} Message`} 
-        onPress={() => this.setState({ showMessage: this.state.showTest })}
-    />
-    <Modals.Instance
-        modelKey='test'
-        show={this.state.showTest}
-        onClose={() => this.setState({ showTest: false })}
-    >
-        <Text>Child Of ModelFoo</Text>
-    </Modals.Instance>
-    <Modals.Instance<MessagePayload>
-        modelKey='message'
-        show={this.state.showMessage}
-        onClose={() => this.setState({ showMessage: false })}
-        payload={{ text: 'Hello' }}
-    />
-</Modals.Group>
-```
-
-## Status
-Utility component which exposes the status, for whatever reason.
-
-### Example
-```tsx
-<Modals.Group>
-    {/* Other components */}
-    <Modals.Status>{
-        ({modalKey, payload, contents}) => <View style={{ borderWidth: 2 }}>
-            <Text>TempModals.Watcher: {modalKey || 'none'} {JSON.stringify(payload)}</Text>
-            <View style={{ borderWidth: 1, margin: 1, padding: 1 }}>{contents}</View>
-        </View>
-    }</Modals.Status>
-</Modals.Group>
+<ModalRoot>
+    <View>
+        <Button title="Load" onClick={this.load} />
+        <DebugModal 
+            title="Response Data" 
+            data={this.state.response} 
+            open={this.state.showResponse} 
+            onClose={() => this.setState({showResponse: false})} 
+        />
+    </View>
+</ModalRoot>
 ```

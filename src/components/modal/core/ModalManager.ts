@@ -1,69 +1,64 @@
-import React from "react";
 import {BehaviorSubject} from "rxjs";
 import {isEqual} from "underscore";
-import {ModalSelectorState} from "./ModalSelector";
-import {ModalContents} from "../createModals";
+import Modal from "./Modal";
 
-type Container<ModalKey extends string|number = string|number> = React.Component<any, ModalSelectorState<ModalKey>>;
-
-export interface ModalManagerStatus<ModalKey extends string|number = string|number> {
-    modalKey?: ModalKey;
-    payload?: any;
-    contents?: ModalContents;
-}
 export interface ModalManagerStatusHistory<ModalKey extends string|number = string|number> {
-    current: ModalManagerStatus<ModalKey>;
-    previous?: ModalManagerStatus<ModalKey>;
+    current: ModalManagerStatus;
+    previous?: ModalManagerStatus;
+}
+export interface ModalManagerStatus {
+    modal: Modal|null;
 }
 
-function transformState<ModalKey extends string|number = string|number>(selectorState: ModalSelectorState<ModalKey>) {
-    return {
-        modalKey: selectorState.currentKey,
-        payload: selectorState.currentPayload,
-        contents: selectorState.currentContents,
-    } as ModalManagerStatus<ModalKey>;
-}
-
-/** Object passed down to allow operations. */
+/**
+ * A manager passed on to Modals to update the state.
+ */
 export class ModalManager<ModalKey extends string|number = string|number> {
-    constructor(readonly selector: Container<ModalKey>) {}
+    /** The status history. */
+    status = {
+        current: { modal: null },
+        previous: undefined,
+    } as ModalManagerStatusHistory;
 
+    /** The current modal. */
     get currentModal() {
-        return this.selector.state.currentKey;
+        return this.status.current.modal;
     }
-    onChange = new BehaviorSubject<ModalManagerStatusHistory>({
-        current: transformState(this.selector.state)
+
+    /** Allows subscription to status history changes. */
+    onChange = new BehaviorSubject<
+        Readonly<ModalManagerStatusHistory>
+    >({
+        current: { modal: null },
+        previous: undefined,
     });
 
-    setSelectorState(currentKey: ModalKey|undefined, currentPayload: any|undefined, currentContents: ModalContents|undefined) {
-        const previous = this.selector.state;
-        const current = {
-            currentKey,
-            currentPayload,
-            currentContents,
-        } as ModalSelectorState<ModalKey>;
+    /** Change the modal, update the history, and fire an change event. */
+    setModal(modal: Modal|null) {
+        const previous = this.status.current;
+        const current = { modal } as ModalManagerStatus;
 
         if (!isEqual(current, previous)) {
-            this.selector.setState(current);
-            this.onChange.next({
-                previous: transformState(previous),
-                current: transformState(current),
-            });
+            this.status = Object.freeze({ previous, current });
+            this.onChange.next(this.status);
         }
     }
 
-    open(modalKey: ModalKey, payload?: any, contents?: ModalContents) {
-        this.setSelectorState(modalKey, payload, contents);
+    /** Open the passed modal. */
+    open(modal: Modal) {
+        this.setModal(modal);
     }
 
-    close(modalKey?: ModalKey) {
-        if (!modalKey || this.currentModal === modalKey) {
-            this.setSelectorState(undefined, undefined, undefined);
+    /** Close the modal, either specific or any. */
+    close(modal?: Modal) {
+        if (this.isOpen(modal)) {
+            this.setModal(null);
         }
     }
 
-    isOpen(modalKey?: string) {
-        return modalKey === undefined ? this.currentModal !== undefined : this.currentModal === modalKey;
+    /** Returns if any (or a specified) modal is open. */
+    isOpen(modal?: Modal) {
+        return modal === undefined ? this.currentModal !== null : this.currentModal === modal;
     }
 }
 export default ModalManager;

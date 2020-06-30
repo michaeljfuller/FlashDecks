@@ -1,40 +1,36 @@
-import {ModalProps} from "../createModals";
-import {Text, View, ScrollView} from "react-native";
 import React from "react";
+import {Text, View, ScrollView} from "react-native";
 import Button from "../../button/Button";
-import {DefaultTheme, Color} from "../../../styles/UIColorTheme";
+import Modal, {ModalProps} from "../core/Modal";
+import styles from "./AlertModal.styles";
 
-const theme = DefaultTheme;
-
-export type AlertModalProps = ModalProps<{
+export type AlertModalProps = {
+    /** A title to add to the modal. */
     title?: string;
+    /** The message to add to the modal. */
     message?: string;
-}>;
+} & ModalProps;
 
-export default function AlertModal(props: AlertModalProps) {
-    const {title, message} = props.payload || {};
-    return <View
-        style={{ backgroundColor: Color.White }}
-    >
+/**
+ * A simple modal with a close button.
+ */
+export class AlertModal extends Modal<AlertModalProps> {
+    renderModal() {
+        const {title, message, children, onClose} = this.props;
 
-        {title && <View style={{
-            backgroundColor: theme.primary.base,
-        }}>
-            <Text style={{
-                fontWeight: 'bold',
-                textAlign: 'center',
-                color: theme.secondary.base,
-            }}>{title}</Text>
-        </View>}
+        return <View style={styles.root} >
 
-        <ScrollView style={{
-            padding: 2
-        }}>
-            {message && <Text>{message}</Text>}
-            <View>{props.children}</View>
-        </ScrollView>
+            {title && <View style={styles.titleView}>
+                <Text style={styles.titleText}>{title}</Text>
+            </View>}
 
-        <Button title="Close" onClick={props.close}/>
+            <ScrollView style={styles.contents}>
+                {message && <Text>{message}</Text>}
+                {children && <View>{children}</View>}
+            </ScrollView>
 
-    </View>
+            <Button title="Close" onClick={onClose}/>
+
+        </View>;
+    }
 }

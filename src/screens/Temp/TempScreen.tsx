@@ -1,15 +1,16 @@
 import React, {Component, PropsWithChildren} from "react";
-import {Text, View} from "react-native";
+import {Text, TextInput, View} from "react-native";
 import ScreenContainer from "../ScreenContainer";
 import {NavigationScreenProps} from "../../navigation/navigation_types";
 import {reduxConnector, TempScreenStoreProps} from "./TempScreen_redux";
 import {envName} from "../../env";
-import {Modals, ModalKeys} from "../../AppRoot/AppModals";
 
 import {Button} from "../../components/button/Button";
 import {TextButton} from "../../components/button/TextButton";
 import {IconButton, IconType} from "../../components/button/IconButton";
 import {repeat} from "../../utils/array";
+import {AlertModal} from "../../components/modal/AlertModal/AlertModal";
+import {DebugModal} from "../../components/modal/DebugModal/DebugModal";
 
 export enum TestIds {
     User='TempScreen_User',
@@ -22,9 +23,7 @@ export type TempScreenProps = NavigationScreenProps;
 interface TempScreenState {
     contextValue1: number;
     contextValue2: number;
-    showModelFoo: boolean;
-    showModelBar: boolean;
-    showTestModal: boolean;
+    showDebugModal: boolean;
     showAlertModal: boolean;
 }
 
@@ -33,9 +32,7 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
     state = {
         contextValue1: 1,
         contextValue2: 2,
-        showModelFoo: false,
-        showModelBar: false,
-        showTestModal: false,
+        showDebugModal: false,
         showAlertModal: false,
     } as TempScreenState;
 
@@ -116,30 +113,32 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
             borderWidth: 1,
         }}>
 
-            <TextButton title={'showTestModal ' + this.state.showTestModal} onClick={() => this.setState({ showTestModal: !this.state.showTestModal })} />
-            <Modals.Instance
-                modelKey={ModalKeys.Test}
-                show={this.state.showTestModal}
-                onClose={() => this.setState({ showTestModal: false }) }
-                payload={{
+            <TextButton title={'showDebugModal ' + this.state.showDebugModal} onClick={() => this.setState({ showDebugModal: !this.state.showDebugModal })} />
+            <DebugModal
+                open={this.state.showDebugModal}
+                onClose={() => this.setState({ showDebugModal: false })}
+                title="Test Modal"
+                data={{
                     a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8, i: 9, j: 10, k: 11, l: 12, m: 13,
                     n: 14, o: 15, p: 16, q: 17, r: 18, s: 19, t: 20, u: 21, v: 22, w: 23, x: 24, y: 25, z: 26
                 }}
             >
-                <Text>Something</Text><Text>Something</Text><Text>Something</Text><Text>Something</Text>
-                <Text>Something</Text><Text>Something</Text><Text>Something</Text><Text>Something</Text>
-                <Text>Something</Text><Text>Something</Text><Text>Something</Text><Text>Something</Text>
-            </Modals.Instance>
+                <Text>DebugModal Contents</Text>
+                <TextButton title={'showAlertModal ' + this.state.showAlertModal} onClick={() => this.setState({ showAlertModal: !this.state.showAlertModal })} />
+            </DebugModal>
 
             <TextButton title={'showAlertModal ' + this.state.showAlertModal} onClick={() => this.setState({ showAlertModal: !this.state.showAlertModal })} />
-            <Modals.Instance
-                modelKey={ModalKeys.Alert}
-                show={this.state.showAlertModal}
-                onClose={() => this.setState({ showAlertModal: false }) }
-                payload={{ title: 'foo', message: 'bar' }}
+            <AlertModal
+                open={this.state.showAlertModal}
+                onClose={() => this.setState({ showAlertModal: false })}
+                title="Alert"
+                message="Message"
             >
-                <Text>Something</Text>
-            </Modals.Instance>
+                <Text>AlertModal Contents</Text>
+                <View style={{ borderWidth: 1, paddingHorizontal: 1 }}>
+                    <TextInput multiline />
+                </View>
+            </AlertModal>
 
         </View>;
     }

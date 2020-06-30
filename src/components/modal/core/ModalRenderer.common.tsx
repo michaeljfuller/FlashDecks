@@ -1,11 +1,8 @@
-import React from "react";
-import {ModalTemplate, ModalContents, ModalTemplateMap} from "../createModals";
+import React from 'react';
+import Modal from "./Modal";
 
 export interface ModalRendererProps {
-    modals: ModalTemplateMap;
-    modalKey?: string|number;
-    payload?: any;
-    contents?: ModalContents;
+    modal: Modal|null;
     background: React.ReactNode;
     close: () => void;
 }
