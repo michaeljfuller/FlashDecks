@@ -64,7 +64,10 @@ function styleMaterialContainedButton(theme: UIColorTheme, square: boolean, flat
                     color: theme.secondary.disabled,
                 }
             },
-            label: {textTransform: 'none'},
+            label: {
+                textTransform: 'none',
+                justifyContent: 'center',
+            },
             contained: {
                 boxShadow: flat ? 'none' : undefined,
             }
