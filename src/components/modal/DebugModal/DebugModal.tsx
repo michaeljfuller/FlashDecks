@@ -46,7 +46,7 @@ export class DebugModal extends Modal<DebugModalProps> {
                 {dataElement && <View>{dataElement}</View>}
             </ScrollView>
 
-            <Button title="Close" onClick={onClose}/>
+            <Button title="Close" onClick={onClose} square />
 
         </View>;
     }

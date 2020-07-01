@@ -29,7 +29,7 @@ export class AlertModal extends Modal<AlertModalProps> {
                 {children && <View>{children}</View>}
             </ScrollView>
 
-            <Button title="Close" onClick={onClose}/>
+            <Button title="Close" onClick={onClose} square />
 
         </View>;
     }
