@@ -5,10 +5,19 @@ import DeckViewBase from "./DeckView.common";
 import CardView from "../card/CardView";
 import Avatar from "../avatar/Avatar";
 import Tag from "../tag/Tag";
+import IconButton, {IconType} from "../button/IconButton";
+import {DeckInfoModal} from "./DeckInfoModal/DeckInfoModal";
 
-export interface DeckViewState {}
+export interface DeckViewState {
+    showInfo: boolean;
+}
 export default class DeckView extends DeckViewBase<DeckViewState> {
-    state: DeckViewState = {};
+    state: DeckViewState = {
+        showInfo: false,
+    };
+
+    openInfoModal = () => this.setState({ showInfo: true });
+    closeInfoModal = () => this.setState({ showInfo: false });
 
     render() {
         const deck = this.props.item;
@@ -19,6 +28,7 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
             {this.renderTags()}
             <Text>{deck.description}</Text>
             {this.renderCards()}
+            <DeckInfoModal deck={deck} open={this.state.showInfo} onClose={this.closeInfoModal} />
         </View>;
     }
 
@@ -30,7 +40,12 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
             height: avatarSize,
             position: 'relative',
         }}>
-            <Typography variant="h5" align="center">{deck.name}</Typography>
+            <View style={{ flexDirection: 'row', marginHorizontal: 'auto' }}>
+                <Typography variant="h4" align="center">{deck.name}</Typography>
+                <View style={{ marginLeft: 5 }}>
+                    <IconButton flat icon={IconType.Info} onClick={this.openInfoModal} />
+                </View>
+            </View>
             <View style={{
                 position: 'absolute',
                 flexDirection: 'row',
