@@ -1,8 +1,8 @@
 import React from "react";
-import {Text, View, ScrollView} from "react-native";
+import {Text, View} from "react-native";
 import Button from "../../button/Button";
 import Modal, {ModalProps} from "../core/Modal";
-import styles from "./AlertModal.styles";
+import {ModalContainer, ModalHeader, ModalBody, ModalFooter} from "../parts";
 
 export type AlertModalProps = {
     /** A title to add to the modal. */
@@ -18,19 +18,19 @@ export class AlertModal extends Modal<AlertModalProps> {
     renderModal() {
         const {title, message, children, onClose} = this.props;
 
-        return <View style={styles.root} >
+        return <ModalContainer>
 
-            {title && <View style={styles.titleView}>
-                <Text style={styles.titleText}>{title}</Text>
-            </View>}
+            <ModalHeader title={title || 'Alert'} />
 
-            <ScrollView style={styles.contents}>
+            <ModalBody>
                 {message && <Text>{message}</Text>}
                 {children && <View>{children}</View>}
-            </ScrollView>
+            </ModalBody>
 
-            <Button title="Close" onClick={onClose} square />
+            <ModalFooter>
+                <Button title="Close" onClick={onClose} square />
+            </ModalFooter>
 
-        </View>;
+        </ModalContainer>;
     }
 }

@@ -1,8 +1,9 @@
-import {Text, View, ScrollView} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import React from "react";
 import Button from "../../button/Button";
+import {Color} from "../../../styles/Color";
 import Modal, {ModalProps} from "../core/Modal";
-import styles from "./DebugModal.styles";
+import {ModalContainer, ModalHeader, ModalBody, ModalFooter} from "../parts";
 
 export type DebugModalProps = {
     /** A title to add to the modal. */
@@ -34,21 +35,31 @@ export class DebugModal extends Modal<DebugModalProps> {
             }
         }
 
-        return <View style={styles.root}>
+        return <ModalContainer>
 
-            {title && <View style={styles.titleView}>
-                <Text style={styles.titleText}>{title}</Text>
-            </View>}
+            <ModalHeader title={title || 'Debug'} />
 
-            <ScrollView style={styles.contents}>
+            <ModalBody>
                 {message && <View>{message}</View>}
                 {children && <View>{children}</View>}
                 {dataElement && <View>{dataElement}</View>}
-            </ScrollView>
+            </ModalBody>
 
-            <Button title="Close" onClick={onClose} square />
+            <ModalFooter>
+                <Button title="Close" onClick={onClose} square />
+            </ModalFooter>
 
-        </View>;
+        </ModalContainer>;
     }
 }
 
+export const styles = StyleSheet.create({
+    data: {
+        borderWidth: 1,
+        padding: 2,
+    },
+    errorText: {
+        color: Color.Red,
+    },
+});
+export default styles;
