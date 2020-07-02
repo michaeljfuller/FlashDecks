@@ -1,9 +1,12 @@
 import React from "react";
-import {Text, View, ScrollView} from "react-native";
+import {Text} from "react-native";
 import Button from "../../button/Button";
 import Modal, {ModalProps} from "../../modal/core/Modal";
-import styles from "./DeckInfoModal.styles";
-import Avatar from "../../avatar/Avatar";
+import ModalContainer from "../../modal/parts/ModalContainer/ModalContainer";
+import ModalHeader from "../../modal/parts/ModalHeader/ModalHeader";
+import ModalFooter from "../../modal/parts/ModalFooter/ModalFooter";
+import ModalBody from "../../modal/parts/ModalBody/ModalBody";
+import {repeat} from "../../../utils/array";
 
 export type DeckInfoModalProps = {
     deck: Deck;
@@ -16,22 +19,18 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps> {
     renderModal() {
         const {deck, onClose} = this.props;
 
-        return <View style={styles.root} >
+        return <ModalContainer>
 
-            <View style={styles.titleView}>
-                <Text style={styles.titleText}>{deck.name}</Text>
-                <View style={styles.userView}>
-                    <Text style={styles.titleText}>{deck.owner.displayName}</Text>
-                    <Avatar user={deck.owner} />
-                </View>
-            </View>
+            <ModalHeader title={deck.name} user={deck.owner} />
 
-            <ScrollView style={styles.contents}>
+            <ModalBody>
                 <Text>{deck.description}</Text>
-            </ScrollView>
+            </ModalBody>
 
-            <Button title="Close" onClick={onClose}/>
+            <ModalFooter>
+                <Button title="Close" onClick={onClose} square />
+            </ModalFooter>
 
-        </View>;
+        </ModalContainer>;
     }
 }
