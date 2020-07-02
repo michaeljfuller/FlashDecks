@@ -5,11 +5,12 @@ export interface ModalContainerProps {
     style?: ViewStyle;
 }
 
-export default function ModalContainer(props: PropsWithChildren<ModalContainerProps>) {
+export function ModalContainer(props: PropsWithChildren<ModalContainerProps>) {
     return <View style={[styles.root, props.style]}>
         {props.children}
     </View>;
 }
+export default ModalContainer;
 
 const shadowRadius = 4;
 const styles = StyleSheet.create({

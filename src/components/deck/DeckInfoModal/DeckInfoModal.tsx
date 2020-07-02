@@ -2,11 +2,7 @@ import React from "react";
 import {Text} from "react-native";
 import Button from "../../button/Button";
 import Modal, {ModalProps} from "../../modal/core/Modal";
-import ModalContainer from "../../modal/parts/ModalContainer/ModalContainer";
-import ModalHeader from "../../modal/parts/ModalHeader/ModalHeader";
-import ModalFooter from "../../modal/parts/ModalFooter/ModalFooter";
-import ModalBody from "../../modal/parts/ModalBody/ModalBody";
-import {repeat} from "../../../utils/array";
+import {ModalContainer, ModalHeader, ModalFooter, ModalBody} from "../../modal/parts";
 
 export type DeckInfoModalProps = {
     deck: Deck;
