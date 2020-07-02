@@ -1,6 +1,5 @@
 import React from "react";
 import {Text, View} from "react-native";
-import Typography from '@material-ui/core/Typography';
 import DeckViewBase from "./DeckView.common";
 import CardView from "../card/CardView";
 import Avatar from "../avatar/Avatar";
@@ -41,7 +40,7 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
             position: 'relative',
         }}>
             <View style={{ flexDirection: 'row', marginHorizontal: 'auto' }}>
-                <Typography variant="h4" align="center">{deck.name}</Typography>
+                <Text>{deck.name}</Text>
                 <View style={{ marginLeft: 5 }}>
                     <IconButton flat icon={IconType.Info} onClick={this.openInfoModal} />
                 </View>
@@ -50,11 +49,7 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
                 position: 'absolute',
                 flexDirection: 'row',
             }}>
-                <Avatar user={deck.owner} style={{ size: avatarSize }} />
-                <Text style={{
-                    marginLeft: 5,
-                    lineHeight: avatarSize,
-                }}>{deck.owner.displayName}</Text>
+                <Avatar user={deck.owner} style={{ size: avatarSize, labelColor: 'black' }} labelPlacement="right" />
             </View>
         </View>;
     }
