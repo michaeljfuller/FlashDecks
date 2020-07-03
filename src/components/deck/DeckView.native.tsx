@@ -21,7 +21,6 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
         const deck = this.props.item;
 
         return <View>
-            <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>DeckView</Text>
             {this.renderHeader()}
             <View style={styles.descriptionView}>
                 <Text style={styles.descriptionText}>{deck.description}</Text>
@@ -36,10 +35,10 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
 
         return <View style={styles.header}>
             <View style={styles.headerItem}>
-                <Avatar user={deck.owner} labelPlacement="right" style={{ size: avatarSize, labelColor: 'black' }} />
+                <Text style={styles.titleText}>{deck.name}</Text>
             </View>
             <View style={styles.headerItem}>
-                <Text style={styles.titleText}>{deck.name}</Text>
+                <Avatar user={deck.owner} labelPlacement="right" style={{ size: avatarSize, labelColor: 'black' }} />
             </View>
             <View style={styles.headerItem}>
                 {this.renderTags()}
@@ -51,8 +50,7 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
 
 const styles = StyleSheet.create({
     header: {
-        height: avatarSize,
-        flexDirection: 'row',
+        flexDirection: 'column',
         marginBottom: 5,
     },
     headerItem: {
