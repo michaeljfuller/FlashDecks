@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import {Text, View} from "react-native";
 import ScreenContainer from "../../ScreenContainer";
 import DeckView from "../../../components/deck/DeckView";
 import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
@@ -51,7 +50,6 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
     render() {
         return (
             <ScreenContainer style={{ padding: 5 }}>
-                <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>DeckViewScreen</Text>
                 <DeckView item={this.state.deck} />
             </ScreenContainer>
         );
