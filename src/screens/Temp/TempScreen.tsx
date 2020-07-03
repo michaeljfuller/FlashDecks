@@ -118,13 +118,9 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                 open={this.state.showDebugModal}
                 onClose={() => this.setState({ showDebugModal: false })}
                 title="Test Modal"
-                data={{
-                    a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8, i: 9, j: 10, k: 11, l: 12, m: 13,
-                    n: 14, o: 15, p: 16, q: 17, r: 18, s: 19, t: 20, u: 21, v: 22, w: 23, x: 24, y: 25, z: 26
-                }}
+                data={repeat(75, i => 48 + i).map(code => ({ code, character: String.fromCharCode(code) }))}
             >
-                <Text>DebugModal Contents</Text>
-                <TextButton title={'showAlertModal ' + this.state.showAlertModal} onClick={() => this.setState({ showAlertModal: !this.state.showAlertModal })} />
+                <Text>Character Codes</Text>
             </DebugModal>
 
             <TextButton title={'showAlertModal ' + this.state.showAlertModal} onClick={() => this.setState({ showAlertModal: !this.state.showAlertModal })} />
@@ -138,6 +134,7 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                 <View style={{ borderWidth: 1, paddingHorizontal: 1 }}>
                     <TextInput multiline />
                 </View>
+                <TextButton title={'showDebugModal ' + this.state.showDebugModal} onClick={() => this.setState({ showDebugModal: !this.state.showDebugModal })} />
             </AlertModal>
 
         </View>;
