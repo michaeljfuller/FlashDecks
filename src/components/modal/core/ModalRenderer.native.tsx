@@ -1,4 +1,4 @@
-import React, {createRef} from 'react';
+import React, {createRef, FunctionComponent} from 'react';
 import {View, Text, StyleSheet} from "react-native";
 import {NavigationContainer, NavigationContainerRef} from "@react-navigation/native";
 import {createStackNavigator} from "@react-navigation/stack";
@@ -61,9 +61,10 @@ function ModalOpenScreen() {
         <Context.Consumer>{
             props => {
                 const { modal } = props || {};
-                console.log('ModalOpenScreen', modal && modal.renderModal());
                 if (modal) {
-                    return modal.renderModal();
+                    const ModalWrapper: FunctionComponent = () => modal ? modal.renderModal() : null;
+                    ModalWrapper.displayName = modal ? modal.constructor.name+'Wrapper' : 'ModalInstance';
+                    return <ModalWrapper />;
                 }
                 return <View><Text>ModalOpenScreen: No modal found</Text></View>;
             }
