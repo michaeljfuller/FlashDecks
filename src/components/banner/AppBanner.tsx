@@ -10,6 +10,7 @@ import {IconButton, IconType} from "../button/IconButton";
 
 import AppBreadcrumbs from "./breadcrumbs/AppBreadcrumbs";
 import {AppBannerProps} from "./AppBanner.common";
+import Avatar from "../avatar/Avatar";
 
 export {AppBannerProps} from "./AppBanner.common";
 
@@ -17,7 +18,6 @@ export function AppBanner(props: AppBannerProps) {
     const {
         loggedInUser, onToggleSidebar, onSignOutClick, routerDetails
     } = props;
-    const {displayName = 'guest'} = loggedInUser || {};
 
     const signOutButton = loggedInUser && <IconButton
         text="Sign Out" icon={IconType.Exit} onClick={onSignOutClick} transparent color="White"
@@ -37,7 +37,12 @@ export function AppBanner(props: AppBannerProps) {
                     <View style={{ flexGrow: 1 }}>
                         <AppBreadcrumbs routerDetails={routerDetails} />
                     </View>
-                    <Text style={[styles.bannerText, { marginRight: 15 }]}>User: ”{displayName}”</Text>
+                    <Avatar
+                        user={loggedInUser}
+                        size={20}
+                        label={loggedInUser ? loggedInUser.displayName : 'guest'}
+                        labelPlacement="right"
+                    />
                     {signOutButton}
 
                 </Toolbar>

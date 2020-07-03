@@ -14,9 +14,7 @@ export interface ModalHeaderProps {
 }
 
 export function ModalHeader(props: PropsWithChildren<ModalHeaderProps>) {
-    const userAvatar = props.user !== undefined && <View style={styles.avatarView}>
-        <Avatar user={props.user} style={{ size: avatarSize }} />
-    </View>;
+    const userAvatar = props.user !== undefined && <Avatar user={props.user} size={avatarSize} style={styles.avatarView} />;
 
     const viewStyle: ViewStyle = {
         minHeight: userAvatar ? avatarSize + headerPadding * 2 : undefined

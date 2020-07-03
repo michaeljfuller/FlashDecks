@@ -39,7 +39,7 @@ export default function DeckListItem(props: DeckListItemProps) {
 
             <UICardItem style={{ backgroundColor: headerColor }}>
                 <Text style={{ color: headerTextColor, paddingRight: 5 }}>{owner.displayName}</Text>
-                <Avatar user={owner} style={{ size: 30 }} />
+                <Avatar user={owner} size={30} />
             </UICardItem>
 
             {showActions && <View style={{ paddingTop: 5, paddingRight: 5 }}>
