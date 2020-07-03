@@ -3,6 +3,7 @@ import ScreenContainer from "../../ScreenContainer";
 import DeckView from "../../../components/deck/DeckView";
 import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
 import {reduxConnector, DeckViewScreenStoreProps} from "./DeckViewScreen_redux";
+import {repeat} from "../../../utils/array";
 
 export interface DeckViewScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -17,7 +18,7 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
             id: `deck-id`,
             name: `Deck name`,
             description: `Deck description`,
-            tags: ['tag-1', 'tag-2', 'tag-3'],
+            tags: repeat(15, i => `tag-${i+1}`),
             ownerId: `owner-id`,
             owner: { id: `owner-id`, displayName: `Owner displayName` },
             cards: [{

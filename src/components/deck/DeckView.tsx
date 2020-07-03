@@ -2,6 +2,7 @@ import React from "react";
 import {Text, View, StyleSheet} from "react-native";
 import DeckViewBase from "./DeckView.common";
 import Avatar from "../avatar/Avatar";
+import IconButton, {IconType} from "../button/IconButton";
 import {DeckInfoModal} from "./DeckInfoModal/DeckInfoModal";
 
 const avatarSize = 35;
@@ -21,7 +22,6 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
         const deck = this.props.item;
 
         return <View>
-            <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>DeckView</Text>
             {this.renderHeader()}
             <View style={styles.descriptionView}>
                 <Text style={styles.descriptionText}>{deck.description}</Text>
@@ -35,15 +35,22 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
         const deck = this.props.item;
 
         return <View style={styles.header}>
-            <View style={styles.headerItem}>
+
+            <View style={styles.avatarView}>
                 <Avatar user={deck.owner} labelPlacement="right" style={{ size: avatarSize, labelColor: 'black' }} />
             </View>
-            <View style={styles.headerItem}>
+
+            <View style={styles.titleView}>
                 <Text style={styles.titleText}>{deck.name}</Text>
+                <View style={styles.infoButton}>
+                    <IconButton flat icon={IconType.Info} onClick={this.openInfoModal} />
+                </View>
             </View>
-            <View style={styles.headerItem}>
+
+            <View style={styles.tagsView}>
                 {this.renderTags()}
             </View>
+
         </View>;
     }
 
@@ -51,22 +58,35 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
 
 const styles = StyleSheet.create({
     header: {
-        height: avatarSize,
-        flexDirection: 'row',
+        flexDirection: "row",
         marginBottom: 5,
     },
-    headerItem: {
+    avatarView: {
+        minHeight: avatarSize,
         flex: 1,
     },
+    titleView: {
+        height: avatarSize,
+        flexDirection: "row",
+        alignItems: "center",
+        margin: "auto",
+    },
+    tagsView: {
+        minHeight: avatarSize,
+        flex: 1,
+        overflow: "hidden",
+    },
     titleText: {
-        textAlign: "center",
         lineHeight: avatarSize,
-        fontWeight: 'bold',
+        fontWeight: "bold",
+    },
+    infoButton: {
+        paddingLeft: 5,
     },
     descriptionView: {
         borderWidth: 1,
         padding: 2,
-        backgroundColor: 'white',
+        backgroundColor: "white",
     },
     descriptionText: {
         fontStyle: "italic",
