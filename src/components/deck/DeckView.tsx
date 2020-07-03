@@ -26,7 +26,7 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
             <View style={styles.descriptionView}>
                 <Text style={styles.descriptionText}>{deck.description}</Text>
             </View>
-            {this.renderCards()}
+            {this.renderCards(styles.cards)}
             <DeckInfoModal deck={deck} open={this.state.showInfo} onClose={this.closeInfoModal} />
         </View>;
     }
@@ -37,7 +37,7 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
         return <View style={styles.header}>
 
             <View style={styles.avatarView}>
-                <Avatar user={deck.owner} labelPlacement="right" style={{ size: avatarSize, labelColor: 'black' }} />
+                <Avatar user={deck.owner} labelPlacement="right" size={avatarSize} labelStyle={{ color: 'black' }} />
             </View>
 
             <View style={styles.titleView}>
@@ -48,7 +48,7 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
             </View>
 
             <View style={styles.tagsView}>
-                {this.renderTags()}
+                {this.renderTags(styles.tags)}
             </View>
 
         </View>;
@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
         height: avatarSize,
         flexDirection: "row",
         alignItems: "center",
-        margin: "auto",
     },
     tagsView: {
         minHeight: avatarSize,
@@ -78,6 +77,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         lineHeight: avatarSize,
+        fontSize: Math.floor(avatarSize*0.7),
         fontWeight: "bold",
     },
     infoButton: {
@@ -90,5 +90,15 @@ const styles = StyleSheet.create({
     },
     descriptionText: {
         fontStyle: "italic",
+    },
+    tags: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "flex-end",
+    },
+    cards: {
+        marginTop: 5,
+        maxWidth: 550,
+        marginHorizontal: 'auto',
     },
 });
