@@ -1,9 +1,6 @@
 import React from "react";
-import {
-    NavigationContainer,
-    NavigationContainerRef,
-    DrawerActions,
-} from '@react-navigation/native';
+import * as Linking from 'expo-linking';
+import {NavigationContainer, NavigationContainerRef, DrawerActions, LinkingOptions} from '@react-navigation/native';
 import {Auth} from "aws-amplify";
 import {AppRoutes, AppRoutesTree} from "./AppRouteTree";
 import {
@@ -36,6 +33,15 @@ export interface AppNavigationState {
  */
 export class AppNavigation extends React.Component<AppNavigationParams, AppNavigationState> {
     state = {} as AppNavigationState;
+    /**
+     * https://reactnavigation.org/docs/deep-linking/
+     * https://docs.expo.io/workflow/linking/
+     */
+    linking = {
+        prefixes: [
+            Linking.makeUrl('/')
+        ],
+    } as LinkingOptions;
 
     renderContents: ExtendableDrawerRender = (contents, routerDetails) => {
         const toggleDrawer = () => routerDetails.navigation.dispatch(DrawerActions.toggleDrawer());
@@ -75,7 +81,7 @@ export class AppNavigation extends React.Component<AppNavigationParams, AppNavig
 
     render() {
         return <React.Fragment>
-            <NavigationContainer independent={true} ref={appNavigation}>
+            <NavigationContainer independent={true} ref={appNavigation} linking={this.linking}>
                 <Navigator
                     initialRouteName={AppRoutesTree.base}
                     screenOptions={({route}) => {
