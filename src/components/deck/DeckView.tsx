@@ -23,9 +23,6 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
 
         return <View>
             {this.renderHeader()}
-            <View style={styles.descriptionView}>
-                <Text style={styles.descriptionText}>{deck.description}</Text>
-            </View>
             {this.renderCards(styles.cards)}
             <DeckInfoModal deck={deck} open={this.state.showInfo} onClose={this.closeInfoModal} />
         </View>;
@@ -47,8 +44,8 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
                 </View>
             </View>
 
-            <View style={styles.tagsView}>
-                {this.renderTags(styles.tags)}
+            <View style={styles.cardCountView}>
+                <Text style={styles.cardCount}>{this.cardCount} {this.cardCount !== 1 ? 'cards' : 'card'}</Text>
             </View>
 
         </View>;
@@ -70,7 +67,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
     },
-    tagsView: {
+    cardCountView: {
         minHeight: avatarSize,
         flex: 1,
         overflow: "hidden",
@@ -83,22 +80,13 @@ const styles = StyleSheet.create({
     infoButton: {
         paddingLeft: 5,
     },
-    descriptionView: {
-        borderWidth: 1,
-        padding: 2,
-        backgroundColor: "white",
-    },
-    descriptionText: {
-        fontStyle: "italic",
-    },
-    tags: {
-        flexDirection: "row",
-        flexWrap: "wrap",
-        justifyContent: "flex-end",
-    },
     cards: {
         marginTop: 5,
         maxWidth: 550,
         marginHorizontal: 'auto',
+    },
+    cardCount: {
+        lineHeight: avatarSize,
+        textAlign: "right",
     },
 });

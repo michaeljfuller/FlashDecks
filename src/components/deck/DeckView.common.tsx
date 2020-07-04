@@ -1,6 +1,5 @@
 import React from "react";
 import {View, ViewStyle} from "react-native";
-import Tag from "../tag/Tag";
 import CardView from "../card/CardView";
 
 export interface DeckViewProps {
@@ -8,16 +7,8 @@ export interface DeckViewProps {
 }
 
 export default class DeckViewBase<State = {}> extends React.Component<DeckViewProps, State>{
-
-    renderTags(style: ViewStyle) {
-        const {tags} = this.props.item;
-
-        if (tags && tags.length) {
-            return <View style={style}>
-                {tags.map(tag => <Tag key={tag} value={tag} />)}
-            </View>;
-        }
-        return null;
+    get cardCount() {
+        return this.props.item.cards?.length || 0;
     }
 
     renderCards(style: ViewStyle) {

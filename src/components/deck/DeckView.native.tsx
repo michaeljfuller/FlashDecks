@@ -5,7 +5,7 @@ import Avatar from "../avatar/Avatar";
 import {DeckInfoModal} from "./DeckInfoModal/DeckInfoModal";
 import IconButton, {IconType} from "../button/IconButton";
 
-const avatarSize = 35;
+const avatarSize = 24;
 
 export interface DeckViewState {
     showInfo: boolean;
@@ -23,9 +23,6 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
 
         return <View>
             {this.renderHeader()}
-            <View style={styles.descriptionView}>
-                <Text style={styles.descriptionText}>{deck.description}</Text>
-            </View>
             {this.renderCards(styles.cards)}
             <DeckInfoModal deck={deck} open={this.state.showInfo} onClose={this.closeInfoModal} />
         </View>;
@@ -36,21 +33,18 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
 
         return <View style={styles.header}>
 
-            <View style={styles.headerItem}>
+            <View style={styles.headerRow}>
                 <View style={styles.titleView}>
                     <Text style={styles.titleText}>{deck.name}</Text>
-                    <View style={styles.infoButton}>
-                        <IconButton flat icon={IconType.Info} onClick={this.openInfoModal} />
-                    </View>
+                </View>
+                <View style={styles.infoButton}>
+                    <IconButton flat icon={IconType.Info} onClick={this.openInfoModal} />
                 </View>
             </View>
 
-            <View style={styles.headerItem}>
-                <Avatar user={deck.owner} labelPlacement="right" size={avatarSize} labelStyle={{ color: 'black' }} />
-            </View>
-
-            <View style={styles.headerItem}>
-                {this.renderTags(styles.tags)}
+            <View style={styles.headerRow}>
+                <Avatar user={deck.owner} labelPlacement="right" size={avatarSize} style={styles.avatar} labelStyle={styles.avatarLabel} />
+                <Text style={styles.cardCount}>{this.cardCount} {this.cardCount !== 1 ? 'cards' : 'card'}</Text>
             </View>
 
         </View>;
@@ -63,38 +57,40 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         marginBottom: 5,
     },
-    headerItem: {
-        flex: 1,
+    headerRow: {
+        flexDirection: "row",
+        alignSelf: "center",
+        position: "relative",
     },
     titleView: {
-        flexDirection: "row",
-        alignItems: "center",
-        margin: "auto",
+        flex: 1,
+        paddingHorizontal: 25, // icon size
     },
     titleText: {
-        lineHeight: avatarSize,
         textAlign: "center",
         fontWeight: "bold",
+        fontSize: 26,
+        width: "100%",
     },
     infoButton: {
-        paddingLeft: 5,
-    },
-    descriptionView: {
-        borderWidth: 1,
-        padding: 2,
-        backgroundColor: "white",
-    },
-    descriptionText: {
-        fontStyle: "italic",
-    },
-    tags: {
-        flexDirection: "row",
-        flexWrap: "wrap",
-        justifyContent: "center",
+        position: "absolute",
+        right: 0,
+        top: 7,
     },
     cards: {
         marginTop: 5,
         maxWidth: 550,
-        marginHorizontal: 'auto',
+        marginHorizontal:"auto",
+    },
+    avatar: {
+        flex: 1,
+    },
+    avatarLabel: {
+        color: "black"
+    },
+    cardCount: {
+        flex: 1,
+        lineHeight: avatarSize,
+        textAlign: "right",
     },
 });
