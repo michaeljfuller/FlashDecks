@@ -1,6 +1,6 @@
 export enum DeckRoutes {
-    List = 'Deck List',
-    View = 'View Deck',
-    Edit = 'Edit Deck'
+    List = 'list',
+    View = 'view',
+    Edit = 'edit'
 }
 export default DeckRoutes;

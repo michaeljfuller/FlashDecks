@@ -1,6 +1,7 @@
 import React from "react";
 import {Body, Title} from 'native-base';
 
+import {readableRoute} from "../../../routes";
 import {AppBreadcrumbsProps, getCurrentRoutes} from './AppBreadcrumbs.common';
 
 export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
@@ -9,6 +10,6 @@ export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
     return <Body>
         <Title style={{
             marginLeft: 0
-        }}>{currentRoute?.name || ''}</Title>
+        }}>{readableRoute(currentRoute?.name || '')}</Title>
     </Body>;
 }

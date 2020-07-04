@@ -6,6 +6,7 @@ import TextButton, {TextButtonProps} from '../../button/TextButton';
 import withDefaultProps from '../../../utils/hoc/withDefaultProps/withDefaultProps';
 import {AppBreadcrumbsProps, getCurrentRoutes, navigateTo} from './AppBreadcrumbs.common';
 import {Color} from "../../../styles/Color";
+import {readableRoute} from "../../../routes";
 
 export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
     const {navigation, state, initialRouteName} = props.routerDetails;
@@ -16,7 +17,7 @@ export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
     const items = currentRoutes.map((route, index) => {
         return <BreadcrumbButton
             key={route.key}
-            title={route.name}
+            title={readableRoute(route.name)}
             disabled={index+1 >= currentRoutes.length}
             onClick={() => navigateTo(currentRoutes.slice(0, index+1), navigation)}
         />;
@@ -26,7 +27,7 @@ export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
     if (!currentRoutes.length || currentRoutes[0].key !== initialRoute.key) {
         items.unshift(<BreadcrumbButton
             key={initialRoute.key}
-            title={initialRoute.name}
+            title={readableRoute(initialRoute.name)}
             disabled={currentRoutes.length === 0}
             onClick={() => navigateTo([initialRoute], navigation)}
         />)

@@ -4,6 +4,7 @@ import {DrawerContentComponentProps} from "@react-navigation/drawer/src/types";
 import {withStyles} from "@material-ui/core/styles";
 import MaterialButton from "@material-ui/core/Button";
 import {Color, DefaultTheme} from "../../../styles/UIColorTheme";
+import {readableRoute} from "../../../routes";
 
 export function ExtendableDrawerContents(props: DrawerContentComponentProps) {
     const {
@@ -20,7 +21,7 @@ export function ExtendableDrawerContents(props: DrawerContentComponentProps) {
                 key={route.key}
                 onClick={() => navigation.navigate(route.name, route.params)}
                 disabled={index === state.index}
-            >{route.name}</DrawerButton>;
+            >{readableRoute(route.name)}</DrawerButton>;
         })}
     </View>;
 }

@@ -1,7 +1,7 @@
 /** Keys of registered routes. */
 export enum AppRoutes {
-    Home = 'Home',
-    Temp = 'Temp',
-    Decks = 'Decks',
+    Home = 'home',
+    Temp = 'temp',
+    Decks = 'decks',
 }
 export default AppRoutes;
