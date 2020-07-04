@@ -8,6 +8,7 @@ export interface ButtonProps {
     flat?: boolean;
     style?: ButtonStyle;
     color?: GetUIColorThemeInput;
+    square?: boolean;
     invertColor?: boolean;
 }
 export interface ButtonStyle {
@@ -24,10 +25,11 @@ export function buttonPropsWithDefaults(props: ButtonProps): Required<ButtonProp
         flat = false,
         style = {},
         color = DefaultTheme.primary.key,
+        square = false,
         invertColor = false,
     } = props;
     return {
-        onClick, title, flat, style, color, invertColor,
+        onClick, title, flat, style, color, square, invertColor,
         disabled: disabled || !props.onClick,
     };
 }

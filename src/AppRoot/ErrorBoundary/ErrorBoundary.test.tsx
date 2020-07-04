@@ -2,7 +2,7 @@ import React from 'react';
 import {Text} from 'react-native';
 import ErrorBoundary from "./ErrorBoundary";
 import {mount} from "enzyme";
-import {configureEnzyme} from "../../../../test/Enzyme";
+import {configureEnzyme} from "../../../test/Enzyme";
 
 configureEnzyme();
 

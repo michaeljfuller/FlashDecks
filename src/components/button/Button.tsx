@@ -9,9 +9,9 @@ export * from './Button.common';
  * A bridge to a Material-UI Button
  */
 export function Button(props: ButtonProps) {
-    const { onClick, disabled, title, flat, style, color, invertColor } = buttonPropsWithDefaults(props);
+    const { onClick, disabled, title, flat, style, color, square, invertColor } = buttonPropsWithDefaults(props);
     const theme = getUIColorTheme(color, invertColor);
-    const StyledButton = getStyledButtonBase(theme);
+    const StyledButton = getStyledButtonBase(theme, square);
     return <StyledButton
         variant="contained"
         onClick={onClick}

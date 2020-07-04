@@ -1,9 +1,9 @@
 import React, {Component} from "react";
-import {Text} from "react-native";
 import ScreenContainer from "../../ScreenContainer";
+import DeckView from "../../../components/deck/DeckView";
 import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
-
 import {reduxConnector, DeckViewScreenStoreProps} from "./DeckViewScreen_redux";
+import {repeat} from "../../../utils/array";
 
 export interface DeckViewScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -18,12 +18,22 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
             id: `deck-id`,
             name: `Deck name`,
             description: `Deck description`,
-            tags: ['tag-1', 'tag-2', 'tag-3'],
+            tags: repeat(15, i => `tag-${i+1}`),
             ownerId: `owner-id`,
             owner: { id: `owner-id`, displayName: `Owner displayName` },
             cards: [{
-                id: 'card-id',
-                name: 'Card name',
+                id: 'card-id-1',
+                name: 'Card name 1',
+                ownerId: `owner-id`,
+                owner: { id: `owner-id`, displayName: `Owner displayName` },
+            },{
+                id: 'card-id-2',
+                name: 'Card name 2',
+                ownerId: `owner-id`,
+                owner: { id: `owner-id`, displayName: `Owner displayName` },
+            },{
+                id: 'card-id-3',
+                name: 'Card name 3',
                 ownerId: `owner-id`,
                 owner: { id: `owner-id`, displayName: `Owner displayName` },
             }]
@@ -40,14 +50,8 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
 
     render() {
         return (
-            <ScreenContainer>
-                <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{this.constructor.name}</Text>
-
-                <Text style={{ fontWeight: 'bold' }}>this.props.navigation.state</Text>
-                <Text style={{ marginBottom: 20 }}>{JSON.stringify(this.props.navigation.state, null, 2)}</Text>
-
-                <Text style={{ fontWeight: 'bold' }}>this.state.deck</Text>
-                <Text style={{ marginBottom: 20 }}>{JSON.stringify(this.state.deck, null, 2)}</Text>
+            <ScreenContainer style={{ padding: 5 }}>
+                <DeckView item={this.state.deck} />
             </ScreenContainer>
         );
     }

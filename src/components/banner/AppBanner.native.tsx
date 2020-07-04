@@ -39,18 +39,19 @@ interface AppBannerUserDisplayProps {
 }
 function AppBannerUserDisplay(props: AppBannerUserDisplayProps) {
     const {user, onSignOutClick} = props;
+    const avatar = <Avatar
+        user={user}
+        size={20}
+        label={user ? user.displayName : 'guest'}
+        labelPlacement="right"
+    />;
     if (user) {
         return <React.Fragment>
-            <Body style={{ flexDirection: 'row' }}>
-                <Title style={{ color, textAlign: 'right', marginRight: 5 }}>{user.displayName}</Title>
-                <Avatar user={user} style={{ size:20 }} />
-            </Body>
+            <Body style={{ flexDirection: 'row' }}>{avatar}</Body>
             <IconButton icon={IconType.Exit} onClick={onSignOutClick} transparent color="White" />
         </React.Fragment>;
     }
     return <React.Fragment>
-        <Body style={{ flexDirection: 'row' }}>
-            <Title style={{ color, textAlign: 'right', marginRight: 5 }}>Not logged in</Title>
-        </Body>
+        <Body style={{ flexDirection: 'row' }}>{avatar}</Body>
     </React.Fragment>;
 }

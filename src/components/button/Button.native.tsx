@@ -8,12 +8,13 @@ import {Color, getUIColorTheme} from "../../styles/UIColorTheme";
 export * from './Button.common';
 
 export function Button(props: ButtonProps) {
-    const { onClick, disabled, title } = buttonPropsWithDefaults(props);
+    const { onClick, disabled, title, square } = buttonPropsWithDefaults(props);
 
     return <NativeBaseButton
         onPress={onClick}
         disabled={disabled}
         style={getBackgroundStyle(props)}
+        rounded={!square}
     >
         <NativeBaseText style={getTextStyle(props)} uppercase={false}>{title}</NativeBaseText>
     </NativeBaseButton>;

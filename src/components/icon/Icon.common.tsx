@@ -6,7 +6,8 @@ export enum IconType {
     Back,
     Edit,
     Delete,
-    More
+    More,
+    Info
 }
 export interface IconProps {
     type: IconType;
