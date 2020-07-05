@@ -22,7 +22,7 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
     render() {
         const deck = this.props.item;
 
-        return <View>
+        return <View style={styles.root}>
             {this.renderHeader()}
             <CardCarousel cards={deck.cards} style={styles.cards} />
             <DeckInfoModal deck={deck} open={this.state.showInfo} onClose={this.closeInfoModal} />
@@ -55,6 +55,9 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
 }
 
 const styles = StyleSheet.create({
+    root: {
+        flex: 1,
+    },
     header: {
         flexDirection: "row",
         marginBottom: 5,
@@ -82,9 +85,8 @@ const styles = StyleSheet.create({
         paddingLeft: 5,
     },
     cards: {
-        marginTop: 5,
-        maxWidth: 550,
         marginHorizontal: 'auto',
+        marginBottom: 5,
     },
     cardCount: {
         lineHeight: avatarSize,
