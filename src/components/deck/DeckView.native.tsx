@@ -4,6 +4,7 @@ import DeckViewBase from "./DeckView.common";
 import Avatar from "../avatar/Avatar";
 import {DeckInfoModal} from "./DeckInfoModal/DeckInfoModal";
 import IconButton, {IconType} from "../button/IconButton";
+import CardCarousel from "../card-carousel/CardCarousel";
 
 const avatarSize = 24;
 
@@ -23,7 +24,7 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
 
         return <View>
             {this.renderHeader()}
-            {this.renderCards(styles.cards)}
+            <CardCarousel cards={deck.cards} style={styles.cards} />
             <DeckInfoModal deck={deck} open={this.state.showInfo} onClose={this.closeInfoModal} />
         </View>;
     }
