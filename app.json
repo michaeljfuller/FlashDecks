@@ -2,6 +2,7 @@
   "expo": {
     "name": "FlashDecks",
     "slug": "FlashDecks",
+    "scheme": "fdecks",
     "description": "An app for creating and sharing flash cards.",
     "platforms": [ "ios", "android", "web" ],
     "version": "1.0.0",

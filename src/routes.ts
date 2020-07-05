@@ -36,3 +36,13 @@ function getBaseRoute(tree: IRouteTree): string {
     if (childTree) return getBaseRoute(childTree); // If there is a child tree, call recursively.
     return tree.base; // If there is no child tree, we found it.
 }
+
+/** Turn a route name into something readable. */
+export function readableRoute(routeName: string, capitaliseAll = false): string {
+    let words = capitalise(routeName).split('-');
+    if (capitaliseAll) words = words.map(capitalise)
+    return words.join(' ');
+}
+function capitalise(str: string) {
+    return str.charAt(0).toUpperCase() + str.substr(1);
+}

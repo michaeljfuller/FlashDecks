@@ -1,9 +1,7 @@
 import React from "react";
-import {
-    NavigationContainer,
-    NavigationContainerRef,
-    DrawerActions,
-} from '@react-navigation/native';
+import * as Linking from 'expo-linking';
+import {BackHandler, NativeEventSubscription} from "react-native";
+import {NavigationContainer, NavigationContainerRef, DrawerActions, LinkingOptions} from '@react-navigation/native';
 import {Auth} from "aws-amplify";
 import {AppRoutes, AppRoutesTree} from "./AppRouteTree";
 import {
@@ -16,6 +14,7 @@ import InfoBanner from "../components/banner/InfoBanner";
 import DashboardScreen from "./Dashboard/DashboardScreen";
 import {TempScreen} from "./Temp/TempScreen";
 import DeckRouteContainer from "./Deck/DeckRouteContainer";
+import {getCurrentRoutes} from "../components/banner/breadcrumbs/AppBreadcrumbs.common";
 const {Navigator, Screen} = createExtendableDrawerNavigator();
 
 export const appNavigation = React.createRef<NavigationContainerRef>();
@@ -36,6 +35,36 @@ export interface AppNavigationState {
  */
 export class AppNavigation extends React.Component<AppNavigationParams, AppNavigationState> {
     state = {} as AppNavigationState;
+
+    /**
+     * https://reactnavigation.org/docs/deep-linking/
+     * https://docs.expo.io/workflow/linking/
+     */
+    linking = {
+        prefixes: [
+            Linking.makeUrl('/')
+        ],
+    } as LinkingOptions;
+
+    hardwareBackPress?: NativeEventSubscription;
+    componentDidMount() {
+        this.hardwareBackPress = BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+    }
+    componentWillUnmount() {
+        if (this.hardwareBackPress) this.hardwareBackPress.remove();
+    }
+
+    /**
+     * On back press (while no other back options), open the drawer.
+     * https://reactnavigation.org/docs/custom-android-back-button-handling/
+     */
+    onBackPress = () => {
+        if (appNavigation.current) {
+            appNavigation.current.dispatch(DrawerActions.toggleDrawer());
+            return true; // Block default behavior
+        }
+        return false; // Use default behavior
+    }
 
     renderContents: ExtendableDrawerRender = (contents, routerDetails) => {
         const toggleDrawer = () => routerDetails.navigation.dispatch(DrawerActions.toggleDrawer());
@@ -75,7 +104,7 @@ export class AppNavigation extends React.Component<AppNavigationParams, AppNavig
 
     render() {
         return <React.Fragment>
-            <NavigationContainer independent={true} ref={appNavigation}>
+            <NavigationContainer independent={true} ref={appNavigation} linking={this.linking}>
                 <Navigator
                     initialRouteName={AppRoutesTree.base}
                     screenOptions={({route}) => {

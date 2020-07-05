@@ -3,6 +3,7 @@ import {TextStyle, View} from "react-native";
 import {DrawerContentComponentProps} from "@react-navigation/drawer/src/types";
 import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} from 'native-base';
 import {Color, DefaultTheme} from "../../../styles/UIColorTheme";
+import {readableRoute} from "../../../routes";
 
 export function ExtendableDrawerContents(props: DrawerContentComponentProps) {
     const {
@@ -26,7 +27,7 @@ export function ExtendableDrawerContents(props: DrawerContentComponentProps) {
                 <NativeBaseText
                     style={disabled ? disabledTextStyle : textStyle}
                     uppercase={false}
-                >{route.name}</NativeBaseText>
+                >{readableRoute(route.name)}</NativeBaseText>
             </NativeBaseButton>;
         })}
     </View>;
