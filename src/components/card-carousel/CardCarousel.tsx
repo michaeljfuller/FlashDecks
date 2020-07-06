@@ -70,7 +70,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
                     opacity: this.cardOpacity,
                     [isPlatformWeb ? 'left' : 'translateX']: this.cardPosition,
                 }}>
-                    <CardView item={card}/>
+                    <CardView item={card} style={styles.cardView} />
                 </Animated.View>
             </View>
             <Button title=">" onClick={this.next} disabled={index + 1 >= cards.length}/>
@@ -83,11 +83,18 @@ const styles = StyleSheet.create({
     root: {
         flex: 1,
         flexDirection: "row",
-        backgroundColor: 'red',
+        width: "100%",
     },
     cardContainer: {
         marginVertical: "auto",
         flex: 1,
         overflow: "hidden",
+        width: "100%",
+        alignItems: "center",
     },
+    cardView: {
+        minWidth: 250,
+        minHeight: 300,
+        backgroundColor: 'red',
+    }
 });

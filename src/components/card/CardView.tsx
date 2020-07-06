@@ -25,7 +25,8 @@ export default function CardView(props: CardViewProps) {
 
 const StyledCard = withStyles({
     root: {
-        padding: 10
+        padding: 10,
+        flex: 1,
     }
 })(Card) as typeof Card;
 
