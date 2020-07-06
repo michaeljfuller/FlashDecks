@@ -89,7 +89,6 @@ const styles = StyleSheet.create({
     cardCarouselContainer: {
         flex: 1,
         flexDirection: "row",
-        marginHorizontal: "auto",
         alignItems: "center",
         marginBottom: 5,
         width: "100%",
