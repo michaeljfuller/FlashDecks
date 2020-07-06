@@ -1,29 +1,26 @@
 import React from "react";
-import {Text} from "react-native";
+import {Text, View} from "react-native";
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 
-import CardViewBase from "./CardView.common";
+import {CardViewProps} from "./CardView.common";
 import {withStyles} from "@material-ui/core/styles";
 
-export interface CardViewState {}
-export default class CardView extends CardViewBase<CardViewState> {
-    state: CardViewState = {};
-
-    render() {
-        return <StyledCard>
+export default function CardView(props: CardViewProps) {
+    return <View style={props.style}>
+        <StyledCard>
 
             <StyledCardHeader
                 title="CardView"
             />
 
             <StyledCardContent>
-                <Text style={{ fontSize: 10 }}>{JSON.stringify(this.props.item, null, 2)}</Text>
+                <Text style={{ fontSize: 10 }}>{JSON.stringify(props.item, null, 2)}</Text>
             </StyledCardContent>
 
-        </StyledCard>;
-    }
+        </StyledCard>
+    </View>;
 }
 
 const StyledCard = withStyles({

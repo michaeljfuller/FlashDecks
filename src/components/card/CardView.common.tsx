@@ -1,8 +1,6 @@
-import React from "react";
+import {ViewStyle} from "react-native";
 
 export interface CardViewProps {
     item: Card;
-}
-
-export default class CardViewBase<State = {}> extends React.Component<CardViewProps, State>{
+    style?: ViewStyle;
 }
