@@ -68,7 +68,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
             <View style={styles.cardContainer}>
                 <Animated.View style={{
                     opacity: this.cardOpacity,
-                    [isPlatformNative ? 'translateX' : 'left']: this.cardPosition,
+                    [isPlatformWeb ? 'left' : 'translateX']: this.cardPosition,
                 }}>
                     <CardView item={card}/>
                 </Animated.View>
