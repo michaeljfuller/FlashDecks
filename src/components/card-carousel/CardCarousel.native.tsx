@@ -58,9 +58,11 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         paddingHorizontal: 10,
+        paddingVertical: 10,
     },
     cardView: {
         minWidth: 250,
         minHeight: 300,
+        elevation: 5,
     }
 });

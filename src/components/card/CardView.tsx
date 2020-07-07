@@ -6,17 +6,19 @@ import CardContent from '@material-ui/core/CardContent';
 
 import {CardViewProps} from "./CardView.common";
 import {withStyles} from "@material-ui/core/styles";
+import {Color} from "../../styles/Color";
 
 export default function CardView(props: CardViewProps) {
     return <View style={props.style}>
-        <StyledCard>
+        <StyledCard variant="elevation" raised={true} elevation={5}>
 
             <StyledCardHeader
-                title="CardView"
+                title={props.item?.name || "Unknown"}
+                titleTypographyProps={{ style: { userSelect: "none" } }}
             />
 
             <StyledCardContent>
-                <Text style={{ fontSize: 10 }}>{JSON.stringify(props.item, null, 2)}</Text>
+                <Text style={{ fontSize: 10 }} selectable={false}>{JSON.stringify(props.item, null, 2)}</Text>
             </StyledCardContent>
 
         </StyledCard>
@@ -26,9 +28,12 @@ export default function CardView(props: CardViewProps) {
 const StyledCard = withStyles({
     root: {
         flex: 1,
-        paddingHorizontal: 10,
-        paddingVertical: 20,
+        padding: 5,
+        paddingTop: 0,
+        marginBottom: 5,
         borderRadius: 15,
+        backgroundColor: Color.White,
+        borderColor: Color.Grey,
     }
 })(Card) as typeof Card;
 
@@ -45,6 +50,5 @@ const StyledCardContent = withStyles({
         padding: 5,
         paddingTop: 0,
         paddingBottom: 0,
-        '&:last-child': { paddingBottom: 5 }
     }
 })(CardContent) as typeof CardContent;
