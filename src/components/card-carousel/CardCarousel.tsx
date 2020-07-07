@@ -18,9 +18,30 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
         isAnimating: false
     } as CardCarouselState;
 
+    get canGoToPrevious() {
+        return !this.state.isAnimating && this.state.index > 0;
+    }
+    get canGoToNext() {
+        return !this.state.isAnimating && this.state.index + 1 < (this.props.cards||[]).length;
+    }
+
     // https://reactnative.dev/docs/animations
     cardOpacity = new Animated.Value(1);
     cardPosition = new Animated.Value(0);
+
+    componentDidMount() {
+        document.addEventListener('keydown', this.onKeyDown);
+    }
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.onKeyDown);
+    }
+
+    onKeyDown = (event: KeyboardEvent) => {
+        switch (event.code) {
+            case "ArrowLeft": return this.previous();
+            case "ArrowRight": return this.next();
+        }
+    }
 
     async cardOut(endPosition: number, duration = 250) {
         return new Promise(resolve => {
@@ -30,6 +51,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
             ]).start(resolve);
         });
     }
+
     async cardIn(startPosition: number, duration = 250) {
         return new Promise(resolve => {
             Animated.sequence([
@@ -43,7 +65,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
     }
 
     next = async () => {
-        if (!this.state.isAnimating) {
+        if (this.canGoToNext) {
             this.setState({isAnimating: true});
             await this.cardOut(-300);
             this.setState({index: this.state.index + 1});
@@ -53,35 +75,36 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
     };
 
     previous = async () => {
-        if (!this.state.isAnimating) {
+        if (this.canGoToPrevious) {
+            this.setState({isAnimating: true});
             await this.cardOut(300);
             this.setState({ index: this.state.index - 1 });
             await this.cardIn(-300);
+            this.setState({isAnimating: false});
         }
     };
 
     render() {
         const {cards, style} = this.props;
-        const {index, isAnimating} = this.state;
+        const {index} = this.state;
 
         if (!cards?.length) {
             return <View style={[styles.root, style]}>
                 <Text>No cards found.</Text>
             </View>;
         }
-        const card = cards[index];
 
         return <View style={[styles.root, style]}>
-            <Button title="<" onClick={this.previous} disabled={index <= 0 || isAnimating}/>
+            <Button title="<" onClick={this.previous} disabled={!this.canGoToPrevious}/>
             <View style={styles.cardContainer}>
                 <Animated.View style={{
                     opacity: this.cardOpacity,
                     [isPlatformWeb ? 'left' : 'translateX']: this.cardPosition,
                 }}>
-                    <CardView item={card} style={styles.cardView} />
+                    <CardView item={cards[index]} style={styles.cardView} />
                 </Animated.View>
             </View>
-            <Button title=">" onClick={this.next} disabled={index + 1 >= cards.length || isAnimating}/>
+            <Button title=">" onClick={this.next} disabled={!this.canGoToNext}/>
         </View>;
     }
 }
@@ -96,9 +119,10 @@ const styles = StyleSheet.create({
     cardContainer: {
         marginVertical: "auto",
         flex: 1,
-        overflow: "hidden",
+        overflowX: "hidden",
         width: "100%",
         alignItems: "center",
+        paddingBottom: 5,
     },
     cardView: {
         minWidth: 250,
