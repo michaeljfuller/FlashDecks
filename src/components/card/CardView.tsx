@@ -25,14 +25,17 @@ export default function CardView(props: CardViewProps) {
 
 const StyledCard = withStyles({
     root: {
-        padding: 10,
         flex: 1,
+        paddingHorizontal: 10,
+        paddingVertical: 20,
+        borderRadius: 15,
     }
 })(Card) as typeof Card;
 
 const StyledCardHeader = withStyles({
     root: {
-        padding: 0,
+        padding: 7,
+        paddingBottom: 0,
         textAlign: 'center'
     }
 })(CardHeader) as typeof CardHeader;
@@ -40,6 +43,8 @@ const StyledCardHeader = withStyles({
 const StyledCardContent = withStyles({
     root: {
         padding: 5,
+        paddingTop: 0,
+        paddingBottom: 0,
         '&:last-child': { paddingBottom: 5 }
     }
 })(CardContent) as typeof CardContent;

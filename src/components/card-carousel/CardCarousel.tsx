@@ -103,6 +103,5 @@ const styles = StyleSheet.create({
     cardView: {
         minWidth: 250,
         minHeight: 300,
-        backgroundColor: 'red',
     }
 });

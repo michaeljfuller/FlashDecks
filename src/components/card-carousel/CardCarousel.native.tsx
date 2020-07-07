@@ -60,10 +60,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     cardView: {
-        flex: 1,
         minWidth: 250,
         minHeight: 300,
-        width: '100%',
-        backgroundColor: 'red',
     }
 });
