@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         alignItems: "center",
+        marginHorizontal: 'auto',
         marginBottom: 5,
         width: "100%",
         maxWidth: 1200,
