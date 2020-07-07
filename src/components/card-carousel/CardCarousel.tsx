@@ -10,10 +10,12 @@ const useNativeDriver = !isPlatformWeb;
 
 interface CardCarouselState {
     index: number;
+    isAnimating: boolean;
 }
 export class CardCarousel extends React.Component<CardCarouselProps, CardCarouselState>{
     state = {
         index: 0,
+        isAnimating: false
     } as CardCarouselState;
 
     // https://reactnative.dev/docs/animations
@@ -41,20 +43,26 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
     }
 
     next = async () => {
-        await this.cardOut(-300);
-        this.setState({ index: this.state.index + 1 });
-        await this.cardIn(300);
+        if (!this.state.isAnimating) {
+            this.setState({isAnimating: true});
+            await this.cardOut(-300);
+            this.setState({index: this.state.index + 1});
+            await this.cardIn(300);
+            this.setState({isAnimating: false});
+        }
     };
 
     previous = async () => {
-        await this.cardOut(300);
-        this.setState({ index: this.state.index - 1 });
-        await this.cardIn(-300);
+        if (!this.state.isAnimating) {
+            await this.cardOut(300);
+            this.setState({ index: this.state.index - 1 });
+            await this.cardIn(-300);
+        }
     };
 
     render() {
         const {cards, style} = this.props;
-        const {index} = this.state;
+        const {index, isAnimating} = this.state;
 
         if (!cards?.length) {
             return <View style={[styles.root, style]}>
@@ -64,7 +72,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
         const card = cards[index];
 
         return <View style={[styles.root, style]}>
-            <Button title="<" onClick={this.previous} disabled={index <= 0}/>
+            <Button title="<" onClick={this.previous} disabled={index <= 0 || isAnimating}/>
             <View style={styles.cardContainer}>
                 <Animated.View style={{
                     opacity: this.cardOpacity,
@@ -73,7 +81,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
                     <CardView item={card} style={styles.cardView} />
                 </Animated.View>
             </View>
-            <Button title=">" onClick={this.next} disabled={index + 1 >= cards.length}/>
+            <Button title=">" onClick={this.next} disabled={index + 1 >= cards.length || isAnimating}/>
         </View>;
     }
 }
