@@ -49,7 +49,8 @@ export enum UIColorThemeKey {
     Grey,
     Red,
     Green,
-    Blue
+    Blue,
+    Orange
 }
 /** The keys used in UIColorThemeKey. */
 type UIColorThemeKeyName = keyof typeof UIColorThemeKey;
@@ -64,6 +65,7 @@ export const UIColorThemeMap: Record<UIColorThemeKeyName, UIColorTheme> = Object
     Green: new UIColorTheme('Green', 'White'),
     Blue:  new UIColorTheme('Blue',  'White'),
 
+    Orange:  new UIColorTheme('Orange',  'White'),
 });
 export const DefaultTheme = UIColorThemeMap.Blue;
 

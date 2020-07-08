@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
         width: "100%",
         maxWidth: 1200,
         maxHeight: 800,
-        backgroundColor: 'orange',
     },
     cardCarousel: {},
     cardCount: {

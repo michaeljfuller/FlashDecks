@@ -1,21 +1,27 @@
 import React from 'react';
-import {View, StyleSheet, Text, Animated} from 'react-native';
+import {View, StyleSheet, Text, Animated, LayoutChangeEvent} from 'react-native';
 import {isPlatformWeb} from "../../platform";
 import CardView from "../card/CardView";
 import {CardCarouselProps} from "./CardCarousel.common";
 import Button from "../button/Button";
+import {UIColorThemeMap} from "../../styles/UIColorTheme";
 export * from "./CardCarousel.common";
 
 const useNativeDriver = !isPlatformWeb;
+const theme = UIColorThemeMap.Orange;
 
 interface CardCarouselState {
     index: number;
     isAnimating: boolean;
+    cardWidth: number;
+    cardHeight: number;
 }
 export class CardCarousel extends React.Component<CardCarouselProps, CardCarouselState>{
     state = {
         index: 0,
-        isAnimating: false
+        isAnimating: false,
+        cardWidth: 0,
+        cardHeight: 0,
     } as CardCarouselState;
 
     get canGoToPrevious() {
@@ -35,6 +41,27 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
     componentWillUnmount() {
         document.removeEventListener('keydown', this.onKeyDown);
     }
+
+    onLayout = (event: LayoutChangeEvent) => {
+        let {width, height} = event.nativeEvent.layout;
+
+        const cardMargin = 10;
+        width -= cardMargin * 2;
+        height -= cardMargin * 2;
+
+        const minSize = 100;
+        width = Math.max(width, minSize);
+        height = Math.max(height, minSize);
+
+        const cardAspectRatio = 0.7;
+        if (width / cardAspectRatio > height) {
+            width = height * cardAspectRatio;
+        } else {
+            height = width / cardAspectRatio;
+        }
+
+        this.setState({ cardWidth: width, cardHeight: height });
+    };
 
     onKeyDown = (event: KeyboardEvent) => {
         switch (event.code) {
@@ -86,7 +113,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
 
     render() {
         const {cards, style} = this.props;
-        const {index} = this.state;
+        const {index, cardWidth, cardHeight} = this.state;
 
         if (!cards?.length) {
             return <View style={[styles.root, style]}>
@@ -94,17 +121,20 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
             </View>;
         }
 
-        return <View style={[styles.root, style]}>
-            <Button title="<" onClick={this.previous} disabled={!this.canGoToPrevious}/>
+        return <View style={[styles.root, style]} onLayout={this.onLayout}>
+            <Button title="<" onClick={this.previous} disabled={!this.canGoToPrevious} square flat color={theme} />
             <View style={styles.cardContainer}>
                 <Animated.View style={{
                     opacity: this.cardOpacity,
                     [isPlatformWeb ? 'left' : 'translateX']: this.cardPosition,
                 }}>
-                    <CardView item={cards[index]} style={styles.cardView} />
+                    <CardView
+                        item={cards[index]}
+                        style={[styles.cardView, { width: cardWidth, height: cardHeight }]}
+                    />
                 </Animated.View>
             </View>
-            <Button title=">" onClick={this.next} disabled={!this.canGoToNext}/>
+            <Button title=">" onClick={this.next} disabled={!this.canGoToNext} square flat color={theme} />
         </View>;
     }
 }
@@ -115,17 +145,16 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         width: "100%",
+        height: "100%",
+        backgroundColor: theme.primary.disabled,
     },
     cardContainer: {
         marginVertical: "auto",
         flex: 1,
-        overflowX: "hidden",
+        overflow: "hidden",
         width: "100%",
         alignItems: "center",
-        paddingBottom: 5,
+        paddingVertical: 5,
     },
-    cardView: {
-        minWidth: 250,
-        minHeight: 300,
-    }
+    cardView: {}
 });
