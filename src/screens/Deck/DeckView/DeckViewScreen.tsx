@@ -37,17 +37,12 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
                 owner: { id: `owner-id`, displayName: `Owner displayName` },
                 sides: [
                     { content: [ {type: "Text", value: "1-1"}, {type: "Text", value: "1-2"}, {type: "Text", value: "1-3"} ]},
-                    { content: [ {type: "Text", value: "2-1"}, {type: "Text", value: "2-2"}, {type: "Text", value: "2-3"} ]},
                 ],
             },{
                 id: 'card-id-3',
                 name: 'Card name 3',
                 ownerId: `owner-id`,
                 owner: { id: `owner-id`, displayName: `Owner displayName` },
-                sides: [
-                    { content: [ {type: "Text", value: "1-1"}, {type: "Text", value: "1-2"}, {type: "Text", value: "1-3"} ]},
-                    { content: [ {type: "Text", value: "2-1"}, {type: "Text", value: "2-2"}, {type: "Text", value: "2-3"} ]},
-                ],
             }]
         }
     } as DeckViewScreenState;
