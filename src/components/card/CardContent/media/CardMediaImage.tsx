@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Text, Image, StyleSheet, NativeSyntheticEvent, ImageErrorEventData} from "react-native";
+import {View, Text, Image, StyleSheet, NativeSyntheticEvent, ImageErrorEventData} from "react-native";
 import {CardContentProps} from "../CardContent";
 import {Color} from "../../../../styles/Color";
 
@@ -35,18 +35,20 @@ export function CardMediaImage(props: CardContentProps) {
         return <Text style={styles.error}>{error}</Text>;
     }
 
-    return <Image
-        source={{uri}}
-        resizeMode="contain"
-        onLoadEnd={!size && !error ? onLoadEnd : undefined}
-        onError={onError}
-        style={[styles.img, size]}
-    />;
+    return <View style={styles.root}>
+        <Image
+            source={{uri}}
+            resizeMode="contain"
+            onLoadEnd={!size && !error ? onLoadEnd : undefined}
+            onError={onError}
+            style={size}
+        />
+    </View>;
 }
 
 const styles = StyleSheet.create({
-    img: {
-        marginHorizontal: "auto"
+    root: {
+        alignItems: "center",
     },
     error: {
         color: Color.White,
