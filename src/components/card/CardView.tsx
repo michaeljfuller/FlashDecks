@@ -19,10 +19,7 @@ export default function CardView(props: CardViewProps) {
         <StyledCard variant="elevation" raised={true} elevation={5}>
             <View style={styles.inner}>
 
-                <StyledCardHeader
-                    title={props.item?.name || "Unknown"}
-                    titleTypographyProps={{ style: { userSelect: "none" } }}
-                />
+                <StyledCardHeader title={props.item?.name || "Unknown"}/>
 
                 <ScrollView style={styles.scrollView} contentContainerStyle={styles.body}>
                     <CardSide side={side} onPress={onPress} style={[styles.side, sides.length > 1 ? styles.pointer : null]} />
@@ -30,7 +27,7 @@ export default function CardView(props: CardViewProps) {
 
             </View>
             <View style={styles.footer}>
-                <Text style={styles.footerText} selectable={false}>{footerText}</Text>
+                <Text style={styles.footerText}>{footerText}</Text>
             </View>
         </StyledCard>
     </View>;
@@ -71,7 +68,8 @@ const styles = StyleSheet.create({
     },
     body: {
         flex: 1,
-    },
+        userSelect: "none",
+    } as ViewStyle & { userSelect: string },
     side: {
         height: "100%",
     },
