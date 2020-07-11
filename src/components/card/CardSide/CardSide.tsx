@@ -1,6 +1,7 @@
 import React from 'react';
-import {View, Text, TouchableWithoutFeedback, StyleSheet, ViewStyle} from 'react-native';
+import {View, TouchableWithoutFeedback, StyleSheet, ViewStyle} from 'react-native';
 import {Color} from "../../../styles/Color";
+import {CardContent} from "../CardContent/CardContent";
 
 export interface CardSideProps {
     side: CardSide;
@@ -9,11 +10,15 @@ export interface CardSideProps {
 }
 
 export function CardSide(props: CardSideProps) {
+    const content: CardContent[] = props.side?.content || [];
+
     return <TouchableWithoutFeedback onPress={props.onPress}>
-            <View style={[styles.root, props.style]}>
-                <Text selectable={false}>{JSON.stringify(props.side, null, 2)}</Text>
-            </View>
-        </TouchableWithoutFeedback>;
+        <View style={[styles.root, props.style].flat()}>
+            {content.map((content, index) => {
+                return <CardContent key={index} content={content} />;
+            })}
+        </View>
+    </TouchableWithoutFeedback>;
 }
 export default CardSide;
 
@@ -21,5 +26,6 @@ const styles = StyleSheet.create({
     root: {
         backgroundColor: Color.White,
         height: '100%',
+        justifyContent: "space-around",
     },
 });
