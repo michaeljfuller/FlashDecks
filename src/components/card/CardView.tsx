@@ -1,13 +1,19 @@
-import React from "react";
-import {ScrollView, Text, View, StyleSheet} from "react-native";
+import React, {useState} from "react";
+import {ScrollView, View, StyleSheet} from "react-native";
+import {withStyles} from "@material-ui/core/styles";
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 
-import {CardViewProps} from "./CardView.common";
-import {withStyles} from "@material-ui/core/styles";
 import {Color} from "../../styles/Color";
+import CardSide from "./CardSide/CardSide";
+import {CardViewProps} from "./CardView.common";
 
 export default function CardView(props: CardViewProps) {
+    const [sideIndex, setSideIndex] = useState(0);
+    const sides = props.item?.sides || [];
+    const side = sides[sideIndex];
+    const onPress = () => setSideIndex((sideIndex + 1) % sides.length);
+
     return <View style={props.style}>
         <StyledCard variant="elevation" raised={true} elevation={5}>
             <View style={styles.inner}>
@@ -17,10 +23,8 @@ export default function CardView(props: CardViewProps) {
                     titleTypographyProps={{ style: { userSelect: "none" } }}
                 />
 
-                <ScrollView style={styles.body}>
-                    <View style={styles.content}>
-                        <Text style={{ fontSize: 10 }} selectable={false}>{JSON.stringify(props.item, null, 2)}</Text>
-                    </View>
+                <ScrollView style={styles.scrollView} contentContainerStyle={styles.body}>
+                    <CardSide side={side} style={styles.side} onPress={onPress} />
                 </ScrollView>
 
             </View>
@@ -53,12 +57,16 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         height: '100%',
     },
-    body: {
+    scrollView: {
         borderColor: Color.Grey,
         borderTopWidth: 1,
         borderBottomWidth: 1,
-    },
-    content: {
         backgroundColor: Color.White,
+    },
+    body: {
+        flex: 1,
+    },
+    side: {
+        height: '100%',
     },
 });
