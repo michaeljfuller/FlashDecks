@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, TouchableWithoutFeedback, StyleSheet, ViewStyle} from 'react-native';
 import {Color} from "../../../styles/Color";
-import {CardContent} from "../CardContent/CardContent";
+import CardContentView from "../CardContent/CardContent";
 
 export interface CardSideProps {
     side: CardSide;
@@ -15,7 +15,7 @@ export function CardSide(props: CardSideProps) {
     return <TouchableWithoutFeedback onPress={props.onPress}>
         <View style={[styles.root, props.style].flat()}>
             {content.map((content, index) => {
-                return <CardContent key={index} content={content} />;
+                return <CardContentView key={index} content={content} />;
             })}
         </View>
     </TouchableWithoutFeedback>;

@@ -1,15 +1,30 @@
-import {Text, StyleSheet, View} from "react-native";
 import React from "react";
+import {Text, StyleSheet, View} from "react-native";
+import {CardMediaImage} from "./media/CardMediaImage";
+import {CardMediaLink} from "./media/CardMediaLink";
+import {CardMediaText} from "./media/CardMediaText";
+import {CardMediaVideo} from "./media/CardMediaVideo";
 
 export interface CardContentProps {
     content: CardContent;
 }
 
-export function CardContent(props: CardContentProps) {
+export function CardContentView(props: CardContentProps) {
+    const media = getMedia(props.content);
     return <View style={styles.root}>
-        <Text selectable={false}>{props.content.type}</Text>
-        <Text selectable={false}>{JSON.stringify(props.content.value, null, 2)}</Text>
+        {media}
     </View>;
+}
+export default CardContentView;
+
+function getMedia(content: CardContent): JSX.Element {
+    switch (content.type) {
+        case "Image": return <CardMediaImage content={content} />;
+        case "Link": return <CardMediaLink content={content} />;
+        case "Text": return <CardMediaText content={content} />;
+        case "Video": return <CardMediaVideo content={content} />;
+    }
+    return <Text selectable={false}>Unhandled type {content.type}</Text>;
 }
 
 const styles = StyleSheet.create({

@@ -27,8 +27,15 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
                 ownerId: `owner-id`,
                 owner: { id: `owner-id`, displayName: `Owner displayName` },
                 sides: [
-                    { content: [ {type: "Text", value: "1-1"}, {type: "Text", value: "1-2"}, {type: "Text", value: "1-3"} ]},
-                    { content: [ {type: "Text", value: "2-1"} ]},
+                    {
+                        content: [
+                            {type: "Text", value: "Side One"},
+                            {type: "Image", value: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png"},
+                            {type: "Link", value: "https://www.google.com"},
+                            {type: "Image", value: "invalid image uri"},
+                        ]
+                    },
+                    { content: [ {type: "Text", value: "Side Two"} ]},
                 ],
             },{
                 id: 'card-id-2',
@@ -36,7 +43,15 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
                 ownerId: `owner-id`,
                 owner: { id: `owner-id`, displayName: `Owner displayName` },
                 sides: [
-                    { content: [ {type: "Text", value: "1-1"}, {type: "Text", value: "1-2"}, {type: "Text", value: "1-3"} ]},
+                    {
+                        content: [
+                            {type: "Text", value: "Videos"},
+                            {type: "Video", value: "http://techslides.com/demos/sample-videos/small.mp4"},
+                            {type: "Video", value: "http://techslides.com/demos/sample-videos/small.ogv"},
+                            {type: "Video", value: "http://techslides.com/demos/sample-videos/small.mp4"},
+                            {type: "Video", value: "http://techslides.com/demos/sample-videos/small.3gp"},
+                        ]
+                    },
                 ],
             },{
                 id: 'card-id-3',
