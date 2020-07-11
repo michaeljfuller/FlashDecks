@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {ScrollView, View, StyleSheet} from "react-native";
+import {ScrollView, Text, View, StyleSheet} from "react-native";
 import {withStyles} from "@material-ui/core/styles";
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -12,7 +12,8 @@ export default function CardView(props: CardViewProps) {
     const [sideIndex, setSideIndex] = useState(0);
     const sides = props.item?.sides || [];
     const side = sides[sideIndex];
-    const onPress = () => setSideIndex((sideIndex + 1) % sides.length);
+    const onPress = () => setSideIndex((sideIndex + 1) % (sides.length || 1));
+    const footerText = sides.length > 1 ? `${sideIndex+1}/${sides.length}` : '';
 
     return <View style={props.style}>
         <StyledCard variant="elevation" raised={true} elevation={5}>
@@ -28,11 +29,16 @@ export default function CardView(props: CardViewProps) {
                 </ScrollView>
 
             </View>
+            <View style={styles.footer}>
+                <Text style={styles.footerText}>{footerText}</Text>
+            </View>
         </StyledCard>
     </View>;
 }
 
 const edgeRadius = 15;
+const sideCountHeight = edgeRadius-2;
+
 const StyledCard = withStyles({
     root: {
         flex: 1,
@@ -68,5 +74,11 @@ const styles = StyleSheet.create({
     },
     side: {
         height: '100%',
+    },
+    footer: {},
+    footerText: {
+        marginHorizontal: "auto",
+        lineHeight: sideCountHeight,
+        fontSize: sideCountHeight,
     },
 });
