@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {ScrollView, Text, View, StyleSheet} from "react-native";
+import {ScrollView, Text, View, StyleSheet, ViewStyle} from "react-native";
 import {withStyles} from "@material-ui/core/styles";
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -25,12 +25,12 @@ export default function CardView(props: CardViewProps) {
                 />
 
                 <ScrollView style={styles.scrollView} contentContainerStyle={styles.body}>
-                    <CardSide side={side} style={styles.side} onPress={onPress} />
+                    <CardSide side={side} onPress={onPress} style={[styles.side, sides.length > 1 ? styles.pointer : null]} />
                 </ScrollView>
 
             </View>
             <View style={styles.footer}>
-                <Text style={styles.footerText}>{footerText}</Text>
+                <Text style={styles.footerText} selectable={false}>{footerText}</Text>
             </View>
         </StyledCard>
     </View>;
@@ -73,8 +73,11 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     side: {
-        height: '100%',
+        height: "100%",
     },
+    pointer: {
+        cursor: "pointer",
+    } as ViewStyle & { cursor: string },
     footer: {},
     footerText: {
         marginHorizontal: "auto",

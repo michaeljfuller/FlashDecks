@@ -4,7 +4,7 @@ import {Color} from "../../../styles/Color";
 
 export interface CardSideProps {
     side: CardSide;
-    style?: ViewStyle;
+    style?: ViewStyle|Array<ViewStyle|null|undefined>;
     onPress?: () => void;
 }
 
@@ -19,7 +19,7 @@ export default CardSide;
 
 const styles = StyleSheet.create({
     root: {
-        backgroundColor: Color.Red,
+        backgroundColor: Color.White,
         height: '100%',
-    }
+    },
 });
