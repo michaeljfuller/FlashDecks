@@ -32,6 +32,7 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
                             {type: "Text", value: "Side One"},
                             {type: "Image", value: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png"},
                             {type: "Link", value: "https://www.google.com"},
+                            {type: "Link", value: "invalid link url"},
                             {type: "Image", value: "invalid image uri"},
                         ]
                     },

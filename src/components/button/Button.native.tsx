@@ -41,7 +41,8 @@ function getTextStyle(props: ButtonProps): TextStyle {
     const {color, invertColor} = buttonPropsWithDefaults(props);
     const theme = getUIColorTheme(color, invertColor);
     return {
-        color: theme.secondary.base
+        color: theme.secondary.base,
+        width: '100%',
     };
 }
 //</editor-fold>
