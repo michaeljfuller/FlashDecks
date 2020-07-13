@@ -52,6 +52,8 @@ function styleMaterialContainedButton(theme: UIColorTheme, square: boolean, flat
             root: {
                 justifyContent: 'flex-start',
                 backgroundColor: theme.primary.base,
+                height: '100%',
+                width: '100%',
                 borderRadius: square ? 0 : 4,
                 color: theme.secondary.base,
                 minWidth: 0,
