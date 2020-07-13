@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useCallback} from "react";
 import {View, Text, Image, StyleSheet, NativeSyntheticEvent, ImageErrorEventData} from "react-native";
 import {CardContentProps} from "../CardContent";
 import {Color} from "../../../../styles/Color";
@@ -13,7 +13,7 @@ export function CardMediaImage(props: CardContentProps) {
     const [size, setSize] = useState<ImageSize|null>(null);
     const [error, setError] = useState<string|undefined>();
 
-    const onLoadEnd = () => {
+    const onLoadEnd = useCallback(() => {
         Image.getSize(uri,
             (width, height) => setSize({width, height}),
             (error: any) => {
@@ -24,12 +24,13 @@ export function CardMediaImage(props: CardContentProps) {
                 }
             }
         );
-    }
-    const onError = (error: NativeSyntheticEvent<ImageErrorEventData>) => {
+    }, [uri]);
+
+    const onError = useCallback((error: NativeSyntheticEvent<ImageErrorEventData>) => {
         const message = 'Failed to load image.';
         console.warn('CardMediaImage', message, {uri, error: error.nativeEvent.error});
         setError(message);
-    };
+    }, [uri]);
 
     if (error) {
         return <Text style={styles.error}>{error}</Text>;
