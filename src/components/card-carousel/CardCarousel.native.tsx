@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, StyleSheet, Text, FlatList, LayoutChangeEvent} from 'react-native';
 import CardView from "../card/CardView";
+import {preloadCards} from "../../utils/media/preload";
 import {CardCarouselProps} from "./CardCarousel.common";
 export * from "./CardCarousel.common";
 
@@ -13,6 +14,10 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
     } as CardCarouselState;
 
     flatList = React.createRef<FlatList>();
+
+    componentDidMount() {
+        preloadCards(this.props.cards || []);
+    }
 
     onLayout = (event: LayoutChangeEvent) => {
         this.setState({ width: event.nativeEvent.layout.width });

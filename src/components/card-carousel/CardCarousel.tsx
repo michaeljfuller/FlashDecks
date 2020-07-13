@@ -5,6 +5,7 @@ import CardView from "../card/CardView";
 import {CardCarouselProps} from "./CardCarousel.common";
 import Button from "../button/Button";
 import {UIColorThemeMap} from "../../styles/UIColorTheme";
+import {preloadCards} from "../../utils/media/preload";
 export * from "./CardCarousel.common";
 
 const useNativeDriver = !isPlatformWeb;
@@ -37,6 +38,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
 
     componentDidMount() {
         document.addEventListener('keydown', this.onKeyDown);
+        preloadCards(this.props.cards || []);
     }
     componentWillUnmount() {
         document.removeEventListener('keydown', this.onKeyDown);
