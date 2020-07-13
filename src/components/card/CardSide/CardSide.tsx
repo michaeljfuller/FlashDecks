@@ -14,9 +14,7 @@ export function CardSide(props: CardSideProps) {
 
     return <TouchableWithoutFeedback onPress={props.onPress}>
         <View style={[styles.root, props.style].flat()}>
-            {content.map((content, index) => {
-                return <CardContentView key={index} content={content} />;
-            })}
+            {content.map(content => <CardContentView key={content.id} content={content} />)}
         </View>
     </TouchableWithoutFeedback>;
 }

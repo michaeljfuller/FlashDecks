@@ -30,6 +30,7 @@ declare interface CardSide {
     content: CardContent[];
 }
 declare interface CardContent {
+    id: string;
     type: CardContentType;
     value: string;
 }
