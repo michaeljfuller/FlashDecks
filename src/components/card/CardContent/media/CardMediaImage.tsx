@@ -2,28 +2,21 @@ import React, {useState, useCallback} from "react";
 import {View, Text, Image, StyleSheet, NativeSyntheticEvent, ImageErrorEventData} from "react-native";
 import {CardContentProps} from "../CardContent";
 import {Color} from "../../../../styles/Color";
-
-interface ImageSize {
-    width: number;
-    height: number;
-}
+import {getImageSize, getCachedImageSize, ImageSize} from "../../../../utils/media/image";
 
 export function CardMediaImage(props: CardContentProps) {
     const uri = props.content.value;
-    const [size, setSize] = useState<ImageSize|null>(null);
+    const [size, setSize] = useState<ImageSize|undefined>(getCachedImageSize(uri));
     const [error, setError] = useState<string|undefined>();
 
-    const onLoadEnd = useCallback(() => {
-        Image.getSize(uri,
-            (width, height) => setSize({width, height}),
-            (error: any) => {
-                if (error) {
-                    const message = 'Failed to measure image.';
-                    console.warn('CardMediaImage', message, {uri, error});
-                    setError(error);
-                }
-            }
-        );
+    const onLoadEnd = useCallback(async () => {
+        const size = await getImageSize(uri);
+        if (size.error) {
+            console.warn('CardMediaImage - Failed to measure image.', {uri, error: size.error});
+            setError('Failed to measure image.');
+        } else {
+            setSize(size);
+        }
     }, [uri]);
 
     const onError = useCallback((error: NativeSyntheticEvent<ImageErrorEventData>) => {

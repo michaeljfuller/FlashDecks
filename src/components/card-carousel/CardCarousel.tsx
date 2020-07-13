@@ -5,7 +5,7 @@ import CardView from "../card/CardView";
 import {CardCarouselProps} from "./CardCarousel.common";
 import Button from "../button/Button";
 import {UIColorThemeMap} from "../../styles/UIColorTheme";
-import {preloadCards} from "../../utils/media/preload";
+import {preloadCards} from "../../utils/media/card";
 export * from "./CardCarousel.common";
 
 const useNativeDriver = !isPlatformWeb;

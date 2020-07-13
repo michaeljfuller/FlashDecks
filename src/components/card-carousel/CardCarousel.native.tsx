@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, StyleSheet, Text, FlatList, LayoutChangeEvent} from 'react-native';
 import CardView from "../card/CardView";
-import {preloadCards} from "../../utils/media/preload";
+import {preloadCards} from "../../utils/media/image";
 import {CardCarouselProps} from "./CardCarousel.common";
 export * from "./CardCarousel.common";
 
