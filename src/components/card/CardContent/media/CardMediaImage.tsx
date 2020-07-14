@@ -36,6 +36,7 @@ export function CardMediaImage(props: CardContentProps) {
             onLoadEnd={!size && !error ? onLoadEnd : undefined}
             onError={onError}
             style={size}
+            fadeDuration={0}
         />
     </View>;
 }
