@@ -59,9 +59,7 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
                         content: [
                             {id: "2-1-1", type: "Text", value: "Videos"},
                             {id: "2-1-2", type: "Video", value: "http://techslides.com/demos/sample-videos/small.mp4"},
-                            {id: "2-1-3", type: "Video", value: "http://techslides.com/demos/sample-videos/small.ogv"},
-                            {id: "2-1-4", type: "Video", value: "http://techslides.com/demos/sample-videos/small.mp4"},
-                            {id: "2-1-5", type: "Video", value: "http://techslides.com/demos/sample-videos/small.3gp"},
+                            {id: "2-1-3", type: "Video", value: "http://techslides.com/demos/sample-videos/small.mp4"},
                         ]
                     },
                 ],
