@@ -4,7 +4,7 @@ import {Color} from "../../../styles/Color";
 import CardContentView from "../CardContent/CardContent";
 
 export interface CardSideProps {
-    side: CardSide;
+    side?: CardSide;
     style?: ViewStyle|Array<ViewStyle|null|undefined>;
     onPress?: () => void;
 }

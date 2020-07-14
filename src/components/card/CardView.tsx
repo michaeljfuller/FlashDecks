@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {ScrollView, Text, View, StyleSheet, ViewStyle} from "react-native";
 import {withStyles} from "@material-ui/core/styles";
 import Card from '@material-ui/core/Card';
@@ -6,31 +6,35 @@ import CardHeader from '@material-ui/core/CardHeader';
 
 import {Color} from "../../styles/Color";
 import CardSide from "./CardSide/CardSide";
-import {CardViewProps} from "./CardView.common";
+import {CardViewBase} from "./CardView.common";
 
-export default function CardView(props: CardViewProps) {
-    const [sideIndex, setSideIndex] = useState(0);
-    const sides = props.item?.sides || [];
-    const side = sides[sideIndex];
-    const onPress = () => setSideIndex((sideIndex + 1) % (sides.length || 1));
-    const footerText = sides.length > 1 ? `${sideIndex+1}/${sides.length}` : '';
+export default class CardView extends CardViewBase {
+    onPress = () => this.nextSide();
 
-    return <View style={props.style}>
-        <StyledCard variant="elevation" raised={true} elevation={5}>
-            <View style={styles.inner}>
+    render() {
+        const footerText = this.sides.length > 1 ? `${this.state.sideIndex+1}/${this.sides.length}` : '';
 
-                <StyledCardHeader title={props.item?.name || "Unknown"}/>
+        return <View style={this.props.style}>
+            <StyledCard variant="elevation" raised={true} elevation={5}>
+                <View style={styles.inner}>
 
-                <ScrollView style={styles.scrollView} contentContainerStyle={styles.body}>
-                    <CardSide side={side} onPress={onPress} style={[styles.side, sides.length > 1 ? styles.pointer : null]} />
-                </ScrollView>
+                    <StyledCardHeader title={this.card?.name || "Unknown"}/>
 
-            </View>
-            <View style={styles.footer}>
-                <Text style={styles.footerText}>{footerText}</Text>
-            </View>
-        </StyledCard>
-    </View>;
+                    <ScrollView style={styles.scrollView} contentContainerStyle={styles.body}>
+                        <CardSide
+                            side={this.currentSide}
+                            onPress={this.onPress}
+                            style={[styles.side, this.sides.length > 1 ? styles.pointer : null]}
+                        />
+                    </ScrollView>
+
+                </View>
+                <View style={styles.footer}>
+                    <Text style={styles.footerText}>{footerText}</Text>
+                </View>
+            </StyledCard>
+        </View>;
+    }
 }
 
 const edgeRadius = 15;
