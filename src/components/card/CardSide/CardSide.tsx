@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, TouchableWithoutFeedback, StyleSheet, ViewStyle} from 'react-native';
+import {isPlatformWeb} from "../../../platform";
 import {Color} from "../../../styles/Color";
 import CardContentView from "../CardContent/CardContent";
 
@@ -23,7 +24,7 @@ export default CardSide;
 const styles = StyleSheet.create({
     root: {
         backgroundColor: Color.White,
-        height: '100%',
-        justifyContent: "space-around",
+        minHeight: isPlatformWeb ? "100%" : undefined,
+        justifyContent: isPlatformWeb ? "space-around" : undefined,
     },
 });
