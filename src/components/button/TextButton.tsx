@@ -1,5 +1,6 @@
 import React from 'react';
 
+import ButtonWrapper from "./core/ButtonWrapper";
 import {TextButtonProps, textButtonPropsWithDefaults} from './TextButton.common';
 import {getStyledTextButtonBase} from "./material-ui/StyledButtonBase";
 import {getUIColorTheme} from "../../styles/UIColorTheme";
@@ -10,9 +11,11 @@ export function TextButton(props: TextButtonProps) {
     const theme = getUIColorTheme(color, invertColor);
 
     const StyledButton = getStyledTextButtonBase(theme);
-    return <StyledButton
-        onClick={onClick}
-        disabled={disabled}
-    >{title}</StyledButton>;
+    return <ButtonWrapper>
+        <StyledButton
+            onClick={onClick}
+            disabled={disabled}
+        >{title}</StyledButton>
+    </ButtonWrapper>;
 }
 export default TextButton;

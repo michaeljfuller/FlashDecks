@@ -2,6 +2,7 @@ import React from 'react';
 import {TextStyle} from "react-native";
 import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} from 'native-base';
 
+import ButtonWrapper from "./core/ButtonWrapper";
 import {ButtonProps, buttonPropsWithDefaults} from './Button.common';
 import {Color, getUIColorTheme} from "../../styles/UIColorTheme";
 
@@ -10,14 +11,16 @@ export * from './Button.common';
 export function Button(props: ButtonProps) {
     const { onClick, disabled, title, square } = buttonPropsWithDefaults(props);
 
-    return <NativeBaseButton
-        onPress={onClick}
-        disabled={disabled}
-        style={getBackgroundStyle(props)}
-        rounded={!square}
-    >
-        <NativeBaseText style={getTextStyle(props)} uppercase={false}>{title}</NativeBaseText>
-    </NativeBaseButton>;
+    return <ButtonWrapper>
+        <NativeBaseButton
+            onPress={onClick}
+            disabled={disabled}
+            style={getBackgroundStyle(props)}
+            rounded={!square}
+        >
+            <NativeBaseText style={getTextStyle(props)} uppercase={false}>{title}</NativeBaseText>
+        </NativeBaseButton>
+    </ButtonWrapper>;
 }
 export default Button;
 
@@ -41,7 +44,8 @@ function getTextStyle(props: ButtonProps): TextStyle {
     const {color, invertColor} = buttonPropsWithDefaults(props);
     const theme = getUIColorTheme(color, invertColor);
     return {
-        color: theme.secondary.base
+        color: theme.secondary.base,
+        width: '100%',
     };
 }
 //</editor-fold>

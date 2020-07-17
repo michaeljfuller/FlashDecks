@@ -4,6 +4,7 @@ import DeckViewBase from "./DeckView.common";
 import Avatar from "../avatar/Avatar";
 import IconButton, {IconType} from "../button/IconButton";
 import {DeckInfoModal} from "./DeckInfoModal/DeckInfoModal";
+import CardCarousel from "../card-carousel/CardCarousel";
 
 const avatarSize = 35;
 
@@ -21,9 +22,11 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
     render() {
         const deck = this.props.item;
 
-        return <View>
+        return <View style={styles.root}>
             {this.renderHeader()}
-            {this.renderCards(styles.cards)}
+            <View style={styles.cardCarouselContainer}>
+                <CardCarousel cards={deck.cards} style={styles.cardCarousel} />
+            </View>
             <DeckInfoModal deck={deck} open={this.state.showInfo} onClose={this.closeInfoModal} />
         </View>;
     }
@@ -54,6 +57,9 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
 }
 
 const styles = StyleSheet.create({
+    root: {
+        flex: 1,
+    },
     header: {
         flexDirection: "row",
         marginBottom: 5,
@@ -80,11 +86,17 @@ const styles = StyleSheet.create({
     infoButton: {
         paddingLeft: 5,
     },
-    cards: {
-        marginTop: 5,
-        maxWidth: 550,
+    cardCarouselContainer: {
+        flex: 1,
+        flexDirection: "row",
+        alignItems: "center",
         marginHorizontal: 'auto',
+        marginBottom: 5,
+        width: "100%",
+        maxWidth: 1200,
+        maxHeight: 800,
     },
+    cardCarousel: {},
     cardCount: {
         lineHeight: avatarSize,
         textAlign: "right",

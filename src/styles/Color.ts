@@ -9,6 +9,7 @@ export const Color = Object.freeze({
     Red: '#F44',
     Green: '#4b3',
     Blue: '#46F',
+    Orange: '#F92',
 });
 export const HoverColor = setColors({
     White: '#EEE',
@@ -19,6 +20,7 @@ export const HoverColor = setColors({
     Red: '#D33',
     Green: '#392',
     Blue: '#35D',
+    Orange: '#d73',
 });
 export const DisabledColor = setColors({
     White: '#EEE',
@@ -28,7 +30,8 @@ export const DisabledColor = setColors({
     OffBlack: '#222',
     Red: '#C88',
     Green: '#8C8',
-    Blue: '#88C'
+    Blue: '#88C',
+    Orange: '#fb6',
 });
 
 export type IColor = typeof Color;

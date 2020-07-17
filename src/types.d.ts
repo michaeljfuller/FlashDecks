@@ -24,4 +24,14 @@ declare interface Card {
     ownerId: string;
     owner: User;
     name: string;
+    sides: CardSide[];
 }
+declare interface CardSide {
+    content: CardContent[];
+}
+declare interface CardContent {
+    id: string;
+    type: CardContentType;
+    value: string;
+}
+declare type CardContentType = 'Text' | 'Image' | 'Video' | 'Link';

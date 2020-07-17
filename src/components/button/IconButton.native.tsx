@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} from 'native-base';
 
+import ButtonWrapper from "./core/ButtonWrapper";
 import {Icon, IconStyles} from '../icon/Icon';
 import {IconButtonProps, iconButtonPropsWithDefaults, IconButtonStyle} from './IconButton.common';
 import {getUIColorTheme, UIColorTheme} from "../../styles/UIColorTheme";
@@ -13,16 +14,18 @@ export function IconButton(props: IconButtonProps) {
     const theme = getUIColorTheme(color, invertColor);
     const round = !text;
 
-    return <NativeBaseButton
-        onPress={onClick}
-        disabled={disabled}
-        style={getButtonStyle(style, theme, !!text, transparent, flat, round)}
-        transparent={transparent}
-        iconLeft
-    >
-        <Icon type={icon} style={getIconStyle(theme, transparent, disabled)} />
-        {text ? <NativeBaseText style={getTextStyle(theme, transparent, disabled)}>{text}</NativeBaseText> : undefined}
-    </NativeBaseButton>
+    return <ButtonWrapper>
+        <NativeBaseButton
+            onPress={onClick}
+            disabled={disabled}
+            style={getButtonStyle(style, theme, !!text, transparent, flat, round)}
+            transparent={transparent}
+            iconLeft
+        >
+            <Icon type={icon} style={getIconStyle(theme, transparent, disabled)} />
+            {text ? <NativeBaseText style={getTextStyle(theme, transparent, disabled)}>{text}</NativeBaseText> : undefined}
+        </NativeBaseButton>
+    </ButtonWrapper>;
 }
 export default IconButton;
 

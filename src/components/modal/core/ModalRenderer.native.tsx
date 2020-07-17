@@ -66,7 +66,7 @@ function ModalOpenScreen() {
                     ModalWrapper.displayName = modal ? modal.constructor.name+'Wrapper' : 'ModalInstance';
                     return <ModalWrapper />;
                 }
-                return <View><Text>ModalOpenScreen: No modal found</Text></View>;
+                return <View />;
             }
         }</Context.Consumer>
     </View>;
