@@ -30,8 +30,14 @@ declare interface CardSide {
     content: CardContent[];
 }
 declare interface CardContent {
+    // A unique ID for the content.
     id: string;
+    // The type of content.
     type: CardContentType;
+    // The content's value.
     value: string;
+    // Fraction of the CardSide height. Total is able to exceed 1.00.
+    // If set, content scales to fit size, otherwise no scaling is applied.
+    size?: number;
 }
 declare type CardContentType = 'Text' | 'Image' | 'Video' | 'Link';

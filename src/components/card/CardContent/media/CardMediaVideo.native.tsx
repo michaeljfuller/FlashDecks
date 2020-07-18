@@ -1,18 +1,20 @@
 import React from "react";
-import {Text, View, LayoutChangeEvent} from "react-native";
+import {View, LayoutChangeEvent} from "react-native";
 import {Video, VideoNaturalSize, VideoReadyForDisplayEvent} from 'expo-av';
-import {CardContentProps} from "../CardContent";
+import {CardMediaVideoProps} from "./CardMediaVideo.common";
 
 export interface CardMediaVideoState {
     videoSize: VideoNaturalSize;
     viewWidth: number;
     displaySize: Dimensions;
 }
+
 interface Dimensions {
     width: number;
     height: number;
 }
-export class CardMediaVideo extends React.Component<CardContentProps, CardMediaVideoState> {
+
+export class CardMediaVideo extends React.Component<CardMediaVideoProps, CardMediaVideoState> {
     state = {
         videoSize: { width: 0, height: 0, orientation: "landscape" },
         viewWidth: 0,
@@ -48,18 +50,14 @@ export class CardMediaVideo extends React.Component<CardContentProps, CardMediaV
     }
 
     render() {
-        const width = this.state.displaySize.width || 100;
-        const height = this.state.displaySize.height || 100;
+        const height = this.props.height || this.state.displaySize.height || undefined;
 
         return <View onLayout={this.onViewLayout}>
-            <Video
+            <Video isLooping shouldPlay isMuted useNativeControls
                 source={{ uri: this.props.content.value }}
-                onReadyForDisplay={this.onVideoReadyForDisplay} style={{ width, height }}
-                isLooping={true}
-                shouldPlay={true}
-                isMuted={true}
+                onReadyForDisplay={this.onVideoReadyForDisplay}
+                style={{ height }}
                 resizeMode="contain"
-                useNativeControls={true}
             />
         </View>;
     }

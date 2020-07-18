@@ -1,4 +1,4 @@
-import {ViewStyle} from "react-native";
+import {LayoutChangeEvent, LayoutRectangle, ViewStyle} from "react-native";
 import React from "react";
 import Card from "@material-ui/core/Card";
 import CardSide from "./CardSide/CardSide";
@@ -9,6 +9,7 @@ export interface CardViewProps {
 }
 export interface CardViewState {
     sideIndex: number;
+    viewLayout: LayoutRectangle;
 }
 
 export abstract class CardViewBase<
@@ -16,6 +17,7 @@ export abstract class CardViewBase<
 > extends React.Component<CardViewProps, State> {
     state = {
         sideIndex: 0,
+        viewLayout: { x: 0, y: 0, width: 0, height: 0 },
     } as State;
 
     get card(): Card|undefined {
@@ -35,6 +37,13 @@ export abstract class CardViewBase<
             this.setState({ sideIndex: 0 }); // Reset sideIndex
         }
     }
+
+    /** Record the view size to calculate the available size of the body from. */
+    onLayout = (event: LayoutChangeEvent) => {
+        this.setState({ viewLayout: event.nativeEvent.layout });
+    }
+
+    onPress = () => this.nextSide();
 
     nextSide() {
         this.setState({ // Increment by one, resetting to 0 if it exceeds range.

@@ -1,13 +1,19 @@
 import React, {useState, useCallback} from "react";
-import {View, Text, Image, StyleSheet, NativeSyntheticEvent, ImageErrorEventData} from "react-native";
-import {CardContentProps} from "../CardContent";
+import {View, Image, StyleSheet, NativeSyntheticEvent, ImageErrorEventData} from "react-native";
 import {Color} from "../../../../styles/Color";
 import {getImageSize, getCachedImageSize, ImageSize} from "../../../../utils/media/image";
+import {CardMediaError} from "./CardMediaError";
 
-export function CardMediaImage(props: CardContentProps) {
+export interface CardMediaImageProps {
+    content: CardContent;
+    height?: number;
+}
+
+export function CardMediaImage(props: CardMediaImageProps) {
     const uri = props.content.value;
-    const [size, setSize] = useState<ImageSize|undefined>(getCachedImageSize(uri));
+    const [imageSize, setImageSize] = useState<ImageSize|undefined>(getCachedImageSize(uri));
     const [error, setError] = useState<string|undefined>();
+    const height = props.height || imageSize?.height || 0;
 
     const onLoadEnd = useCallback(async () => {
         const size = await getImageSize(uri);
@@ -15,7 +21,7 @@ export function CardMediaImage(props: CardContentProps) {
             console.warn('CardMediaImage - Failed to measure image.', {uri, error: size.error});
             setError('Failed to measure image.');
         } else {
-            setSize(size);
+            setImageSize(size);
         }
     }, [uri]);
 
@@ -26,16 +32,16 @@ export function CardMediaImage(props: CardContentProps) {
     }, [uri]);
 
     if (error) {
-        return <Text style={styles.error}>{error}</Text>;
+        return <CardMediaError message={error} height={height} />;
     }
 
     return <View style={styles.root}>
         <Image
             source={{uri}}
             resizeMode="contain"
-            onLoadEnd={!size && !error ? onLoadEnd : undefined}
+            onLoadEnd={!imageSize && !error ? onLoadEnd : undefined}
             onError={onError}
-            style={size}
+            style={{ width: '100%', height }}
             fadeDuration={0}
         />
     </View>;
@@ -48,6 +54,6 @@ const styles = StyleSheet.create({
     error: {
         color: Color.White,
         backgroundColor: Color.Red,
-        padding: 2,
+        textAlign: "center",
     },
 });

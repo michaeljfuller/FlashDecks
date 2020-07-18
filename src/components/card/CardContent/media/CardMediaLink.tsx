@@ -1,7 +1,11 @@
 import React from "react";
-import {CardContentProps} from "../CardContent";
 import {LinkButton} from "../../../button/LinkButton";
 
-export function CardMediaLink(props: CardContentProps) {
-    return <LinkButton url={props.content.value} />;
+export interface CardMediaLinkProps {
+    content: CardContent;
+    height?: number;
+}
+
+export function CardMediaLink(props: CardMediaLinkProps) {
+    return <LinkButton url={props.content.value} style={{ height: props.height }} />;
 }
