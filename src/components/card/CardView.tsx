@@ -8,13 +8,20 @@ import {Color} from "../../styles/Color";
 import CardSide from "./CardSide/CardSide";
 import {CardViewBase} from "./CardView.common";
 
-export default class CardView extends CardViewBase {
-    onPress = () => this.nextSide();
+const edgeRadius = 15;
+const sideCountHeight = edgeRadius-2;
+const headerHeight = 35;
+const footerHeight = edgeRadius;
+const borderWidth = 1;
+const marginBottom = 5;
 
+export default class CardView extends CardViewBase {
     render() {
+        const totalHeight = this.state.viewLayout.height;
+        const bodyHeight = Math.max(0, totalHeight - (headerHeight + footerHeight + marginBottom + borderWidth * 2));
         const footerText = this.sides.length > 1 ? `${this.state.sideIndex+1}/${this.sides.length}` : '';
 
-        return <View style={this.props.style}>
+        return <View style={this.props.style} onLayout={this.onLayout}>
             <StyledCard variant="elevation" raised={true} elevation={5}>
                 <View style={styles.inner}>
 
@@ -24,6 +31,7 @@ export default class CardView extends CardViewBase {
                         <CardSide
                             side={this.currentSide}
                             onPress={this.onPress}
+                            height={bodyHeight}
                             style={[styles.side, this.sides.length > 1 ? styles.pointer : null]}
                         />
                     </ScrollView>
@@ -37,17 +45,14 @@ export default class CardView extends CardViewBase {
     }
 }
 
-const edgeRadius = 15;
-const sideCountHeight = edgeRadius-2;
-
 const StyledCard = withStyles({
     root: {
         flex: 1,
         flexDirection: "column",
         padding: 0,
-        paddingBottom: edgeRadius,
+        paddingBottom: footerHeight,
         borderRadius: edgeRadius,
-        marginBottom: 5,
+        marginBottom,
         backgroundColor: Color.OffWhite,
     }
 })(Card) as typeof Card;
@@ -56,6 +61,7 @@ const StyledCardHeader = withStyles({
     root: {
         padding: 0,
         textAlign: 'center',
+        minHeight: headerHeight,
     }
 })(CardHeader) as typeof CardHeader;
 
@@ -66,8 +72,8 @@ const styles = StyleSheet.create({
     },
     scrollView: {
         borderColor: Color.Grey,
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
+        borderTopWidth: borderWidth,
+        borderBottomWidth: borderWidth,
         backgroundColor: Color.White,
     },
     body: {

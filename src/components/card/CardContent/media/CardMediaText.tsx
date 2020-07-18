@@ -1,7 +1,19 @@
 import React from "react";
-import {Text} from "react-native";
-import {CardContentProps} from "../CardContent";
+import {Text, View, StyleSheet} from "react-native";
 
-export function CardMediaText(props: CardContentProps) {
-    return <Text selectable={false}>{props.content.value}</Text>;
+export interface CardMediaTextProps {
+    content: CardContent;
+    height?: number;
 }
+
+export function CardMediaText(props: CardMediaTextProps) {
+    return <View style={{ minHeight: props.height }}>
+        <Text style={styles.text} selectable={false}>{props.content.value}</Text>
+    </View>;
+}
+
+const styles = StyleSheet.create({
+    text: {
+        marginVertical: "auto",
+    },
+});

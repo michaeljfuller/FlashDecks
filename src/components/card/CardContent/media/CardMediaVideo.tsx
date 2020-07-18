@@ -1,15 +1,10 @@
 import React from "react";
 import {View} from "react-native";
-import {CardContentProps} from "../CardContent";
+import {CardMediaVideoProps} from "./CardMediaVideo.common";
 
-export function CardMediaVideo(props: CardContentProps) {
+export function CardMediaVideo(props: CardMediaVideoProps) {
     return <View>
-        <video
-            autoPlay
-            loop
-            muted
-            controls
-        >
+        <video autoPlay loop muted controls height={props.height}>
             <source src={props.content.value} type={"video/"+props.content.value.split('.').pop()} />
         </video>
     </View>;

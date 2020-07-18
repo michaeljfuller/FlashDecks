@@ -1,12 +1,12 @@
 import React from 'react';
 import {View, TouchableWithoutFeedback, StyleSheet, ViewStyle} from 'react-native';
-import {isPlatformWeb} from "../../../platform";
 import {Color} from "../../../styles/Color";
 import CardContentView from "../CardContent/CardContent";
 
 export interface CardSideProps {
     side?: CardSide;
     style?: ViewStyle|Array<ViewStyle|null|undefined>;
+    height: number;
     onPress?: () => void;
 }
 
@@ -15,7 +15,7 @@ export function CardSide(props: CardSideProps) {
 
     return <TouchableWithoutFeedback onPress={props.onPress}>
         <View style={[styles.root, props.style].flat()}>
-            {content.map(content => <CardContentView key={content.id} content={content} />)}
+            {content.map(content => <CardContentView key={content.id} content={content} parentHeight={props.height} />)}
         </View>
     </TouchableWithoutFeedback>;
 }
@@ -24,7 +24,6 @@ export default CardSide;
 const styles = StyleSheet.create({
     root: {
         backgroundColor: Color.White,
-        minHeight: isPlatformWeb ? "100%" : undefined,
-        justifyContent: isPlatformWeb ? "space-around" : undefined,
+        paddingHorizontal: 8,
     },
 });
