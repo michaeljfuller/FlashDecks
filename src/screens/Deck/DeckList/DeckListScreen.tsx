@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Text, View} from "react-native";
 import ScreenContainer from "../../ScreenContainer";
 import {NavigationScreenProps} from "../../../navigation/navigation_types";
-import DeckList from "../../../components/deck/DeckList";
+import DeckList from "../../../components/deck/DeckList/DeckList";
 import {repeat} from "../../../utils/array";
 
 import {reduxConnector, DeckListScreenStoreProps} from "./DeckListScreen_redux";

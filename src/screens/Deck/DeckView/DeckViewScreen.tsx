@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import ScreenContainer from "../../ScreenContainer";
-import DeckView from "../../../components/deck/DeckView";
+import DeckView from "../../../components/deck/DeckView/DeckView";
 import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
 import {reduxConnector, DeckViewScreenStoreProps} from "./DeckViewScreen_redux";
 import {repeat} from "../../../utils/array";

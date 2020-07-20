@@ -13,11 +13,11 @@ import {
     Text
 } from 'native-base';
 
-import {DefaultTheme} from "../../../styles/UIColorTheme";
-import IconButton, {IconType} from "../../button/IconButton";
+import {DefaultTheme} from "../../../../styles/UIColorTheme";
+import IconButton, {IconType} from "../../../button/IconButton";
 import {DeckListItemProps} from "./DeckListItem.common";
-import Avatar from "../../avatar/Avatar";
-import {repeat} from "../../../utils/array";
+import Avatar from "../../../avatar/Avatar";
+import {repeat} from "../../../../utils/array";
 
 const headerColor = DefaultTheme.primary.base;
 const headerTextColor = DefaultTheme.secondary.base;

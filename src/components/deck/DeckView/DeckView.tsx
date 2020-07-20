@@ -1,12 +1,12 @@
 import React from "react";
 import {Text, View, StyleSheet} from "react-native";
 import DeckViewBase from "./DeckView.common";
-import Avatar from "../avatar/Avatar";
-import {DeckInfoModal} from "./DeckInfoModal/DeckInfoModal";
-import IconButton, {IconType} from "../button/IconButton";
-import CardCarousel from "../card-carousel/CardCarousel";
+import Avatar from "../../avatar/Avatar";
+import IconButton, {IconType} from "../../button/IconButton";
+import {DeckInfoModal} from "../DeckInfoModal/DeckInfoModal";
+import CardCarousel from "../../card-carousel/CardCarousel";
 
-const avatarSize = 24;
+const avatarSize = 35;
 
 export interface DeckViewState {
     showInfo: boolean;
@@ -36,17 +36,18 @@ export default class DeckView extends DeckViewBase<DeckViewState> {
 
         return <View style={styles.header}>
 
-            <View style={styles.headerRow}>
-                <View style={styles.titleView}>
-                    <Text style={styles.titleText}>{deck.name}</Text>
-                </View>
+            <View style={styles.avatarView}>
+                <Avatar user={deck.owner} labelPlacement="right" size={avatarSize} labelStyle={{ color: 'black' }} />
+            </View>
+
+            <View style={styles.titleView}>
+                <Text style={styles.titleText}>{deck.name}</Text>
                 <View style={styles.infoButton}>
                     <IconButton flat icon={IconType.Info} onClick={this.openInfoModal} />
                 </View>
             </View>
 
-            <View style={styles.headerRow}>
-                <Avatar user={deck.owner} labelPlacement="right" size={avatarSize} style={styles.avatar} labelStyle={styles.avatarLabel} />
+            <View style={styles.cardCountView}>
                 <Text style={styles.cardCount}>{this.cardCount} {this.cardCount !== 1 ? 'cards' : 'card'}</Text>
             </View>
 
@@ -60,47 +61,43 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     header: {
-        flexDirection: "column",
+        flexDirection: "row",
         marginBottom: 5,
     },
-    headerRow: {
-        flexDirection: "row",
-        alignSelf: "center",
-        position: "relative",
+    avatarView: {
+        minHeight: avatarSize,
+        flex: 1,
     },
     titleView: {
+        height: avatarSize,
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    cardCountView: {
+        minHeight: avatarSize,
         flex: 1,
-        paddingHorizontal: 25, // icon size
+        overflow: "hidden",
     },
     titleText: {
-        textAlign: "center",
+        lineHeight: avatarSize,
+        fontSize: Math.floor(avatarSize*0.7),
         fontWeight: "bold",
-        fontSize: 26,
-        width: "100%",
     },
     infoButton: {
-        position: "absolute",
-        right: 0,
-        top: 7,
+        paddingLeft: 5,
     },
     cardCarouselContainer: {
         flex: 1,
+        flexDirection: "row",
         alignItems: "center",
+        marginHorizontal: 'auto',
+        marginBottom: 5,
         width: "100%",
-        backgroundColor: 'orange',
+        maxWidth: 1200,
+        maxHeight: 800,
     },
-    cardCarousel: {
-        marginTop: 5,
-        maxWidth: 550,
-    },
-    avatar: {
-        flex: 1,
-    },
-    avatarLabel: {
-        color: "black"
-    },
+    cardCarousel: {},
     cardCount: {
-        flex: 1,
         lineHeight: avatarSize,
         textAlign: "right",
     },
