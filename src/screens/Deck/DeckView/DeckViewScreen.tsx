@@ -4,6 +4,7 @@ import DeckView from "../../../components/deck/DeckView/DeckView";
 import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
 import {reduxConnector, DeckViewScreenStoreProps} from "./DeckViewScreen_redux";
 import {repeat} from "../../../utils/array";
+import DeckScreenHeader from "../common/DeckScreenHeader";
 
 export interface DeckViewScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -90,7 +91,8 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
 
     render() {
         return (
-            <ScreenContainer style={{ padding: 5 }}>
+            <ScreenContainer>
+                <DeckScreenHeader item={this.state.deck} />
                 <DeckView item={this.state.deck} />
             </ScreenContainer>
         );
