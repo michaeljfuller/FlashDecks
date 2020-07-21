@@ -9,7 +9,7 @@ export enum IconType {
     More,
     Info,
     Cancel,
-    Save,
+    Done,
 }
 export interface IconProps {
     type: IconType;

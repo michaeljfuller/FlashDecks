@@ -14,8 +14,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
-import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
-import SaveIcon from '@material-ui/icons/Save';
+import CloseIcon from '@material-ui/icons/Close';
+import DoneIcon from '@material-ui/icons/Done';
 
 const componentMap = {
     [IconType.QuestionMark]: HelpIcon,
@@ -27,8 +27,8 @@ const componentMap = {
     [IconType.Delete]: DeleteIcon,
     [IconType.More]: MoreVertIcon,
     [IconType.Info]: InfoOutlined,
-    [IconType.Cancel]: CancelOutlinedIcon,
-    [IconType.Save]: SaveIcon,
+    [IconType.Cancel]: CloseIcon,
+    [IconType.Done]: DoneIcon,
 } as Record<IconType, React.ElementType>;
 
 /**
