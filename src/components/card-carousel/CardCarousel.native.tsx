@@ -39,7 +39,11 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
                 data={cards}
                 renderItem={({item}) => {
                     return <View key={item.id} style={[styles.cardContainer, { width }]}>
-                        <CardView item={item} style={styles.cardView} />
+                        <CardView
+                            item={item}
+                            style={styles.cardView}
+                            editable={this.props.editable}
+                        />
                     </View>;
                 }}
                 horizontal

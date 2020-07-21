@@ -133,6 +133,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
                     <CardView
                         item={cards[index]}
                         style={[styles.cardView, { width: cardWidth, height: cardHeight }]}
+                        editable={this.props.editable}
                     />
                 </Animated.View>
             </View>

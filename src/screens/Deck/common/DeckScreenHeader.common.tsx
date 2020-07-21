@@ -2,6 +2,7 @@ import React from "react";
 
 export interface DeckScreenHeaderProps {
     item: Deck;
+    title?: string;
 }
 export interface DeckScreenHeaderPropsState {
     showInfo: boolean;
