@@ -34,9 +34,11 @@ function getButtonStyle(style: IconButtonStyle, theme: UIColorTheme, hasText: bo
         const defaultSize = 24;
         const width = style.width || style.height || defaultSize;
         const height = style.height || style.width || defaultSize;
+        const margin = style.margin;
         return {
             width,
             height,
+            margin,
             backgroundColor: transparent ? undefined : theme.primary.base,
             borderRadius: Math.min(width, height),
             justifyContent: 'center',

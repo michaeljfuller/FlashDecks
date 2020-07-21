@@ -18,6 +18,7 @@ export interface IconButtonProps {
 export interface IconButtonStyle {
     width?: number;
     height?: number;
+    margin?: number;
 }
 
 const noop = () => {};

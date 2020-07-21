@@ -24,6 +24,7 @@ export function IconButton(props: IconButtonProps) {
             style={{
                 width: style.width || defaultIconSize,
                 height: style.height || defaultIconSize,
+                margin: style.margin,
                 textAlign: "center"
             }}
         >

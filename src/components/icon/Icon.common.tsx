@@ -7,7 +7,9 @@ export enum IconType {
     Edit,
     Delete,
     More,
-    Info
+    Info,
+    Cancel,
+    Save,
 }
 export interface IconProps {
     type: IconType;
@@ -17,4 +19,5 @@ export interface IconStyles {
     width?: number;
     height?: number;
     color?: string;
+    padding?: number;
 }

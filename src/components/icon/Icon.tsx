@@ -14,6 +14,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+import SaveIcon from '@material-ui/icons/Save';
 
 const componentMap = {
     [IconType.QuestionMark]: HelpIcon,
@@ -25,6 +27,8 @@ const componentMap = {
     [IconType.Delete]: DeleteIcon,
     [IconType.More]: MoreVertIcon,
     [IconType.Info]: InfoOutlined,
+    [IconType.Cancel]: CancelOutlinedIcon,
+    [IconType.Save]: SaveIcon,
 } as Record<IconType, React.ElementType>;
 
 /**
@@ -35,7 +39,12 @@ export function Icon(props: IconProps) {
     const component = componentMap[props.type];
     if (component) {
         return React.createElement(component, {
-            style: { width: style.width, height: style.height, color: style.color }
+            style: {
+                width: style.width,
+                height: style.height,
+                color: style.color,
+                padding: style.padding,
+            }
         } as SvgIconProps);
     }
     return null;
