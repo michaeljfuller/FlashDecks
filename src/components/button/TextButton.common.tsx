@@ -7,6 +7,11 @@ export interface TextButtonProps {
     title?: string;
     color?: GetUIColorThemeInput;
     invertColor?: boolean;
+    style?: TextButtonStyle;
+}
+export interface TextButtonStyle {
+    width?: number;
+    height?: number;
 }
 
 const noop = () => {};
@@ -15,11 +20,12 @@ export function textButtonPropsWithDefaults(props: TextButtonProps): Required<Te
         onClick = noop,
         disabled = false,
         title = '',
+        style = {},
         color = DefaultTheme.primary.key,
         invertColor = false,
     } = props;
     return {
-        onClick, title, color, invertColor,
+        onClick, title, color, invertColor, style,
         disabled: disabled || !props.onClick,
     };
 }

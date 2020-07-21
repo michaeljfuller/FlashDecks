@@ -8,7 +8,7 @@ import {getUIColorTheme} from "../../styles/UIColorTheme";
 export * from './TextButton.common';
 
 export function TextButton(props: TextButtonProps) {
-    const { onClick, disabled, title, color, invertColor } = textButtonPropsWithDefaults(props);
+    const { onClick, disabled, title, color, invertColor, style } = textButtonPropsWithDefaults(props);
     const theme = getUIColorTheme(color, invertColor);
 
     return <ButtonWrapper>
@@ -16,6 +16,10 @@ export function TextButton(props: TextButtonProps) {
             onPress={onClick}
             disabled={disabled}
             transparent
+            style={{
+                width: style.width,
+                height: style.height,
+            }}
         >
             <NativeBaseText style={{ color: theme.primary.base }}>{title}</NativeBaseText>
         </NativeBaseButton>
