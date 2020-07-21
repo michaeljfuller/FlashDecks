@@ -6,7 +6,9 @@ import CardHeader from '@material-ui/core/CardHeader';
 
 import {Color} from "../../styles/Color";
 import CardSide from "./CardSide/CardSide";
-import {CardViewBase} from "./CardView.common";
+import {CardViewBase, CardViewBaseState} from "./CardView.common";
+import TextButton from "../button/TextButton";
+import IconButton, {IconType} from "../button/IconButton";
 
 const edgeRadius = 15;
 const sideCountHeight = edgeRadius-2;
@@ -15,7 +17,16 @@ const footerHeight = edgeRadius;
 const borderWidth = 1;
 const marginBottom = 5;
 
-export default class CardView extends CardViewBase {
+interface CardViewState extends CardViewBaseState {
+    editing?: boolean;
+}
+
+export default class CardView extends CardViewBase<CardViewState> {
+
+    onClickEdit = () => this.setState({ editing: true });
+    onClickCancel = () => this.setState({ editing: false });
+    onClickDone = () => this.setState({ editing: false });
+
     render() {
         const totalHeight = this.state.viewLayout.height;
         const bodyHeight = Math.max(0, totalHeight - (headerHeight + footerHeight + marginBottom + borderWidth * 2));
@@ -23,9 +34,13 @@ export default class CardView extends CardViewBase {
 
         return <View style={this.props.style} onLayout={this.onLayout}>
             <StyledCard variant="elevation" raised={true} elevation={5}>
+
                 <View style={styles.inner}>
 
-                    <StyledCardHeader title={this.card?.name || "Unknown"}/>
+                    <View>
+                        <StyledCardHeader title={this.card?.name || "Unknown"}/>
+                        {this.hasActions ? this.renderHeaderActions() : null}
+                    </View>
 
                     <ScrollView style={styles.scrollView} contentContainerStyle={styles.body}>
                         <CardSide
@@ -40,8 +55,23 @@ export default class CardView extends CardViewBase {
                 <View style={styles.footer}>
                     <Text style={styles.footerText}>{footerText}</Text>
                 </View>
+
             </StyledCard>
         </View>;
+    }
+
+    renderHeaderActions() {
+        if (this.state.editing) {
+            const margin = 1;
+            return <View style={styles.headerActions}>
+                <IconButton icon={IconType.Done} onClick={this.onClickDone} style={{ margin }} />
+                <IconButton icon={IconType.Cancel} onClick={this.onClickCancel} style={{ margin }} />
+            </View>;
+        } else {
+            return <View style={styles.headerActions}>
+                <TextButton title="Edit" onClick={this.onClickEdit} style={{ height: headerHeight-8 }} />
+            </View>;
+        }
     }
 }
 
@@ -69,6 +99,12 @@ const styles = StyleSheet.create({
     inner: {
         flexDirection: "column",
         height: '100%',
+    },
+    headerActions: {
+        flexDirection: "row",
+        position: "absolute",
+        right: 5,
+        top: 5,
     },
     scrollView: {
         borderColor: Color.Grey,

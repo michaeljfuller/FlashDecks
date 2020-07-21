@@ -6,14 +6,16 @@ import CardSide from "./CardSide/CardSide";
 export interface CardViewProps {
     item: Card;
     style?: ViewStyle|ViewStyle[];
+    editable?: boolean;
+    onUpdate?: (item: Card) => void;
 }
-export interface CardViewState {
+export interface CardViewBaseState {
     sideIndex: number;
     viewLayout: LayoutRectangle;
 }
 
 export abstract class CardViewBase<
-    State extends CardViewState = CardViewState
+    State extends CardViewBaseState = CardViewBaseState
 > extends React.Component<CardViewProps, State> {
     state = {
         sideIndex: 0,
@@ -30,6 +32,10 @@ export abstract class CardViewBase<
 
     get currentSide(): CardSide|undefined {
         return this.sides[this.state.sideIndex];
+    }
+
+    get hasActions(): boolean {
+        return this.props.editable || false;
     }
 
     componentDidUpdate(prevProps: Readonly<CardViewProps>/*, prevState: Readonly<CardViewState>, snapshot?: any*/) {
