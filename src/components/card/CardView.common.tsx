@@ -38,6 +38,10 @@ export abstract class CardViewBase<
         return this.props.editable || false;
     }
 
+    get canPress(): boolean {
+        return this.sides.length > 1 && !this.props.editable;
+    }
+
     componentDidUpdate(prevProps: Readonly<CardViewProps>/*, prevState: Readonly<CardViewState>, snapshot?: any*/) {
         if (prevProps.item?.id !== this.props.item?.id) { // Card changed
             this.setState({ sideIndex: 0 }); // Reset sideIndex
@@ -49,7 +53,9 @@ export abstract class CardViewBase<
         this.setState({ viewLayout: event.nativeEvent.layout });
     }
 
-    onPress = () => this.nextSide();
+    onPress = () => {
+        this.canPress && this.nextSide();
+    }
 
     nextSide() {
         this.setState({ // Increment by one, resetting to 0 if it exceeds range.

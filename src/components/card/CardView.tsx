@@ -4,6 +4,7 @@ import {withStyles} from "@material-ui/core/styles";
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 
+import globalStyles from "../../styles/globalStyleSheet";
 import {Color} from "../../styles/Color";
 import CardSide from "./CardSide/CardSide";
 import {CardViewBase, CardViewBaseState} from "./CardView.common";
@@ -47,7 +48,8 @@ export default class CardView extends CardViewBase<CardViewState> {
                             side={this.currentSide}
                             onPress={this.onPress}
                             height={bodyHeight}
-                            style={[styles.side, this.sides.length > 1 ? styles.pointer : null]}
+                            editing={this.props.editable}
+                            style={[styles.side, this.canPress ? globalStyles.pointer : null]}
                         />
                     </ScrollView>
 
@@ -119,9 +121,6 @@ const styles = StyleSheet.create({
     side: {
         height: "100%",
     },
-    pointer: {
-        cursor: "pointer",
-    } as ViewStyle & { cursor: string },
     footer: {},
     footerText: {
         marginHorizontal: "auto",
