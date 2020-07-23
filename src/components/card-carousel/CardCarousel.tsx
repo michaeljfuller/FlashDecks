@@ -66,9 +66,11 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
     };
 
     onKeyDown = (event: KeyboardEvent) => {
-        switch (event.code) {
-            case "ArrowLeft": return this.previous();
-            case "ArrowRight": return this.next();
+        if (!this.props.editable) {
+            switch (event.code) {
+                case "ArrowLeft": return this.previous();
+                case "ArrowRight": return this.next();
+            }
         }
     }
 
