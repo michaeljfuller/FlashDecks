@@ -23,6 +23,7 @@ module.exports = {
     },
     plugins: [
         "react",
+        "react-hooks",
         "@typescript-eslint"
     ],
     settings: {
@@ -69,6 +70,10 @@ module.exports = {
         '@typescript-eslint/no-explicit-any': 'off',
 
         // https://github.com/typescript-eslint/typescript-eslint/blob/v2.26.0/packages/eslint-plugin/docs/rules/ban-ts-ignore.md
-        '@typescript-eslint/ban-ts-ignore': 'off'
+        '@typescript-eslint/ban-ts-ignore': 'off',
+
+        // https://reactjs.org/docs/hooks-rules.html
+        'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
+        'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
     }
 };

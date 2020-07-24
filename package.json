@@ -54,6 +54,7 @@
     "enzyme-adapter-react-16": "^1.15.2",
     "eslint": "^7.0.0",
     "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^4.0.8",
     "express": "^4.17.1",
     "gulp": "^4.0.2",
     "gulp-shell": "^0.8.0",
