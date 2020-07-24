@@ -1,78 +1,104 @@
-import React, {useCallback} from "react";
-import {StyleSheet, View} from "react-native";
-import {CardMediaError} from "./media/CardMediaError";
-import {CardMediaImage} from "./media/CardMediaImage";
-import {CardMediaLink} from "./media/CardMediaLink";
-import {CardMediaText} from "./media/CardMediaText";
-import {CardMediaVideo} from "./media/CardMediaVideo";
-import IconButton, {IconType} from "../../button/IconButton";
+import React from "react";
+import {View} from "react-native";
+import CardContentActions from "./CardContentActions";
+import CardContentMedia from "./CardContentMedia";
+import CardContentResizer from "./CardContentResizer";
+
+/** Minimum absolute height of the content. */
+const MIN_HEIGHT = 40;
 
 export interface CardContentProps {
+    /** The content being represented. */
     content: CardContent;
+    /** If the content is able to be edited. */
     editable?: boolean;
+    /** If the content is currently being edited. */
     editing?: boolean;
+    /** Called to notify the parent this is to be edited. */
     onEditing?: (content: CardContent|null) => void;
+    /** Called to notify the parent the content has changed. */
     onChange?: (content: CardContent) => void;
+    /** The height of the parent, to calculate the proportional height of the content. */
     parentHeight: number;
 }
+export interface CardContentState {
+    /** User is currently resizing. */
+    resizing: boolean;
+    /** The height assigned while resizing. */
+    resizePreviewHeight: number;
+}
 
-export function CardContentView(props: CardContentProps) {
-    if (!props.editable) {
-        return <View>{getMedia(props)}</View>;
+/** A view representing a content item on a card. */
+export class CardContentView extends React.Component<CardContentProps, CardContentState> {
+    state = {
+        resizing: false,
+        resizePreviewHeight: 0,
+    } as CardContentState;
+
+    /** The absolute height, calculated off the recorded content size and the parent height.  */
+    get calculatedHeight() {
+        if (this.props.content.size && this.props.parentHeight) {
+            const calculated = Math.floor(this.props.content.size * this.props.parentHeight);
+            return calculated ? Math.max(calculated, MIN_HEIGHT) : undefined;
+        }
+        return undefined;
     }
 
-    const onPressEdit = useCallback(
-        () => { props.onEditing && props.onEditing(props.content) },
-        [props.onEditing, props.content]
-    );
-    const onPressDone = useCallback(
-        () => { props.onEditing && props.onEditing(null) },
-        [props.onEditing, props.content]
-    );
+    /** The current height, while resizing or otherwise. */
+    get currentHeight() {
+        if (this.state.resizing) return this.state.resizePreviewHeight;
+        return this.calculatedHeight;
+    }
 
-    return <View>
-        {getMedia(props)}
-        <CardContentActions editing={props.editing || false} onPressDone={onPressDone} onPressEdit={onPressEdit} />
-    </View>;
+    /** Notify parent that the user wants to edit this. */
+    onPressEdit = () => this.props.onEditing && this.props.onEditing(this.props.content);
+
+    /** Notify parent that the user is done editing. */
+    onPressDone = () => this.props.onEditing && this.props.onEditing(null);
+
+    /** Update the resize height. */
+    onResize = (offsetY: number) => this.setState({
+        resizing: true,
+        resizePreviewHeight: Math.max(MIN_HEIGHT, (this.calculatedHeight || 0) + offsetY), // TODO Replace 0 with measured size?
+    });
+
+    /** Finish resizing and notify changes. */
+    onResizeDone = (canceled: boolean) => {
+        if (!canceled && this.props.onChange) {
+            this.props.onChange({
+                ...this.props.content,
+                size: this.state.resizePreviewHeight / this.props.parentHeight
+            });
+        }
+        this.setState({ resizing: false, resizePreviewHeight: 0 })
+    };
+
+    render() {
+        const media = <CardContentMedia
+            content={this.props.content}
+            editing={this.props.editing}
+            onChange={this.props.onChange}
+            height={this.currentHeight}
+        />;
+
+        if (!this.props.editable) {
+            return <View>{media}</View>;
+        }
+
+        return <View>
+            {media}
+            <CardContentActions
+                editing={this.props.editing || false}
+                onPressDone={this.onPressDone}
+                onPressEdit={this.onPressEdit}
+            />
+            <CardContentResizer
+                editing={this.props.editing || false}
+                text={this.currentHeight ? `${Math.floor((this.currentHeight / this.props.parentHeight) * 100)}%` : `auto`}
+                onMove={this.onResize}
+                onFinished={this.onResizeDone}
+            />
+        </View>;
+    }
 }
 export default CardContentView;
-
-interface CardContentActionsProps {
-    editing: boolean;
-    onPressDone: () => void;
-    onPressEdit: () => void;
-}
-function CardContentActions(props: CardContentActionsProps) {
-    if (props.editing) {
-        return <View style={styles.actionsRow}>
-            <IconButton icon={IconType.Done} onClick={props.onPressDone} color="Black" />
-        </View>;
-    } else {
-        return <View style={styles.actionsRow}>
-            <IconButton icon={IconType.Edit} onClick={props.onPressEdit} color="Black" />
-        </View>;
-    }
-}
-
-function getMedia(props: CardContentProps): JSX.Element {
-    let height: undefined|number = undefined;
-    if (props.content.size && props.parentHeight) {
-        height = Math.floor(props.parentHeight * props.content.size) || undefined;
-    }
-    switch (props.content.type) {
-        case "Image": return <CardMediaImage content={props.content} height={height} />;
-        case "Link": return <CardMediaLink content={props.content} height={height} />;
-        case "Text": return <CardMediaText content={props.content} height={height} editing={props.editing} onChange={props.onChange} />;
-        case "Video": return <CardMediaVideo content={props.content} height={height} />;
-    }
-    return <CardMediaError message={`Unhandled content type "${props.content.type}".`} height={height} />;
-}
-
-const styles = StyleSheet.create({
-    actionsRow: {
-        flexDirection: 'row',
-        position: "absolute",
-        top: 5,
-        right: 5,
-    },
-});

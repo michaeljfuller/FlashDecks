@@ -19,7 +19,7 @@ export function CardMediaText(props: CardMediaTextProps) {
             [props.onChange, props.content]
         );
 
-        return <View style={{minHeight: props.height}}>
+        return <View style={{ height: props.height }}>
             <TextInput
                 editable
                 multiline
@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
         marginVertical: "auto",
     },
     textInput: {
+        marginVertical: "auto",
         borderWidth: 2,
         borderColor: Color.Green,
         paddingHorizontal: 2,
