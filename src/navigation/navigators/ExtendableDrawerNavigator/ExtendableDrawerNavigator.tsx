@@ -1,6 +1,6 @@
 //<editor-fold desc="Imports">
 
-import React, {PropsWithChildren} from "react";
+import React, {PropsWithChildren, useEffect} from "react";
 import {Button, Text, View} from "react-native";
 import {
     createNavigatorFactory,
@@ -16,7 +16,6 @@ import {
 import {DrawerView, DrawerNavigationOptions} from '@react-navigation/drawer';
 import {DrawerNavigationConfig} from "@react-navigation/drawer/lib/typescript/src/types";
 import {Navigation, NavigationRouteDescriptors, NavigationRouterDetails} from "../../navigation_types";
-import {DrawerContentComponentProps} from "@react-navigation/drawer/src/types";
 import ExtendableDrawerContents from "./ExtendableDrawerContents";
 
 //</editor-fold>
@@ -84,9 +83,9 @@ export function ExtendableDrawerNavigator(props: PropsWithChildren<ExtendableDra
         initialRouteName
     };
 
-    if (onRouterDetails) {
-        React.useEffect(() => onRouterDetails(routerDetails), [routerDetails.state]);
-    }
+    useEffect(() => {
+        if (onRouterDetails) onRouterDetails(routerDetails);
+    }, [onRouterDetails, routerDetails]);
 
     return <NavigationHelpersContext.Provider value={navigation}>
         {render(

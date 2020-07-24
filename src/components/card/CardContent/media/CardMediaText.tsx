@@ -10,16 +10,19 @@ export interface CardMediaTextProps {
 }
 
 export function CardMediaText(props: CardMediaTextProps) {
-    if (props.editing) {
-        const numberOfLines = Math.max(6, (props.content.value || '').split('\n').length);
-        const onChangeText = useCallback(
-            (value: string) => {
-                props.onChange && props.onChange({ ...props.content, value });
-            },
-            [props.onChange, props.content]
-        );
+    const { content, height, editing, onChange } = props;
 
-        return <View style={{ height: props.height }}>
+    const onChangeText = useCallback(
+        (value: string) => {
+            onChange && onChange({ ...content, value });
+        },
+        [onChange, content]
+    );
+
+    if (editing) {
+        const numberOfLines = Math.max(6, (content.value || '').split('\n').length);
+
+        return <View style={{ height }}>
             <TextInput
                 editable
                 multiline
@@ -27,13 +30,13 @@ export function CardMediaText(props: CardMediaTextProps) {
                 autoFocus
                 numberOfLines={numberOfLines}
                 style={styles.textInput}
-                value={props.content.value}
+                value={content.value}
                 onChangeText={onChangeText}
             />
         </View>;
     } else {
-        return <View style={{minHeight: props.height}}>
-            <Text style={styles.text} selectable={false}>{props.content.value}</Text>
+        return <View style={{minHeight: height}}>
+            <Text style={styles.text} selectable={false}>{content.value}</Text>
         </View>;
     }
 }

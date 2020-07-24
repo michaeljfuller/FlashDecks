@@ -21,7 +21,7 @@ export function CardSide(props: CardSideProps) {
     }, []);
     const onContentChange = useCallback((content: CardContent) => {
         setContentModifications({...contentModifications, [content.id]: content})
-    }, []);
+    }, [contentModifications]);
 
     const content: CardContent[] = props.side?.content || [];
 
