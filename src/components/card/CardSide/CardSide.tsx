@@ -32,7 +32,7 @@ export function CardSide(props: CardSideProps) {
                 content={contentModifications[content.id] || content}
                 parentHeight={props.height}
                 editable={props.editing}
-                editing={editingContentId === content.id}
+                editing={props.editing && editingContentId === content.id}
                 onEditing={onContentEditing}
                 onChange={onContentChange}
             />)}
