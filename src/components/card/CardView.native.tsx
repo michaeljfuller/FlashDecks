@@ -3,6 +3,8 @@ import {Text, View, ScrollView, StyleSheet} from "react-native";
 import {Color} from "../../styles/Color";
 import CardSide from "./CardSide/CardSide";
 import {CardViewBase} from "./CardView.common";
+import IconButton, {IconType} from "../button/IconButton";
+import TextButton from "../button/TextButton";
 
 const edgeRadius = 15;
 const sideCountPadding = 2;
@@ -19,18 +21,43 @@ export default class CardView extends CardViewBase {
         const footerText = this.sides.length > 1 ? `${this.state.sideIndex+1}/${this.sides.length}` : '';
 
         return <View style={[styles.root, this.props.style]} onLayout={this.onLayout}>
-            <Text style={styles.title}>{this.props.item.name}</Text>
+
+            <View style={styles.headerRow}>
+                <Text style={styles.title}>{this.card?.name || "Unknown"}</Text>
+                {this.hasActions ? this.renderHeaderActions() : null}
+            </View>
+
             <ScrollView
                 style={styles.scrollView}
                 contentContainerStyle={[styles.body, { minHeight: bodyHeight || undefined }]}
                 persistentScrollbar={true}
             >
-                <CardSide side={this.currentSide} height={bodyHeight} style={{ minHeight: bodyHeight || undefined }} onPress={this.onPress} />
+                <CardSide
+                    side={this.currentSide}
+                    onPress={this.onPress}
+                    height={bodyHeight}
+                    editing={this.state.editing}
+                    style={{ minHeight: bodyHeight || undefined }}
+                />
             </ScrollView>
             <View style={styles.footer}>
                 <Text style={styles.footerText}>{footerText}</Text>
             </View>
         </View>;
+    }
+
+    renderHeaderActions() {
+        if (this.state.editing) {
+            const margin = 1;
+            return <View style={[styles.headerActions, styles.headerActionIconButtons]}>
+                <IconButton icon={IconType.Done} onClick={this.onClickDone} style={{ margin }} />
+                <IconButton icon={IconType.Cancel} onClick={this.onClickCancel} style={{ margin }} />
+            </View>;
+        } else {
+            return <View style={styles.headerActions}>
+                <TextButton title="Edit" onClick={this.onClickEdit} style={{ height: headerHeight }} />
+            </View>;
+        }
     }
 }
 
@@ -40,14 +67,23 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         backgroundColor: Color.OffWhite,
-        paddingTop: edgeRadius,
         borderRadius: edgeRadius,
+    },
+    headerRow: {},
+    headerActions: {
+        flexDirection: "row",
+        position: "absolute",
+        right: 5,
+        // top: 5,
+    },
+    headerActionIconButtons: {
+        top: 5,
     },
     title: {
         textAlign: "center",
         fontWeight: "bold",
         fontSize: titleHeight,
-        lineHeight: titleHeight,
+        lineHeight: headerHeight,
         borderBottomWidth: borderWidth,
         borderColor,
     },

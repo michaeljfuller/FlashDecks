@@ -6,7 +6,12 @@ import CardCarousel from "../../card-carousel/CardCarousel";
 export default class DeckView extends DeckViewBase {
     render() {
         return <View style={styles.root}>
-            <CardCarousel cards={this.props.item.cards} style={styles.cardCarousel} />
+            <CardCarousel
+                cards={this.props.item.cards}
+                style={styles.cardCarousel}
+                editable={this.props.editable}
+                onDeckChange={this.props.onItemChange}
+            />
         </View>;
     }
 

@@ -12,7 +12,7 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
 
             <View style={styles.row}>
                 <View style={styles.titleView}>
-                    <Text style={styles.titleText}>{this.props.item.name}</Text>
+                    <Text style={styles.titleText}>{this.props.title || this.props.item.name}</Text>
                 </View>
                 <View style={styles.infoButton}>
                     <IconButton flat icon={IconType.Info} onClick={this.openInfoModal} />
