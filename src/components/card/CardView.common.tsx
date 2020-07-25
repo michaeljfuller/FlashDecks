@@ -12,6 +12,7 @@ export interface CardViewProps {
 export interface CardViewBaseState {
     sideIndex: number;
     viewLayout: LayoutRectangle;
+    editing?: boolean;
 }
 
 export abstract class CardViewBase<
@@ -39,7 +40,7 @@ export abstract class CardViewBase<
     }
 
     get canPress(): boolean {
-        return this.sides.length > 1 && !this.props.editable;
+        return this.sides.length > 1 && !this.state.editing;
     }
 
     componentDidUpdate(prevProps: Readonly<CardViewProps>/*, prevState: Readonly<CardViewState>, snapshot?: any*/) {
@@ -47,6 +48,10 @@ export abstract class CardViewBase<
             this.setState({ sideIndex: 0 }); // Reset sideIndex
         }
     }
+
+    onClickEdit = () => this.setState({ editing: true });
+    onClickCancel = () => this.setState({ editing: false });
+    onClickDone = () => this.setState({ editing: false });
 
     /** Record the view size to calculate the available size of the body from. */
     onLayout = (event: LayoutChangeEvent) => {
@@ -63,3 +68,4 @@ export abstract class CardViewBase<
         });
     }
 }
+export default CardViewBase;

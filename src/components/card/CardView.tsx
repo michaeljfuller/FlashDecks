@@ -7,7 +7,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import globalStyles from "../../styles/globalStyleSheet";
 import {Color} from "../../styles/Color";
 import CardSide from "./CardSide/CardSide";
-import {CardViewBase, CardViewBaseState} from "./CardView.common";
+import CardViewBase from "./CardView.common";
 import TextButton from "../button/TextButton";
 import IconButton, {IconType} from "../button/IconButton";
 
@@ -18,15 +18,7 @@ const footerHeight = edgeRadius;
 const borderWidth = 1;
 const marginBottom = 5;
 
-interface CardViewState extends CardViewBaseState {
-    editing?: boolean;
-}
-
-export default class CardView extends CardViewBase<CardViewState> {
-
-    onClickEdit = () => this.setState({ editing: true });
-    onClickCancel = () => this.setState({ editing: false });
-    onClickDone = () => this.setState({ editing: false });
+export default class CardView extends CardViewBase {
 
     render() {
         const totalHeight = this.state.viewLayout.height;
@@ -48,7 +40,7 @@ export default class CardView extends CardViewBase<CardViewState> {
                             side={this.currentSide}
                             onPress={this.onPress}
                             height={bodyHeight}
-                            editing={this.props.editable}
+                            editing={this.state.editing}
                             style={[styles.side, this.canPress ? globalStyles.pointer : null]}
                         />
                     </ScrollView>
