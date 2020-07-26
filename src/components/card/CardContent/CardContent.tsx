@@ -93,18 +93,18 @@ export class CardContentView extends React.Component<CardContentProps, CardConte
 
         return <View>
             {media}
+            <CardContentResizer
+                editing={this.props.resizing || false}
+                text={this.currentHeight ? `${Math.floor((this.currentHeight / this.props.parentHeight) * 100)}%` : `auto`}
+                onMove={this.onResize}
+                onFinished={this.onResizeDone}
+            />
             <CardContentActions
                 editing={this.props.editing || false}
                 resizing={this.props.resizing || false}
                 onPressDone={this.onPressDone}
                 onPressEdit={this.onPressEdit}
                 onPressResize={this.onPressResize}
-            />
-            <CardContentResizer
-                editing={this.props.resizing || false}
-                text={this.currentHeight ? `${Math.floor((this.currentHeight / this.props.parentHeight) * 100)}%` : `auto`}
-                onMove={this.onResize}
-                onFinished={this.onResizeDone}
             />
         </View>;
     }
