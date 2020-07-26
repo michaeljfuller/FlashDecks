@@ -16,6 +16,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
 import CloseIcon from '@material-ui/icons/Close';
 import DoneIcon from '@material-ui/icons/Done';
+import HeightIcon from '@material-ui/icons/Height';
 
 const componentMap = {
     [IconType.QuestionMark]: HelpIcon,
@@ -29,6 +30,7 @@ const componentMap = {
     [IconType.Info]: InfoOutlined,
     [IconType.Cancel]: CloseIcon,
     [IconType.Done]: DoneIcon,
+    [IconType.Resize]: HeightIcon,
 } as Record<IconType, React.ElementType>;
 
 /**

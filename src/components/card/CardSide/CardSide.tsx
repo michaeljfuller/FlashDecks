@@ -13,14 +13,26 @@ export interface CardSideProps {
 type ContentIdModificationsMap = Record<string, CardContent>;
 
 export function CardSide(props: CardSideProps) {
+    // ID of the content being edited.
     const [editingContentId, setEditingContentId] = useState('');
+    // ID of the content being resized.
+    const [resizingContentId, setResizingContentId] = useState('');
+    // Map of content changes to be applied.
     const [contentModifications, setContentModifications] = useState<ContentIdModificationsMap>({});
 
+    // Set ID of content to be edited.
     const onContentEditing = useCallback((content: CardContent|null) => {
-        setEditingContentId(content ? content.id : '')
+        setEditingContentId(content ? content.id : '');
     }, []);
+
+    // Set ID of content to be resized.
+    const onContentResizing = useCallback((content: CardContent|null) => {
+        setResizingContentId(content ? content.id : '');
+    }, []);
+
+    // Map content changes to content ID.
     const onContentChange = useCallback((content: CardContent) => {
-        setContentModifications({...contentModifications, [content.id]: content})
+        setContentModifications({...contentModifications, [content.id]: content});
     }, [contentModifications]);
 
     const content: CardContent[] = props.side?.content || [];
@@ -33,7 +45,9 @@ export function CardSide(props: CardSideProps) {
                 parentHeight={props.height}
                 editable={props.editing}
                 editing={props.editing && editingContentId === content.id}
+                resizing={props.editing && resizingContentId === content.id}
                 onEditing={onContentEditing}
+                onResizing={onContentResizing}
                 onChange={onContentChange}
             />)}
         </View>
