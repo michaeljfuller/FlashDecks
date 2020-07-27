@@ -11,6 +11,7 @@ export interface CardViewProps {
 }
 export interface CardViewBaseState {
     sideIndex: number;
+    sideModifications: CardSide|null;
     viewLayout: LayoutRectangle;
     editing?: boolean;
 }
@@ -20,6 +21,7 @@ export abstract class CardViewBase<
 > extends React.Component<CardViewProps, State> {
     state = {
         sideIndex: 0,
+        sideModifications: null,
         viewLayout: { x: 0, y: 0, width: 0, height: 0 },
     } as State;
 
@@ -50,8 +52,11 @@ export abstract class CardViewBase<
     }
 
     onClickEdit = () => this.setState({ editing: true });
-    onClickCancel = () => this.setState({ editing: false });
-    onClickDone = () => this.setState({ editing: false });
+    onClickCancel = () => this.setState({ editing: false, sideModifications: null });
+    onClickDone = () => {
+        this.applySideModifications();
+        this.setState({ editing: false, sideModifications: null });
+    }
 
     /** Record the view size to calculate the available size of the body from. */
     onLayout = (event: LayoutChangeEvent) => {
@@ -62,9 +67,21 @@ export abstract class CardViewBase<
         this.canPress && this.nextSide();
     }
 
+    onSideModifications = (sideModifications: CardSide|null) => {
+        console.log('CardView.onSideModifications', sideModifications);
+        this.setState({ sideModifications });
+    }
+
     nextSide() {
         this.setState({ // Increment by one, resetting to 0 if it exceeds range.
             sideIndex: (this.state.sideIndex + 1) % (this.sides.length || 1)
+        });
+    }
+
+    applySideModifications() {
+        // TODO
+        console.log('CardView.applySideModifications', {
+            side: this.state.sideModifications
         });
     }
 }

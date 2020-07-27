@@ -35,6 +35,7 @@ export default class CardView extends CardViewBase {
                 <CardSide
                     side={this.currentSide}
                     onPress={this.onPress}
+                    onModifications={this.onSideModifications}
                     height={bodyHeight}
                     editing={this.state.editing}
                     style={{ minHeight: bodyHeight || undefined }}

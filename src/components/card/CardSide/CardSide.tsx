@@ -9,6 +9,7 @@ export interface CardSideProps {
     height: number;
     editing?: boolean;
     onPress?: () => void;
+    onModifications?: (side: CardSide|null) => void;
 }
 type ContentIdModificationsMap = Record<string, CardContent>;
 
@@ -18,7 +19,7 @@ export function CardSide(props: CardSideProps) {
     // ID of the content being resized.
     const [resizingContentId, setResizingContentId] = useState('');
     // Map of content changes to be applied.
-    const [contentModifications, setContentModifications] = useState<ContentIdModificationsMap>({});
+    const [contentModifications, setContentModifications] = useState<ContentIdModificationsMap>({}); // TODO Clear if side changes
 
     // Set ID of content to be edited.
     const onContentEditing = useCallback((content: CardContent|null) => {
@@ -31,8 +32,23 @@ export function CardSide(props: CardSideProps) {
     }, []);
 
     // Map content changes to content ID.
-    const onContentChange = useCallback((content: CardContent) => {
-        setContentModifications({...contentModifications, [content.id]: content});
+    const onContentChange = useCallback((modifiedContent: CardContent) => {
+        const modifications: ContentIdModificationsMap = {...contentModifications, [modifiedContent.id]: modifiedContent};
+        setContentModifications(modifications);
+
+        const side = { content: [] } as CardSide;
+        const existingContent: CardContent[] = props.side?.content || [];
+
+        // Use modified version, or clone original.
+        existingContent.forEach(content => {
+            if (modifications[content.id]) {
+                side.content.push(modifications[content.id]);
+            } else {
+                side.content.push({...content});
+            }
+        });
+
+        props.onModifications && props.onModifications(side);
     }, [contentModifications]);
 
     const content: CardContent[] = props.side?.content || [];
