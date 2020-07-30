@@ -1,10 +1,12 @@
-import {immerable, produce} from "immer";
+import {produce} from "immer";
+import immutable from "./immutable";
 import {ModelUpdateCallback, ModelUpdateObject, ModelUpdateUnion} from "./Model.types";
 
 /**
  * The base Model class built for "Immer.js" to make it immutable.
  * WHen `update()` is called, a new instance is created with the changes.
  */
+@immutable
 export abstract class Model<
     ModelUpdateExcludes extends string = ''
 > {
@@ -45,6 +47,5 @@ export abstract class Model<
     }
 
 }
-(Model as any)[immerable] = true; // Flag for "immer"
 
 export default Model;
