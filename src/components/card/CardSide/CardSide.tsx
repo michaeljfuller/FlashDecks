@@ -4,6 +4,7 @@ import {Color} from "../../../styles/Color";
 import CardContentView from "../CardContent/CardContent";
 import {CardContentModel, CardSideModel} from "../../../models";
 
+
 export interface CardSideProps {
     side?: CardSideModel;
     style?: ViewStyle|Array<ViewStyle|null|undefined>;
@@ -12,7 +13,8 @@ export interface CardSideProps {
     onPress?: () => void;
     onModifications?: (side: CardSideModel|null) => void;
 }
-type ContentIdModificationsMap = Record<string, CardContentModel>;
+// Modifications (or deletion if null), mapped to content ID.
+type ContentIdModificationsMap = Record<string, CardContentModel|null>;
 
 export function CardSide(props: CardSideProps) {
     // ID of the content being edited.
@@ -36,28 +38,30 @@ export function CardSide(props: CardSideProps) {
     const onContentChange = useCallback((modifiedContent: CardContentModel) => {
         const modifications: ContentIdModificationsMap = {...contentModifications, [modifiedContent.id]: modifiedContent};
         setContentModifications(modifications);
+        const side = modifySideContent(props.side, modifications);
+        props.onModifications && props.onModifications(side);
+    }, [contentModifications]);
 
-        const side = props.side || new CardSideModel();
-        const existingContent: readonly CardContentModel[] = props.side?.content || [];
-        const nextContent: CardContentModel[] = [];
-
-        // Use modified version, or clone original.
-        existingContent.forEach(content => {
-            nextContent.push(modifications[content.id] || content);
-        });
-
-        props.onModifications && props.onModifications(
-            side.update({ content: nextContent })
-        );
+    // Map content deletion to content ID.
+    const onContentDelete = useCallback((modifiedContent: CardContentModel) => {
+        const modifications: ContentIdModificationsMap = {...contentModifications, [modifiedContent.id]: null};
+        setContentModifications(modifications);
+        const side = modifySideContent(props.side, modifications);
+        props.onModifications && props.onModifications(side);
     }, [contentModifications]);
 
     const content: readonly CardContentModel[] = props.side?.content || [];
+    const displayContent = content.filter(
+        item => contentModifications[item.id] !== null // null === "deleted", undefined === "unchanged"
+    ).map(
+        item => contentModifications[item.id] || item
+    );
 
     return <TouchableWithoutFeedback onPress={props.onPress}>
         <View style={[styles.root, props.style].flat()}>
-            {content.map(content => <CardContentView
+            {displayContent.map(content => <CardContentView
                 key={content.id}
-                content={contentModifications[content.id] || content}
+                content={content}
                 parentHeight={props.height}
                 editable={props.editing}
                 editing={props.editing && editingContentId === content.id}
@@ -65,6 +69,7 @@ export function CardSide(props: CardSideProps) {
                 onEditing={onContentEditing}
                 onResizing={onContentResizing}
                 onChange={onContentChange}
+                onDelete={onContentDelete}
             />)}
         </View>
     </TouchableWithoutFeedback>;
@@ -77,3 +82,23 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
     },
 });
+
+function modifySideContent(side: CardSideModel|undefined, modifications: ContentIdModificationsMap): CardSideModel {
+    side = side || new CardSideModel();
+    const existingContent: readonly CardContentModel[] = side.content || [];
+
+    const nextContent: CardContentModel[] = [];
+    existingContent.forEach(content => {
+        if (modifications[content.id] !== null) { // If not deleted, use modified or original
+            nextContent.push(modifications[content.id] || content);
+        }
+    });
+
+    console.group('modifySideContent');
+    console.log('existingContent', existingContent);
+    console.log('modifications', modifications);
+    console.log('nextContent', nextContent);
+    console.groupEnd();
+
+    return side.update({ content: nextContent });
+}

@@ -8,6 +8,7 @@ interface CardContentActionsProps {
     onPressDone: () => void;
     onPressEdit: () => void;
     onPressResize: () => void;
+    onPressDelete: () => void;
 }
 
 /** Action buttons for CardContent. */
@@ -19,8 +20,9 @@ export function CardContentActions(props: CardContentActionsProps) {
     } else {
         const margin = 1;
         return <View style={styles.root}>
-            <IconButton icon={IconType.Edit} onClick={props.onPressEdit} color="Black" style={{ margin }} />
+            <IconButton icon={IconType.Edit}   onClick={props.onPressEdit}   color="Black" style={{ margin }} />
             <IconButton icon={IconType.Resize} onClick={props.onPressResize} color="Black" style={{ margin }} />
+            <IconButton icon={IconType.Delete} onClick={props.onPressDelete} color="Black" style={{ margin }} />
         </View>;
     }
 }

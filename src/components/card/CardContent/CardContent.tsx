@@ -21,7 +21,9 @@ export interface CardContentProps {
     onEditing?: (content: CardContentModel|null) => void;
     /** Called to notify the parent this is to be resized. */
     onResizing?: (content: CardContentModel|null) => void;
-    /** Called to notify the parent the content has changed. */
+    /** Called to notify the parent the content is to be deleted */
+    onDelete?: (content: CardContentModel) => void;
+    /** Called to notify the parent the content is to be changed. */
     onChange?: (content: CardContentModel) => void;
     /** The height of the parent, to calculate the proportional height of the content. */
     parentHeight: number;
@@ -57,6 +59,9 @@ export class CardContentView extends React.Component<CardContentProps, CardConte
 
     /** Notify parent that the user wants to edit this. */
     onPressResize = () => this.props.onResizing && this.props.onResizing(this.props.content);
+
+    /** Notify parent that the user wants to delete this. */
+    onPressDelete = () => this.props.onDelete && this.props.onDelete(this.props.content);
 
     /** Notify parent that the user is done editing. */
     onPressDone = () => {
@@ -107,6 +112,7 @@ export class CardContentView extends React.Component<CardContentProps, CardConte
                 onPressDone={this.onPressDone}
                 onPressEdit={this.onPressEdit}
                 onPressResize={this.onPressResize}
+                onPressDelete={this.onPressDelete}
             />
         </View>;
     }
