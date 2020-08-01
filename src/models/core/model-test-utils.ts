@@ -1,4 +1,4 @@
-export {repeat} from '../utils/array';
+export {repeat} from '../../utils/array';
 
 export function assertNewInstance<Model extends Record<string, any>>(
     original: Model,

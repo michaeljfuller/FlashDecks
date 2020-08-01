@@ -1,6 +1,6 @@
-import Model from "./Model";
-import UserModel, {ApiUser} from "./User";
-import CardSideModel, {ApiCardSide} from "./CardSide";
+import Model from "./core/Model";
+import {ApiUser, UserModel} from "./User";
+import {ApiCardSide, CardSideModel} from "./CardSide";
 
 export interface ApiCard {
     id: string;
@@ -28,5 +28,3 @@ export class CardModel extends Model implements Omit<ApiCard, 'owner'|'sides'> {
         });
     }
 }
-export default CardModel;
-

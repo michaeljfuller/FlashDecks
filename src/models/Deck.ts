@@ -1,6 +1,6 @@
-import Model from "./Model";
-import UserModel, {ApiUser} from "./User";
-import CardModel, {ApiCard} from "./Card";
+import Model from "./core/Model";
+import {ApiUser, UserModel} from "./User";
+import {ApiCard, CardModel} from "./Card";
 
 export interface ApiDeck {
     id: string;
@@ -33,4 +33,3 @@ export class DeckModel extends Model implements Omit<ApiDeck, 'owner'|'cards'>{
         });
     }
 }
-export default DeckModel;

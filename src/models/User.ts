@@ -1,4 +1,4 @@
-import Model from "./Model";
+import Model from "./core/Model";
 
 export interface ApiUser {
     id: string;
@@ -13,5 +13,3 @@ export class UserModel extends Model implements ApiUser {
         return (new UserModel).update(obj);
     }
 }
-export default UserModel;
-

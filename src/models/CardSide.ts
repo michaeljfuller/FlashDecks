@@ -1,5 +1,5 @@
-import CardContentModel, {ApiCardContent} from "./CardContent";
-import Model from "./Model";
+import {ApiCardContent, CardContentModel} from "./CardContent";
+import Model from "./core/Model";
 
 export interface ApiCardSide {
     content: ApiCardContent[];
@@ -15,4 +15,3 @@ export class CardSideModel extends Model {
         });
     }
 }
-export default CardSideModel;

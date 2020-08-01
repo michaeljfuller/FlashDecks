@@ -1,4 +1,4 @@
-import {assertNewInstance, assertProperties} from "./model-test-utils";
+import {assertNewInstance, assertProperties} from "./core/model-test-utils";
 import UserModel, {ApiUser} from "./User";
 
 const TEST_ID = 'test-id';

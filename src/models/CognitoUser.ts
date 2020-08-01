@@ -1,4 +1,4 @@
-import Model from "./Model";
+import Model from "./core/Model";
 
 export interface ApiCognitoUser {
     username: string;
@@ -28,4 +28,3 @@ export class CognitoUserModel extends Model implements
         });
     }
 }
-export default CognitoUserModel;

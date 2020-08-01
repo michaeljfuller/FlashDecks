@@ -1,4 +1,4 @@
-import {assertNewInstance, assertProperties, repeat} from "./model-test-utils";
+import {assertNewInstance, assertProperties, repeat} from "./core/model-test-utils";
 import CardModel , {ApiCard} from "./Card";
 import UserModel, {ApiUser} from "./User";
 import CardSideModel, {ApiCardSide} from "./CardSide";

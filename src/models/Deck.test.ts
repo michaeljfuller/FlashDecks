@@ -1,5 +1,5 @@
 import {castDraft} from "immer";
-import {assertNewInstance, assertProperties, repeat} from "./model-test-utils";
+import {assertNewInstance, assertProperties, repeat} from "./core/model-test-utils";
 import DeckModel, {ApiDeck} from "./Deck";
 import CardModel, {ApiCard} from "./Card";
 import UserModel, {ApiUser} from "./User";

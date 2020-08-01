@@ -1,4 +1,4 @@
-import Model from "./Model";
+import Model from "./core/Model";
 
 export type CardContentType = 'Text' | 'Image' | 'Video' | 'Link'|undefined;
 
@@ -14,7 +14,7 @@ export interface ApiCardContent {
     size?: number;
 }
 
-class CardContentModel extends Model implements ApiCardContent {
+export class CardContentModel extends Model implements ApiCardContent {
     readonly id: string = '';
     readonly type: CardContentType = undefined;
     readonly value: string = '';
@@ -24,4 +24,3 @@ class CardContentModel extends Model implements ApiCardContent {
         return (new CardContentModel).update(obj);
     }
 }
-export default CardContentModel;

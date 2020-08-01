@@ -1,4 +1,4 @@
-import {assertNewInstance, assertProperties} from "./model-test-utils";
+import {assertNewInstance, assertProperties} from "./core/model-test-utils";
 import CardContentModel , {ApiCardContent} from "./CardContent";
 
 const TEST_ID = 'test-id';

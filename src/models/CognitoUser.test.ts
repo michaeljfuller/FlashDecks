@@ -1,4 +1,4 @@
-import {assertNewInstance, assertProperties} from "./model-test-utils";
+import {assertNewInstance, assertProperties} from "./core/model-test-utils";
 import CognitoUserModel, {ApiCognitoUser} from "./CognitoUser";
 
 const TEST_USERNAME = 'test-username';
