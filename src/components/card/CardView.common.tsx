@@ -2,16 +2,17 @@ import {LayoutChangeEvent, LayoutRectangle, ViewStyle} from "react-native";
 import React from "react";
 import Card from "@material-ui/core/Card";
 import CardSide from "./CardSide/CardSide";
+import {CardModel, CardSideModel} from "../../models";
 
 export interface CardViewProps {
-    item: Card;
+    item: CardModel;
     style?: ViewStyle|ViewStyle[];
     editable?: boolean;
-    onUpdate?: (item: Card) => void;
+    onUpdate?: (item: CardModel) => void;
 }
 export interface CardViewBaseState {
     sideIndex: number;
-    sideModifications: CardSide|null;
+    sideModifications: CardSideModel|null;
     viewLayout: LayoutRectangle;
     editing?: boolean;
 }
@@ -25,15 +26,15 @@ export abstract class CardViewBase<
         viewLayout: { x: 0, y: 0, width: 0, height: 0 },
     } as State;
 
-    get card(): Card|undefined {
+    get card(): CardModel|undefined {
         return this.props.item;
     }
 
-    get sides(): CardSide[] {
+    get sides(): readonly CardSideModel[] {
         return this.card?.sides || [];
     }
 
-    get currentSide(): CardSide|undefined {
+    get currentSide(): CardSideModel|undefined {
         return this.sides[this.state.sideIndex];
     }
 
@@ -67,7 +68,7 @@ export abstract class CardViewBase<
         this.canPress && this.nextSide();
     }
 
-    onSideModifications = (sideModifications: CardSide|null) => {
+    onSideModifications = (sideModifications: CardSideModel|null) => {
         console.log('CardView.onSideModifications', sideModifications);
         this.setState({ sideModifications });
     }

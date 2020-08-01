@@ -58,7 +58,7 @@ export default function DeckListItem(props: DeckListItemProps) {
             avatar={<Avatar user={owner} />}
             action={actionsButton}
             title={deck.name}
-            subheader={owner.displayName}
+            subheader={owner?.displayName || ''}
         />
             <CardCardActionArea
                 onClick={onClick ? (event => onClick(deck, event)) : undefined}

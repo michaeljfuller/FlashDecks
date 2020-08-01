@@ -5,13 +5,14 @@ import {createMockNavigation} from "../../../test/mocks/MockNavigation";
 import {withDefaults} from "../../utils/object";
 import {TempScreen as TempScreenComponent, TempScreenProps, TestIds} from './TempScreen';
 import {TempScreenStoreProps} from './TempScreen_redux';
+import {UserModel} from "../../models";
 
 configureEnzyme();
 
 function setup(props: Partial<TempScreenProps & TempScreenStoreProps> = {}) {
     const defaultProps: TempScreenProps & TempScreenStoreProps = {
         navigation: createMockNavigation([{ key: 'rk1', routeName: 'rn1' }]),
-        loggedInUser: { id: 'user-id', displayName: 'user-name' }
+        loggedInUser: UserModel.fromApi({ id: 'user-id', displayName: 'user-name' }),
     };
     const wrapper = shallow(<TempScreenComponent {...withDefaults(props, defaultProps)} />);
     return { wrapper };

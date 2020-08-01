@@ -1,4 +1,6 @@
+import {CardContentModel} from "../../../../models";
+
 export interface CardMediaVideoProps {
-    content: CardContent;
+    content: CardContentModel;
     height?: number;
 }

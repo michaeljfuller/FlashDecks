@@ -3,13 +3,14 @@ import {View} from "react-native";
 import CardContentActions from "./CardContentActions";
 import CardContentMedia from "./CardContentMedia";
 import CardContentResizer from "./CardContentResizer";
+import {CardContentModel} from "../../../models";
 
 /** Minimum absolute height of the content. */
 const MIN_HEIGHT = 40;
 
 export interface CardContentProps {
     /** The content being represented. */
-    content: CardContent;
+    content: CardContentModel;
     /** If the content is able to be edited. */
     editable?: boolean;
     /** If the content is currently being edited. */
@@ -17,11 +18,11 @@ export interface CardContentProps {
     /** If the content is currently being resized. */
     resizing?: boolean;
     /** Called to notify the parent this is to be edited. */
-    onEditing?: (content: CardContent|null) => void;
+    onEditing?: (content: CardContentModel|null) => void;
     /** Called to notify the parent this is to be resized. */
-    onResizing?: (content: CardContent|null) => void;
+    onResizing?: (content: CardContentModel|null) => void;
     /** Called to notify the parent the content has changed. */
-    onChange?: (content: CardContent) => void;
+    onChange?: (content: CardContentModel) => void;
     /** The height of the parent, to calculate the proportional height of the content. */
     parentHeight: number;
 }
@@ -71,10 +72,11 @@ export class CardContentView extends React.Component<CardContentProps, CardConte
     /** Finish resizing and notify changes. */
     onResizeDone = (canceled: boolean) => {
         if (!canceled && this.props.onChange) {
-            this.props.onChange({
-                ...this.props.content,
-                size: (this.state.resizePreviewHeight || 0) / this.props.parentHeight
-            });
+            this.props.onChange(
+                this.props.content.update({
+                    size: (this.state.resizePreviewHeight || 0) / this.props.parentHeight
+                })
+            );
         }
         this.setState({ resizePreviewHeight: null });
     };

@@ -1,9 +1,10 @@
 import {connect} from 'react-redux';
 import {StoreState} from "../../../store/store";
+import {UserModel} from "../../../models";
 
 // Extra properties for the screen
 export interface DeckEditScreenStoreProps {
-    loggedInUser: User|null;
+    loggedInUser: UserModel|null;
 }
 
 // Properties to add to screen from store state

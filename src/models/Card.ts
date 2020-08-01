@@ -7,7 +7,7 @@ export interface ApiCard {
     name: string;
     ownerId: string;
     owner: ApiUser;
-    sides: ApiCardSide[];
+    sides?: ApiCardSide[];
 }
 
 export class CardModel extends Model implements Omit<ApiCard, 'owner'|'sides'> {

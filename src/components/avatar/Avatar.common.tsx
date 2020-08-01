@@ -1,8 +1,9 @@
 import {TextStyle, ViewStyle} from "react-native";
+import {UserModel} from "../../models";
 
 export type AvatarLabelPlacement = "none"|"left"|"right";
 export interface AvatarProps {
-    user: User|null|undefined;
+    user: UserModel|null|undefined;
     labelPlacement?: AvatarLabelPlacement;
     label?: string;
     size?: number;

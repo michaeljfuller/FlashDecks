@@ -2,7 +2,7 @@ import {ApiCardContent, CardContentModel} from "./CardContent";
 import Model from "./core/Model";
 
 export interface ApiCardSide {
-    content: ApiCardContent[];
+    content?: ApiCardContent[];
 }
 
 export class CardSideModel extends Model {

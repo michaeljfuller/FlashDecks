@@ -1,7 +1,8 @@
 import React from "react";
+import {DeckModel} from "../../../models";
 
 export interface DeckScreenHeaderProps {
-    item: Deck;
+    item: DeckModel;
     title?: string;
 }
 export interface DeckScreenHeaderPropsState {

@@ -2,6 +2,7 @@ import React, {PropsWithChildren} from 'react';
 import {View, Text, StyleSheet, ViewStyle, TextStyle} from "react-native";
 import {DefaultTheme} from "../../../../styles/UIColorTheme";
 import Avatar from "../../../avatar/Avatar";
+import {UserModel} from "../../../../models";
 
 export const theme = DefaultTheme;
 const avatarSize = 30;
@@ -9,7 +10,7 @@ const headerPadding = 5;
 
 export interface ModalHeaderProps {
     title?: string;
-    user?: User|null;
+    user?: UserModel|null;
     style?: ViewStyle;
 }
 

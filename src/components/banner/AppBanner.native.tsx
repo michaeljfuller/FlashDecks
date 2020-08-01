@@ -1,14 +1,15 @@
 import React from "react";
-import {Body, Header, Left, Right, Title} from 'native-base';
+import {Body, Header, Left, Right} from 'native-base';
 import {IconButton, IconType} from "../button/IconButton";
 import {AppBannerProps} from "./AppBanner.common";
 import {Color} from "../../styles/Color";
 import AppBreadcrumbs from "./breadcrumbs/AppBreadcrumbs";
 import Avatar from "../avatar/Avatar";
+import {UserModel} from "../../models";
 
 export {AppBannerProps} from "./AppBanner.common";
 
-const color = Color.White;
+// const color = Color.White;
 const backgroundColor = Color.Blue;
 
 export function AppBanner(props: AppBannerProps) {
@@ -34,7 +35,7 @@ export function AppBanner(props: AppBannerProps) {
 export default AppBanner;
 
 interface AppBannerUserDisplayProps {
-    user: User|null|undefined;
+    user: UserModel|null|undefined;
     onSignOutClick: () => void;
 }
 function AppBannerUserDisplay(props: AppBannerUserDisplayProps) {

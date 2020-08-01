@@ -3,9 +3,10 @@ import {View, Image, StyleSheet, NativeSyntheticEvent, ImageErrorEventData} from
 import {Color} from "../../../../styles/Color";
 import {getImageSize, getCachedImageSize, ImageSize} from "../../../../utils/media/image";
 import {CardMediaError} from "./CardMediaError";
+import {CardContentModel} from "../../../../models";
 
 export interface CardMediaImageProps {
-    content: CardContent;
+    content: CardContentModel;
     height?: number;
 }
 
