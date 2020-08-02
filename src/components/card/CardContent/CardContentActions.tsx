@@ -1,32 +1,99 @@
-import React from "react";
+import React, {useCallback, useState} from "react";
 import {StyleSheet, View} from "react-native";
+import Popover from '@material-ui/core/Popover';
+import {withStyles} from "@material-ui/core/styles";
+
+import {CardContentActionsProps} from "./CardContentActions.common";
 import IconButton, {IconType} from "../../button/IconButton";
 
-interface CardContentActionsProps {
-    editing: boolean;
-    resizing: boolean;
-    onPressDone: () => void;
+/** Action buttons for CardContent. */
+export function CardContentActions(props: CardContentActionsProps) {
+    const [actionsAnchor, setActionsAnchor] = useState<Element|undefined>();
+
+    const openActions = useCallback((event?: React.MouseEvent) => {
+        setActionsAnchor(event?.nativeEvent.target as Element);
+    }, []);
+
+    const closeActions = useCallback(() => {
+        setActionsAnchor(undefined);
+    }, []);
+
+    const buttons = [] as React.ReactElement[];
+    if (props.editing || props.resizing) {
+        buttons.push(<IconButton key="done" icon={IconType.Done} onClick={props.onPressDone} color="Black" />);
+    } else {
+        buttons.push(<IconButton key="open" icon={IconType.More} onClick={openActions} color="Black" />);
+    }
+    return <View style={styles.root}>
+        {buttons}
+        <CardContentActionsMenu
+            anchor={actionsAnchor}
+            onClose={closeActions}
+            onPressEdit={props.onPressEdit}
+            onPressDelete={props.onPressDelete}
+            onPressResize={props.onPressResize}
+        />
+    </View>;
+}
+export default CardContentActions;
+
+export interface CardContentActionsMenuProps {
+    anchor?: Element;
+    onClose: () => void;
     onPressEdit: () => void;
     onPressResize: () => void;
     onPressDelete: () => void;
 }
+export function CardContentActionsMenu(props: CardContentActionsMenuProps) {
+    const onPressEdit = useCallback(() => {
+        props.onClose();
+        props.onPressEdit();
+    }, [props.onPressEdit]);
 
-/** Action buttons for CardContent. */
-export function CardContentActions(props: CardContentActionsProps) {
-    if (props.editing || props.resizing) {
-        return <View style={styles.root}>
-            <IconButton icon={IconType.Done} onClick={props.onPressDone} color="Black" />
-        </View>;
-    } else {
-        const margin = 1;
-        return <View style={styles.root}>
-            <IconButton icon={IconType.Edit}   onClick={props.onPressEdit}   color="Black" style={{ margin }} />
-            <IconButton icon={IconType.Resize} onClick={props.onPressResize} color="Black" style={{ margin }} />
-            <IconButton icon={IconType.Delete} onClick={props.onPressDelete} color="Black" style={{ margin }} />
-        </View>;
-    }
+    const onPressResize = useCallback(() => {
+        props.onClose();
+        props.onPressResize();
+    }, [props.onPressResize]);
+
+    const onPressDelete = useCallback(() => {
+        props.onClose();
+        props.onPressDelete();
+    }, [props.onPressDelete]);
+
+    return <StyledPopover
+        open={!!props.anchor}
+        onClose={props.onClose}
+        onBackdropClick={props.onClose}
+        anchorEl={props.anchor}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        disableScrollLock={true}
+    >
+        <View style={{
+            flexDirection: 'column'
+        }}>
+            <View>
+                <IconButton text="Edit" icon={IconType.Edit} onClick={onPressEdit} />
+            </View>
+            <View style={{ paddingTop: 5 }}>
+                <IconButton text="Delete" icon={IconType.Delete} onClick={onPressDelete} />
+            </View>
+            <View style={{ paddingTop: 5 }}>
+                <IconButton text="Resize" icon={IconType.Resize} onClick={onPressResize} />
+            </View>
+        </View>
+    </StyledPopover>
 }
-export default CardContentActions;
+
+const StyledPopover = withStyles({
+    root: {
+        marginTop: 5
+    },
+    paper: {
+        minWidth: 100,
+        padding: 5
+    }
+})(Popover) as typeof Popover;
 
 const styles = StyleSheet.create({
     root: {
