@@ -1,6 +1,6 @@
 import Model from "./core/Model";
-import {ApiUser, UserModel} from "./User";
-import {ApiCardSide, CardSideModel} from "./CardSide";
+import {ApiUser, UserModel} from "./UserModel";
+import {ApiCardSide, CardSideModel} from "./CardSideModel";
 
 export interface ApiCard {
     id: string;

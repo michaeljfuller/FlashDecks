@@ -1,5 +1,5 @@
 import {assertNewInstance, assertProperties} from "./core/model-test-utils";
-import UserModel, {ApiUser} from "./User";
+import UserModel, {ApiUser} from "./UserModel";
 
 const TEST_ID = 'test-id';
 const TEST_DISPLAY_NAME = 'test-displayName';

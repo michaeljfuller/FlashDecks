@@ -1,5 +1,5 @@
 import {assertNewInstance, assertProperties} from "./core/model-test-utils";
-import CardContentModel , {ApiCardContent} from "./CardContent";
+import CardContentModel , {ApiCardContent} from "./CardContentModel";
 
 const TEST_ID = 'test-id';
 const TEST_VALUE = 'test-value';

@@ -1,8 +1,8 @@
 import {assertNewInstance, assertProperties, repeat} from "./core/model-test-utils";
-import CardModel , {ApiCard} from "./Card";
-import UserModel, {ApiUser} from "./User";
-import CardSideModel, {ApiCardSide} from "./CardSide";
-import {ApiCardContent, CardContentType} from "./CardContent";
+import CardModel , {ApiCard} from "./CardModel";
+import UserModel, {ApiUser} from "./UserModel";
+import CardSideModel, {ApiCardSide} from "./CardSideModel";
+import {ApiCardContent, CardContentType} from "./CardContentModel";
 import {castDraft} from "immer";
 
 const TEST_ID = 'test-id';

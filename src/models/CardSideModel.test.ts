@@ -1,6 +1,6 @@
 import {assertNewInstance, assertProperties, repeat} from "./core/model-test-utils";
-import {ApiCardSide, CardSideModel} from "./CardSide";
-import {ApiCardContent, CardContentModel, CardContentType} from "./CardContent";
+import {ApiCardSide, CardSideModel} from "./CardSideModel";
+import {ApiCardContent, CardContentModel, CardContentType} from "./CardContentModel";
 
 const TEST_CONTENT_API = repeat<ApiCardContent>(3, (index, array, size) => ({
     id: 'test-content-id-'+(index+1),

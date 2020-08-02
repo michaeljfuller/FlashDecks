@@ -1,5 +1,5 @@
 import {assertNewInstance, assertProperties} from "./core/model-test-utils";
-import CognitoUserModel, {ApiCognitoUser} from "./CognitoUser";
+import CognitoUserModel, {ApiCognitoUser} from "./CognitoUserModel";
 
 const TEST_USERNAME = 'test-username';
 const TEST_EMAIL = 'test-email';

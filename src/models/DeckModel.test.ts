@@ -1,8 +1,8 @@
 import {castDraft} from "immer";
 import {assertNewInstance, assertProperties, repeat} from "./core/model-test-utils";
-import DeckModel, {ApiDeck} from "./Deck";
-import CardModel, {ApiCard} from "./Card";
-import UserModel, {ApiUser} from "./User";
+import DeckModel, {ApiDeck} from "./DeckModel";
+import CardModel, {ApiCard} from "./CardModel";
+import UserModel, {ApiUser} from "./UserModel";
 
 const TEST_ID = 'test-id';
 const TEST_OWNER_ID = 'test-ownerId';

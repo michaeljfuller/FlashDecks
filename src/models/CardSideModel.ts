@@ -1,4 +1,4 @@
-import {ApiCardContent, CardContentModel} from "./CardContent";
+import {ApiCardContent, CardContentModel} from "./CardContentModel";
 import Model from "./core/Model";
 
 export interface ApiCardSide {

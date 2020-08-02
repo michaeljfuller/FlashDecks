@@ -1,6 +1,6 @@
 import Model from "./core/Model";
-import {ApiUser, UserModel} from "./User";
-import {ApiCard, CardModel} from "./Card";
+import {ApiUser, UserModel} from "./UserModel";
+import {ApiCard, CardModel} from "./CardModel";
 
 export interface ApiDeck {
     id: string;
