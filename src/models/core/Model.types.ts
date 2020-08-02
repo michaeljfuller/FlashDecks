@@ -8,7 +8,7 @@ export interface ModelUpdateCallback<
     Target,
     Excludes extends string = ''
 > {
-    (draft: Draft<Omit<Target, Excludes|ModelUpdateExcludesBase>>): void;
+    (draft: Omit<Draft<Target>, Excludes|ModelUpdateExcludesBase>): void;
 }
 
 /** The object passed to Model.updateFromObject(). */
