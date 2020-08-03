@@ -8,8 +8,20 @@ import IconButton, {IconType} from "../../button/IconButton";
 /** Action buttons for CardContent. */
 export function CardContentActions(props: CardContentActionsProps) {
     const onPress = useCallback(() => {
-        showActions(props.onPressEdit, props.onPressResize, props.onPressDelete)
-    }, [props.onPressEdit, props.onPressResize, props.onPressDelete]);
+        showActions(
+            props.onPressEdit,
+            props.onPressAddBefore,
+            props.onPressAddAfter,
+            props.onPressResize,
+            props.onPressDelete
+        );
+    }, [
+        props.onPressEdit,
+        props.onPressAddBefore,
+        props.onPressAddAfter,
+        props.onPressResize,
+        props.onPressDelete
+    ]);
 
     const buttons = [] as React.ReactElement[];
     if (props.editing || props.resizing) {
@@ -34,6 +46,8 @@ const styles = StyleSheet.create({
 
 function showActions(
     onEdit: () => void,
+    onAddBefore: () => void,
+    onAddAfter: () => void,
     onResize: () => void,
     onDelete: () => void,
 ) {
@@ -41,6 +55,8 @@ function showActions(
     const buttons: Record<string, Function|null> = {
         'Edit': onEdit,
         'Resize': onResize,
+        'Add Before': onAddBefore,
+        'Add After': onAddAfter,
         [DeleteLabel]: onDelete,
         [CancelLabel]: null
     };

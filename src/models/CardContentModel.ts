@@ -1,6 +1,7 @@
 import Model from "./core/Model";
 
 export type CardContentType = 'Text' | 'Image' | 'Video' | 'Link'|undefined;
+export const cardContentTypes: readonly Exclude<CardContentType, undefined>[] = ["Text", "Image", "Video", "Link"];
 
 export interface ApiCardContent {
     // A unique ID for the content.

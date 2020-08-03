@@ -19,6 +19,16 @@ export class CardSideModel extends Model {
         return this.update(draft => draft.content[index] = item);
     }
 
+    insertContent(item: CardContentModel, index: number) {
+        return this.update(draft => {
+            draft.content = [
+                ...this.content.slice(0, index),
+                item,
+                ...this.content.slice(index)
+            ];
+        });
+    }
+
     deleteContent(index: number) {
         return this.update(draft => draft.content.splice(index, 1));
     }

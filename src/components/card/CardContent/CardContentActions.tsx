@@ -30,6 +30,8 @@ export function CardContentActions(props: CardContentActionsProps) {
             anchor={actionsAnchor}
             onClose={closeActions}
             onPressEdit={props.onPressEdit}
+            onPressAddBefore={props.onPressAddBefore}
+            onPressAddAfter={props.onPressAddAfter}
             onPressDelete={props.onPressDelete}
             onPressResize={props.onPressResize}
         />
@@ -41,6 +43,8 @@ export interface CardContentActionsMenuProps {
     anchor?: Element;
     onClose: () => void;
     onPressEdit: () => void;
+    onPressAddBefore: () => void;
+    onPressAddAfter: () => void;
     onPressResize: () => void;
     onPressDelete: () => void;
 }
@@ -60,6 +64,16 @@ export function CardContentActionsMenu(props: CardContentActionsMenuProps) {
         props.onPressDelete();
     }, [props.onPressDelete]);
 
+    const onPressAddBefore = useCallback(() => {
+        props.onClose();
+        props.onPressAddBefore();
+    }, [props.onPressAddBefore]);
+
+    const onPressAddAfter = useCallback(() => {
+        props.onClose();
+        props.onPressAddAfter();
+    }, [props.onPressAddAfter]);
+
     return <StyledPopover
         open={!!props.anchor}
         onClose={props.onClose}
@@ -76,10 +90,16 @@ export function CardContentActionsMenu(props: CardContentActionsMenuProps) {
                 <IconButton text="Edit" icon={IconType.Edit} onClick={onPressEdit} />
             </View>
             <View style={{ paddingTop: 5 }}>
-                <IconButton text="Delete" icon={IconType.Delete} onClick={onPressDelete} />
+                <IconButton text="Resize" icon={IconType.Resize} onClick={onPressResize} />
             </View>
             <View style={{ paddingTop: 5 }}>
-                <IconButton text="Resize" icon={IconType.Resize} onClick={onPressResize} />
+                <IconButton text="Add Before" icon={IconType.Add} onClick={onPressAddBefore} />
+            </View>
+            <View style={{ paddingTop: 5 }}>
+                <IconButton text="Add After" icon={IconType.Add} onClick={onPressAddAfter} />
+            </View>
+            <View style={{ paddingTop: 5 }}>
+                <IconButton text="Delete" icon={IconType.Delete} onClick={onPressDelete} />
             </View>
         </View>
     </StyledPopover>

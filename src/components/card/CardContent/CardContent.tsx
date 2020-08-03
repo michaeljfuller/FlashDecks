@@ -23,6 +23,8 @@ export interface CardContentProps {
     onEditing?: (content: CardContentModel|null, contentIndex: number) => void;
     /** Called to notify the parent this is to be resized. */
     onResizing?: (content: CardContentModel|null, contentIndex: number) => void;
+    /** Called to notify the parent is to add content at the specified index. */
+    onAdd?: (contentIndex: number) => void;
     /** Called to notify the parent the content is to be deleted */
     onDelete?: (content: CardContentModel, contentIndex: number) => void;
     /** Called to notify the parent the content is to be changed. */
@@ -64,6 +66,14 @@ export class CardContentView extends React.Component<CardContentProps, CardConte
 
     /** Notify parent that the user wants to delete this. */
     onPressDelete = () => this.props.onDelete && this.props.onDelete(this.props.content, this.props.contentIndex);
+
+    /** Notify parent that we want to add an item at the specified index. */
+    onPressAddBefore = () => {
+        this.props.onAdd && this.props.onAdd(this.props.contentIndex-1);
+    }
+    onPressAddAfter = () => {
+        this.props.onAdd && this.props.onAdd(this.props.contentIndex+1);
+    }
 
     /** Notify parent that the user is done editing. */
     onPressDone = () => {
@@ -120,6 +130,8 @@ export class CardContentView extends React.Component<CardContentProps, CardConte
                 editing={this.props.editing || false}
                 resizing={this.props.resizing || false}
                 onPressDone={this.onPressDone}
+                onPressAddBefore={this.onPressAddBefore}
+                onPressAddAfter={this.onPressAddAfter}
                 onPressEdit={this.onPressEdit}
                 onPressResize={this.onPressResize}
                 onPressDelete={this.onPressDelete}
