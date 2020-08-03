@@ -1,9 +1,10 @@
 import {ViewStyle} from "react-native";
+import {CardModel, DeckModel} from "../../models";
 
 export interface CardCarouselProps {
-    cards?: Card[];
+    cards?: CardModel[];
     style?: ViewStyle;
     editable?: boolean;
     onDeckChange?: CardCarouselDeckChange;
 }
-export type CardCarouselDeckChange = (item: Deck) => void;
+export type CardCarouselDeckChange = (item: DeckModel) => void;

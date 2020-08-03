@@ -1,12 +1,13 @@
 import AStoreHelper from "../AStoreHelper";
 import {ActionType, LoggedInUserRemove, LoggedInUserSet} from "../store";
 import {LoggedInUserState} from "./loggedInUser_reducer";
+import {UserModel} from "../../models";
 
 export class LoggedInUserStore extends AStoreHelper<LoggedInUserState> {
     readonly stateName: string = 'loggedInUser';
 
     /** Add user to the store. */
-    update(user: User) {
+    update(user: UserModel) {
         const action: LoggedInUserSet = {type: ActionType.LOGGED_IN_USER_SET, value: user};
         this.store.dispatch(action);
     }

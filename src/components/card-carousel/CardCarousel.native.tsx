@@ -3,6 +3,7 @@ import {View, StyleSheet, Text, FlatList, LayoutChangeEvent} from 'react-native'
 import CardView from "../card/CardView";
 import {preloadCards} from "../../utils/media/card";
 import {CardCarouselProps} from "./CardCarousel.common";
+import {CardModel} from "../../models";
 export * from "./CardCarousel.common";
 
 export interface CardCarouselState {
@@ -34,7 +35,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
         }
 
         return <View style={[styles.root, style]}>
-            <FlatList<Card>
+            <FlatList<CardModel>
                 ref={this.flatList}
                 data={cards}
                 renderItem={({item}) => {

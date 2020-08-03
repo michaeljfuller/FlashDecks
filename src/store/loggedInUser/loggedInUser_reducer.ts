@@ -1,8 +1,9 @@
 import {ActionType, IAction} from '../store_actions';
 import {LoggedInUserSet} from './loggedInUser_actions';
+import {UserModel} from "../../models";
 
 export interface LoggedInUserState {
-    value: User|null;
+    value: UserModel|null;
 }
 const initialState: LoggedInUserState = {
     value: null

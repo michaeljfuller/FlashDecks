@@ -1,8 +1,9 @@
 import React from "react";
 import {LinkButton} from "../../../button/LinkButton";
+import {CardContentModel} from "../../../../models";
 
 export interface CardMediaLinkProps {
-    content: CardContent;
+    content: CardContentModel;
     height?: number;
 }
 

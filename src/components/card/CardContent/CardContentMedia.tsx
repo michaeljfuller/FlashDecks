@@ -1,5 +1,6 @@
 import React from "react";
 
+import {CardContentModel} from "../../../models";
 import {CardMediaError} from "./media/CardMediaError";
 import {CardMediaImage} from "./media/CardMediaImage";
 import {CardMediaLink} from "./media/CardMediaLink";
@@ -7,9 +8,9 @@ import {CardMediaText} from "./media/CardMediaText";
 import {CardMediaVideo} from "./media/CardMediaVideo";
 
 export interface CardContentMediaProps {
-    content: CardContent;
+    content: CardContentModel;
     editing?: boolean;
-    onChange?: (content: CardContent) => void;
+    onChange?: (content: CardContentModel) => void;
     height?: number;
 }
 

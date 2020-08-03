@@ -1,73 +1,83 @@
-import React, {useState, useCallback} from 'react';
+import React from 'react';
 import {View, TouchableWithoutFeedback, StyleSheet, ViewStyle} from 'react-native';
 import {Color} from "../../../styles/Color";
 import CardContentView from "../CardContent/CardContent";
+import {CardContentModel, CardSideModel} from "../../../models";
 
 export interface CardSideProps {
-    side?: CardSide;
+    side?: CardSideModel;
     style?: ViewStyle|Array<ViewStyle|null|undefined>;
     height: number;
     editing?: boolean;
     onPress?: () => void;
-    onModifications?: (side: CardSide|null) => void;
+    onModifications?: (side: CardSideModel|null) => void;
 }
-type ContentIdModificationsMap = Record<string, CardContent>;
 
-export function CardSide(props: CardSideProps) {
-    // ID of the content being edited.
-    const [editingContentId, setEditingContentId] = useState('');
-    // ID of the content being resized.
-    const [resizingContentId, setResizingContentId] = useState('');
-    // Map of content changes to be applied.
-    const [contentModifications, setContentModifications] = useState<ContentIdModificationsMap>({}); // TODO Clear if side changes
+export interface CardSideState {
+    editingContentId: string;
+    resizingContentId: string;
+    updatedSide?: CardSideModel;
+}
 
-    // Set ID of content to be edited.
-    const onContentEditing = useCallback((content: CardContent|null) => {
-        setEditingContentId(content ? content.id : '');
-    }, []);
+export class CardSide extends React.Component<CardSideProps, CardSideState> {
+    state = {
+        editingContentId: '',
+        resizingContentId: '',
+    } as CardSideState;
 
-    // Set ID of content to be resized.
-    const onContentResizing = useCallback((content: CardContent|null) => {
-        setResizingContentId(content ? content.id : '');
-    }, []);
+    get currentSide(): CardSideModel {
+        return this.state.updatedSide || this.props.side || new CardSideModel;
+    }
 
-    // Map content changes to content ID.
-    const onContentChange = useCallback((modifiedContent: CardContent) => {
-        const modifications: ContentIdModificationsMap = {...contentModifications, [modifiedContent.id]: modifiedContent};
-        setContentModifications(modifications);
+    componentDidUpdate(prevProps: Readonly<CardSideProps>) {
+        if (prevProps.side !== this.props.side) {
+            this.setState({ updatedSide: this.props.side });
+        }
+    }
 
-        const side = { content: [] } as CardSide;
-        const existingContent: CardContent[] = props.side?.content || [];
+    onContentEditing = (content: CardContentModel|null) => {
+        this.setState({ editingContentId: content ? content.id : '' })
+    }
 
-        // Use modified version, or clone original.
-        existingContent.forEach(content => {
-            if (modifications[content.id]) {
-                side.content.push(modifications[content.id]);
-            } else {
-                side.content.push({...content});
-            }
-        });
+    onContentResizing = (content: CardContentModel|null) => {
+        this.setState({ resizingContentId: content ? content.id : '' })
+    }
 
-        props.onModifications && props.onModifications(side);
-    }, [contentModifications]);
+    onContentChange = (content: CardContentModel, contentIndex: number) => {
+        this.updateSide(this.currentSide.setContent(content, contentIndex));
+    }
 
-    const content: CardContent[] = props.side?.content || [];
+    onContentDelete = (content: CardContentModel, contentIndex: number) => {
+        this.updateSide(this.currentSide.deleteContent(contentIndex)); // TODO Confirmation modal?
+    }
 
-    return <TouchableWithoutFeedback onPress={props.onPress}>
-        <View style={[styles.root, props.style].flat()}>
-            {content.map(content => <CardContentView
-                key={content.id}
-                content={contentModifications[content.id] || content}
-                parentHeight={props.height}
-                editable={props.editing}
-                editing={props.editing && editingContentId === content.id}
-                resizing={props.editing && resizingContentId === content.id}
-                onEditing={onContentEditing}
-                onResizing={onContentResizing}
-                onChange={onContentChange}
-            />)}
-        </View>
-    </TouchableWithoutFeedback>;
+    private updateSide(side: CardSideModel) {
+        this.setState({ updatedSide: side });
+        if (this.props.onModifications) this.props.onModifications(side);
+    }
+
+    render() {
+        const {onPress, style, editing, height} = this.props;
+        const {editingContentId, resizingContentId} = this.state;
+
+        return <TouchableWithoutFeedback onPress={onPress}>
+            <View style={[styles.root, style].flat()}>
+                {this.currentSide.content.map((content, index) => <CardContentView
+                    key={content.id}
+                    content={content}
+                    contentIndex={index}
+                    parentHeight={height}
+                    editable={editing}
+                    editing={editing && editingContentId === content.id}
+                    resizing={editing && resizingContentId === content.id}
+                    onEditing={this.onContentEditing}
+                    onResizing={this.onContentResizing}
+                    onChange={this.onContentChange}
+                    onDelete={this.onContentDelete}
+                />)}
+            </View>
+        </TouchableWithoutFeedback>;
+    }
 }
 export default CardSide;
 

@@ -7,32 +7,32 @@ import {repeat} from "../../../utils/array";
 
 import {reduxConnector, DeckListScreenStoreProps} from "./DeckListScreen_redux";
 import DeckRoutes from "../DeckRoutes";
+import {ApiDeck, DeckModel} from "../../../models";
 
 export interface DeckListScreenProps extends NavigationScreenProps {}
 export interface DeckListScreenState {
-    decks: Deck[];
+    decks: DeckModel[];
 }
 export class DeckListScreen extends Component<DeckListScreenProps & DeckListScreenStoreProps, DeckListScreenState>
 {
     state = {
-        decks: repeat(7, index => ({
+        decks: repeat(7, index => DeckModel.fromApi({
             id: `deck-${index+1}`,
             name: `Deck #${index+1}`,
             description: `Sample deck`,
             ownerId: `user-${index+1}`,
-            owner: { id: `user-${index}`, displayName: `User${index+1}` }
-        } as Deck))
+            owner: { id: `user-${index}`, displayName: `User${index+1}` },
+        } as ApiDeck))
     } as DeckListScreenState;
 
-    goTo(routeName: string, deck: Deck) {
+    goTo(routeName: string, deck: DeckModel) {
         this.props.navigation.navigate(routeName, {deckId: deck.id})
     }
 
-    goToEdit = (deck: Deck) => this.goTo(DeckRoutes.Edit, deck);
-    goToView = (deck: Deck) => this.goTo(DeckRoutes.View, deck);
+    goToEdit = (deck: DeckModel) => this.goTo(DeckRoutes.Edit, deck);
+    goToView = (deck: DeckModel) => this.goTo(DeckRoutes.View, deck);
 
     render() {
-        console.log(this.constructor.name, this.props);
         return (
             <ScreenContainer>
                 <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{this.constructor.name}</Text>

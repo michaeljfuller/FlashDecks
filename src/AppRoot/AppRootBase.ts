@@ -2,11 +2,12 @@ import React from "react";
 import { Auth, Hub, API, graphqlOperation } from 'aws-amplify';
 import { getUser } from '../graphql/queries';
 import LoggedInUserStore from '../store/loggedInUser/LoggedInUserStore';
+import {CognitoUserModel, ApiCognitoUser, UserModel, ApiUser} from "../models";
 
 export interface AppRootProps {}
 export interface AppRootState {
-    user?: User;
-    cognitoUser?: CognitoUser;
+    user?: UserModel;
+    cognitoUser?: CognitoUserModel;
 }
 
 /** https://aws-amplify.github.io/amplify-js/api/globals.html#hubcapsule */
@@ -16,7 +17,7 @@ interface HubCapsule {
     payload: {
         event: AuthEventType;
         message?: string;
-        data?: any|CognitoUser;
+        data?: any|ApiCognitoUser;
     };
 }
 /** https://docs.amplify.aws/lib/utilities/hub/q/platform/js#authentication-events */
@@ -64,12 +65,13 @@ export abstract class AppRootBase extends React.Component<AppRootProps, AppRootS
      * Try to add `cognitoUser` & `user` to the state.
      */
     async fetchUserData(): Promise<boolean> {
-        let cognitoUser: CognitoUser|undefined = undefined;
-        let user: User|undefined = undefined;
+        let cognitoUser: CognitoUserModel|undefined = undefined;
+        let user: UserModel|undefined = undefined;
 
         // Get user from Cognito.
         try {
-            cognitoUser = await Auth.currentAuthenticatedUser();
+            const apiCognitoUser = await Auth.currentAuthenticatedUser() as ApiCognitoUser;
+            cognitoUser = apiCognitoUser ? CognitoUserModel.fromApi(apiCognitoUser) : undefined;
             this.setState({ cognitoUser: cognitoUser || undefined });
         } catch (e) {
             console.log('AppRoot.fetchUserData cognito error:', e); // TODO Toast
@@ -79,9 +81,10 @@ export abstract class AppRootBase extends React.Component<AppRootProps, AppRootS
         if (cognitoUser) {
             try {
                 const result: any = await API.graphql(graphqlOperation(getUser, {
-                    id: cognitoUser.attributes.sub
+                    id: cognitoUser.sub
                 }));
-                user = (result && result.data && result.data.getUser);
+                const apiUser: ApiUser = (result && result.data && result.data.getUser);
+                user = apiUser ? UserModel.fromApi(apiUser) : undefined;
             } catch (e) {
                 console.warn('AppRoot.fetchUserData user API error:', e); // TODO Toast
             }

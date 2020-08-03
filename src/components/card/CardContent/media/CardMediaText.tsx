@@ -1,12 +1,13 @@
 import React, {useCallback} from "react";
 import {Text, TextInput, View, StyleSheet} from "react-native";
 import {Color} from "../../../../styles/Color";
+import {CardContentModel} from "../../../../models";
 
 export interface CardMediaTextProps {
-    content: CardContent;
+    content: CardContentModel;
     height?: number;
     editing?: boolean;
-    onChange?: (content: CardContent) => void;
+    onChange?: (content: CardContentModel) => void;
 }
 
 export function CardMediaText(props: CardMediaTextProps) {
@@ -14,7 +15,7 @@ export function CardMediaText(props: CardMediaTextProps) {
 
     const onChangeText = useCallback(
         (value: string) => {
-            onChange && onChange({ ...content, value });
+            onChange && onChange(content.update({value}));
         },
         [onChange, content]
     );

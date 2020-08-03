@@ -7,16 +7,17 @@ import {repeat} from "../../../utils/array";
 import DeckView from "../../../components/deck/DeckView/DeckView";
 import Button from "../../../components/button/Button";
 import DeckScreenHeader from "../common/DeckScreenHeader";
+import {DeckModel} from "../../../models";
 
 export interface DeckEditScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
 > {}
 export interface DeckEditScreenState {
-    deck: Deck;
+    deck: DeckModel;
     changed?: boolean;
 }
 
-const testDeck = Object.freeze({
+const testDeck = DeckModel.fromApi({
     id: `deck-id`,
     name: `Deck name`,
     description: `Deck description`,
@@ -95,7 +96,7 @@ export class DeckEditScreen extends Component<DeckEditScreenProps & DeckEditScre
         }
     }
 
-    onItemChange = (deck: Deck) => {
+    onItemChange = (deck: DeckModel) => {
         this.setState({ deck, changed: true });
     }
 

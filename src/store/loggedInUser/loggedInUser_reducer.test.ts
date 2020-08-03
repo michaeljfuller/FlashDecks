@@ -1,6 +1,7 @@
 import {loggedInUser_reducer as reducer, LoggedInUserState} from "./loggedInUser_reducer";
 import {ActionType} from "../store_actions";
 import {LoggedInUserSet, LoggedInUserRemove} from "./loggedInUser_actions";
+import {UserModel} from "../../models";
 
 const initialState: LoggedInUserState = Object.freeze({
     value: null
@@ -13,7 +14,7 @@ describe('loggedInUser_reducer', () => {
     });
 
     it('replaces user on LOGGED_IN_USER_SET', () => {
-        const value = { id: 'test_id', displayName: "New User"} as User;
+        const value = UserModel.fromApi({ id: 'test_id', displayName: "New User"}) as UserModel;
         const action: LoggedInUserSet = { type: ActionType.LOGGED_IN_USER_SET, value };
         expect(reducer(initialState, action)).toEqual({value});
     });

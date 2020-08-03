@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet, Text, View} from "react-native";
+import {View} from "react-native";
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -55,11 +55,3 @@ export default AppBanner;
 function HideOnScroll(props: { window?: () => Window; children: React.ReactElement }) {
     return <Slide appear={false} direction="down" in={!useScrollTrigger()}>{props.children}</Slide>;
 }
-
-const styles = StyleSheet.create({
-    bannerText: {
-        color: 'white',
-        marginLeft: 5,
-        paddingRight: 5
-    }
-});

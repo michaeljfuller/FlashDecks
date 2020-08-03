@@ -1,24 +1,25 @@
 import React from "react";
+import {DeckModel, UserModel} from "../../../models";
 
 export interface DeckListProps {
-    decks: Deck[];
-    loggedInUser: User|null;
-    goToEdit: (deck: Deck) => void;
-    goToView: (deck: Deck) => void;
+    decks: DeckModel[];
+    loggedInUser: UserModel|null;
+    goToEdit: (deck: DeckModel) => void;
+    goToView: (deck: DeckModel) => void;
 }
 
 export default class DeckListBase<State = {}> extends React.Component<DeckListProps, State>{
-    gotToDeck(deck: Deck) {
+    gotToDeck(deck: DeckModel) {
         this.props.goToView(deck);
     }
-    editDeck(deck: Deck) {
+    editDeck(deck: DeckModel) {
         this.props.goToEdit(deck);
     }
-    deleteDeck(deck: Deck) {
+    deleteDeck(deck: DeckModel) {
         console.log('DeckListBase', 'deleteDeck', deck);
     }
 
-    canShowActions(deck: Deck): boolean {
+    canShowActions(deck: DeckModel): boolean {
         return true;
         // TODO
         // const user = this.props.loggedInUser;
