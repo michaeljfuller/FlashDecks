@@ -9,6 +9,7 @@ import {CardContentModel, CardContentType, cardContentTypes} from "../../../mode
 import {CardContentForm} from "../CardContent/CardContentForm";
 
 export type AddContentModalProps = {
+    title?: string;
     content: CardContentModel;
     onChange: (content: CardContentModel) => void;
     onOk: () => boolean|void;
@@ -19,7 +20,7 @@ export type AddContentModalProps = {
 /**
  * A simple modal with "OK and "Cancel" buttons.
  */
-export class AddContentModal extends Modal<AddContentModalProps> {
+export class ModifyContentModal extends Modal<AddContentModalProps> {
 
     onPressOk = () => {
         const close = this.props.onOk() !== false;
@@ -39,7 +40,7 @@ export class AddContentModal extends Modal<AddContentModalProps> {
 
     renderModal() {
         return <ModalContainer>
-            <ModalHeader title="Add Content" />
+            <ModalHeader title={this.props.title || "Modify Content"} />
             <ModalBody style={styles.body}>
                 {this.renderTypeButtons()}
                 {this.renderForm()}
@@ -87,7 +88,7 @@ export class AddContentModal extends Modal<AddContentModalProps> {
     }
 
 }
-export default AddContentModal;
+export default ModifyContentModal;
 
 const styles = StyleSheet.create({
     body: {

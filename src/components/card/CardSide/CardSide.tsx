@@ -4,7 +4,7 @@ import {Color} from "../../../styles/Color";
 import CardContentView from "../CardContent/CardContent";
 import {CardContentModel, CardSideModel} from "../../../models";
 import {PromptModal} from "../../modal/PromptModal/PromptModal";
-import {AddContentModal} from "./AddContentModal";
+import {ModifyContentModal} from "./ModifyContentModal";
 
 export interface CardSideProps {
     side?: CardSideModel;
@@ -131,7 +131,8 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
     }
 
     private renderAddContent() {
-        return <AddContentModal
+        return <ModifyContentModal
+            title="Add Content"
             content={this.state.addingContent || new CardContentModel}
             open={this.state.contentIndexToAdd >= 0}
             onOk={this.onContentAddConfirmed}
