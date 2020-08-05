@@ -60,6 +60,8 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
         this.setState({ contentIndexToAdd: index, addingContent: new CardContentModel });
     }
 
+    onContentAddChange = (addingContent: CardContentModel) => this.setState({ addingContent });
+
     onContentAddConfirmed = () => {
         const content = this.state.addingContent;
         const index = this.state.contentIndexToAdd;
@@ -130,8 +132,10 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
 
     private renderAddContent() {
         return <AddContentModal
+            content={this.state.addingContent || new CardContentModel}
             open={this.state.contentIndexToAdd >= 0}
             onOk={this.onContentAddConfirmed}
+            onChange={this.onContentAddChange}
             onClose={this.onContentAddClosed}
         />;
     }

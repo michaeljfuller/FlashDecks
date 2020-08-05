@@ -9,26 +9,17 @@ import {CardContentModel, CardContentType, cardContentTypes} from "../../../mode
 import {CardContentForm} from "../CardContent/CardContentForm";
 
 export type AddContentModalProps = {
+    content: CardContentModel;
+    onChange: (content: CardContentModel) => void;
     onOk: () => boolean|void;
     onCancel?: () => boolean|void;
     onClose: () => void;
 } & ModalProps;
 
-export interface AddContentModalState {
-    content: CardContentModel;
-}
-
 /**
  * A simple modal with "OK and "Cancel" buttons.
  */
-export class AddContentModal extends Modal<AddContentModalProps, AddContentModalState> {
-    state = {
-        content: new CardContentModel,
-    } as AddContentModalState;
-
-    componentDidMount() {
-        this.setState({ content: new CardContentModel });
-    }
+export class AddContentModal extends Modal<AddContentModalProps> {
 
     onPressOk = () => {
         const close = this.props.onOk() !== false;
@@ -40,12 +31,10 @@ export class AddContentModal extends Modal<AddContentModalProps, AddContentModal
         if (close) this.props.onClose();
     };
 
-    onChange = (content: CardContentModel) => this.setState({ content });
-
     setType = (type: CardContentType) => {
-        this.setState({
-            content: this.state.content.update({ type, value: '' })
-        });
+        this.props.onChange(
+            this.props.content.update({ type, value: '' })
+        );
     }
 
     renderModal() {
@@ -68,9 +57,9 @@ export class AddContentModal extends Modal<AddContentModalProps, AddContentModal
     }
 
     renderForm() {
-        const {content} = this.state;
+        const {content} = this.props;
         if (content.validType) {
-            return <CardContentForm content={content} onChange={this.onChange} preview />;
+            return <CardContentForm content={content} onChange={this.props.onChange} preview />;
         } else {
             return <Text>Please select a content type.</Text>;
         }
@@ -81,7 +70,7 @@ export class AddContentModal extends Modal<AddContentModalProps, AddContentModal
             <Button
                 title={contentType}
                 onClick={() => this.setType(contentType)}
-                disabled={this.state.content?.type === contentType}
+                disabled={this.props.content.type === contentType}
             />
         </View>;
     }
@@ -89,7 +78,7 @@ export class AddContentModal extends Modal<AddContentModalProps, AddContentModal
     renderFooter() {
         return <ModalFooter style={styles.footer}>
             <View style={styles.footerItem}>
-                <Button title="OK" onClick={this.onPressOk} square disabled={!this.state.content.valid} />
+                <Button title="OK" onClick={this.onPressOk} square disabled={!this.props.content.valid} />
             </View>
             <View style={styles.footerItem}>
                 <Button title="Cancel" onClick={this.onPressCancel} square />
