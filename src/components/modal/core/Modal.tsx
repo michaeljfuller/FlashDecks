@@ -4,6 +4,8 @@ import MaterialModal from "@material-ui/core/Modal";
 import DialogContent from "@material-ui/core/DialogContent";
 import {ModalProps} from "./Modal.common";
 
+export * from "./Modal.common";
+
 export abstract class Modal<
     Props extends ModalProps = ModalProps,
     State = any

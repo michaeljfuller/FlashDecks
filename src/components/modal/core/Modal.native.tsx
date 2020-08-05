@@ -2,6 +2,8 @@ import React from 'react';
 import {Modal as NativeModal} from 'react-native';
 import {ModalProps} from "./Modal.common";
 
+export * from "./Modal.common";
+
 export abstract class Modal<
     Props extends ModalProps = ModalProps,
     State = any

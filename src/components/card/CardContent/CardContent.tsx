@@ -12,7 +12,7 @@ export interface CardContentProps {
     /** The content being represented. */
     content: CardContentModel;
     /** The index of the content being represented. */
-    contentIndex: number;
+    contentIndex?: number;
     /** If the content is able to be edited. */
     editable?: boolean;
     /** If the content is currently being edited. */
@@ -59,26 +59,22 @@ export class CardContentView extends React.Component<CardContentProps, CardConte
     }
 
     /** Notify parent that the user wants to edit this. */
-    onPressEdit = () => this.props.onEditing && this.props.onEditing(this.props.content, this.props.contentIndex);
+    onPressEdit = () => this.props.onEditing && this.props.onEditing(this.props.content, this.props.contentIndex || 0);
 
     /** Notify parent that the user wants to edit this. */
-    onPressResize = () => this.props.onResizing && this.props.onResizing(this.props.content, this.props.contentIndex);
+    onPressResize = () => this.props.onResizing && this.props.onResizing(this.props.content, this.props.contentIndex || 0);
 
     /** Notify parent that the user wants to delete this. */
-    onPressDelete = () => this.props.onDelete && this.props.onDelete(this.props.content, this.props.contentIndex);
+    onPressDelete = () => this.props.onDelete && this.props.onDelete(this.props.content, this.props.contentIndex || 0);
 
     /** Notify parent that we want to add an item at the specified index. */
-    onPressAddBefore = () => {
-        this.props.onAdd && this.props.onAdd(this.props.contentIndex-1);
-    }
-    onPressAddAfter = () => {
-        this.props.onAdd && this.props.onAdd(this.props.contentIndex+1);
-    }
+    onPressAddBefore = () => this.props.onAdd && this.props.onAdd(this.props.contentIndex || 0);
+    onPressAddAfter = () => this.props.onAdd && this.props.onAdd((this.props.contentIndex || 0) + 1);
 
     /** Notify parent that the user is done editing. */
     onPressDone = () => {
-        this.props.onEditing && this.props.onEditing(null, this.props.contentIndex);
-        this.props.onResizing && this.props.onResizing(null, this.props.contentIndex);
+        this.props.onEditing && this.props.onEditing(null, this.props.contentIndex || 0);
+        this.props.onResizing && this.props.onResizing(null, this.props.contentIndex || 0);
     }
 
     /** Update the resize height. */
@@ -89,7 +85,7 @@ export class CardContentView extends React.Component<CardContentProps, CardConte
     /** Notify the parent when the content changes. */
     onChange = (updatedContent: CardContentModel) => {
         if (this.props.onChange) {
-            this.props.onChange(updatedContent, this.props.contentIndex);
+            this.props.onChange(updatedContent, this.props.contentIndex || 0);
         }
     }
 
@@ -100,7 +96,7 @@ export class CardContentView extends React.Component<CardContentProps, CardConte
                 this.props.content.update({
                     size: (this.state.resizePreviewHeight || 0) / this.props.parentHeight
                 }),
-                this.props.contentIndex
+                this.props.contentIndex || 0
             );
         }
         this.setState({ resizePreviewHeight: null });

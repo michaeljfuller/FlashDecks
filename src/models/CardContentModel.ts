@@ -21,6 +21,18 @@ export class CardContentModel extends Model implements ApiCardContent {
     readonly value: string = '';
     readonly size: number = 0;
 
+    get valid(): boolean {
+        return this.validType && this.validValue;
+    }
+
+    get validType(): boolean {
+        return cardContentTypes.indexOf(this.type as any) >= 0;
+    }
+
+    get validValue(): boolean {
+        return this.value.length > 0;
+    }
+
     static fromApi(obj: ApiCardContent) {
         return (new CardContentModel).update(obj);
     }

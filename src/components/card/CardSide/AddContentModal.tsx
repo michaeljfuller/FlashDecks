@@ -1,11 +1,12 @@
 import React from "react";
-import {Text, View} from "react-native";
+import {Text, View, StyleSheet} from "react-native";
+
 import Button from "../../button/Button";
 import Modal, {ModalProps} from "../../modal/core/Modal";
 import {ModalContainer, ModalHeader, ModalBody} from "../../modal/parts";
 import {ModalFooter} from "../../modal/parts";
 import {CardContentModel, CardContentType, cardContentTypes} from "../../../models";
-import CardContentView from "../CardContent/CardContent";
+import {CardContentForm} from "../CardContent/CardContentForm";
 
 export type AddContentModalProps = {
     onOk: () => boolean|void;
@@ -21,76 +22,102 @@ export interface AddContentModalState {
  * A simple modal with "OK and "Cancel" buttons.
  */
 export class AddContentModal extends Modal<AddContentModalProps, AddContentModalState> {
-    state = {} as AddContentModalState;
+    state = {
+        content: new CardContentModel,
+    } as AddContentModalState;
 
     componentDidMount() {
-        this.setState({
-            content: new CardContentModel,
-        });
-    }
-
-    shouldComponentUpdate(nextProps: Readonly<AddContentModalProps>, nextState: Readonly<AddContentModalState>, nextContext: any): boolean {
-        console.log('shouldComponentUpdate');
-        return true; // TODO -always- false on base class, and notify whatever calls renderModal
+        this.setState({ content: new CardContentModel });
     }
 
     onPressOk = () => {
         const close = this.props.onOk() !== false;
-        if (close) {
-            this.props.onClose();
-        }
+        if (close) this.props.onClose();
     };
 
     onPressCancel = () => {
         const close = !this.props.onCancel || this.props.onCancel() !== false;
-        if (close) {
-            this.props.onClose();
-        }
+        if (close) this.props.onClose();
     };
 
+    onChange = (content: CardContentModel) => this.setState({ content });
+
     setType = (type: CardContentType) => {
-        const content = this.state.content.update({ type });
-        console.log('setType', {type, self: this, content});
-        this.setState({ content });
+        this.setState({
+            content: this.state.content.update({ type, value: '' })
+        });
     }
 
-    renderModal() { // TODO RE-RENDER ON STATE CHANGE - https://reactjs.org/docs/portals.html ?
-                    // TODO Native support? Create a component that sends it's children to the Renderer,
-                    // so their native render function can be used, instead of them returning null.
-        console.log('renderModal', this.state)
+    renderModal() {
         return <ModalContainer>
-
             <ModalHeader title="Add Content" />
-
-            <ModalBody>
-                <View style={{ flexDirection: "row" }}>
-                    {cardContentTypes.map(contentType => <View
-                        key={contentType}
-                        style={{ flex: 1, paddingHorizontal: 1 }}
-                    >
-                        <Button
-                            title={contentType}
-                            onClick={() => this.setType(contentType)}
-                            disabled={this.state.content.type === contentType}
-                        />
-                    </View>)}
-                </View>
-                <Text>{`Type: ${this.state.content.type}`}</Text>
-                <CardContentView content={this.state.content} contentIndex={0} parentHeight={300} />
+            <ModalBody style={styles.body}>
+                {this.renderTypeButtons()}
+                {this.renderForm()}
             </ModalBody>
-
-            <ModalFooter style={{
-                flexDirection: "row", width: "100%",
-            }}>
-                <View style={{flex:1}}>
-                    <Button title="OK" onClick={this.onPressOk} square />
-                </View>
-                <View style={{flex:1}}>
-                    <Button title="Cancel" onClick={this.onPressCancel} square />
-                </View>
-            </ModalFooter>
-
+            {this.renderFooter()}
         </ModalContainer>;
     }
+
+    renderTypeButtons() {
+        return <View style={styles.typeButtonRow}>{
+            cardContentTypes.map(
+                contentType => this.renderContentTypeButton(contentType)
+            )
+        }</View>;
+    }
+
+    renderForm() {
+        const {content} = this.state;
+        if (content.validType) {
+            return <CardContentForm content={content} onChange={this.onChange} preview />;
+        } else {
+            return <Text>Please select a content type.</Text>;
+        }
+    }
+
+    renderContentTypeButton(contentType: CardContentType) {
+        return <View key={contentType} style={styles.typeButton}>
+            <Button
+                title={contentType}
+                onClick={() => this.setType(contentType)}
+                disabled={this.state.content?.type === contentType}
+            />
+        </View>;
+    }
+
+    renderFooter() {
+        return <ModalFooter style={styles.footer}>
+            <View style={styles.footerItem}>
+                <Button title="OK" onClick={this.onPressOk} square disabled={!this.state.content.valid} />
+            </View>
+            <View style={styles.footerItem}>
+                <Button title="Cancel" onClick={this.onPressCancel} square />
+            </View>
+        </ModalFooter>
+    }
+
 }
 export default AddContentModal;
+
+const styles = StyleSheet.create({
+    body: {
+        minWidth: 500,
+        padding: 5,
+    },
+    typeButtonRow: {
+        flexDirection: "row",
+        paddingBottom: 5,
+    },
+    typeButton: {
+        flex: 1,
+        paddingHorizontal: 1
+    },
+    footer: {
+        flexDirection: "row",
+        width: "100%",
+    },
+    footerItem: {
+        flex: 1
+    },
+})

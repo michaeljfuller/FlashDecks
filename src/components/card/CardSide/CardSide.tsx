@@ -1,10 +1,9 @@
 import React from 'react';
-import {View, TouchableWithoutFeedback, StyleSheet, ViewStyle, Text} from 'react-native';
+import {View, TouchableWithoutFeedback, StyleSheet, ViewStyle} from 'react-native';
 import {Color} from "../../../styles/Color";
 import CardContentView from "../CardContent/CardContent";
-import {CardContentModel, CardSideModel, cardContentTypes} from "../../../models";
+import {CardContentModel, CardSideModel} from "../../../models";
 import {PromptModal} from "../../modal/PromptModal/PromptModal";
-import Button from "../../button/Button";
 import {AddContentModal} from "./AddContentModal";
 
 export interface CardSideProps {
@@ -131,28 +130,10 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
 
     private renderAddContent() {
         return <AddContentModal
-                open={this.state.contentIndexToAdd >= 0}
-                onOk={this.onContentAddConfirmed}
-                onClose={this.onContentAddClosed}
-            />;
-        /*
-        return <PromptModal
-            title="Add Content"
             open={this.state.contentIndexToAdd >= 0}
             onOk={this.onContentAddConfirmed}
             onClose={this.onContentAddClosed}
-        >
-            <View style={{ flexDirection: "row" }}>
-                {cardContentTypes.map(contentType => <View
-                    key={contentType}
-                    style={{ flex: 1, paddingHorizontal: 1 }}
-                >
-                    <Button
-                        title={contentType}
-                    />
-                </View>)}
-            </View>
-        </PromptModal>;*/
+        />;
     }
 
     private renderDeleteContent() {
