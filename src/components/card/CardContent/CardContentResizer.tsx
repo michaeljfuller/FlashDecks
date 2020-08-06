@@ -81,6 +81,7 @@ const activeColor = "#EEE";
 const lineColor = "#000";
 const styles = StyleSheet.create({
     root: {
+        opacity: 0.8,
         flexDirection: 'row',
         backgroundColor,
         borderColor: backgroundColor,
