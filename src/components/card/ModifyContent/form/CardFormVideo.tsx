@@ -2,9 +2,9 @@ import React, {useCallback} from "react";
 import {View, Text, TextInput, StyleSheet} from "react-native";
 import {CardContentModel} from "../../../../models";
 import {Color} from "../../../../styles/Color";
-import {CardMediaImage} from "../media/CardMediaImage";
+import {CardMediaVideo} from "../../CardContent/media/CardMediaVideo";
 
-interface CardFormImageProps {
+interface CardFormVideoProps {
     content: CardContentModel;
     onChange: (content: CardContentModel) => void;
     preview?: boolean;
@@ -12,7 +12,7 @@ interface CardFormImageProps {
 
 const previewHeight = 200;
 
-export function CardFormImage(props: CardFormImageProps) {
+export function CardFormVideo(props: CardFormVideoProps) {
     const { content, onChange, preview } = props;
 
     const onChangeText = useCallback(
@@ -33,11 +33,10 @@ export function CardFormImage(props: CardFormImageProps) {
             />
         </View>
         <View style={styles.preview}>
-            {preview && content.validValue && <View style={styles.image}>
-                <CardMediaImage content={content} height={previewHeight} />
-            </View>}
+            {preview && content.validValue && <CardMediaVideo content={content} height={previewHeight} />}
         </View>
     </View>;
+
 }
 
 const styles = StyleSheet.create({
@@ -55,12 +54,9 @@ const styles = StyleSheet.create({
     preview: {
         marginTop: 5,
         height: previewHeight,
+        overflow: "hidden",
         justifyContent: "center",
         flexDirection: "column",
         backgroundColor: "#DDD",
-    },
-    image: {
-        borderWidth: 1,
-        backgroundColor: Color.White,
     },
 });

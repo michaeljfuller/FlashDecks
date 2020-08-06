@@ -6,7 +6,7 @@ import Modal, {ModalProps} from "../../modal/core/Modal";
 import {ModalContainer, ModalHeader, ModalBody} from "../../modal/parts";
 import {ModalFooter} from "../../modal/parts";
 import {CardContentModel, CardContentType, cardContentTypes} from "../../../models";
-import {CardContentForm} from "../CardContent/CardContentForm";
+import {CardContentForm} from "./CardContentForm";
 
 export type AddContentModalProps = {
     title?: string;

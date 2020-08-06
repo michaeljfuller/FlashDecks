@@ -4,7 +4,7 @@ import {Color} from "../../../styles/Color";
 import CardContentView from "../CardContent/CardContent";
 import {CardContentModel, CardSideModel} from "../../../models";
 import {PromptModal} from "../../modal/PromptModal/PromptModal";
-import {ModifyContentModal} from "./ModifyContentModal";
+import {ModifyContentModal} from "../ModifyContent/ModifyContentModal";
 
 export interface CardSideProps {
     side?: CardSideModel;

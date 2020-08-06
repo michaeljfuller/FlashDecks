@@ -2,15 +2,17 @@ import React, {useCallback} from "react";
 import {View, Text, TextInput, StyleSheet} from "react-native";
 import {CardContentModel} from "../../../../models";
 import {Color} from "../../../../styles/Color";
-import {CardMediaLink} from "../media/CardMediaLink";
+import {CardMediaImage} from "../../CardContent/media/CardMediaImage";
 
-interface CardFormLinkProps {
+interface CardFormImageProps {
     content: CardContentModel;
     onChange: (content: CardContentModel) => void;
     preview?: boolean;
 }
 
-export function CardFormLink(props: CardFormLinkProps) {
+const previewHeight = 200;
+
+export function CardFormImage(props: CardFormImageProps) {
     const { content, onChange, preview } = props;
 
     const onChangeText = useCallback(
@@ -30,14 +32,17 @@ export function CardFormLink(props: CardFormLinkProps) {
                 onChangeText={onChangeText}
             />
         </View>
-        {preview && <CardMediaLink content={content} />}
+        <View style={styles.preview}>
+            {preview && content.validValue && <View style={styles.image}>
+                <CardMediaImage content={content} height={previewHeight} />
+            </View>}
+        </View>
     </View>;
 }
 
 const styles = StyleSheet.create({
     inputRow: {
         flexDirection: "row",
-        marginBottom: 10,
     },
     input: {
         flex: 1,
@@ -46,5 +51,16 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: Color.Green,
         paddingHorizontal: 2,
+    },
+    preview: {
+        marginTop: 5,
+        height: previewHeight,
+        justifyContent: "center",
+        flexDirection: "column",
+        backgroundColor: "#DDD",
+    },
+    image: {
+        borderWidth: 1,
+        backgroundColor: Color.White,
     },
 });

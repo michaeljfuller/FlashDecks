@@ -2,17 +2,15 @@ import React, {useCallback} from "react";
 import {View, Text, TextInput, StyleSheet} from "react-native";
 import {CardContentModel} from "../../../../models";
 import {Color} from "../../../../styles/Color";
-import {CardMediaVideo} from "../media/CardMediaVideo";
+import {CardMediaLink} from "../../CardContent/media/CardMediaLink";
 
-interface CardFormVideoProps {
+interface CardFormLinkProps {
     content: CardContentModel;
     onChange: (content: CardContentModel) => void;
     preview?: boolean;
 }
 
-const previewHeight = 200;
-
-export function CardFormVideo(props: CardFormVideoProps) {
+export function CardFormLink(props: CardFormLinkProps) {
     const { content, onChange, preview } = props;
 
     const onChangeText = useCallback(
@@ -32,16 +30,14 @@ export function CardFormVideo(props: CardFormVideoProps) {
                 onChangeText={onChangeText}
             />
         </View>
-        <View style={styles.preview}>
-            {preview && content.validValue && <CardMediaVideo content={content} height={previewHeight} />}
-        </View>
+        {preview && <CardMediaLink content={content} />}
     </View>;
-
 }
 
 const styles = StyleSheet.create({
     inputRow: {
         flexDirection: "row",
+        marginBottom: 10,
     },
     input: {
         flex: 1,
@@ -50,13 +46,5 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: Color.Green,
         paddingHorizontal: 2,
-    },
-    preview: {
-        marginTop: 5,
-        height: previewHeight,
-        overflow: "hidden",
-        justifyContent: "center",
-        flexDirection: "column",
-        backgroundColor: "#DDD",
     },
 });
