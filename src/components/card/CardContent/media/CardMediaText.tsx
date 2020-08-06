@@ -6,40 +6,13 @@ import {CardContentModel} from "../../../../models";
 export interface CardMediaTextProps {
     content: CardContentModel;
     height?: number;
-    editing?: boolean;
-    onChange?: (content: CardContentModel) => void;
 }
 
 export function CardMediaText(props: CardMediaTextProps) {
-    const { content, height, editing, onChange } = props;
-
-    const onChangeText = useCallback(
-        (value: string) => {
-            onChange && onChange(content.update({value}));
-        },
-        [onChange, content]
-    );
-
-    if (editing) {
-        const numberOfLines = Math.max(6, (content.value || '').split('\n').length);
-
-        return <View style={{ height }}>
-            <TextInput
-                editable
-                multiline
-                focusable
-                autoFocus
-                numberOfLines={numberOfLines}
-                style={styles.textInput}
-                value={content.value}
-                onChangeText={onChangeText}
-            />
-        </View>;
-    } else {
-        return <View style={{minHeight: height}}>
-            <Text style={styles.text} selectable={false}>{content.value}</Text>
-        </View>;
-    }
+    const { content, height } = props;
+    return <View style={{minHeight: height}}>
+        <Text style={styles.text} selectable={false}>{content.value}</Text>
+    </View>;
 }
 
 const styles = StyleSheet.create({

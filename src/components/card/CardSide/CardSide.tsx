@@ -16,24 +16,32 @@ export interface CardSideProps {
 }
 
 export interface CardSideState {
-    editingContentId: string;
-    resizingContentId: string;
-    contentIndexToAdd: number;
-    contentIndexToDelete: number;
     updatedSide?: CardSideModel;
-    addingContent?: CardContentModel;
+    modifyContent: CardContentModel|null;
+    addContentIndex: number;
+    modifyContentIndex: number;
+    resizeContentIndex: number;
+    contentIndexToDelete: number;
 }
 
 export class CardSide extends React.Component<CardSideProps, CardSideState> {
     state = {
-        editingContentId: '',
-        resizingContentId: '',
-        contentIndexToAdd: -1,
+        modifyContent: null,
+        addContentIndex: -1,
+        modifyContentIndex: -1,
+        resizeContentIndex: -1,
         contentIndexToDelete: -1,
     } as CardSideState;
 
     get currentSide(): CardSideModel {
         return this.state.updatedSide || this.props.side || new CardSideModel;
+    }
+
+    get addingContent() {
+        return this.state.addContentIndex >= 0;
+    }
+    get modifyingContent() {
+        return this.state.modifyContentIndex >= 0;
     }
 
     componentDidUpdate(prevProps: Readonly<CardSideProps>) {
@@ -42,36 +50,41 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
         }
     }
 
-    onContentEditing = (content: CardContentModel|null) => {
-        this.setState({ editingContentId: content ? content.id : '' })
+    onContentEditing = (content: CardContentModel|null, index: number) => {
+        this.setState({ modifyContent: content, modifyContentIndex: content ? index : -1 });
     }
 
-    onContentResizing = (content: CardContentModel|null) => {
-        this.setState({ resizingContentId: content ? content.id : '' })
+    onContentResizing = (content: CardContentModel|null, index: number) => {
+        this.setState({ resizeContentIndex: content ? index : -1 })
     }
 
     onContentChange = (content: CardContentModel, contentIndex: number) => {
-        this.updateSide(this.currentSide.setContent(content, contentIndex));
+        this.updateSide(this.currentSide.setContent(content, content ? contentIndex : -1));
     }
 
     //<editor-fold desc="Add Content">
 
     onContentAdd = (index: number) => {
-        this.setState({ contentIndexToAdd: index, addingContent: new CardContentModel });
+        this.setState({ addContentIndex: index, modifyContent: new CardContentModel });
     }
 
-    onContentAddChange = (addingContent: CardContentModel) => this.setState({ addingContent });
+    onContentModifyChange = (content: CardContentModel) => this.setState({ modifyContent: content });
 
-    onContentAddConfirmed = () => {
-        const content = this.state.addingContent;
-        const index = this.state.contentIndexToAdd;
-        if (content) {
-            this.updateSide(this.currentSide.insertContent(content, index));
+    onContentModifyConfirmed = () => {
+        const { modifyContent, addContentIndex, modifyContentIndex } = this.state;
+        if (this.addingContent) {
+            this.updateSide(this.currentSide.insertContent(modifyContent || new CardContentModel, addContentIndex));
+        } else if (this.modifyingContent) {
+            this.updateSide(this.currentSide.setContent(modifyContent || new CardContentModel, modifyContentIndex));
         }
     }
 
-    onContentAddClosed = () => {
-        this.setState({ contentIndexToAdd: -1, addingContent: undefined });
+    onContentModifyClosed = () => {
+        this.setState({
+            modifyContent: null,
+            addContentIndex: -1,
+            modifyContentIndex: -1,
+        });
     }
 
     //</editor-fold>
@@ -102,7 +115,7 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
 
     render() {
         const {onPress, style, editing, height} = this.props;
-        const {editingContentId, resizingContentId} = this.state;
+        const {resizeContentIndex} = this.state;
 
         return <React.Fragment>
             <TouchableWithoutFeedback onPress={onPress}>
@@ -113,8 +126,7 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
                         contentIndex={index}
                         parentHeight={height}
                         editable={editing}
-                        editing={editing && editingContentId === content.id}
-                        resizing={editing && resizingContentId === content.id}
+                        resizing={editing && resizeContentIndex === index}
                         onEditing={this.onContentEditing}
                         onResizing={this.onContentResizing}
                         onAdd={this.onContentAdd}
@@ -132,12 +144,12 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
 
     private renderAddContent() {
         return <ModifyContentModal
-            title="Add Content"
-            content={this.state.addingContent || new CardContentModel}
-            open={this.state.contentIndexToAdd >= 0}
-            onOk={this.onContentAddConfirmed}
-            onChange={this.onContentAddChange}
-            onClose={this.onContentAddClosed}
+            open={this.addingContent || this.modifyingContent}
+            title={this.addingContent ? "Add Content" : "Modify Content"}
+            content={this.state.modifyContent || new CardContentModel}
+            onOk={this.onContentModifyConfirmed}
+            onChange={this.onContentModifyChange}
+            onClose={this.onContentModifyClosed}
         />;
     }
 

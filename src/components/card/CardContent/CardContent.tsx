@@ -15,8 +15,6 @@ export interface CardContentProps {
     contentIndex?: number;
     /** If the content is able to be edited. */
     editable?: boolean;
-    /** If the content is currently being edited. */
-    editing?: boolean;
     /** If the content is currently being resized. */
     resizing?: boolean;
     /** Called to notify the parent this is to be edited. */
@@ -82,13 +80,6 @@ export class CardContentView extends React.Component<CardContentProps, CardConte
         resizePreviewHeight: Math.max(MIN_HEIGHT, (this.calculatedHeight || 0) + offsetY), // TODO Replace 0 with measured size?
     });
 
-    /** Notify the parent when the content changes. */
-    onChange = (updatedContent: CardContentModel) => {
-        if (this.props.onChange) {
-            this.props.onChange(updatedContent, this.props.contentIndex || 0);
-        }
-    }
-
     /** Finish resizing and notify changes. */
     onResizeDone = (canceled: boolean) => {
         if (!canceled && this.props.onChange) {
@@ -103,12 +94,7 @@ export class CardContentView extends React.Component<CardContentProps, CardConte
     };
 
     render() {
-        const media = <CardContentMedia
-            content={this.props.content}
-            editing={this.props.editing}
-            onChange={this.onChange}
-            height={this.currentHeight}
-        />;
+        const media = <CardContentMedia content={this.props.content} height={this.currentHeight} />;
 
         if (!this.props.editable) {
             return <View>{media}</View>;
@@ -123,7 +109,6 @@ export class CardContentView extends React.Component<CardContentProps, CardConte
                 onFinished={this.onResizeDone}
             />
             <CardContentActions
-                editing={this.props.editing || false}
                 resizing={this.props.resizing || false}
                 onPressDone={this.onPressDone}
                 onPressAddBefore={this.onPressAddBefore}

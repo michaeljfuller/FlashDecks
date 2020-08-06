@@ -19,7 +19,7 @@ export function CardContentActions(props: CardContentActionsProps) {
     }, []);
 
     const buttons = [] as React.ReactElement[];
-    if (props.editing || props.resizing) {
+    if (props.resizing) {
         buttons.push(<IconButton key="done" icon={IconType.Done} onClick={props.onPressDone} color="Black" />);
     } else {
         buttons.push(<IconButton key="open" icon={IconType.More} onClick={openActions} color="Black" />);
