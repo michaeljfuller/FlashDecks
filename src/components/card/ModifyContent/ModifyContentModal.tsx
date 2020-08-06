@@ -32,6 +32,10 @@ export class ModifyContentModal extends Modal<AddContentModalProps> {
         if (close) this.props.onClose();
     };
 
+    onChange = (content: CardContentModel) => {
+        this.props.onChange(content.update({ size: undefined }));
+    };
+
     setType = (type: CardContentType) => {
         this.props.onChange(
             this.props.content.update({ type, value: '' })
@@ -60,7 +64,7 @@ export class ModifyContentModal extends Modal<AddContentModalProps> {
     renderForm() {
         const {content} = this.props;
         if (content.validType) {
-            return <CardContentForm content={content} onChange={this.props.onChange} preview />;
+            return <CardContentForm content={content} onChange={this.onChange} preview />;
         } else {
             return <Text>Please select a content type.</Text>;
         }
