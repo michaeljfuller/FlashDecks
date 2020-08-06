@@ -37,11 +37,14 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
         return this.state.updatedSide || this.props.side || new CardSideModel;
     }
 
-    get addingContent() {
+    get isAddingContent() {
         return this.state.addContentIndex >= 0;
     }
-    get modifyingContent() {
+    get isModifyingContent() {
         return this.state.modifyContentIndex >= 0;
+    }
+    get isDeletingContent() {
+        return this.state.contentIndexToDelete >= 0;
     }
 
     componentDidUpdate(prevProps: Readonly<CardSideProps>) {
@@ -72,9 +75,9 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
 
     onContentModifyConfirmed = () => {
         const { modifyContent, addContentIndex, modifyContentIndex } = this.state;
-        if (this.addingContent) {
+        if (this.isAddingContent) {
             this.updateSide(this.currentSide.insertContent(modifyContent || new CardContentModel, addContentIndex));
-        } else if (this.modifyingContent) {
+        } else if (this.isModifyingContent) {
             this.updateSide(this.currentSide.setContent(modifyContent || new CardContentModel, modifyContentIndex));
         }
     }
@@ -136,16 +139,16 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
                 </View>
             </TouchableWithoutFeedback>
 
-            {this.renderAddContent()}
-            {this.renderDeleteContent()}
+            {this.renderModifyContentModal()}
+            {this.renderDeleteContentModal()}
 
         </React.Fragment>;
     }
 
-    private renderAddContent() {
+    private renderModifyContentModal() {
         return <ModifyContentModal
-            open={this.addingContent || this.modifyingContent}
-            title={this.addingContent ? "Add Content" : "Modify Content"}
+            open={this.isAddingContent || this.isModifyingContent}
+            title={this.isAddingContent ? "Add Content" : "Modify Content"}
             content={this.state.modifyContent || new CardContentModel}
             onOk={this.onContentModifyConfirmed}
             onChange={this.onContentModifyChange}
@@ -153,10 +156,10 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
         />;
     }
 
-    private renderDeleteContent() {
+    private renderDeleteContentModal() {
         return <PromptModal
             title="Delete Content"
-            open={this.state.contentIndexToDelete >= 0}
+            open={this.isDeletingContent}
             onOk={this.onContentDeleteConfirmed}
             onClose={this.onContentDeleteClosed}
         >
