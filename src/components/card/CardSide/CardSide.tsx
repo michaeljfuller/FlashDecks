@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, TouchableWithoutFeedback, StyleSheet, ViewStyle} from 'react-native';
+import {View, TouchableWithoutFeedback, StyleSheet, Text, ViewStyle} from 'react-native';
 import {Color} from "../../../styles/Color";
 import CardContentView from "../CardContent/CardContent";
 import {CardContentModel, CardSideModel} from "../../../models";
 import {PromptModal} from "../../modal/PromptModal/PromptModal";
 import {ModifyContentModal} from "../ModifyContent/ModifyContentModal";
+import Button from "../../button/Button";
 
 export interface CardSideProps {
     side?: CardSideModel;
@@ -35,6 +36,9 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
 
     get currentSide(): CardSideModel {
         return this.state.updatedSide || this.props.side || new CardSideModel;
+    }
+    get currentContent(): readonly CardContentModel[] {
+        return this.currentSide.content;
     }
 
     get isAddingContent() {
@@ -67,7 +71,8 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
 
     //<editor-fold desc="Add Content">
 
-    onContentAdd = (index: number) => {
+    onContentAdd = (indexOrEvent: number|any) => {
+        const index = typeof indexOrEvent === "number" ? indexOrEvent : this.currentContent.length;
         this.setState({ addContentIndex: index, modifyContent: new CardContentModel });
     }
 
@@ -123,7 +128,7 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
         return <React.Fragment>
             <TouchableWithoutFeedback onPress={onPress}>
                 <View style={[styles.root, style].flat()}>
-                    {this.currentSide.content.map((content, index) => <CardContentView
+                    {this.currentContent.map((content, index) => <CardContentView
                         key={content.id}
                         content={content}
                         contentIndex={index}
@@ -136,6 +141,7 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
                         onChange={this.onContentChange}
                         onDelete={this.onContentDelete}
                     />)}
+                    {this.renderNoContent()}
                 </View>
             </TouchableWithoutFeedback>
 
@@ -165,13 +171,22 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
         >
             <View style={{ margin: 10 }}>
                 <CardContentView
-                    content={this.currentSide.content[this.state.contentIndexToDelete]}
+                    content={this.currentContent[this.state.contentIndexToDelete]}
                     contentIndex={this.state.contentIndexToDelete}
                     parentHeight={300}
                 />
             </View>
         </PromptModal>;
     }
+
+    private renderNoContent() {
+        if (this.currentContent.length > 0) return null;
+        return <React.Fragment>
+            <Text style={styles.emptySideText}>This side is empty.</Text>
+            {this.props.editing && <Button title="Add Content" onClick={this.onContentAdd} />}
+        </React.Fragment>;
+    }
+    
 }
 export default CardSide;
 
@@ -179,5 +194,9 @@ const styles = StyleSheet.create({
     root: {
         backgroundColor: Color.White,
         paddingHorizontal: 8,
+    },
+    emptySideText: {
+        marginVertical: 5,
+        textAlign: "center",
     },
 });
