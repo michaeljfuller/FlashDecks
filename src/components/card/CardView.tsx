@@ -10,6 +10,7 @@ import CardSide from "./CardSide/CardSide";
 import CardViewBase from "./CardView.common";
 import TextButton from "../button/TextButton";
 import IconButton, {IconType} from "../button/IconButton";
+import CardSideActions from "./CardSide/CardSideActions";
 
 const edgeRadius = 15;
 const sideCountHeight = edgeRadius-2;
@@ -56,17 +57,16 @@ export default class CardView extends CardViewBase {
     }
 
     renderHeaderActions() {
-        if (this.state.editing) {
-            const margin = 1;
-            return <View style={styles.headerActions}>
-                <IconButton icon={IconType.Done} onClick={this.onClickDone} style={{ margin }} />
-                <IconButton icon={IconType.Cancel} onClick={this.onClickCancel} style={{ margin }} />
-            </View>;
-        } else {
-            return <View style={styles.headerActions}>
-                <TextButton title="Edit" onClick={this.onClickEdit} style={{ height: headerHeight-8 }} />
-            </View>;
-        }
+        return <View style={styles.headerActions}>
+            <CardSideActions
+                editing={this.state.editing || false}
+                onPressDone={this.onClickDone}
+                onPressEdit={this.onClickEdit}
+                onPressAddBefore={this.onAddBefore}
+                onPressAddAfter={this.onAddAfter}
+                onPressDelete={this.onDelete}
+            />
+        </View>;
     }
 }
 
@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
     headerActions: {
         flexDirection: "row",
         position: "absolute",
-        right: 5,
-        top: 5,
+        right: 0,
+        top: 0,
     },
     scrollView: {
         borderColor: Color.Grey,

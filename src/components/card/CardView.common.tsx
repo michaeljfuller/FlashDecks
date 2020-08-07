@@ -1,7 +1,5 @@
 import {LayoutChangeEvent, LayoutRectangle, ViewStyle} from "react-native";
 import React from "react";
-import Card from "@material-ui/core/Card";
-import CardSide from "./CardSide/CardSide";
 import {CardModel, CardSideModel} from "../../models";
 
 export interface CardViewProps {
@@ -57,6 +55,16 @@ export abstract class CardViewBase<
     onClickDone = () => {
         this.applySideModifications();
         this.setState({ editing: false, sideModifications: null });
+    }
+
+    onAddBefore = () => {
+        console.info('TODO', 'CardView.onAddBefore', this.state.sideIndex); // TODO
+    }
+    onAddAfter = () => {
+        console.info('TODO', 'CardView.onAddAfter', this.state.sideIndex); // TODO
+    }
+    onDelete = () => {
+        console.info('TODO', 'CardView.onDelete', this.state.sideIndex); // TODO
     }
 
     /** Record the view size to calculate the available size of the body from. */
