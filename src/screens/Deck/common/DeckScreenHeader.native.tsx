@@ -3,6 +3,7 @@ import {Text, View, StyleSheet} from "react-native";
 import DeckScreenHeaderBase from "./DeckScreenHeader.common";
 import Avatar from "../../../components/avatar/Avatar";
 import IconButton, {IconType} from "../../../components/button/IconButton";
+import {DeckInfoModal} from "../../../components/deck/DeckInfoModal/DeckInfoModal";
 
 const avatarSize = 24;
 
@@ -29,6 +30,12 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
                 />
                 <Text style={styles.cardCount}>{this.cardCount} {this.cardCount !== 1 ? 'cards' : 'card'}</Text>
             </View>
+
+            <DeckInfoModal
+                deck={this.props.item}
+                open={this.state.showInfo}
+                onClose={this.closeInfoModal}
+            />
 
         </View>;
     }
