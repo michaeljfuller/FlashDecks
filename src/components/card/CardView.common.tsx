@@ -1,6 +1,8 @@
 import {LayoutChangeEvent, LayoutRectangle, ViewStyle} from "react-native";
 import React from "react";
 import {CardModel, CardSideModel} from "../../models";
+import {insertItem, removeItem} from "../../utils/array";
+import {minMax} from "../../utils/math";
 
 export interface CardViewProps {
     item: CardModel;
@@ -9,6 +11,7 @@ export interface CardViewProps {
     onUpdate?: (item: CardModel) => void;
 }
 export interface CardViewBaseState {
+    modifiedCard: CardModel|null;
     sideIndex: number;
     sideModifications: CardSideModel|null;
     viewLayout: LayoutRectangle;
@@ -19,13 +22,14 @@ export abstract class CardViewBase<
     State extends CardViewBaseState = CardViewBaseState
 > extends React.Component<CardViewProps, State> {
     state = {
+        modifiedCard: null,
         sideIndex: 0,
         sideModifications: null,
         viewLayout: { x: 0, y: 0, width: 0, height: 0 },
     } as State;
 
-    get card(): CardModel|undefined {
-        return this.props.item;
+    get card(): CardModel {
+        return this.state.modifiedCard || this.props.item || new CardModel;
     }
 
     get sides(): readonly CardSideModel[] {
@@ -46,7 +50,11 @@ export abstract class CardViewBase<
 
     componentDidUpdate(prevProps: Readonly<CardViewProps>/*, prevState: Readonly<CardViewState>, snapshot?: any*/) {
         if (prevProps.item?.id !== this.props.item?.id) { // Card changed
-            this.setState({ sideIndex: 0 }); // Reset sideIndex
+            this.setState({
+                sideIndex: 0,
+                modifiedCard: null,
+                sideModifications: null,
+            });
         }
     }
 
@@ -57,14 +65,33 @@ export abstract class CardViewBase<
         this.setState({ editing: false, sideModifications: null });
     }
 
+    /** Add a new slide before this one. */
     onAddBefore = () => {
-        console.info('TODO', 'CardView.onAddBefore', this.state.sideIndex); // TODO
+        const modifiedCard = this.card.update({
+            sides: insertItem(this.card.sides, this.state.sideIndex, new CardSideModel)
+        });
+        console.info('TODO', 'CardView.onAddBefore', this.state.sideIndex, modifiedCard); // TODO
+        this.setState({ modifiedCard });
     }
+    /** Add a new slide after this one. */
     onAddAfter = () => {
-        console.info('TODO', 'CardView.onAddAfter', this.state.sideIndex); // TODO
+        const modifiedCard = this.card.update({
+            sides: insertItem(this.card.sides, this.state.sideIndex+1, new CardSideModel)
+        });
+        console.info('TODO', 'CardView.onAddAfter', this.state.sideIndex, modifiedCard); // TODO
+        this.setState({ modifiedCard, sideIndex: this.state.sideIndex + 1 });
     }
+    /** Delete this slide. */
     onDelete = () => {
-        console.info('TODO', 'CardView.onDelete', this.state.sideIndex); // TODO
+        const modifiedCard = this.card.update({
+            sides: removeItem(this.card.sides, this.state.sideIndex)
+        });
+        console.info('TODO', 'CardView.onDelete', this.state.sideIndex, modifiedCard); // TODO
+
+        this.setState({
+            modifiedCard,
+            sideIndex: minMax(this.state.sideIndex, 0, modifiedCard.sides.length-1),
+        });
     }
 
     /** Record the view size to calculate the available size of the body from. */

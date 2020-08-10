@@ -11,3 +11,21 @@ export function repeat<Type>(
     }
     return result;
 }
+
+/**
+ * Return a new array with an item at the given index, moving the previous occupant to the right.
+ */
+export function insertItem<Type>(array: readonly Type[], index: number, item: Type): Type[] {
+    return [
+        ...array.slice(0, index),
+        item,
+        ...array.slice(index)
+    ];
+}
+
+export function removeItem<Type>(array: readonly Type[], index: number): Type[] {
+    return [
+        ...array.slice(0, index),
+        ...array.slice(index+1),
+    ];
+}

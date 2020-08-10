@@ -1,5 +1,6 @@
 import {ApiCardContent, CardContentModel} from "./CardContentModel";
 import Model from "./core/Model";
+import {insertItem} from "../utils/array";
 
 export interface ApiCardSide {
     content?: ApiCardContent[];
@@ -21,11 +22,7 @@ export class CardSideModel extends Model {
 
     insertContent(item: CardContentModel, index: number) {
         return this.update(draft => {
-            draft.content = [
-                ...this.content.slice(0, index),
-                item,
-                ...this.content.slice(index)
-            ];
+            draft.content = insertItem(this.content, index, item);
         });
     }
 
