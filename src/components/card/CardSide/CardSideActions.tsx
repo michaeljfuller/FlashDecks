@@ -1,6 +1,7 @@
 import React, {useCallback, useState} from "react";
 import {StyleSheet, View} from "react-native";
 import Popover from '@material-ui/core/Popover';
+import Typography from "@material-ui/core/Typography";
 import {withStyles} from "@material-ui/core/styles";
 
 import {CardActionsProps} from "./CardSideActions.common";
@@ -79,6 +80,7 @@ export function CardSideActionsMenu(props: CardSideActionsMenuProps) {
         <View style={{
             flexDirection: 'column'
         }}>
+            <Typography align="center">Card Side</Typography>
             <View>
                 <IconButton text="Edit" icon={IconType.Edit} onClick={onPressEdit} />
             </View>

@@ -1,6 +1,7 @@
 import React, {useCallback, useState} from "react";
 import {StyleSheet, View} from "react-native";
 import Popover from '@material-ui/core/Popover';
+import Typography from "@material-ui/core/Typography";
 import {withStyles} from "@material-ui/core/styles";
 
 import {CardContentActionsProps} from "./CardContentActions.common";
@@ -86,6 +87,7 @@ export function CardContentActionsMenu(props: CardContentActionsMenuProps) {
         <View style={{
             flexDirection: 'column'
         }}>
+            <Typography align="center">Card Content</Typography>
             <View>
                 <IconButton text="Edit" icon={IconType.Edit} onClick={onPressEdit} />
             </View>
