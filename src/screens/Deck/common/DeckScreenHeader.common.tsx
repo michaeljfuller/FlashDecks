@@ -4,6 +4,7 @@ import {DeckModel} from "../../../models";
 export interface DeckScreenHeaderProps {
     item: DeckModel;
     title?: string;
+    editable?: boolean;
 }
 export interface DeckScreenHeaderPropsState {
     showInfo: boolean;

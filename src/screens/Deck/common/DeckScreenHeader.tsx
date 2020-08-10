@@ -31,7 +31,12 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
                 <Text style={styles.cardCount}>{this.cardCount} {this.cardCount !== 1 ? 'cards' : 'card'}</Text>
             </View>
 
-            <DeckInfoModal deck={this.props.item} open={this.state.showInfo} onClose={this.closeInfoModal} />
+            <DeckInfoModal
+                deck={this.props.item}
+                open={this.state.showInfo}
+                editable={this.props.editable}
+                onClose={this.closeInfoModal}
+            />
 
         </View>;
     }

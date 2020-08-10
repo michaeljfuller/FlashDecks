@@ -107,7 +107,7 @@ export class DeckEditScreen extends Component<DeckEditScreenProps & DeckEditScre
     render() {
         return (
             <ScreenContainer>
-                <DeckScreenHeader item={this.state.deck} title={`Edit: ${this.state.deck.name}`} />
+                <DeckScreenHeader editable item={this.state.deck} title={`Edit: ${this.state.deck.name}`} />
                 <DeckView editable item={this.state.deck} onItemChange={this.onItemChange} />
                 <Button
                     title="Save"

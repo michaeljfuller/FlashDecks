@@ -34,6 +34,7 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
             <DeckInfoModal
                 deck={this.props.item}
                 open={this.state.showInfo}
+                editable={this.props.editable}
                 onClose={this.closeInfoModal}
             />
 

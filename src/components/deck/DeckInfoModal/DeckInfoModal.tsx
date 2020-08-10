@@ -8,6 +8,7 @@ import {DeckInfoModelTags} from "./DeckInfoModalTags";
 
 export type DeckInfoModalProps = {
     deck: DeckModel;
+    editable?: boolean;
 } & ModalProps;
 
 /**
