@@ -1,5 +1,5 @@
 import React from "react";
-import {Text, View} from "react-native";
+import {Text, View, ViewStyle} from "react-native";
 import Button from "../../button/Button";
 import Modal, {ModalProps} from "../core/Modal";
 import {ModalContainer, ModalHeader, ModalBody, ModalFooter} from "../parts";
@@ -12,6 +12,8 @@ export type PromptModalProps = {
     onOk: () => boolean|void;
     onCancel?: () => boolean|void;
     onClose: () => void;
+    enabledOk?: boolean;
+    style?: ViewStyle;
 } & ModalProps;
 
 /**
@@ -34,9 +36,9 @@ export class PromptModal extends Modal<PromptModalProps> {
     };
 
     renderModal() {
-        const {title, message, children} = this.props;
+        const {title, message, children, style, enabledOk=true} = this.props;
 
-        return <ModalContainer>
+        return <ModalContainer style={style}>
 
             <ModalHeader title={title || 'Alert'} />
 
@@ -49,7 +51,7 @@ export class PromptModal extends Modal<PromptModalProps> {
                 flexDirection: "row", width: "100%",
             }}>
                 <View style={{flex:1}}>
-                    <Button title="OK" onClick={this.onPressOk} square />
+                    <Button title="OK" onClick={this.onPressOk} square disabled={!enabledOk} />
                 </View>
                 <View style={{flex:1}}>
                     <Button title="Cancel" onClick={this.onPressCancel} square />
