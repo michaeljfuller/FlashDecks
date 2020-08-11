@@ -53,6 +53,12 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
         });
     }
 
+    onChangeTags = (tags: string[]) => {
+        this.setState({
+            modifiedDeck: this.deck.update({ tags })
+        });
+    }
+
     renderModal() {
         return this.props.editable ? this.renderEditModal() : this.renderInfoModal();
     }
@@ -63,7 +69,7 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
             <ModalHeader title={this.deck.name} user={this.deck.owner} />
 
             <ModalBody>
-                <DeckInfoModelTags deck={this.deck} />
+                <DeckInfoModelTags tags={this.deck.tags} />
                 <Text>{this.deck.description}</Text>
             </ModalBody>
 
@@ -91,7 +97,7 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
                         onChangeText={this.onChangeName}
                     />
                 </View>
-                <DeckInfoModelTags deck={this.deck} />
+                <DeckInfoModelTags editable tags={this.deck.tags} onChange={this.onChangeTags} />
                 <TextInput
                     editable
                     multiline
