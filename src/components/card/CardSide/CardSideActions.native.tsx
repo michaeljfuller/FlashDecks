@@ -23,9 +23,12 @@ export function CardSideActions(props: CardActionsProps) {
 
     let button: React.ReactElement;
     if (props.editing) {
-        button = <IconButton key="done" icon={IconType.Done} onClick={props.onPressDone} color="Black" />;
+        button = <React.Fragment>
+            <IconButton icon={IconType.Done} onClick={props.onPressDone} color="Black" />
+            <IconButton icon={IconType.Cancel} onClick={props.onPressCancel} color="Black" />
+        </React.Fragment>;
     } else {
-        button = <IconButton key="open" icon={IconType.More} onClick={onPress} color="Black" />;
+        button = <IconButton icon={IconType.More} onClick={onPress} color="Black" />;
     }
     return <View style={styles.root}>{button}</View>;
 }

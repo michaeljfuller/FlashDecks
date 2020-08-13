@@ -10,7 +10,7 @@ export default class DeckView extends DeckViewBase {
                 cards={this.props.item.cards}
                 style={styles.cardCarousel}
                 editable={this.props.editable}
-                onDeckChange={this.props.onItemChange}
+                onCardsChange={this.onCardsChange}
             />
         </View>;
     }

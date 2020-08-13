@@ -6,6 +6,8 @@ import {CardCarouselProps} from "./CardCarousel.common";
 import Button from "../button/Button";
 import {UIColorThemeMap} from "../../styles/UIColorTheme";
 import {preloadCards} from "../../utils/media/card";
+import {CardModel} from "../../models";
+import {replaceItem} from "../../utils/array";
 export * from "./CardCarousel.common";
 
 const useNativeDriver = !isPlatformWeb;
@@ -74,6 +76,15 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
         }
     }
 
+    onUpdateCard = (card: CardModel, index: number) => {
+        console.group('CardCarousel.onUpdateCard');
+        console.log(`Index: ${index}`, card);
+        this.props.onCardsChange && this.props.onCardsChange(
+            replaceItem(this.props.cards || [], index, card)
+        );
+        console.groupEnd();
+    }
+
     async cardOut(endPosition: number, duration = 250) {
         return new Promise(resolve => {
             Animated.parallel([
@@ -136,6 +147,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
                         item={cards[index]}
                         style={[styles.cardView, { width: cardWidth, height: cardHeight }]}
                         editable={this.props.editable}
+                        onUpdate={this.onUpdateCard}
                     />
                 </Animated.View>
             </View>

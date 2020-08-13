@@ -3,8 +3,6 @@ import {Text, View, ScrollView, StyleSheet} from "react-native";
 import {Color} from "../../styles/Color";
 import CardSide from "./CardSide/CardSide";
 import {CardViewBase} from "./CardView.common";
-import IconButton, {IconType} from "../button/IconButton";
-import TextButton from "../button/TextButton";
 import CardSideActions from "./CardSide/CardSideActions";
 
 const edgeRadius = 15;
@@ -36,7 +34,7 @@ export default class CardView extends CardViewBase {
                 <CardSide
                     side={this.currentSide}
                     onPress={this.onPress}
-                    onModifications={this.onSideModifications}
+                    onModifications={this.onSideChange}
                     height={bodyHeight}
                     editing={this.state.editing}
                     style={{ minHeight: bodyHeight || undefined }}
@@ -52,7 +50,8 @@ export default class CardView extends CardViewBase {
         return <View style={styles.headerActions}>
             <CardSideActions
                 editing={this.state.editing || false}
-                onPressDone={this.onClickDone}
+                onPressDone={this.state.modifiedCard ? this.onClickDone : undefined}
+                onPressCancel={this.onClickCancel}
                 onPressEdit={this.onClickEdit}
                 onPressAddBefore={this.onAddBefore}
                 onPressAddAfter={this.onAddAfter}

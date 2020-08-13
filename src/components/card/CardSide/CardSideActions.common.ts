@@ -1,6 +1,7 @@
 export interface CardActionsProps {
     editing: boolean;
-    onPressDone: () => void;
+    onPressDone?: () => void;
+    onPressCancel: () => void;
     onPressEdit: () => void;
     onPressAddBefore: () => void;
     onPressAddAfter: () => void;

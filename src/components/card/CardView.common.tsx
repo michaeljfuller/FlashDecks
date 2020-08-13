@@ -1,19 +1,19 @@
 import {LayoutChangeEvent, LayoutRectangle, ViewStyle} from "react-native";
 import React from "react";
 import {CardModel, CardSideModel} from "../../models";
-import {insertItem, removeItem} from "../../utils/array";
+import {insertItem, removeItem, replaceItem} from "../../utils/array";
 import {minMax} from "../../utils/math";
 
 export interface CardViewProps {
     item: CardModel;
+    itemIndex?: number;
     style?: ViewStyle|ViewStyle[];
     editable?: boolean;
-    onUpdate?: (item: CardModel) => void;
+    onUpdate?: (item: CardModel, index: number) => void;
 }
 export interface CardViewBaseState {
     modifiedCard: CardModel|null;
     sideIndex: number;
-    sideModifications: CardSideModel|null;
     viewLayout: LayoutRectangle;
     editing?: boolean;
 }
@@ -24,7 +24,6 @@ export abstract class CardViewBase<
     state = {
         modifiedCard: null,
         sideIndex: 0,
-        sideModifications: null,
         viewLayout: { x: 0, y: 0, width: 0, height: 0 },
     } as State;
 
@@ -37,7 +36,11 @@ export abstract class CardViewBase<
     }
 
     get currentSide(): CardSideModel|undefined {
-        return this.sides[this.state.sideIndex];
+        return this.sides[this.currentSideIndex];
+    }
+
+    get currentSideIndex(): number {
+        return this.state.sideIndex;
     }
 
     get hasActions(): boolean {
@@ -49,20 +52,22 @@ export abstract class CardViewBase<
     }
 
     componentDidUpdate(prevProps: Readonly<CardViewProps>/*, prevState: Readonly<CardViewState>, snapshot?: any*/) {
-        if (prevProps.item?.id !== this.props.item?.id) { // Card changed
+        if (prevProps.item?.id !== this.props.item?.id) { // Card changed TODO Not rely on ID.
             this.setState({
                 sideIndex: 0,
                 modifiedCard: null,
-                sideModifications: null,
             });
         }
     }
 
     onClickEdit = () => this.setState({ editing: true });
-    onClickCancel = () => this.setState({ editing: false, sideModifications: null });
+    onClickCancel = () => this.setState({ editing: false, modifiedCard: null });
     onClickDone = () => {
-        this.applySideModifications();
-        this.setState({ editing: false, sideModifications: null });
+        console.group('CardView.onClickDone');
+        console.log(this.state.modifiedCard);
+        this.props.onUpdate && this.props.onUpdate(this.card, this.props.itemIndex || 0);
+        this.setState({ editing: false, modifiedCard: null });
+        console.groupEnd();
     }
 
     /** Add a new slide before this one. */
@@ -73,6 +78,7 @@ export abstract class CardViewBase<
         console.info('TODO', 'CardView.onAddBefore', this.state.sideIndex, modifiedCard); // TODO
         this.setState({ modifiedCard });
     }
+
     /** Add a new slide after this one. */
     onAddAfter = () => {
         const modifiedCard = this.card.update({
@@ -81,6 +87,7 @@ export abstract class CardViewBase<
         console.info('TODO', 'CardView.onAddAfter', this.state.sideIndex, modifiedCard); // TODO
         this.setState({ modifiedCard, sideIndex: this.state.sideIndex + 1 });
     }
+
     /** Delete this slide. */
     onDelete = () => {
         const modifiedCard = this.card.update({
@@ -103,21 +110,25 @@ export abstract class CardViewBase<
         this.canPress && this.nextSide();
     }
 
-    onSideModifications = (sideModifications: CardSideModel|null) => {
-        console.log('CardView.onSideModifications', sideModifications);
-        this.setState({ sideModifications });
+    onSideChange = (side: CardSideModel|null) => {
+        console.log('CardView.onSideChange', side);
+        let card = this.card;
+
+        if (side) {
+            card = card.update({
+                sides: replaceItem(card.sides, this.state.sideIndex, side)
+            });
+        } else {
+            card = card.update({
+                sides: removeItem(card.sides, this.state.sideIndex)
+            });
+        }
+        this.setState({ modifiedCard: card });
     }
 
     nextSide() {
         this.setState({ // Increment by one, resetting to 0 if it exceeds range.
             sideIndex: (this.state.sideIndex + 1) % (this.sides.length || 1)
-        });
-    }
-
-    applySideModifications() {
-        // TODO
-        console.log('CardView.applySideModifications', {
-            side: this.state.sideModifications
         });
     }
 }

@@ -12,10 +12,9 @@ export function repeat<Type>(
     return result;
 }
 
-/**
- * Return a new array with an item at the given index, moving the previous occupant to the right.
- */
+/** Return a new array with an item at the given index, moving the previous occupant to the right. */
 export function insertItem<Type>(array: readonly Type[], index: number, item: Type): Type[] {
+    if (index < 0) index = array.length + index; // -1 = Last index in passed array
     return [
         ...array.slice(0, index),
         item,
@@ -23,7 +22,17 @@ export function insertItem<Type>(array: readonly Type[], index: number, item: Ty
     ];
 }
 
+export function replaceItem<Type>(array: readonly Type[], index: number, item: Type): Type[] {
+    if (index < 0) index = array.length + index; // -1 = Last index in passed array
+    return [
+        ...array.slice(0, index),
+        item,
+        ...array.slice(index+1),
+    ];
+}
+
 export function removeItem<Type>(array: readonly Type[], index: number): Type[] {
+    if (index < 0) index = array.length + index; // -1 = Last index in passed array
     return [
         ...array.slice(0, index),
         ...array.slice(index+1),

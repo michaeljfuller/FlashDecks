@@ -4,6 +4,7 @@ import CardView from "../card/CardView";
 import {preloadCards} from "../../utils/media/card";
 import {CardCarouselProps} from "./CardCarousel.common";
 import {CardModel} from "../../models";
+import {replaceItem} from "../../utils/array";
 export * from "./CardCarousel.common";
 
 export interface CardCarouselState {
@@ -22,6 +23,13 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
 
     onLayout = (event: LayoutChangeEvent) => {
         this.setState({ width: event.nativeEvent.layout.width });
+    }
+
+    onUpdateCard = (card: CardModel, index: number) => {
+        console.log('CardCarousel', card, index);
+        this.props.onCardsChange && this.props.onCardsChange(
+            replaceItem(this.props.cards || [], index, card)
+        );
     }
 
     render() {
@@ -44,6 +52,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
                             item={item}
                             style={styles.cardView}
                             editable={this.props.editable}
+                            onUpdate={this.onUpdateCard}
                         />
                     </View>;
                 }}

@@ -13,11 +13,11 @@ export interface DeckEditScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
 > {}
 export interface DeckEditScreenState {
-    deck: DeckModel;
-    changed?: boolean;
+    originalDeck?: DeckModel;
+    modifiedDeck?: DeckModel;
 }
 
-const testDeck = DeckModel.fromApi({
+const originalDeck = DeckModel.fromApi({
     id: `deck-id`,
     name: `Deck name`,
     description: `Deck description`,
@@ -84,35 +84,44 @@ const testDeck = DeckModel.fromApi({
 
 export class DeckEditScreen extends Component<DeckEditScreenProps & DeckEditScreenStoreProps, DeckEditScreenState>
 {
-    state = {
-        deck: testDeck,
-    } as DeckEditScreenState;
+    state = {} as DeckEditScreenState;
+
+    get deck() {
+        return this.state.modifiedDeck || this.state.originalDeck;
+    }
 
     componentDidMount() {
         const {deckId} = this.props.route.params || {};
-        if (!deckId) {
+        if (deckId) {
+            this.setState({ originalDeck });
+        } else {
             console.warn('No ID'); // TODO Redirect
-            return;
         }
     }
 
-    onItemChange = (deck: DeckModel) => {
-        this.setState({ deck, changed: true });
+    onChange = (deck: DeckModel) => {
+        console.log('DeckEditScreen.onChange', deck); // TODO Toast
+        this.setState({ modifiedDeck: deck });
     }
 
     onSavePressed = () => {
-        console.log('DeckEditScreen.onSavePressed'); // TODO Toast
+        console.log('DeckEditScreen.onSavePressed', this.state.modifiedDeck); // TODO Toast + store
+
+        this.setState({ originalDeck: this.state.modifiedDeck, modifiedDeck: undefined });
     }
 
     render() {
+        if (!this.deck) {
+            return null;
+        }
         return (
             <ScreenContainer>
-                <DeckScreenHeader editable item={this.state.deck} title={`Edit: ${this.state.deck.name}`} />
-                <DeckView editable item={this.state.deck} onItemChange={this.onItemChange} />
+                <DeckScreenHeader editable item={this.deck} title={`Edit: ${this.deck?.name}`} />
+                <DeckView editable item={this.deck} onChange={this.onChange} />
                 <Button
                     title="Save"
                     square
-                    disabled={!this.state.changed}
+                    disabled={!this.state.modifiedDeck}
                     onClick={this.onSavePressed}
                 />
             </ScreenContainer>
