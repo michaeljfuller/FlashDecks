@@ -3,6 +3,8 @@ import {View, StyleSheet, TextInput} from "react-native";
 import Tag from "../../tag/Tag";
 import IconButton, {IconType} from "../../button/IconButton";
 import PromptModal from "../../modal/PromptModal/PromptModal";
+import {removeItem} from "../../../utils/array";
+import {isPlatformWeb} from "../../../platform";
 
 export interface DeckInfoModelTagsProps {
     tags?: string[];
@@ -30,10 +32,17 @@ export function DeckInfoModelTags(props: DeckInfoModelTagsProps) {
         setTagInput('');
     }, []);
 
+    const onDelete = useCallback((tag: string) => {
+        const index = tags.indexOf(tag);
+        if (onChange && index >= 0) {
+            onChange(removeItem(tags, index));
+        }
+    }, [tags, onChange]);
+
     if (tags.length) {
         return <View style={styles.tags}>
-            {tags.map(tag => <Tag key={tag} value={tag} />)}
-            {editable && <IconButton icon={IconType.Add} onClick={onOpenInput} />}
+            {tags.map(tag => <Tag key={tag} value={tag} onDelete={editable ? onDelete : undefined} />)}
+            {editable && <IconButton icon={IconType.Add} onClick={onOpenInput} style={{ height: isPlatformWeb ? undefined : 29 }} />}
 
             <PromptModal
                 title="Add Tag"
