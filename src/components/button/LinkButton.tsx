@@ -10,7 +10,7 @@ export * from './LinkButton.common';
  */
 export function LinkButton(props: LinkButtonProps) {
     const [modalOpen, setModalOpen] = useState(false);
-    const { title, url, disabled, color, invertColor, square, flat } = linkButtonPropsWithDefaults(props);
+    const { title, url, disabled, color, invertColor, square, flat, style, width, height } = linkButtonPropsWithDefaults(props);
 
     const openModal = useCallback(() => setModalOpen(true), []);
     const closeModal = useCallback(() => setModalOpen(false), []);
@@ -20,7 +20,9 @@ export function LinkButton(props: LinkButtonProps) {
             title={title}
             onClick={openModal}
             disabled={disabled}
-            style={props.style}
+            style={style}
+            width={width}
+            height={height}
             color={color}
             invertColor={invertColor}
             flat={flat}

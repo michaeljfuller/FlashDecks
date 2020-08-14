@@ -1,3 +1,4 @@
+import {ViewStyle} from "react-native";
 import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
 
 export interface LinkButtonProps {
@@ -5,14 +6,12 @@ export interface LinkButtonProps {
     url?: string;
     disabled?: boolean;
     flat?: boolean;
-    style?: LinkButtonStyle;
+    style?: ViewStyle;
+    width?: number;
+    height?: number;
     color?: GetUIColorThemeInput;
     invertColor?: boolean;
     square?: boolean;
-}
-export interface LinkButtonStyle {
-    width?: number;
-    height?: number;
 }
 
 export function linkButtonPropsWithDefaults(props: LinkButtonProps): Required<LinkButtonProps> {
@@ -22,13 +21,15 @@ export function linkButtonPropsWithDefaults(props: LinkButtonProps): Required<Li
         title = hostname.replace(/^www\./, '') || 'Invalid Link',
         flat = false,
         style = {},
+        width = Number.NaN,
+        height = Number.NaN,
         color = DefaultTheme.primary.key,
         invertColor = false,
         square = false,
         url = '',
     } = props;
     return {
-        title, flat, style, color, invertColor, square, url,
+        title, flat, style, color, invertColor, square, url, width, height,
         disabled: disabled || !hostname,
     };
 }

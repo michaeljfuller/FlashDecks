@@ -1,7 +1,7 @@
+import React from "react";
+import {ViewStyle} from "react-native";
 import {IconType} from '../icon/Icon';
 import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
-import React from "react";
-
 export {IconType} from '../icon/Icon';
 
 export interface IconButtonProps {
@@ -11,11 +11,9 @@ export interface IconButtonProps {
     disabled?: boolean;
     transparent?: boolean;
     flat?: boolean;
-    style?: IconButtonStyle;
+    style?: ViewStyle;
     color?: GetUIColorThemeInput;
     invertColor?: boolean;
-}
-export interface IconButtonStyle {
     width?: number;
     height?: number;
     margin?: number;
@@ -32,10 +30,13 @@ export function iconButtonPropsWithDefaults(props: IconButtonProps): Required<Ic
         text = '',
         color = DefaultTheme.primary.key,
         invertColor = false,
-        style = {}
+        style = {},
+        width = Number.NaN,
+        height = Number.NaN,
+        margin = Number.NaN,
     } = props;
     return {
-        onClick, icon, style, text, transparent, flat, color, invertColor,
+        onClick, icon, style, text, transparent, flat, color, invertColor, width, height, margin,
         disabled: disabled || !props.onClick,
     };
 }

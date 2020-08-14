@@ -11,3 +11,11 @@ export function roundTo(value: number, digits?: number): number {
 export function minMax(value: number, low: number, high: number) {
     return Math.min(Math.max(value, low), high);
 }
+
+/** Return the passed value if it's a number, or the defaultValue. */
+export function numberOrDefault<T>(value: any, defaultValue: T): number|T {
+    if (typeof value === "number" && !Number.isNaN(value)) {
+        return value;
+    }
+    return defaultValue;
+}

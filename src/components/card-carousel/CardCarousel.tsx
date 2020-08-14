@@ -8,6 +8,7 @@ import {UIColorThemeMap} from "../../styles/UIColorTheme";
 import {preloadCards} from "../../utils/media/card";
 import {CardModel} from "../../models";
 import {replaceItem} from "../../utils/array";
+import withDefaultProps from "../../utils/hoc/withDefaultProps/withDefaultProps";
 export * from "./CardCarousel.common";
 
 const useNativeDriver = !isPlatformWeb;
@@ -137,7 +138,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
         }
 
         return <View style={[styles.root, style]} onLayout={this.onLayout}>
-            <Button title="<" onClick={this.previous} disabled={!this.canGoToPrevious} square flat color={theme} />
+            <CarouselButton title="<" onClick={this.previous} disabled={!this.canGoToPrevious} />
             <View style={styles.cardContainer}>
                 <Animated.View style={{
                     opacity: this.cardOpacity,
@@ -151,7 +152,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
                     />
                 </Animated.View>
             </View>
-            <Button title=">" onClick={this.next} disabled={!this.canGoToNext} square flat color={theme} />
+            <CarouselButton title=">" onClick={this.next} disabled={!this.canGoToNext} />
         </View>;
     }
 }
@@ -173,5 +174,15 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingVertical: 5,
     },
-    cardView: {}
+    cardView: {},
+    carouselButton: {
+        height: '100%',
+    },
 });
+
+const CarouselButton = withDefaultProps(Button, {
+    square: true,
+    flat: true,
+    color: theme,
+    style: styles.carouselButton
+}, null, 'CarouselButton');

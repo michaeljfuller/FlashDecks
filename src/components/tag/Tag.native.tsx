@@ -16,7 +16,7 @@ export default function Tag(props: TagProps) {
 
     return <Badge style={styles.badge}>
         <Text style={{ color: theme.secondary.base }}>{props.value}</Text>
-        {onDelete && <IconButton icon={IconType.Cancel} style={{ height: 26, width: 18 }} onClick={onClickDelete} />}
+        {onDelete && <IconButton icon={IconType.Cancel} width={18} height={26} onClick={onClickDelete} />}
     </Badge>;
 }
 

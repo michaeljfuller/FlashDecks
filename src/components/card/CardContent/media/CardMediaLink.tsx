@@ -8,5 +8,5 @@ export interface CardMediaLinkProps {
 }
 
 export function CardMediaLink(props: CardMediaLinkProps) {
-    return <LinkButton url={props.content.value} style={{ height: props.height }} />;
+    return <LinkButton url={props.content.value} height={props.height} />;
 }

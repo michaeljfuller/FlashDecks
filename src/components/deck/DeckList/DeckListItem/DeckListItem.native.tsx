@@ -47,7 +47,7 @@ export default function DeckListItem(props: DeckListItemProps) {
                     icon={IconType.More}
                     color={DefaultTheme} invertColor
                     onClick={handleActions}
-                    style={{ height: 30 }}
+                    width={30}
                 />
             </View>}
 
