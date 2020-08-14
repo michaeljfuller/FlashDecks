@@ -71,24 +71,20 @@ export class ModifyContentModal extends Modal<AddContentModalProps> {
     }
 
     renderContentTypeButton(contentType: CardContentType) {
-        return <View key={contentType} style={styles.typeButton}>
-            <Button
-                title={contentType}
-                onClick={() => this.setType(contentType)}
-                disabled={this.props.content.type === contentType}
-            />
-        </View>;
+        return <Button
+            key={contentType}
+            title={contentType}
+            onClick={() => this.setType(contentType)}
+            disabled={this.props.content.type === contentType}
+            style={styles.typeButton}
+        />;
     }
 
     renderFooter() {
         return <ModalFooter style={styles.footer}>
-            <View style={styles.footerItem}>
-                <Button title="OK" onClick={this.onPressOk} square disabled={!this.props.content.valid} />
-            </View>
-            <View style={styles.footerItem}>
-                <Button title="Cancel" onClick={this.onPressCancel} square />
-            </View>
-        </ModalFooter>
+            <Button title="OK" style={styles.footerItem} onClick={this.onPressOk} square disabled={!this.props.content.valid} />
+            <Button title="Cancel" style={styles.footerItem} onClick={this.onPressCancel} square />
+        </ModalFooter>;
     }
 
 }

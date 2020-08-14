@@ -1,5 +1,5 @@
 import React from "react";
-import {View} from "react-native";
+import {View, StyleSheet} from "react-native";
 
 import {
     // This component adds a box-shadow by default.
@@ -42,14 +42,13 @@ export default function DeckListItem(props: DeckListItemProps) {
                 <Avatar user={owner} size={30} />
             </UICardItem>
 
-            {showActions && <View style={{ paddingTop: 5, paddingRight: 5 }}>
-                <IconButton
-                    icon={IconType.More}
-                    color={DefaultTheme} invertColor
-                    onClick={handleActions}
-                    width={30}
-                />
-            </View>}
+            {showActions && <IconButton
+                icon={IconType.More}
+                style={styles.moreButton}
+                color={DefaultTheme} invertColor
+                onClick={handleActions}
+                width={30}
+            />}
 
         </View>
 
@@ -66,3 +65,10 @@ export default function DeckListItem(props: DeckListItemProps) {
 
     </UICard>;
 }
+
+const styles = StyleSheet.create({
+    moreButton: {
+        paddingTop: 5,
+        paddingRight: 5,
+    },
+});

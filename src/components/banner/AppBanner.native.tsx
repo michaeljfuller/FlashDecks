@@ -1,4 +1,5 @@
 import React from "react";
+import {StyleSheet} from 'react-native';
 import {Body, Header, Left, Right} from 'native-base';
 import {IconButton, IconType} from "../button/IconButton";
 import {AppBannerProps} from "./AppBanner.common";
@@ -17,13 +18,8 @@ export function AppBanner(props: AppBannerProps) {
         loggedInUser, onToggleSidebar, onSignOutClick, routerDetails
     } = props;
 
-    return <Header androidStatusBarColor={backgroundColor} style={{ backgroundColor, paddingHorizontal: 15, height: 35 }}>
-        <Left style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            maxWidth: 40,
-            paddingRight: 15
-        }}>
+    return <Header androidStatusBarColor={backgroundColor} style={styles.header}>
+        <Left style={styles.left}>
             <IconButton icon={IconType.Menu} onClick={onToggleSidebar} transparent color="White" />
         </Left>
         <AppBreadcrumbs routerDetails={routerDetails} />
@@ -48,11 +44,26 @@ function AppBannerUserDisplay(props: AppBannerUserDisplayProps) {
     />;
     if (user) {
         return <React.Fragment>
-            <Body style={{ flexDirection: 'row' }}>{avatar}</Body>
+            <Body style={styles.body}>{avatar}</Body>
             <IconButton icon={IconType.Exit} onClick={onSignOutClick} transparent color="White" />
         </React.Fragment>;
     }
-    return <React.Fragment>
-        <Body style={{ flexDirection: 'row' }}>{avatar}</Body>
-    </React.Fragment>;
+    return <Body style={styles.body}>{avatar}</Body>;
 }
+
+const styles = StyleSheet.create({
+    header: {
+        paddingHorizontal: 15,
+        height: 35,
+        backgroundColor,
+    },
+    left: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        maxWidth: 40,
+        paddingRight: 15,
+    },
+    body: {
+        flexDirection: 'row',
+    }
+});

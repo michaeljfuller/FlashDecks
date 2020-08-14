@@ -84,25 +84,13 @@ export function CardContentActionsMenu(props: CardContentActionsMenuProps) {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         disableScrollLock={true}
     >
-        <View style={{
-            flexDirection: 'column'
-        }}>
+        <View style={styles.column}>
             <Typography align="center">Card Content</Typography>
-            <View>
-                <IconButton text="Edit" icon={IconType.Edit} onClick={onPressEdit} />
-            </View>
-            <View style={{ paddingTop: 5 }}>
-                <IconButton text="Resize" icon={IconType.Resize} onClick={onPressResize} />
-            </View>
-            <View style={{ paddingTop: 5 }}>
-                <IconButton text="Add Before" icon={IconType.Add} onClick={onPressAddBefore} />
-            </View>
-            <View style={{ paddingTop: 5 }}>
-                <IconButton text="Add After" icon={IconType.Add} onClick={onPressAddAfter} />
-            </View>
-            <View style={{ paddingTop: 5 }}>
-                <IconButton text="Delete" icon={IconType.Delete} onClick={onPressDelete} />
-            </View>
+            <IconButton text="Edit"       icon={IconType.Edit}   onClick={onPressEdit} />
+            <IconButton text="Resize"     icon={IconType.Resize} onClick={onPressResize}    style={styles.paddedButton} />
+            <IconButton text="Add Before" icon={IconType.Add}    onClick={onPressAddBefore} style={styles.paddedButton} />
+            <IconButton text="Add After"  icon={IconType.Add}    onClick={onPressAddAfter}  style={styles.paddedButton} />
+            <IconButton text="Delete"     icon={IconType.Delete} onClick={onPressDelete}    style={styles.paddedButton} />
         </View>
     </StyledPopover>
 }
@@ -114,7 +102,7 @@ const StyledPopover = withStyles({
     paper: {
         minWidth: 100,
         padding: 5
-    }
+    },
 })(Popover) as typeof Popover;
 
 const styles = StyleSheet.create({
@@ -123,5 +111,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 5,
         right: 5,
+    },
+    column: {
+        flexDirection: 'column',
+    },
+    paddedButton: {
+        paddingTop: 5,
     },
 });

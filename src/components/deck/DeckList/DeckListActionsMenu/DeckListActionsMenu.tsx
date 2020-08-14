@@ -1,5 +1,5 @@
 import React from "react";
-import {View} from "react-native";
+import {View, StyleSheet} from "react-native";
 
 import Popover from '@material-ui/core/Popover';
 import {withStyles} from "@material-ui/core/styles";
@@ -37,15 +37,9 @@ export function DeckListActionsMenu(props: DeckListActionsMenuProps){
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         disableScrollLock={true}
     >
-        <View style={{
-            flexDirection: 'column'
-        }}>
-            <View>
-                <IconButton text="Edit" icon={IconType.Edit} onClick={onEdit} />
-            </View>
-            <View style={{ paddingTop: 5 }}>
-                <IconButton text="Delete" icon={IconType.Delete} onClick={onDelete} />
-            </View>
+        <View style={styles.column}>
+            <IconButton text="Edit" icon={IconType.Edit} onClick={onEdit} />
+            <IconButton text="Delete" icon={IconType.Delete} onClick={onDelete} style={styles.paddedButton} />
         </View>
     </StyledPopover>
 }
@@ -59,3 +53,12 @@ const StyledPopover = withStyles({
         padding: 5
     }
 })(Popover) as typeof Popover;
+
+const styles = StyleSheet.create({
+    column: {
+        flexDirection: 'column',
+    },
+    paddedButton: {
+        paddingTop: 5,
+    },
+});

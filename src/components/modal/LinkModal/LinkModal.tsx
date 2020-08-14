@@ -45,12 +45,8 @@ export class LinkModal extends Modal<LinkModalProps> {
             </ModalBody>
 
             <ModalFooter style={styles.footer}>
-                <View style={styles.footerButton}>
-                    <Button title="OK" onClick={this.goToUrl} square />
-                </View>
-                <View style={styles.footerButton}>
-                    <Button title="Cancel" onClick={onClose} square />
-                </View>
+                <Button title="OK" style={styles.footerButton} onClick={this.goToUrl} square />
+                <Button title="Cancel" style={styles.footerButton} onClick={onClose} square />
             </ModalFooter>
 
         </ModalContainer>;

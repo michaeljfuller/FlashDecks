@@ -111,12 +111,8 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
             </ModalBody>
 
             <ModalFooter style={styles.footer}>
-                <View style={styles.footerItem}>
-                    <Button title="OK" onClick={this.onSave} square disabled={!this.state.modifiedDeck} />
-                </View>
-                <View style={styles.footerItem}>
-                    <Button title="Cancel" onClick={this.props.onClose} square />
-                </View>
+                <Button title="OK" style={styles.footerItem} onClick={this.onSave} square disabled={!this.state.modifiedDeck} />
+                <Button title="Cancel" style={styles.footerItem} onClick={this.props.onClose} square />
             </ModalFooter>
 
         </ModalContainer>;

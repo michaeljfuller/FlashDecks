@@ -1,5 +1,5 @@
 import React from "react";
-import {Text, View, ViewStyle} from "react-native";
+import {Text, View, ViewStyle, StyleSheet} from "react-native";
 import Button from "../../button/Button";
 import Modal, {ModalProps} from "../core/Modal";
 import {ModalContainer, ModalHeader, ModalBody, ModalFooter} from "../parts";
@@ -47,18 +47,22 @@ export class PromptModal extends Modal<PromptModalProps> {
                 {children && <View>{children}</View>}
             </ModalBody>
 
-            <ModalFooter style={{
-                flexDirection: "row", width: "100%",
-            }}>
-                <View style={{flex:1}}>
-                    <Button title="OK" onClick={this.onPressOk} square disabled={!enabledOk} />
-                </View>
-                <View style={{flex:1}}>
-                    <Button title="Cancel" onClick={this.onPressCancel} square />
-                </View>
+            <ModalFooter style={styles.footer}>
+                <Button title="OK" style={styles.footerButton} onClick={this.onPressOk} square disabled={!enabledOk} />
+                <Button title="Cancel" style={styles.footerButton} onClick={this.onPressCancel} square />
             </ModalFooter>
 
         </ModalContainer>;
     }
 }
 export default PromptModal;
+
+const styles = StyleSheet.create({
+    footer: {
+        flexDirection: "row",
+        width: "100%",
+    },
+    footerButton: {
+        flex: 1,
+    },
+});
