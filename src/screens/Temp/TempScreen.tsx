@@ -1,5 +1,5 @@
 import React, {Component, PropsWithChildren} from "react";
-import {Text, TextInput, View} from "react-native";
+import {Text, TextInput, View, StyleSheet} from "react-native";
 import ScreenContainer from "../ScreenContainer";
 import {NavigationScreenProps} from "../../navigation/navigation_types";
 import {reduxConnector, TempScreenStoreProps} from "./TempScreen_redux";
@@ -12,7 +12,7 @@ import {repeat} from "../../utils/array";
 import {AlertModal} from "../../components/modal/AlertModal/AlertModal";
 import {DebugModal} from "../../components/modal/DebugModal/DebugModal";
 import {Toast} from "../../components/toast/Toast";
-import {ToastProps, ToastType} from "../../components/toast/Toast.common";
+import {ToastType} from "../../components/toast/Toast.common";
 
 export enum TestIds {
     User='TempScreen_User',
@@ -99,7 +99,8 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
 
     renderContexts() {
         return <View style={{
-            borderWidth: 1
+            borderWidth: 1,
+            flexDirection: "column",
         }}>
             <TestContext.Provider value={'TestContext1: '+this.state.contextValue1}>
                 <TestContext.Consumer>
@@ -153,18 +154,19 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                 title={toastType}
                 disabled={toastType === this.state.toastType}
                 onClick={() => this.setState({ toastType })}
+                style={styles.rowButton}
             />;
         }
-        return <View style={{
-            marginTop: 2,
-            borderWidth: 1,
-            flexDirection: "row",
-        }}>
-            <Button title="Toggle Toast" onClick={this.onToggleToast} />
-            {toastBtn("default")}
-            {toastBtn("success")}
-            {toastBtn("warning")}
-            {toastBtn("error")}
+        return <View style={{ marginTop: 2, borderWidth: 1 }}>
+            <View style={styles.row}>
+                <Button title="Toggle Toast" onClick={this.onToggleToast} style={styles.rowButton} square />
+            </View>
+            <View style={[styles.row, styles.wrap]}>
+                {toastBtn("default")}
+                {toastBtn("success")}
+                {toastBtn("warning")}
+                {toastBtn("error")}
+            </View>
             <Toast
                 text="Example Toast"
                 show={this.state.showToast}
@@ -208,3 +210,12 @@ function Row(props: PropsWithChildren<{
 }
 
 export default reduxConnector(TempScreen);
+
+const styles = StyleSheet.create({
+    row: { flexDirection: "row" },
+    wrap: { flexWrap: "wrap" },
+    rowButton: {
+        flex: 1,
+        minWidth: 120,
+    },
+});
