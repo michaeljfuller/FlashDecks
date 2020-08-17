@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet, Text, View} from "react-native";
+import {View, StyleSheet} from "react-native";
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -34,7 +34,7 @@ export function AppBanner(props: AppBannerProps) {
                 <Toolbar style={bannerSizeStyle}>
 
                     <IconButton icon={IconType.Menu} onClick={onToggleSidebar} transparent color="White" />
-                    <View style={{ flexGrow: 1 }}>
+                    <View style={styles.breadcrumbs}>
                         <AppBreadcrumbs routerDetails={routerDetails} />
                     </View>
                     <Avatar
@@ -57,9 +57,7 @@ function HideOnScroll(props: { window?: () => Window; children: React.ReactEleme
 }
 
 const styles = StyleSheet.create({
-    bannerText: {
-        color: 'white',
-        marginLeft: 5,
-        paddingRight: 5
-    }
+    breadcrumbs: {
+        flexGrow: 1,
+    },
 });

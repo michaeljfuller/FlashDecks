@@ -1,8 +1,9 @@
 import {NavigationRouterDetails} from "../../navigation/navigation_types";
+import {UserModel} from "../../models";
 
 export interface AppBannerProps {
     routerDetails: NavigationRouterDetails;
-    loggedInUser?: User|null;
+    loggedInUser?: UserModel|null;
     onToggleSidebar: () => void;
     onSignOutClick: () => void;
 }

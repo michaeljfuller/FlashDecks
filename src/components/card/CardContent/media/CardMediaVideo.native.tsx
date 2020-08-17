@@ -2,8 +2,10 @@ import React from "react";
 import {View, LayoutChangeEvent} from "react-native";
 import {Video, VideoNaturalSize, VideoReadyForDisplayEvent} from 'expo-av';
 import {CardMediaVideoProps} from "./CardMediaVideo.common";
+import {CardMediaError} from "./CardMediaError";
 
 export interface CardMediaVideoState {
+    error?: string;
     videoSize: VideoNaturalSize;
     viewWidth: number;
     displaySize: Dimensions;
@@ -21,6 +23,12 @@ export class CardMediaVideo extends React.Component<CardMediaVideoProps, CardMed
         displaySize: { width: 0, height: 0 },
     } as CardMediaVideoState;
 
+    componentDidUpdate(prevProps: Readonly<CardMediaVideoProps>/*, prevState: Readonly<CardMediaVideoState>, snapshot?: any*/) {
+        if (prevProps.content.value !== this.props.content.value) { // URI changed
+            this.setState({ error: undefined });
+        }
+    }
+
     onViewLayout = (event: LayoutChangeEvent) => {
         const viewWidth = event.nativeEvent.layout.width;
         const {videoSize} = this.state;
@@ -29,6 +37,7 @@ export class CardMediaVideo extends React.Component<CardMediaVideoProps, CardMed
             displaySize: CardMediaVideo.calculateDisplaySize(viewWidth, videoSize),
         });
     }
+
     onVideoReadyForDisplay = (event: VideoReadyForDisplayEvent) => {
         const videoSize = event.naturalSize;
         const {viewWidth} = this.state;
@@ -36,6 +45,10 @@ export class CardMediaVideo extends React.Component<CardMediaVideoProps, CardMed
             videoSize,
             displaySize: CardMediaVideo.calculateDisplaySize(viewWidth, videoSize),
         });
+    }
+
+    onError = (error: string) => {
+        this.setState({ error });
     }
 
     static calculateDisplaySize(viewWidth: number, videoSize: VideoNaturalSize): Dimensions {
@@ -50,12 +63,18 @@ export class CardMediaVideo extends React.Component<CardMediaVideoProps, CardMed
     }
 
     render() {
+        const {error} = this.state;
         const height = this.props.height || this.state.displaySize.height || undefined;
+
+        if (error) {
+            return <CardMediaError message={error} height={height} />;
+        }
 
         return <View onLayout={this.onViewLayout}>
             <Video isLooping shouldPlay isMuted useNativeControls
                 source={{ uri: this.props.content.value }}
                 onReadyForDisplay={this.onVideoReadyForDisplay}
+                onError={this.onError}
                 style={{ height }}
                 resizeMode="contain"
             />

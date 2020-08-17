@@ -1,16 +1,10 @@
 import React from 'react';
-import {Subscription} from "rxjs";
-import ModalManager, {ModalManagerStatus} from "./ModalManager";
-import {ModalContext} from '../ModalRoot';
+import {StyleSheet, View} from 'react-native';
+import MaterialModal from "@material-ui/core/Modal";
+import DialogContent from "@material-ui/core/DialogContent";
+import {ModalProps} from "./Modal.common";
 
-export interface ModalProps {
-    /** If the Modal is open */
-    open: boolean;
-    /** Callback when the Modal is opened */
-    onOpen?: () => void;
-    /** Callback when the Modal is closed */
-    onClose?: () => void;
-}
+export * from "./Modal.common";
 
 export abstract class Modal<
     Props extends ModalProps = ModalProps,
@@ -20,73 +14,39 @@ export abstract class Modal<
 > {
     state = {} as State;
 
-    /** Holds unsubscribe */
-    subscriptionOnChange: Subscription|null = null;
-
-    // Bind ModalManager
-    static contextType = ModalContext;
-    /** Get the ModalManager from the bound ModalContext */
-    get manager(): ModalManager {
-        return this.context;
+    render() { // TODO onOpen?
+        return <MaterialModal
+            open={this.props.open}
+            onClose={this.props.onClose}
+        >
+            <DialogContent>
+                <View style={styles.modalParent}>
+                    <View style={styles.modalWrapper}>
+                        {this.renderModal()}
+                    </View>
+                </View>
+            </DialogContent>
+        </MaterialModal>;
     }
 
-    /** Subscribe to manager. */
-    componentDidMount() {
-        this.subscribeToManager();
-    }
-
-    /** Close modal and unsubscribe from ModalManager .*/
-    componentWillUnmount() {
-        if (this.manager.currentModal === this) {
-            this.manager.close();
-        }
-        if (this.subscriptionOnChange) {
-            this.subscriptionOnChange.unsubscribe();
-        }
-    }
-
-    /** If `open` changes, inform the manager. */
-    componentDidUpdate(prevProps: Readonly<ModalProps>/*, prevState: Readonly<ModalState>, snapshot?: any*/) {
-        this.subscribeToManager();
-        if (prevProps.open !== this.props.open) {
-            if (this.props.open) {
-                this.manager.open(this);
-            } else {
-                this.manager.close(this);
-            }
-        }
-    }
-
-    /** Triggers onModalChange. */
-    subscribeToManager() {
-        if (!this.subscriptionOnChange && this.manager) {
-            this.subscriptionOnChange = this.manager.onChange.subscribe({
-                next: state => {
-                    if (state.current.modal !== state.previous?.modal) {
-                        this.onModalChange(state.current, state.previous);
-                    }
-                },
-            });
-        }
-    }
-
-    /** Update state and trigger callbacks. */
-    onModalChange(current: ModalManagerStatus, previous?: ModalManagerStatus) {
-        if (this.props.onOpen && current.modal === this) {
-            this.props.onOpen();
-        }
-        if (this.props.onClose && previous?.modal === this) {
-            this.props.onClose();
-        }
-    }
-
-    /** Never render in-place. Use `renderModal` in another situation instead. */
-    render(): null {
-        return null;
-    }
-
-    /** The deferred render of the modal. */
     abstract renderModal(): React.ReactElement;
 
 }
 export default Modal;
+
+const styles = StyleSheet.create({
+    modalParent: {
+        // Span top left of screen to bottom right
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        display: 'flex', // Vertical center its child
+    },
+    modalWrapper: {
+        margin: 'auto', // Horizontal center its child
+        minWidth: 10,
+        minHeight: 10,
+    },
+});

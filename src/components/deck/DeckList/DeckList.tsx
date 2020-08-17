@@ -1,0 +1,79 @@
+import React from "react";
+import {LayoutChangeEvent, View} from "react-native";
+
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+
+import DeckListItem, {listItemMaxWidth} from "./DeckListItem/DeckListItem";
+import DeckListBase from "./DeckList.common";
+import {DeckModel} from "../../../models";
+import {DeckListActionsMenu} from "./DeckListActionsMenu/DeckListActionsMenu";
+
+export interface DeckListState {
+    /** The deck passed to the actions menu. */
+    actionsDeck?: DeckModel;
+    /** Where to attach the actions menu. */
+    actionsAnchor?: Element;
+    /** Number of columns in the list. */
+    columns: number;
+}
+export default class DeckList extends DeckListBase<DeckListState> {
+    state: DeckListState = {
+        columns: 0
+    };
+
+    componentDidMount() {
+        window.addEventListener('scroll', this.handleScroll);
+    }
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.handleScroll);
+    }
+
+    handleActions = (deck: DeckModel, event?: React.MouseEvent) => {
+        this.setState({ actionsDeck: deck, actionsAnchor: event?.nativeEvent.target as Element });
+    };
+    handleCloseActions = () => {
+        this.setState({ actionsDeck: undefined, actionsAnchor: undefined });
+    };
+    handleScroll = () => this.handleCloseActions(); // On scroll, close the actions, since the Popover has `disableScrollLock={true}`.
+
+    onLayout = (event: LayoutChangeEvent) => {
+        this.setState({ columns: Math.ceil(event.nativeEvent.layout.width / listItemMaxWidth) });
+    };
+
+    handleClick = (deck: DeckModel) => this.gotToDeck(deck);
+    handleEdit = (deck: DeckModel) => this.editDeck(deck);
+    handleDelete = (deck: DeckModel) => this.deleteDeck(deck);
+
+    render() {
+        return <View onLayout={this.onLayout}>
+            {this.renderGrid()}
+            <DeckListActionsMenu
+                deck={this.state.actionsDeck}
+                anchor={this.state.actionsAnchor}
+                onClose={this.handleCloseActions}
+                onEdit={this.handleEdit}
+                onDelete={this.handleDelete}
+            />
+        </View>;
+    }
+
+    renderGrid() {
+        if (this.state.columns < 0) return null; // Initial state, before onLayout
+
+        const titles = this.props.decks.map(deck => {
+            return <GridListTile key={deck.id}>
+                <DeckListItem
+                    deck={deck}
+                    onClick={this.handleClick}
+                    onActions={this.handleActions}
+                    showActions={this.canShowActions(deck)}
+                />
+            </GridListTile>;
+        });
+
+        return <GridList cols={this.state.columns} cellHeight={245}>
+            {titles}
+        </GridList>;
+    }
+}

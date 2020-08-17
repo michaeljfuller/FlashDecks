@@ -4,24 +4,25 @@ import ButtonWrapper from "./core/ButtonWrapper";
 import {ButtonProps, buttonPropsWithDefaults} from './Button.common';
 import {getStyledButtonBase} from "./material-ui/StyledButtonBase";
 import {getUIColorTheme} from "../../styles/UIColorTheme";
+import {numberOrDefault} from "../../utils/math";
 export * from './Button.common';
 
 /**
  * A bridge to a Material-UI Button
  */
 export function Button(props: ButtonProps) {
-    const { onClick, disabled, title, flat, style, color, square, invertColor } = buttonPropsWithDefaults(props);
+    const { onClick, disabled, title, flat, style, color, square, invertColor, width, height } = buttonPropsWithDefaults(props);
     const theme = getUIColorTheme(color, invertColor);
     const StyledButton = getStyledButtonBase(theme, square);
-    return <ButtonWrapper>
+    return <ButtonWrapper style={style}>
         <StyledButton
             variant="contained"
             onClick={onClick}
             disabled={disabled}
             disableElevation={flat}
             style={{
-                width: style.width,
-                height: style.height,
+                width: numberOrDefault(width, undefined),
+                height: numberOrDefault(height, undefined),
             }}
         >{title}</StyledButton>
     </ButtonWrapper>;

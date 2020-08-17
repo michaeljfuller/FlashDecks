@@ -3,6 +3,8 @@ import {View, StyleSheet, Text, FlatList, LayoutChangeEvent} from 'react-native'
 import CardView from "../card/CardView";
 import {preloadCards} from "../../utils/media/card";
 import {CardCarouselProps} from "./CardCarousel.common";
+import {CardModel} from "../../models";
+import {replaceItem} from "../../utils/array";
 export * from "./CardCarousel.common";
 
 export interface CardCarouselState {
@@ -23,6 +25,13 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
         this.setState({ width: event.nativeEvent.layout.width });
     }
 
+    onUpdateCard = (card: CardModel, index: number) => {
+        console.log('CardCarousel', card, index);
+        this.props.onCardsChange && this.props.onCardsChange(
+            replaceItem(this.props.cards || [], index, card)
+        );
+    }
+
     render() {
         const {cards, style} = this.props;
         const {width} = this.state;
@@ -34,12 +43,17 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
         }
 
         return <View style={[styles.root, style]}>
-            <FlatList<Card>
+            <FlatList<CardModel>
                 ref={this.flatList}
                 data={cards}
                 renderItem={({item}) => {
                     return <View key={item.id} style={[styles.cardContainer, { width }]}>
-                        <CardView item={item} style={styles.cardView} />
+                        <CardView
+                            item={item}
+                            style={styles.cardView}
+                            editable={this.props.editable}
+                            onUpdate={this.onUpdateCard}
+                        />
                     </View>;
                 }}
                 horizontal

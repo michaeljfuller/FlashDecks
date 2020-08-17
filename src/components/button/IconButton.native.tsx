@@ -3,22 +3,23 @@ import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} fro
 
 import ButtonWrapper from "./core/ButtonWrapper";
 import {Icon, IconStyles} from '../icon/Icon';
-import {IconButtonProps, iconButtonPropsWithDefaults, IconButtonStyle} from './IconButton.common';
+import {IconButtonProps, iconButtonPropsWithDefaults} from './IconButton.common';
 import {getUIColorTheme, UIColorTheme} from "../../styles/UIColorTheme";
 import {TextStyle} from "react-native";
+import {numberOrDefault} from "../../utils/math";
 
 export * from './IconButton.common';
 
 export function IconButton(props: IconButtonProps) {
-    const { onClick, text, disabled, icon, style, transparent, flat, color, invertColor } = iconButtonPropsWithDefaults(props);
+    const { onClick, text, disabled, icon, style, transparent, flat, color, invertColor, width, height, margin } = iconButtonPropsWithDefaults(props);
     const theme = getUIColorTheme(color, invertColor);
     const round = !text;
 
-    return <ButtonWrapper>
+    return <ButtonWrapper style={style}>
         <NativeBaseButton
             onPress={onClick}
             disabled={disabled}
-            style={getButtonStyle(style, theme, !!text, transparent, flat, round)}
+            style={getButtonStyle(width, height, margin, theme, !!text, transparent, flat, round)}
             transparent={transparent}
             iconLeft
         >
@@ -29,24 +30,34 @@ export function IconButton(props: IconButtonProps) {
 }
 export default IconButton;
 
-function getButtonStyle(style: IconButtonStyle, theme: UIColorTheme, hasText: boolean, transparent: boolean, flat: boolean, round: boolean): RnViewStyleProp {
+function getButtonStyle(
+    width: number,
+    height: number,
+    margin: number,
+    theme: UIColorTheme,
+    hasText: boolean,
+    transparent: boolean,
+    flat: boolean,
+    round: boolean
+): RnViewStyleProp {
     if (round) {
         const defaultSize = 24;
-        const width = style.width || style.height || defaultSize;
-        const height = style.height || style.width || defaultSize;
+        const btnWidth = width || height || defaultSize;
+        const btnHeight = height || width || defaultSize;
         return {
-            width,
-            height,
+            width: btnWidth,
+            height: btnHeight,
+            margin: numberOrDefault(margin, undefined),
             backgroundColor: transparent ? undefined : theme.primary.base,
-            borderRadius: Math.min(width, height),
+            borderRadius: Math.min(btnWidth, btnHeight),
             justifyContent: 'center',
             shadowOpacity: flat ? 0 : undefined,
         };
     } else {
         const defaultSize = hasText ? undefined : 24;
         return {
-            width: style.width || style.height || defaultSize,
-            height: style.height || style.width ||  defaultSize,
+            width: width || height || defaultSize,
+            height: height || width ||  defaultSize,
             paddingHorizontal: 5,
             backgroundColor: transparent ? undefined : theme.primary.base,
             shadowOpacity: flat ? 0 : undefined,

@@ -18,7 +18,8 @@ function styleIcon(themeStates: UIColorThemeStates): typeof Icon {
         cache[themeStates.key] = withDefaultProps(
             Icon, {
                 style: {
-                    color: themeStates.base
+                    color: themeStates.base,
+                    padding: 1,
                 }
             } as IconProps
         );

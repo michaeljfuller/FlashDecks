@@ -14,7 +14,6 @@ import InfoBanner from "../components/banner/InfoBanner";
 import DashboardScreen from "./Dashboard/DashboardScreen";
 import {TempScreen} from "./Temp/TempScreen";
 import DeckRouteContainer from "./Deck/DeckRouteContainer";
-import {getCurrentRoutes} from "../components/banner/breadcrumbs/AppBreadcrumbs.common";
 const {Navigator, Screen} = createExtendableDrawerNavigator();
 
 export const appNavigation = React.createRef<NavigationContainerRef>();
@@ -104,7 +103,7 @@ export class AppNavigation extends React.Component<AppNavigationParams, AppNavig
 
     render() {
         return <React.Fragment>
-            <NavigationContainer independent={true} ref={appNavigation} linking={this.linking}>
+            <NavigationContainer ref={appNavigation} linking={this.linking}>
                 <Navigator
                     initialRouteName={AppRoutesTree.base}
                     screenOptions={({route}) => {

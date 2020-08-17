@@ -5,13 +5,14 @@ import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} fro
 import ButtonWrapper from "./core/ButtonWrapper";
 import {ButtonProps, buttonPropsWithDefaults} from './Button.common';
 import {Color, getUIColorTheme} from "../../styles/UIColorTheme";
+import {numberOrDefault} from "../../utils/math";
 
 export * from './Button.common';
 
 export function Button(props: ButtonProps) {
-    const { onClick, disabled, title, square } = buttonPropsWithDefaults(props);
+    const { onClick, disabled, title, square, style } = buttonPropsWithDefaults(props);
 
-    return <ButtonWrapper>
+    return <ButtonWrapper style={style}>
         <NativeBaseButton
             onPress={onClick}
             disabled={disabled}
@@ -27,11 +28,11 @@ export default Button;
 //<editor-fold desc="Styles">
 
 function getBackgroundStyle(props: ButtonProps): RnViewStyleProp {
-    const {color, invertColor, style, flat} = buttonPropsWithDefaults(props);
+    const {color, invertColor, flat, width, height} = buttonPropsWithDefaults(props);
     const theme = getUIColorTheme(color, invertColor);
     return {
-        width: style?.width,
-        height: style?.height,
+        width: numberOrDefault(width, undefined),
+        height: numberOrDefault(height, undefined),
         backgroundColor: theme.primary.base,
 
         // TODO handle shadow/flat

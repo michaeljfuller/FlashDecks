@@ -1,4 +1,5 @@
 import React from "React";
+import {ViewStyle} from "react-native";
 import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
 
 export interface ButtonProps {
@@ -6,12 +7,10 @@ export interface ButtonProps {
     disabled?: boolean;
     title?: string;
     flat?: boolean;
-    style?: ButtonStyle;
+    style?: ViewStyle;
     color?: GetUIColorThemeInput;
     square?: boolean;
     invertColor?: boolean;
-}
-export interface ButtonStyle {
     width?: number;
     height?: number;
 }
@@ -27,9 +26,11 @@ export function buttonPropsWithDefaults(props: ButtonProps): Required<ButtonProp
         color = DefaultTheme.primary.key,
         square = false,
         invertColor = false,
+        width = Number.NaN,
+        height = Number.NaN,
     } = props;
     return {
-        onClick, title, flat, style, color, square, invertColor,
+        onClick, title, flat, style, color, square, invertColor, width, height,
         disabled: disabled || !props.onClick,
     };
 }

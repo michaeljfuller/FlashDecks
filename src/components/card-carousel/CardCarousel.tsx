@@ -6,6 +6,9 @@ import {CardCarouselProps} from "./CardCarousel.common";
 import Button from "../button/Button";
 import {UIColorThemeMap} from "../../styles/UIColorTheme";
 import {preloadCards} from "../../utils/media/card";
+import {CardModel} from "../../models";
+import {replaceItem} from "../../utils/array";
+import withDefaultProps from "../../utils/hoc/withDefaultProps/withDefaultProps";
 export * from "./CardCarousel.common";
 
 const useNativeDriver = !isPlatformWeb;
@@ -66,10 +69,21 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
     };
 
     onKeyDown = (event: KeyboardEvent) => {
-        switch (event.code) {
-            case "ArrowLeft": return this.previous();
-            case "ArrowRight": return this.next();
+        if (!this.props.editable) {
+            switch (event.code) {
+                case "ArrowLeft": return this.previous();
+                case "ArrowRight": return this.next();
+            }
         }
+    }
+
+    onUpdateCard = (card: CardModel, index: number) => {
+        console.group('CardCarousel.onUpdateCard');
+        console.log(`Index: ${index}`, card);
+        this.props.onCardsChange && this.props.onCardsChange(
+            replaceItem(this.props.cards || [], index, card)
+        );
+        console.groupEnd();
     }
 
     async cardOut(endPosition: number, duration = 250) {
@@ -124,7 +138,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
         }
 
         return <View style={[styles.root, style]} onLayout={this.onLayout}>
-            <Button title="<" onClick={this.previous} disabled={!this.canGoToPrevious} square flat color={theme} />
+            <CarouselButton title="<" onClick={this.previous} disabled={!this.canGoToPrevious} />
             <View style={styles.cardContainer}>
                 <Animated.View style={{
                     opacity: this.cardOpacity,
@@ -133,10 +147,12 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
                     <CardView
                         item={cards[index]}
                         style={[styles.cardView, { width: cardWidth, height: cardHeight }]}
+                        editable={this.props.editable}
+                        onUpdate={this.onUpdateCard}
                     />
                 </Animated.View>
             </View>
-            <Button title=">" onClick={this.next} disabled={!this.canGoToNext} square flat color={theme} />
+            <CarouselButton title=">" onClick={this.next} disabled={!this.canGoToNext} />
         </View>;
     }
 }
@@ -158,5 +174,15 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingVertical: 5,
     },
-    cardView: {}
+    cardView: {},
+    carouselButton: {
+        height: '100%',
+    },
 });
+
+const CarouselButton = withDefaultProps(Button, {
+    square: true,
+    flat: true,
+    color: theme,
+    style: styles.carouselButton
+}, null, 'CarouselButton');

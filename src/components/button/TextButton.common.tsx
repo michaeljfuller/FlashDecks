@@ -1,5 +1,6 @@
-import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
 import React from "react";
+import {ViewStyle} from "react-native";
+import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
 
 export interface TextButtonProps {
     onClick?: (event?: React.MouseEvent) => void;
@@ -7,6 +8,9 @@ export interface TextButtonProps {
     title?: string;
     color?: GetUIColorThemeInput;
     invertColor?: boolean;
+    style?: ViewStyle;
+    width?: number;
+    height?: number;
 }
 
 const noop = () => {};
@@ -15,11 +19,14 @@ export function textButtonPropsWithDefaults(props: TextButtonProps): Required<Te
         onClick = noop,
         disabled = false,
         title = '',
+        style = {},
+        width = Number.NaN,
+        height = Number.NaN,
         color = DefaultTheme.primary.key,
         invertColor = false,
     } = props;
     return {
-        onClick, title, color, invertColor,
+        onClick, title, color, invertColor, style, width, height,
         disabled: disabled || !props.onClick,
     };
 }

@@ -6,10 +6,11 @@ import {getStyledButtonIcon} from './material-ui/StyledButtonIcon';
 import ButtonWrapper from "./core/ButtonWrapper";
 import {IconButtonProps, iconButtonPropsWithDefaults} from './IconButton.common';
 import {getUIColorTheme} from "../../styles/UIColorTheme";
+import {numberOrDefault} from "../../utils/math";
 export * from './IconButton.common';
 
 export function IconButton(props: IconButtonProps) {
-    const { onClick, disabled, icon, style, text, transparent, flat, color, invertColor } = iconButtonPropsWithDefaults(props);
+    const { onClick, disabled, icon, style, text, transparent, flat, color, invertColor, width, height, margin } = iconButtonPropsWithDefaults(props);
     const theme = getUIColorTheme(color, invertColor);
     const defaultIconSize = text ? undefined : 24;
 
@@ -17,13 +18,14 @@ export function IconButton(props: IconButtonProps) {
     const IconComponent = getStyledButtonIcon(theme, transparent);
     const TextComponent = getStyledButtonText(theme, transparent);
 
-    return <ButtonWrapper>
+    return <ButtonWrapper style={style}>
         <ContainerButton
             onClick={onClick}
             disabled={disabled}
             style={{
-                width: style.width || defaultIconSize,
-                height: style.height || defaultIconSize,
+                width: numberOrDefault(width, defaultIconSize),
+                height: numberOrDefault(height, defaultIconSize),
+                margin: numberOrDefault(margin, undefined),
                 textAlign: "center"
             }}
         >

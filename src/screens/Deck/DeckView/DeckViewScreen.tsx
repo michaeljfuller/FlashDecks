@@ -1,20 +1,22 @@
 import React, {Component} from "react";
 import ScreenContainer from "../../ScreenContainer";
-import DeckView from "../../../components/deck/DeckView";
+import DeckView from "../../../components/deck/DeckView/DeckView";
 import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
 import {reduxConnector, DeckViewScreenStoreProps} from "./DeckViewScreen_redux";
 import {repeat} from "../../../utils/array";
+import DeckScreenHeader from "../common/DeckScreenHeader";
+import {DeckModel} from "../../../models";
 
 export interface DeckViewScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
 > {}
 export interface DeckViewScreenState {
-    deck: Deck;
+    deck: DeckModel;
 }
 export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScreenStoreProps, DeckViewScreenState>
 {
     state = {
-        deck: {
+        deck: DeckModel.fromApi({
             id: `deck-id`,
             name: `Deck name`,
             description: `Deck description`,
@@ -77,7 +79,7 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
                 ownerId: `owner-id`,
                 owner: { id: `owner-id`, displayName: `Owner displayName` },
             }]
-        }
+        })
     } as DeckViewScreenState;
 
     componentDidMount() {
@@ -90,7 +92,8 @@ export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScre
 
     render() {
         return (
-            <ScreenContainer style={{ padding: 5 }}>
+            <ScreenContainer>
+                <DeckScreenHeader item={this.state.deck} />
                 <DeckView item={this.state.deck} />
             </ScreenContainer>
         );

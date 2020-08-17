@@ -3,6 +3,7 @@ import {Text, View, ScrollView, StyleSheet} from "react-native";
 import {Color} from "../../styles/Color";
 import CardSide from "./CardSide/CardSide";
 import {CardViewBase} from "./CardView.common";
+import CardSideActions from "./CardSide/CardSideActions";
 
 const edgeRadius = 15;
 const sideCountPadding = 2;
@@ -19,17 +20,43 @@ export default class CardView extends CardViewBase {
         const footerText = this.sides.length > 1 ? `${this.state.sideIndex+1}/${this.sides.length}` : '';
 
         return <View style={[styles.root, this.props.style]} onLayout={this.onLayout}>
-            <Text style={styles.title}>{this.props.item.name}</Text>
+
+            <View style={styles.headerRow}>
+                <Text style={styles.title}>{this.card?.name || "Unknown"}</Text>
+                {this.hasActions ? this.renderHeaderActions() : null}
+            </View>
+
             <ScrollView
                 style={styles.scrollView}
                 contentContainerStyle={[styles.body, { minHeight: bodyHeight || undefined }]}
                 persistentScrollbar={true}
             >
-                <CardSide side={this.currentSide} height={bodyHeight} style={{ minHeight: bodyHeight || undefined }} onPress={this.onPress} />
+                <CardSide
+                    side={this.currentSide}
+                    onPress={this.onPress}
+                    onModifications={this.onSideChange}
+                    height={bodyHeight}
+                    editing={this.state.editing}
+                    style={{ minHeight: bodyHeight || undefined }}
+                />
             </ScrollView>
             <View style={styles.footer}>
                 <Text style={styles.footerText}>{footerText}</Text>
             </View>
+        </View>;
+    }
+
+    renderHeaderActions() {
+        return <View style={styles.headerActions}>
+            <CardSideActions
+                editing={this.state.editing || false}
+                onPressDone={this.state.modifiedCard ? this.onClickDone : undefined}
+                onPressCancel={this.onClickCancel}
+                onPressEdit={this.onClickEdit}
+                onPressAddBefore={this.onAddBefore}
+                onPressAddAfter={this.onAddAfter}
+                onPressDelete={this.onDelete}
+            />
         </View>;
     }
 }
@@ -40,14 +67,23 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         backgroundColor: Color.OffWhite,
-        paddingTop: edgeRadius,
         borderRadius: edgeRadius,
+    },
+    headerRow: {},
+    headerActions: {
+        flexDirection: "row",
+        position: "absolute",
+        right: 0,
+    //  top: 0,
+    },
+    headerActionIconButtons: {
+        top: 5,
     },
     title: {
         textAlign: "center",
         fontWeight: "bold",
         fontSize: titleHeight,
-        lineHeight: titleHeight,
+        lineHeight: headerHeight,
         borderBottomWidth: borderWidth,
         borderColor,
     },
