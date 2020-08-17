@@ -8,6 +8,7 @@ import DeckView from "../../../components/deck/DeckView/DeckView";
 import Button from "../../../components/button/Button";
 import DeckScreenHeader from "../common/DeckScreenHeader";
 import {DeckModel} from "../../../models";
+import {Toast} from "../../../components/toast/Toast";
 
 export interface DeckEditScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -15,6 +16,7 @@ export interface DeckEditScreenProps extends NavigationScreenProps<
 export interface DeckEditScreenState {
     originalDeck?: DeckModel;
     modifiedDeck?: DeckModel;
+    showSaveToast: boolean;
 }
 
 const originalDeck = DeckModel.fromApi({
@@ -84,7 +86,9 @@ const originalDeck = DeckModel.fromApi({
 
 export class DeckEditScreen extends Component<DeckEditScreenProps & DeckEditScreenStoreProps, DeckEditScreenState>
 {
-    state = {} as DeckEditScreenState;
+    state = {
+        showSaveToast: false,
+    } as DeckEditScreenState;
 
     get deck() {
         return this.state.modifiedDeck || this.state.originalDeck;
@@ -100,14 +104,19 @@ export class DeckEditScreen extends Component<DeckEditScreenProps & DeckEditScre
     }
 
     onChange = (deck: DeckModel) => {
-        console.log('DeckEditScreen.onChange', deck); // TODO Toast
         this.setState({ modifiedDeck: deck });
     }
 
     onSavePressed = () => {
-        console.log('DeckEditScreen.onSavePressed', this.state.modifiedDeck); // TODO Toast + store
+        this.setState({
+            originalDeck: this.state.modifiedDeck,
+            modifiedDeck: undefined,
+            showSaveToast: true,
+        });
+    }
 
-        this.setState({ originalDeck: this.state.modifiedDeck, modifiedDeck: undefined });
+    onSaveToastClosed = () => {
+        this.setState({ showSaveToast: false });
     }
 
     render() {
@@ -116,13 +125,27 @@ export class DeckEditScreen extends Component<DeckEditScreenProps & DeckEditScre
         }
         return (
             <ScreenContainer>
-                <DeckScreenHeader editable item={this.deck} title={`Edit: ${this.deck?.name}`} />
-                <DeckView editable item={this.deck} onChange={this.onChange} />
+                <DeckScreenHeader
+                    editable
+                    item={this.deck}
+                    onChange={this.onChange}
+                    title={`Edit: ${this.deck?.name}`}
+                />
+                <DeckView
+                    editable
+                    item={this.deck}
+                    onChange={this.onChange}
+                />
                 <Button
                     title="Save"
                     square
                     disabled={!this.state.modifiedDeck}
                     onClick={this.onSavePressed}
+                />
+                <Toast
+                    show={this.state.showSaveToast}
+                    text={`Saved: "${this.state.modifiedDeck?.name}".`}
+                    onClose={this.onSaveToastClosed}
                 />
             </ScreenContainer>
         );
