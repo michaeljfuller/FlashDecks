@@ -32,7 +32,7 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
         }
     }
 
-    onSave = () => {
+    onPressOk = () => {
         if (this.props.onChange && this.state.modifiedDeck) {
             this.props.onChange(this.state.modifiedDeck);
         }
@@ -111,7 +111,7 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
             </ModalBody>
 
             <ModalFooter style={styles.footer}>
-                <Button title="OK" style={styles.footerItem} onClick={this.onSave} square disabled={!this.state.modifiedDeck} />
+                <Button title="OK" style={styles.footerItem} onClick={this.onPressOk} square disabled={!this.state.modifiedDeck} />
                 <Button title="Cancel" style={styles.footerItem} onClick={this.props.onClose} square />
             </ModalFooter>
 

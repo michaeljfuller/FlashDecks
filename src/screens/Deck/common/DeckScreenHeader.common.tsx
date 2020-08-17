@@ -5,6 +5,7 @@ export interface DeckScreenHeaderProps {
     item: DeckModel;
     title?: string;
     editable?: boolean;
+    onChange?: (item: DeckModel) => void;
 }
 export interface DeckScreenHeaderPropsState {
     showInfo: boolean;
