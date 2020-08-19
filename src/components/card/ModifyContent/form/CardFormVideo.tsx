@@ -12,7 +12,7 @@ interface CardFormVideoProps {
 
 const previewHeight = 200;
 
-export function CardFormVideo(props: CardFormVideoProps) {
+export const CardFormVideo = React.memo(function CardFormVideo(props: CardFormVideoProps) {
     const { content, onChange, preview } = props;
 
     const onChangeText = useCallback(
@@ -37,7 +37,8 @@ export function CardFormVideo(props: CardFormVideoProps) {
         </View>
     </View>;
 
-}
+});
+export default CardFormVideo;
 
 const styles = StyleSheet.create({
     inputRow: {

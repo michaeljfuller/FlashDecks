@@ -1,4 +1,5 @@
 import React from "react";
+import ImmutablePureComponent from "../../ImmutablePureComponent";
 import {CardModel, DeckModel} from "../../../models";
 
 export interface DeckViewProps {
@@ -8,7 +9,7 @@ export interface DeckViewProps {
 }
 export type DeckViewItemChange = (item: DeckModel) => void;
 
-export default class DeckViewBase<State = {}> extends React.Component<DeckViewProps, State>{
+export default class DeckViewBase<State = {}> extends ImmutablePureComponent<DeckViewProps, State>{
     get cardCount() {
         return this.props.item.cards?.length || 0;
     }

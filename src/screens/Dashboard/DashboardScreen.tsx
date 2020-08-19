@@ -1,9 +1,9 @@
-import React, {Component} from "react";
+import React, {PureComponent} from "react";
 import {Text} from "react-native";
 import ScreenContainer from "../ScreenContainer";
 import {NavigationScreenProps} from "../../navigation/navigation_types";
 
-export default class DashboardScreen extends Component<NavigationScreenProps>
+export default class DashboardScreen extends PureComponent<NavigationScreenProps>
 {
     render() {
         return (

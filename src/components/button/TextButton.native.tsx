@@ -8,7 +8,7 @@ import {numberOrDefault} from "../../utils/math";
 
 export * from './TextButton.common';
 
-export function TextButton(props: TextButtonProps) {
+export const TextButton = React.memo(function TextButton(props: TextButtonProps) {
     const { onClick, disabled, title, color, invertColor, style, width, height } = textButtonPropsWithDefaults(props);
     const theme = getUIColorTheme(color, invertColor);
 
@@ -25,6 +25,6 @@ export function TextButton(props: TextButtonProps) {
             <NativeBaseText style={{ color: theme.primary.base }}>{title}</NativeBaseText>
         </NativeBaseButton>
     </ButtonWrapper>;
-}
+});
 export default TextButton;
 

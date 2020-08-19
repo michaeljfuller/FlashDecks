@@ -13,7 +13,7 @@ export interface CardContentMediaProps {
 }
 
 /** Wrapper to get the right media type for CardContent. */
-export function CardContentMedia(props: CardContentMediaProps) {
+export const CardContentMedia = React.memo(function CardContentMedia(props: CardContentMediaProps) {
     const {content, height} = props;
     switch (content.type) {
         case "Image": return <CardMediaImage content={content} height={height} />;
@@ -22,5 +22,5 @@ export function CardContentMedia(props: CardContentMediaProps) {
         case "Video": return <CardMediaVideo content={content} height={height} />;
     }
     return <CardMediaError message={`Unhandled content type "${content.type}".`} height={height} />;
-}
+});
 export default CardContentMedia;

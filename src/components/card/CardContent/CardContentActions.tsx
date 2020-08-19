@@ -8,7 +8,7 @@ import {CardContentActionsProps} from "./CardContentActions.common";
 import IconButton, {IconType} from "../../button/IconButton";
 
 /** Action buttons for CardContent. */
-export function CardContentActions(props: CardContentActionsProps) {
+export const CardContentActions = React.memo(function CardContentActions(props: CardContentActionsProps) {
     const [actionsAnchor, setActionsAnchor] = useState<Element|undefined>();
 
     const openActions = useCallback((event?: React.MouseEvent) => {
@@ -37,7 +37,7 @@ export function CardContentActions(props: CardContentActionsProps) {
             onPressResize={props.onPressResize}
         />
     </View>;
-}
+});
 export default CardContentActions;
 
 export interface CardContentActionsMenuProps {

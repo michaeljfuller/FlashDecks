@@ -1,7 +1,11 @@
 import React from 'react';
+export * from 'immer';
 import {produceState, StateRecipe, StateTemplate} from "./ImmutableComponent.utils";
 
-/** A component with helpers for immutable state management. */
+/**
+ * A component with helpers for immutable state management.
+ * To be used over ImmutablePureComponent, when the component has children passed.
+ */
 export default class ImmutableComponent<
     Properties={}, State={}, SnapShot={}
 > extends React.Component<

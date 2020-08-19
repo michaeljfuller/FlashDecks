@@ -9,7 +9,7 @@ import {numberOrDefault} from "../../utils/math";
 
 export * from './Button.common';
 
-export function Button(props: ButtonProps) {
+export const Button = React.memo(function Button(props: ButtonProps) {
     const { onClick, disabled, title, square, style } = buttonPropsWithDefaults(props);
 
     return <ButtonWrapper style={style}>
@@ -22,7 +22,7 @@ export function Button(props: ButtonProps) {
             <NativeBaseText style={getTextStyle(props)} uppercase={false}>{title}</NativeBaseText>
         </NativeBaseButton>
     </ButtonWrapper>;
-}
+});
 export default Button;
 
 //<editor-fold desc="Styles">

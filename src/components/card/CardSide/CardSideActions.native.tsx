@@ -6,7 +6,7 @@ import {CardActionsProps} from "./CardSideActions.common";
 import IconButton, {IconType} from "../../button/IconButton";
 
 /** Action buttons for CardContent. */
-export function CardSideActions(props: CardActionsProps) {
+export const CardSideActions = React.memo(function CardSideActions(props: CardActionsProps) {
     const onPress = useCallback(() => {
         showActions(
             props.onPressEdit,
@@ -31,7 +31,7 @@ export function CardSideActions(props: CardActionsProps) {
         button = <IconButton icon={IconType.More} onClick={onPress} color="Black" />;
     }
     return <View style={styles.root}>{button}</View>;
-}
+});
 export default CardSideActions;
 
 const styles = StyleSheet.create({

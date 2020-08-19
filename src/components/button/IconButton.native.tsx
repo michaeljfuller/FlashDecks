@@ -10,7 +10,7 @@ import {numberOrDefault} from "../../utils/math";
 
 export * from './IconButton.common';
 
-export function IconButton(props: IconButtonProps) {
+export const IconButton = React.memo(function IconButton(props: IconButtonProps) {
     const { onClick, text, disabled, icon, style, transparent, flat, color, invertColor, width, height, margin } = iconButtonPropsWithDefaults(props);
     const theme = getUIColorTheme(color, invertColor);
     const round = !text;
@@ -27,7 +27,7 @@ export function IconButton(props: IconButtonProps) {
             {text ? <NativeBaseText style={getTextStyle(theme, transparent, disabled)}>{text}</NativeBaseText> : undefined}
         </NativeBaseButton>
     </ButtonWrapper>;
-}
+});
 export default IconButton;
 
 function getButtonStyle(

@@ -12,7 +12,7 @@ export interface DeckInfoModelTagsProps {
     onChange?: (tags: string[]) => void;
 }
 
-export function DeckInfoModelTags(props: DeckInfoModelTagsProps) {
+export const DeckInfoModelTags = React.memo(function DeckInfoModelTags(props: DeckInfoModelTagsProps) {
     const {tags=[], editable=false, onChange} = props;
     const [openAddTagModal, setOpenAddTagModal] = useState(false);
     const [tagInput, setTagInput] = useState('');
@@ -58,7 +58,8 @@ export function DeckInfoModelTags(props: DeckInfoModelTagsProps) {
         </View>;
     }
     return null;
-}
+});
+export default DeckInfoModelTags;
 
 const styles = StyleSheet.create({
     tags: {

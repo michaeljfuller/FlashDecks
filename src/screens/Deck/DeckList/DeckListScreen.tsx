@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {Text, View} from "react-native";
+import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
 import ScreenContainer from "../../ScreenContainer";
 import {NavigationScreenProps} from "../../../navigation/navigation_types";
 import DeckList from "../../../components/deck/DeckList/DeckList";
@@ -13,7 +14,7 @@ export interface DeckListScreenProps extends NavigationScreenProps {}
 export interface DeckListScreenState {
     decks: DeckModel[];
 }
-export class DeckListScreen extends Component<DeckListScreenProps & DeckListScreenStoreProps, DeckListScreenState>
+export class DeckListScreen extends ImmutablePureComponent<DeckListScreenProps & DeckListScreenStoreProps, DeckListScreenState>
 {
     state = {
         decks: repeat(7, index => DeckModel.fromApi({

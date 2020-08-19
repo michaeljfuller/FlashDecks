@@ -7,6 +7,7 @@ export interface CardMediaLinkProps {
     height?: number;
 }
 
-export function CardMediaLink(props: CardMediaLinkProps) {
+export const CardMediaLink = React.memo(function CardMediaLink(props: CardMediaLinkProps) {
     return <LinkButton url={props.content.value} height={props.height} />;
-}
+});
+export default CardMediaLink;

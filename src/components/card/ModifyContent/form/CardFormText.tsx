@@ -8,7 +8,7 @@ interface CardFormTextProps {
     onChange: (content: CardContentModel) => void;
 }
 
-export function CardFormText(props: CardFormTextProps) {
+export const CardFormText = React.memo(function CardFormText(props: CardFormTextProps) {
     const { content, onChange } = props;
 
     const onChangeText = useCallback(
@@ -31,7 +31,8 @@ export function CardFormText(props: CardFormTextProps) {
         />
     </View>;
 
-}
+});
+export default CardFormText;
 
 const styles = StyleSheet.create({
     input: {

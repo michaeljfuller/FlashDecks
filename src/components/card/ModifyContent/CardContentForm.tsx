@@ -13,7 +13,7 @@ interface CardContentResizerProps {
 }
 
 /** A form to edit the content. */
-export function CardContentForm(props: CardContentResizerProps) {
+export const CardContentForm = React.memo(function CardContentForm(props: CardContentResizerProps) {
     switch (props.content.type) {
         case "Text":  return <CardFormText  content={props.content} onChange={props.onChange} />
         case "Image": return <CardFormImage content={props.content} onChange={props.onChange} preview={props.preview} />
@@ -21,4 +21,5 @@ export function CardContentForm(props: CardContentResizerProps) {
         case "Link":  return <CardFormLink  content={props.content} onChange={props.onChange} preview={props.preview} />
     }
     return <Text>Unsupported content type &quot;{props.content.type}&quot;.</Text>;
-}
+});
+export default CardContentForm;

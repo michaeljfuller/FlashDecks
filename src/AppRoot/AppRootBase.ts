@@ -29,7 +29,7 @@ enum AuthEventType {
     CONFIGURED = 'configured'
 }
 
-export abstract class AppRootBase extends React.Component<AppRootProps, AppRootState> {
+export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppRootState> {
     state: AppRootState = {
         user: undefined,
         cognitoUser: undefined,

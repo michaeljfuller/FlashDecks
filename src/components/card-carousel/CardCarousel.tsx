@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, Text, Animated, LayoutChangeEvent} from 'react-native';
+import ImmutablePureComponent from "../ImmutablePureComponent";
 import {isPlatformWeb} from "../../platform";
 import CardView from "../card/CardView";
 import {CardCarouselProps} from "./CardCarousel.common";
@@ -20,13 +21,13 @@ interface CardCarouselState {
     cardWidth: number;
     cardHeight: number;
 }
-export class CardCarousel extends React.Component<CardCarouselProps, CardCarouselState>{
+export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, CardCarouselState>{
     state = {
         index: 0,
         isAnimating: false,
         cardWidth: 0,
         cardHeight: 0,
-    } as CardCarouselState;
+    } as Readonly<CardCarouselState>;
 
     get canGoToPrevious() {
         return !this.state.isAnimating && this.state.index > 0;
@@ -65,7 +66,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
             height = width / cardAspectRatio;
         }
 
-        this.setState({ cardWidth: width, cardHeight: height });
+        this.setStateTo({ cardWidth: width, cardHeight: height });
     };
 
     onKeyDown = (event: KeyboardEvent) => {
@@ -109,21 +110,21 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
 
     next = async () => {
         if (this.canGoToNext) {
-            this.setState({isAnimating: true});
+            this.setStateTo({isAnimating: true});
             await this.cardOut(-300);
-            this.setState({index: this.state.index + 1});
+            this.setStateTo({index: this.state.index + 1});
             await this.cardIn(300);
-            this.setState({isAnimating: false});
+            this.setStateTo({isAnimating: false});
         }
     };
 
     previous = async () => {
         if (this.canGoToPrevious) {
-            this.setState({isAnimating: true});
+            this.setStateTo({isAnimating: true});
             await this.cardOut(300);
-            this.setState({ index: this.state.index - 1 });
+            this.setStateTo({ index: this.state.index - 1 });
             await this.cardIn(-300);
-            this.setState({isAnimating: false});
+            this.setStateTo({isAnimating: false});
         }
     };
 

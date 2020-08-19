@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import ScreenContainer from "../../ScreenContainer";
+import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
 import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
 
 import {reduxConnector, DeckEditScreenStoreProps} from "./DeckEditScreen_redux";
@@ -9,6 +10,7 @@ import Button from "../../../components/button/Button";
 import DeckScreenHeader from "../common/DeckScreenHeader";
 import {DeckModel} from "../../../models";
 import {Toast} from "../../../components/toast/Toast";
+import {castDraft} from "immer";
 
 export interface DeckEditScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -84,7 +86,7 @@ const originalDeck = DeckModel.fromApi({
     }]
 });
 
-export class DeckEditScreen extends Component<DeckEditScreenProps & DeckEditScreenStoreProps, DeckEditScreenState>
+export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps & DeckEditScreenStoreProps, DeckEditScreenState>
 {
     state = {
         showSaveToast: false,
@@ -97,7 +99,7 @@ export class DeckEditScreen extends Component<DeckEditScreenProps & DeckEditScre
     componentDidMount() {
         const {deckId} = this.props.route.params || {};
         if (deckId) {
-            this.setState({ originalDeck });
+            this.setStateTo(draft => draft.originalDeck = castDraft(originalDeck));
         } else {
             console.warn('No ID'); // TODO Redirect
         }

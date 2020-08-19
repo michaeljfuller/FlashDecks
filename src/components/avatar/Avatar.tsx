@@ -14,7 +14,7 @@ const Tooltip = withStyles({
     }
 })(MaterialTooltip) as typeof MaterialTooltip;
 
-export default function Avatar(props: AvatarProps) {
+export const Avatar = React.memo(function Avatar(props: AvatarProps) {
     const {user, style, size=40, labelStyle, labelPlacement} = props;
     const label = props.label || (user && user.displayName) || 'Unknown';
 
@@ -40,7 +40,8 @@ export default function Avatar(props: AvatarProps) {
     return <Tooltip arrow title={label}>
         <View style={style}>{icon}</View>
     </Tooltip>;
-}
+});
+export default Avatar;
 
 const styles = StyleSheet.create({
     row: {

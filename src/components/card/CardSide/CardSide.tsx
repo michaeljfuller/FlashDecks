@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, TouchableWithoutFeedback, StyleSheet, Text, ViewStyle} from 'react-native';
+import ImmutablePureComponent, {castDraft} from "../../ImmutablePureComponent";
 import {Color} from "../../../styles/Color";
 import CardContentView from "../CardContent/CardContent";
 import {CardContentModel, CardSideModel} from "../../../models";
@@ -8,7 +9,7 @@ import {ModifyContentModal} from "../ModifyContent/ModifyContentModal";
 import Button from "../../button/Button";
 
 export interface CardSideProps {
-    side?: CardSideModel;
+    side?: CardSideModel|undefined;
     style?: ViewStyle|Array<ViewStyle|null|undefined>;
     height: number;
     editing?: boolean;
@@ -25,14 +26,14 @@ export interface CardSideState {
     contentIndexToDelete: number;
 }
 
-export class CardSide extends React.Component<CardSideProps, CardSideState> {
-    state = {
+export class CardSide extends ImmutablePureComponent<CardSideProps, CardSideState> {
+    readonly state = {
         modifyContent: null,
         addContentIndex: -1,
         modifyContentIndex: -1,
         resizeContentIndex: -1,
         contentIndexToDelete: -1,
-    } as CardSideState;
+    } as Readonly<CardSideState>;
 
     get currentSide(): CardSideModel {
         return this.state.updatedSide || this.props.side || new CardSideModel;
@@ -53,42 +54,54 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
 
     componentDidUpdate(prevProps: Readonly<CardSideProps>) {
         if (prevProps.side !== this.props.side) {
-            this.setState({ updatedSide: this.props.side });
+            this.setStateTo(draft => draft.updatedSide = castDraft(this.props.side));
         }
     }
 
     onContentEditing = (content: CardContentModel|null, index: number) => {
-        this.setState({ modifyContent: content, modifyContentIndex: content ? index : -1 });
+        this.setStateTo(draft => {
+            draft.modifyContent = content;
+            draft.modifyContentIndex = content ? index : -1;
+        });
     }
 
     onContentResizing = (content: CardContentModel|null, index: number) => {
-        this.setState({ resizeContentIndex: content ? index : -1 })
+        this.setStateTo({ resizeContentIndex: content ? index : -1 })
     }
 
     onContentChange = (content: CardContentModel, contentIndex: number) => {
-        this.updateSide(this.currentSide.setContent(content, content ? contentIndex : -1));
+        this.updateSide(
+            this.currentSide.setContent(content, content ? contentIndex : -1)
+        );
     }
 
     //<editor-fold desc="Add Content">
 
     onContentAdd = (indexOrEvent: number|any) => {
         const index = typeof indexOrEvent === "number" ? indexOrEvent : this.currentContent.length;
-        this.setState({ addContentIndex: index, modifyContent: new CardContentModel });
+        this.setStateTo(draft => {
+            draft.modifyContent = new CardContentModel;
+            draft.addContentIndex = index;
+        });
     }
 
-    onContentModifyChange = (content: CardContentModel) => this.setState({ modifyContent: content });
+    onContentModifyChange = (content: CardContentModel) => this.setStateTo(draft => draft.modifyContent = content);
 
     onContentModifyConfirmed = () => {
         const { modifyContent, addContentIndex, modifyContentIndex } = this.state;
         if (this.isAddingContent) {
-            this.updateSide(this.currentSide.insertContent(modifyContent || new CardContentModel, addContentIndex));
+            this.updateSide(
+                this.currentSide.insertContent(modifyContent || new CardContentModel, addContentIndex)
+            );
         } else if (this.isModifyingContent) {
-            this.updateSide(this.currentSide.setContent(modifyContent || new CardContentModel, modifyContentIndex));
+            this.updateSide(
+                this.currentSide.setContent(modifyContent || new CardContentModel, modifyContentIndex)
+            );
         }
     }
 
     onContentModifyClosed = () => {
-        this.setState({
+        this.setStateTo({
             modifyContent: null,
             addContentIndex: -1,
             modifyContentIndex: -1,
@@ -99,25 +112,27 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
     //<editor-fold desc="Delete Content">
 
     onContentDelete = (content: CardContentModel, contentIndex: number) => {
-        this.setState({ contentIndexToDelete: contentIndex });
+        this.setStateTo(draft => draft.contentIndexToDelete = contentIndex);
     }
 
     onContentDeleteConfirmed = () => {
         const index = this.state.contentIndexToDelete;
         if (index !== undefined) {
-            this.updateSide(this.currentSide.deleteContent(index));
+            this.updateSide(
+                this.currentSide.deleteContent(index)
+            );
             this.onContentDeleteClosed();
         }
     }
 
     onContentDeleteClosed = () => {
-        this.setState({ contentIndexToDelete: -1 });
+        this.setStateTo({ contentIndexToDelete: -1 });
     }
 
     //</editor-fold>
 
     private updateSide(side: CardSideModel) {
-        this.setState({ updatedSide: side });
+        this.setStateTo(draft => draft.updatedSide = castDraft(side));
         if (this.props.onModifications) this.props.onModifications(side);
     }
 
@@ -186,7 +201,7 @@ export class CardSide extends React.Component<CardSideProps, CardSideState> {
             {this.props.editing && <Button title="Add Content" onClick={this.onContentAdd} />}
         </React.Fragment>;
     }
-    
+
 }
 export default CardSide;
 

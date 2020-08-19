@@ -1,4 +1,4 @@
-import React, {Component, ErrorInfo} from 'react';
+import React, {PureComponent, ErrorInfo} from 'react';
 import {StyleSheet, Text, View} from "react-native";
 
 interface ErrorBoundaryProps {}
@@ -10,7 +10,7 @@ interface ErrorBoundaryState {
 /**
  * Wrap this around another component to catch errors thrown by it, or its children.
  */
-class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+class ErrorBoundary extends PureComponent<ErrorBoundaryProps, ErrorBoundaryState> {
     static readonly defaultMessage = 'An error has occurred';
 
     state = {

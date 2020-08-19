@@ -1,24 +1,25 @@
 import React, {SyntheticEvent} from "react";
 import {View} from "react-native";
+import ImmutablePureComponent from "../../../ImmutablePureComponent";
 import {CardMediaVideoProps} from "./CardMediaVideo.common";
 import {CardMediaError} from "./CardMediaError";
 
 export interface CardMediaVideoState {
     error?: string;
 }
-export class CardMediaVideo extends React.Component<CardMediaVideoProps, CardMediaVideoState> {
-    state = {} as CardMediaVideoState;
+export class CardMediaVideo extends ImmutablePureComponent<CardMediaVideoProps, CardMediaVideoState> {
+    readonly state = {} as Readonly<CardMediaVideoState>;
 
     componentDidUpdate(prevProps: Readonly<CardMediaVideoProps>/*, prevState: Readonly<CardMediaVideoState>, snapshot?: any*/) {
         if (prevProps.content.value !== this.props.content.value) { // URI changed
-            this.setState({ error: undefined });
+            this.setStateTo({ error: undefined });
         }
     }
 
     onError = (error: SyntheticEvent<HTMLVideoElement, Event>) => {
         const message = `Failed to load video.`;
         console.warn(message, this.props.content.value, error);
-        this.setState({ error: message });
+        this.setStateTo({ error: message });
     }
 
     render() {

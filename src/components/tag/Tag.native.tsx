@@ -7,7 +7,7 @@ import IconButton, {IconType} from "../button/IconButton";
 
 const theme = DefaultTheme;
 
-export default function Tag(props: TagProps) {
+export const Tag = React.memo(function Tag(props: TagProps) {
     const {value, onDelete} = props;
 
     const onClickDelete = useCallback(() => {
@@ -18,7 +18,8 @@ export default function Tag(props: TagProps) {
         <Text style={{ color: theme.secondary.base }}>{props.value}</Text>
         {onDelete && <IconButton icon={IconType.Cancel} width={18} height={26} onClick={onClickDelete} />}
     </Badge>;
-}
+});
+export default Tag;
 
 const styles = StyleSheet.create({
     badge: {

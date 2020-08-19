@@ -4,7 +4,7 @@ import {Body, Title} from 'native-base';
 import {readableRoute} from "../../../routes";
 import {AppBreadcrumbsProps, getCurrentRoutes} from './AppBreadcrumbs.common';
 
-export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
+export const AppBreadcrumbs = React.memo(function AppBreadcrumbs(props: AppBreadcrumbsProps) {
     const {state} = props.routerDetails;
     const currentRoute = getCurrentRoutes(state, {filterInitial:true}).pop();
     return <Body>
@@ -12,4 +12,5 @@ export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
             marginLeft: 0
         }}>{readableRoute(currentRoute?.name || '')}</Title>
     </Body>;
-}
+});
+export default AppBreadcrumbs;

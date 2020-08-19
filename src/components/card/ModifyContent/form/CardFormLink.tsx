@@ -10,7 +10,7 @@ interface CardFormLinkProps {
     preview?: boolean;
 }
 
-export function CardFormLink(props: CardFormLinkProps) {
+export const CardFormLink = React.memo(function CardFormLink(props: CardFormLinkProps) {
     const { content, onChange, preview } = props;
 
     const onChangeText = useCallback(
@@ -32,7 +32,8 @@ export function CardFormLink(props: CardFormLinkProps) {
         </View>
         {preview && <CardMediaLink content={content} />}
     </View>;
-}
+});
+export default CardFormLink;
 
 const styles = StyleSheet.create({
     inputRow: {

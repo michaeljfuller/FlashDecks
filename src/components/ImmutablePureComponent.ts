@@ -1,9 +1,11 @@
 import React from 'react';
+export * from 'immer';
 import {produceState, StateRecipe, StateTemplate} from "./ImmutableComponent.utils";
 
 /**
  * A component with helpers for immutable state management.
  * It extends PureComponent to do some optimisations, using shallow comparisons, expecting the props & state to be immutable.
+ * Pure Components cannot handle `children` being passed.
  */
 export default class ImmutablePureComponent<
     Properties={}, State={}, SnapShot={}

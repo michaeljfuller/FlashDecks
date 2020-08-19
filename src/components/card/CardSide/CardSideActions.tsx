@@ -8,7 +8,7 @@ import {CardActionsProps} from "./CardSideActions.common";
 import IconButton, {IconType} from "../../button/IconButton";
 
 /** Action buttons for CardSide. */
-export function CardSideActions(props: CardActionsProps) {
+export const CardSideActions = React.memo(function CardSideActions(props: CardActionsProps) {
     const [actionsAnchor, setActionsAnchor] = useState<Element|undefined>();
 
     const openActions = useCallback((event?: React.MouseEvent) => {
@@ -39,7 +39,7 @@ export function CardSideActions(props: CardActionsProps) {
             onPressDelete={props.onPressDelete}
         />
     </View>;
-}
+});
 export default CardSideActions;
 
 export interface CardSideActionsMenuProps {

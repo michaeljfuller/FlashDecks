@@ -1,5 +1,6 @@
 import {LayoutChangeEvent, LayoutRectangle, ViewStyle} from "react-native";
 import React from "react";
+import ImmutablePureComponent, {castDraft} from "../ImmutablePureComponent";
 import {CardModel, CardSideModel} from "../../models";
 import {insertItem, removeItem, replaceItem} from "../../utils/array";
 import {minMax} from "../../utils/math";
@@ -20,8 +21,8 @@ export interface CardViewBaseState {
 
 export abstract class CardViewBase<
     State extends CardViewBaseState = CardViewBaseState
-> extends React.Component<CardViewProps, State> {
-    state = {
+> extends ImmutablePureComponent<CardViewProps, State> {
+    readonly state = {
         modifiedCard: null,
         sideIndex: 0,
         viewLayout: { x: 0, y: 0, width: 0, height: 0 },
@@ -53,20 +54,20 @@ export abstract class CardViewBase<
 
     componentDidUpdate(prevProps: Readonly<CardViewProps>/*, prevState: Readonly<CardViewState>, snapshot?: any*/) {
         if (prevProps.item?.id !== this.props.item?.id) { // Card changed TODO Not rely on ID.
-            this.setState({
+            this.setStateTo({
                 sideIndex: 0,
                 modifiedCard: null,
             });
         }
     }
 
-    onClickEdit = () => this.setState({ editing: true });
-    onClickCancel = () => this.setState({ editing: false, modifiedCard: null });
+    onClickEdit = () => this.setStateTo({ editing: true });
+    onClickCancel = () => this.setStateTo({ editing: false, modifiedCard: null });
     onClickDone = () => {
         console.group('CardView.onClickDone');
         console.log(this.state.modifiedCard);
         this.props.onUpdate && this.props.onUpdate(this.card, this.props.itemIndex || 0);
-        this.setState({ editing: false, modifiedCard: null });
+        this.setStateTo({ editing: false, modifiedCard: null });
         console.groupEnd();
     }
 
@@ -76,7 +77,7 @@ export abstract class CardViewBase<
             sides: insertItem(this.card.sides, this.state.sideIndex, new CardSideModel)
         });
         console.info('TODO', 'CardView.onAddBefore', this.state.sideIndex, modifiedCard); // TODO
-        this.setState({ modifiedCard });
+        this.setStateTo(draft => draft.modifiedCard = castDraft(modifiedCard));
     }
 
     /** Add a new slide after this one. */
@@ -84,8 +85,10 @@ export abstract class CardViewBase<
         const modifiedCard = this.card.update({
             sides: insertItem(this.card.sides, this.state.sideIndex+1, new CardSideModel)
         });
-        console.info('TODO', 'CardView.onAddAfter', this.state.sideIndex, modifiedCard); // TODO
-        this.setState({ modifiedCard, sideIndex: this.state.sideIndex + 1 });
+        this.setStateTo(draft => {
+            draft.modifiedCard = castDraft(modifiedCard);
+            draft.sideIndex++;
+        });
     }
 
     /** Delete this slide. */
@@ -93,17 +96,16 @@ export abstract class CardViewBase<
         const modifiedCard = this.card.update({
             sides: removeItem(this.card.sides, this.state.sideIndex)
         });
-        console.info('TODO', 'CardView.onDelete', this.state.sideIndex, modifiedCard); // TODO
-
-        this.setState({
-            modifiedCard,
-            sideIndex: minMax(this.state.sideIndex, 0, modifiedCard.sides.length-1),
+        this.setStateTo(draft => {
+            draft.modifiedCard = castDraft(modifiedCard);
+            draft.sideIndex = minMax(this.state.sideIndex, 0, modifiedCard.sides.length-1);
         });
     }
 
     /** Record the view size to calculate the available size of the body from. */
     onLayout = (event: LayoutChangeEvent) => {
-        this.setState({ viewLayout: event.nativeEvent.layout });
+        const viewLayout = event.nativeEvent.layout;
+        this.setStateTo(draft => draft.viewLayout = viewLayout);
     }
 
     onPress = () => {
@@ -123,11 +125,11 @@ export abstract class CardViewBase<
                 sides: removeItem(card.sides, this.state.sideIndex)
             });
         }
-        this.setState({ modifiedCard: card });
+        this.setStateTo(draft => draft.modifiedCard = castDraft(card));
     }
 
     nextSide() {
-        this.setState({ // Increment by one, resetting to 0 if it exceeds range.
+        this.setStateTo({ // Increment by one, resetting to 0 if it exceeds range.
             sideIndex: (this.state.sideIndex + 1) % (this.sides.length || 1)
         });
     }

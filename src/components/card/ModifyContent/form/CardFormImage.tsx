@@ -12,7 +12,7 @@ interface CardFormImageProps {
 
 const previewHeight = 200;
 
-export function CardFormImage(props: CardFormImageProps) {
+export const CardFormImage = React.memo(function CardFormImage(props: CardFormImageProps) {
     const { content, onChange, preview } = props;
 
     const onChangeText = useCallback(
@@ -38,7 +38,8 @@ export function CardFormImage(props: CardFormImageProps) {
             </View>}
         </View>
     </View>;
-}
+});
+export default CardFormImage;
 
 const styles = StyleSheet.create({
     inputRow: {

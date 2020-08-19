@@ -22,7 +22,7 @@ import {repeat} from "../../../../utils/array";
 const headerColor = DefaultTheme.primary.base;
 const headerTextColor = DefaultTheme.secondary.base;
 
-export default function DeckListItem(props: DeckListItemProps) {
+export const DeckListItem = React.memo(function DeckListItem(props: DeckListItemProps) {
     const {deck, showActions, onActions, onClick} = props;
     const {owner} = deck;
     const handleActions = onActions ? (() => onActions(deck)) : undefined;
@@ -64,7 +64,8 @@ export default function DeckListItem(props: DeckListItemProps) {
         {/*<UICardItem footer bordered><Text>{owner.displayName}</Text></UICardItem>*/}
 
     </UICard>;
-}
+});
+export default DeckListItem;
 
 const styles = StyleSheet.create({
     moreButton: {

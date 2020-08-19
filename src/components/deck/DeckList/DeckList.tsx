@@ -8,6 +8,7 @@ import DeckListItem, {listItemMaxWidth} from "./DeckListItem/DeckListItem";
 import DeckListBase from "./DeckList.common";
 import {DeckModel} from "../../../models";
 import {DeckListActionsMenu} from "./DeckListActionsMenu/DeckListActionsMenu";
+import {castDraft} from "immer";
 
 export interface DeckListState {
     /** The deck passed to the actions menu. */
@@ -30,15 +31,19 @@ export default class DeckList extends DeckListBase<DeckListState> {
     }
 
     handleActions = (deck: DeckModel, event?: React.MouseEvent) => {
-        this.setState({ actionsDeck: deck, actionsAnchor: event?.nativeEvent.target as Element });
+        const actionsAnchor = event?.nativeEvent.target as Element;
+        this.setStateTo(draft => {
+            draft.actionsDeck = castDraft(deck);
+            draft.actionsAnchor = castDraft(actionsAnchor);
+        });
     };
     handleCloseActions = () => {
-        this.setState({ actionsDeck: undefined, actionsAnchor: undefined });
+        this.setStateTo({ actionsDeck: undefined, actionsAnchor: undefined });
     };
     handleScroll = () => this.handleCloseActions(); // On scroll, close the actions, since the Popover has `disableScrollLock={true}`.
 
     onLayout = (event: LayoutChangeEvent) => {
-        this.setState({ columns: Math.ceil(event.nativeEvent.layout.width / listItemMaxWidth) });
+        this.setStateTo({ columns: Math.ceil(event.nativeEvent.layout.width / listItemMaxWidth) });
     };
 
     handleClick = (deck: DeckModel) => this.gotToDeck(deck);
