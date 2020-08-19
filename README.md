@@ -16,6 +16,10 @@ A tool to help with the creation, building & running of React Native apps.
 This is a React Component Library used for browser builds of the client.
 ## [NativeBase](https://nativebase.io/)
 This is a React Component Library used for mobile app builds of the client.
+## [Immer](https://immerjs.github.io/immer/)
+This is used to facilitate immutability.  
+It's build into our **ImmutableComponent** and **ImmutablePureComponent** classes, and the Redux reducers.
+The [use-immer](https://github.com/immerjs/use-immer) hook has also been added.
 
 # Testing Frameworks & Libraries
 ## [Jest](https://jestjs.io/)
