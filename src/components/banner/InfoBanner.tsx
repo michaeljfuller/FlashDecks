@@ -5,7 +5,7 @@ import {deviceName, platformOS, isPlatformWeb} from "../../platform";
 import {envName, isProduction} from "../../env";
 import * as appDetails from "../../appDetails";
 
-export default function InfoBanner() {
+export const InfoBanner = React.memo(function InfoBanner() {
     if (isProduction) return null;
 
     const leftText = `${appDetails.appName} - ${appDetails.description}`;
@@ -15,8 +15,9 @@ export default function InfoBanner() {
         {isPlatformWeb && <Text style={styles.text}>{leftText}</Text>}
         <Text style={[styles.text, {textAlign: 'right'}]}>{rightText}</Text>
     </View>;
+});
+export default InfoBanner;
 
-}
 const styles = StyleSheet.create({
     text: {
         backgroundColor: 'lightblue',

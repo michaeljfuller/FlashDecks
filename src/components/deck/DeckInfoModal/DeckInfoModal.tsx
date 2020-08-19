@@ -5,6 +5,7 @@ import Modal, {ModalProps} from "../../modal/core/Modal";
 import {ModalContainer, ModalHeader, ModalFooter, ModalBody} from "../../modal/parts";
 import {DeckModel} from "../../../models";
 import {DeckInfoModelTags} from "./DeckInfoModalTags";
+import {castDraft} from "immer";
 
 export type DeckInfoModalProps = {
     deck: DeckModel;
@@ -28,7 +29,7 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
 
     componentDidUpdate(prevProps: Readonly<DeckInfoModalProps>/*, prevState: Readonly<DeckInfoModalState>, snapshot?: any*/) {
         if (prevProps.deck.id !== prevProps.deck.id) {
-            this.setState({ modifiedDeck: undefined });
+            this.setStateTo({ modifiedDeck: undefined });
         }
     }
 
@@ -42,20 +43,20 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
     }
 
     onChangeName = (name: string) => {
-        this.setState({
-            modifiedDeck: this.deck.update({ name })
+        this.setStateTo(draft => {
+            draft.modifiedDeck = castDraft( this.deck.update({ name }) );
         });
     }
 
     onChangeDescription = (description: string) => {
-        this.setState({
-            modifiedDeck: this.deck.update({ description })
+        this.setStateTo(draft => {
+            draft.modifiedDeck = castDraft( this.deck.update({ description }) );
         });
     }
 
     onChangeTags = (tags: string[]) => {
-        this.setState({
-            modifiedDeck: this.deck.update({ tags })
+        this.setStateTo(draft => {
+            draft.modifiedDeck = castDraft( this.deck.update({ tags }) );
         });
     }
 

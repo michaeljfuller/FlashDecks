@@ -2,7 +2,7 @@ import React from "react";
 import {Toast as NativeToast} from "native-base"; // https://docs.nativebase.io/Components.html#toast-button-style-headref
 import {ToastProps, ToastType} from "./Toast.common";
 
-export class Toast extends React.Component<ToastProps, any> {
+export class Toast extends React.PureComponent<ToastProps, any> {
 
     componentDidUpdate(prevProps: Readonly<ToastProps>/*, prevState: Readonly<any>, snapshot?: any*/) {
         if (prevProps.show !== this.props.show) {
@@ -32,6 +32,7 @@ export class Toast extends React.Component<ToastProps, any> {
         return null; // Nothing to render in-place
     }
 }
+export default Toast;
 
 /** Convert ToastType for native-base Toast */
 function convertType(type: ToastType|undefined) {

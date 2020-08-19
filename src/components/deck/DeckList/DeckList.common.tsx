@@ -1,4 +1,5 @@
 import React from "react";
+import ImmutablePureComponent from "../../ImmutablePureComponent";
 import {DeckModel, UserModel} from "../../../models";
 
 export interface DeckListProps {
@@ -8,7 +9,7 @@ export interface DeckListProps {
     goToView: (deck: DeckModel) => void;
 }
 
-export default class DeckListBase<State = {}> extends React.Component<DeckListProps, State>{
+export default class DeckListBase<State = {}> extends ImmutablePureComponent<DeckListProps, State>{
     gotToDeck(deck: DeckModel) {
         this.props.goToView(deck);
     }

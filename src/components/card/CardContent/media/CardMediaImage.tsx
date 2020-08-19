@@ -1,5 +1,6 @@
 import React from "react";
 import {View, Image, StyleSheet, NativeSyntheticEvent, ImageErrorEventData} from "react-native";
+import ImmutablePureComponent from "../../../ImmutablePureComponent";
 import {Color} from "../../../../styles/Color";
 import {getImageSize, getCachedImageSize, ImageSize} from "../../../../utils/media/image";
 import {CardMediaError} from "./CardMediaError";
@@ -14,8 +15,8 @@ export interface CardMediaImageState {
     error?: string;
 }
 
-export class CardMediaImage extends React.Component<CardMediaImageProps, CardMediaImageState> {
-    state = {} as CardMediaImageState;
+export class CardMediaImage extends ImmutablePureComponent<CardMediaImageProps, CardMediaImageState> {
+    readonly state = {} as Readonly<CardMediaImageState>;
 
     get uri() {
         return this.props.content.value;
@@ -23,9 +24,9 @@ export class CardMediaImage extends React.Component<CardMediaImageProps, CardMed
 
     componentDidUpdate(prevProps: Readonly<CardMediaImageProps>/*, prevState: Readonly<CardMediaImageState>, snapshot?: any*/) {
         if (prevProps.content.value !== this.props.content.value) { // URI changed
-            this.setState({
-                imageSize: getCachedImageSize(this.props.content.value),
-                error: undefined,
+            this.setStateTo(draft => {
+                draft.imageSize = getCachedImageSize(this.props.content.value);
+                draft.error = undefined;
             });
         }
     }
@@ -37,16 +38,16 @@ export class CardMediaImage extends React.Component<CardMediaImageProps, CardMed
     onError = (error: NativeSyntheticEvent<ImageErrorEventData>) => {
         const message = `Failed to load image.`;
         console.warn('CardMediaImage', message, { uri: this.uri, error: error.nativeEvent.error });
-        this.setState({ error: message });
+        this.setStateTo({ error: message });
     }
 
     async measureImage() {
         const imageSize = await getImageSize(this.uri);
         if (imageSize.error) {
             console.warn('CardMediaImage - Failed to measure image.', { uri: this.uri, error: imageSize.error });
-            this.setState({ error: 'Failed to measure image.' });
+            this.setStateTo({ error: 'Failed to measure image.' });
         } else {
-            this.setState({ imageSize })
+            this.setStateTo(draft => draft.imageSize = imageSize);
         }
     }
 

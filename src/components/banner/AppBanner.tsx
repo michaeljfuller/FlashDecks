@@ -14,7 +14,7 @@ import Avatar from "../avatar/Avatar";
 
 export {AppBannerProps} from "./AppBanner.common";
 
-export function AppBanner(props: AppBannerProps) {
+export const AppBanner = React.memo(function AppBanner(props: AppBannerProps) {
     const {
         loggedInUser, onToggleSidebar, onSignOutClick, routerDetails
     } = props;
@@ -49,7 +49,7 @@ export function AppBanner(props: AppBannerProps) {
             </AppBar>
         </HideOnScroll>
     </div>;
-}
+});
 export default AppBanner;
 
 function HideOnScroll(props: { window?: () => Window; children: React.ReactElement }) {

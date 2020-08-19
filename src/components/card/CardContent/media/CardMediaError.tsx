@@ -7,14 +7,15 @@ export interface CardMediaErrorProps {
     height?: number;
 }
 
-export function CardMediaError(props: CardMediaErrorProps) {
+export const CardMediaError = React.memo(function CardMediaError(props: CardMediaErrorProps) {
     return <Text style={[
         styles.error,
         { lineHeight: props.height }
     ]}>
         {props.message}
     </Text>;
-}
+});
+export default CardMediaError;
 
 const styles = StyleSheet.create({
     error: {

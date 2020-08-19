@@ -8,7 +8,7 @@ import {AppBreadcrumbsProps, getCurrentRoutes, navigateTo} from './AppBreadcrumb
 import {Color} from "../../../styles/Color";
 import {readableRoute} from "../../../routes";
 
-export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
+export const AppBreadcrumbs = React.memo(function AppBreadcrumbs(props: AppBreadcrumbsProps) {
     const {navigation, state, initialRouteName} = props.routerDetails;
     const initialRoute = state.routes.find(route => route.name === initialRouteName) || state.routes[0];
     const currentRoutes = getCurrentRoutes(state, {filterInitial:true});
@@ -34,7 +34,8 @@ export default function AppBreadcrumbs(props: AppBreadcrumbsProps) {
     }
 
     return <StyledBreadcrumbs maxItems={3}>{items}</StyledBreadcrumbs>;
-}
+});
+export default AppBreadcrumbs;
 
 export const BreadcrumbButton = withDefaultProps(TextButton, {
     color: "White"

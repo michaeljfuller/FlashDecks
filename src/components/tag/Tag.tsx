@@ -6,7 +6,7 @@ import {TagProps} from "./Tag.common";
 
 const theme = DefaultTheme;
 
-export default function Tag(props: TagProps) {
+export const Tag = React.memo(function Tag(props: TagProps) {
     const {value, onDelete} = props;
 
     const onClickDelete = useCallback(() => {
@@ -18,7 +18,8 @@ export default function Tag(props: TagProps) {
         size="small"
         onDelete={onDelete ? onClickDelete : undefined}
     />;
-}
+});
+export default Tag;
 
 const StyledChip = withStyles({
     root: {

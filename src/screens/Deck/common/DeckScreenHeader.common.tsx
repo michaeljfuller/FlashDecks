@@ -1,5 +1,6 @@
 import React from "react";
 import {DeckModel} from "../../../models";
+import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
 
 export interface DeckScreenHeaderProps {
     item: DeckModel;
@@ -11,7 +12,7 @@ export interface DeckScreenHeaderPropsState {
     showInfo: boolean;
 }
 
-export default class DeckScreenHeaderBase extends React.Component<DeckScreenHeaderProps, DeckScreenHeaderPropsState>{
+export default class DeckScreenHeaderBase extends ImmutablePureComponent<DeckScreenHeaderProps, DeckScreenHeaderPropsState>{
     state: DeckScreenHeaderPropsState = {
         showInfo: false,
     };
@@ -20,6 +21,6 @@ export default class DeckScreenHeaderBase extends React.Component<DeckScreenHead
         return this.props.item.cards?.length || 0;
     }
 
-    openInfoModal = () => this.setState({ showInfo: true });
-    closeInfoModal = () => this.setState({ showInfo: false });
+    openInfoModal = () => this.setStateTo({ showInfo: true });
+    closeInfoModal = () => this.setStateTo({ showInfo: false });
 }

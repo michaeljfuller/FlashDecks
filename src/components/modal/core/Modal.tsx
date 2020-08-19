@@ -3,13 +3,14 @@ import {StyleSheet, View} from 'react-native';
 import MaterialModal from "@material-ui/core/Modal";
 import DialogContent from "@material-ui/core/DialogContent";
 import {ModalProps} from "./Modal.common";
+import ImmutableComponent from "../../ImmutableComponent";
 
 export * from "./Modal.common";
 
 export abstract class Modal<
     Props extends ModalProps = ModalProps,
     State = any
-> extends React.Component<
+> extends ImmutableComponent<
     Props, State
 > {
     state = {} as State;

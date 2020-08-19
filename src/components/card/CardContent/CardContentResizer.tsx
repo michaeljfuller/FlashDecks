@@ -13,7 +13,7 @@ interface CardContentResizerProps {
 }
 
 /** A draggable bar to identify what to resize the content to. */
-export function CardContentResizer(props: CardContentResizerProps) {
+export const CardContentResizer = React.memo(function CardContentResizer(props: CardContentResizerProps) {
     const [isDragging, setIsDragging] = useState(false);
     const panResponder = useRef(
         PanResponder.create({
@@ -68,7 +68,7 @@ export function CardContentResizer(props: CardContentResizerProps) {
     } else {
         return null;
     }
-}
+});
 export default CardContentResizer;
 
 const height = isPlatformWeb ? 20 : 35;

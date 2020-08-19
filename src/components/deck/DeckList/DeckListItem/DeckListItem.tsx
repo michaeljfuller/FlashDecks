@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 
 import {makeStyles} from '@material-ui/core/styles';
 import UICard from '@material-ui/core/Card';
@@ -39,16 +39,26 @@ const useStyles = makeStyles({
 /**
  * An item in DeckList representing a Deck.
  */
-export default function DeckListItem(props: DeckListItemProps) {
+export function DeckListItem(props: DeckListItemProps) {
     const classes = useStyles();
 
     const {deck, showActions, onActions, onClick} = props;
     const {owner} = deck;
 
+    const handleOnActions = useCallback(
+        event => onActions && onActions(deck, event),
+        [deck, onActions],
+    );
+    const handleOnClick = useCallback(
+        event => onClick && onClick(deck, event),
+        [deck, onClick]
+    );
+
     // Button to show actions
     const actionsButton = showActions ? <IconButton
         icon={IconType.More}
-        onClick={onActions ? (event => onActions(deck, event)) : undefined}
+        onClick={handleOnActions}
+        disabled={!onActions}
         color="Blue" invertColor={true}
     /> : null;
 
@@ -60,10 +70,7 @@ export default function DeckListItem(props: DeckListItemProps) {
             title={deck.name}
             subheader={owner?.displayName || ''}
         />
-            <CardCardActionArea
-                onClick={onClick ? (event => onClick(deck, event)) : undefined}
-                disabled={!onClick}
-            >
+            <CardCardActionArea onClick={handleOnClick} disabled={!onClick} >
                 <Fadeout maxHeight={listItemActionMaxHeight} fadeColor={contentBackgroundColor}>
                     <CardContent className={classes.content}>
                         <Typography variant="body1" component="p">
@@ -80,3 +87,4 @@ export default function DeckListItem(props: DeckListItemProps) {
             </CardCardActionArea>
     </UICard>;
 }
+export default DeckListItem;

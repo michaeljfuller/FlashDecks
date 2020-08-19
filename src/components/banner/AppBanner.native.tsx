@@ -13,7 +13,7 @@ export {AppBannerProps} from "./AppBanner.common";
 // const color = Color.White;
 const backgroundColor = Color.Blue;
 
-export function AppBanner(props: AppBannerProps) {
+export const AppBanner = React.memo(function AppBanner(props: AppBannerProps) {
     const {
         loggedInUser, onToggleSidebar, onSignOutClick, routerDetails
     } = props;
@@ -27,7 +27,7 @@ export function AppBanner(props: AppBannerProps) {
             <AppBannerUserDisplay user={loggedInUser} onSignOutClick={onSignOutClick} />
         </Right>
     </Header>;
-}
+});
 export default AppBanner;
 
 interface AppBannerUserDisplayProps {

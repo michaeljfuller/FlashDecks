@@ -1,4 +1,5 @@
-import React, {Component} from "react";
+import React from "react";
+import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
 import ScreenContainer from "../../ScreenContainer";
 import DeckView from "../../../components/deck/DeckView/DeckView";
 import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
@@ -13,7 +14,7 @@ export interface DeckViewScreenProps extends NavigationScreenProps<
 export interface DeckViewScreenState {
     deck: DeckModel;
 }
-export class DeckViewScreen extends Component<DeckViewScreenProps & DeckViewScreenStoreProps, DeckViewScreenState>
+export class DeckViewScreen extends ImmutablePureComponent<DeckViewScreenProps & DeckViewScreenStoreProps, DeckViewScreenState>
 {
     state = {
         deck: DeckModel.fromApi({

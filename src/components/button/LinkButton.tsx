@@ -8,7 +8,7 @@ export * from './LinkButton.common';
 /**
  * A button for opening links
  */
-export function LinkButton(props: LinkButtonProps) {
+export const LinkButton = React.memo(function LinkButton(props: LinkButtonProps) {
     const [modalOpen, setModalOpen] = useState(false);
     const { title, url, disabled, color, invertColor, square, flat, style, width, height } = linkButtonPropsWithDefaults(props);
 
@@ -30,5 +30,5 @@ export function LinkButton(props: LinkButtonProps) {
         />
         <LinkModal url={url} open={modalOpen} onClose={closeModal} />
     </React.Fragment>;
-}
+});
 export default LinkButton;

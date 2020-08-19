@@ -19,7 +19,7 @@ export interface DeckListActionsMenuProps {
 /**
  * The menu that opens when you click the menu button.
  */
-export function DeckListActionsMenu(props: DeckListActionsMenuProps){
+export const DeckListActionsMenu = React.memo(function DeckListActionsMenu(props: DeckListActionsMenuProps){
     const onEdit = () => {
         props.onClose();
         if (props.deck) props.onEdit(props.deck);
@@ -42,7 +42,8 @@ export function DeckListActionsMenu(props: DeckListActionsMenuProps){
             <IconButton text="Delete" icon={IconType.Delete} onClick={onDelete} style={styles.paddedButton} />
         </View>
     </StyledPopover>
-}
+});
+export default DeckListActionsMenu;
 
 const StyledPopover = withStyles({
     root: {

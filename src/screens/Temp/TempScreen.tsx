@@ -1,5 +1,6 @@
-import React, {Component, PropsWithChildren} from "react";
+import React, {PropsWithChildren} from "react";
 import {Text, TextInput, View, StyleSheet} from "react-native";
+import ImmutablePureComponent from "../../components/ImmutablePureComponent";
 import ScreenContainer from "../ScreenContainer";
 import {NavigationScreenProps} from "../../navigation/navigation_types";
 import {reduxConnector, TempScreenStoreProps} from "./TempScreen_redux";
@@ -22,18 +23,21 @@ export enum TestIds {
 const TestContext = React.createContext('TestContext');
 
 export type TempScreenProps = NavigationScreenProps;
-interface TempScreenState {
+export type TempScreenState = Readonly<{
     contextValue1: number;
     contextValue2: number;
     showDebugModal: boolean;
     showAlertModal: boolean;
     showToast: boolean;
     toastType: ToastType;
-}
+}>;
 
-export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps, TempScreenState>
+export class TempScreen extends ImmutablePureComponent<
+    TempScreenProps & TempScreenStoreProps,
+    TempScreenState
+>
 {
-    state = {
+    readonly state = {
         contextValue1: 1,
         contextValue2: 2,
         showDebugModal: false,
@@ -68,32 +72,32 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
     renderButtons() {
         const noop = () => {};
         return <React.Fragment>
-            <Row>
+            <MemoRow>
                 <Button title="Button" onClick={noop} square />
                 <TextButton title="TextButton" onClick={noop} color="Blue" />
                 <IconButton icon={IconType.QuestionMark} onClick={noop} color="Blue" text="Blue" />
                 <IconButton icon={IconType.QuestionMark} onClick={noop} color="Blue" />
                 <IconButton icon={IconType.QuestionMark} onClick={noop} color="Blue" flat />
                 <IconButton icon={IconType.QuestionMark} onClick={noop} color="Blue" transparent />
-            </Row>
-            <Row borderColor='red' backgroundColor='#fee'>
+            </MemoRow>
+            <MemoRow borderColor='red' backgroundColor='#fee'>
                 <Button title="Button" onClick={noop} color="Red" flat={true} square />
                 <TextButton title="TextButton" onClick={noop} color="Red" />
                 <IconButton icon={IconType.Home} onClick={noop} text="Red" color="Red" />
                 <IconButton icon={IconType.Home} onClick={noop} text="Home" color="Red" transparent />
-            </Row>
-            <Row borderColor='green' backgroundColor='#efe'>
+            </MemoRow>
+            <MemoRow borderColor='green' backgroundColor='#efe'>
                 <Button title="Button" onClick={noop} color="Green" square />
                 <TextButton title="TextButton" onClick={noop} color="Green" />
                 <IconButton icon={IconType.Menu} onClick={noop} text="Green" color="Green" />
                 <IconButton icon={IconType.Menu} onClick={noop} text="Menu" color="Green" transparent />
-            </Row>
-            <Row borderColor='grey' backgroundColor='#eee'>
+            </MemoRow>
+            <MemoRow borderColor='grey' backgroundColor='#eee'>
                 <Button title="Disabled Button" square />
                 <TextButton title="Disabled TextButton" onClick={noop} disabled={true} color="Grey" />
                 <IconButton icon={IconType.QuestionMark} color="White" />
                 <IconButton icon={IconType.QuestionMark} color="Black" transparent />
-            </Row>
+            </MemoRow>
         </React.Fragment>;
     }
 
@@ -104,11 +108,11 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
         }}>
             <TestContext.Provider value={'TestContext1: '+this.state.contextValue1}>
                 <TestContext.Consumer>
-                    {value => <TextButton title={value} onClick={() => this.setState({ contextValue1: this.state.contextValue1 + 1})} />}
+                    {value => <TextButton title={value} onClick={() => this.setStateTo(draft => draft.contextValue1++)} />}
                 </TestContext.Consumer>
                 <TestContext.Provider value={'TestContext2: '+this.state.contextValue2}>
                     <TestContext.Consumer>
-                        {value => <TextButton title={value} onClick={() => this.setState({ contextValue2: this.state.contextValue2 + 1})} />}
+                        {value => <TextButton title={value} onClick={() => this.setStateTo(draft => draft.contextValue2++)} />}
                     </TestContext.Consumer>
                 </TestContext.Provider>
             </TestContext.Provider>
@@ -121,20 +125,20 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
             borderWidth: 1,
         }}>
 
-            <TextButton title={'showDebugModal ' + this.state.showDebugModal} onClick={() => this.setState({ showDebugModal: !this.state.showDebugModal })} />
+            <TextButton title={'showDebugModal ' + this.state.showDebugModal} onClick={() => this.setStateTo(draft => draft.showDebugModal = !draft.showDebugModal)} />
             <DebugModal
                 open={this.state.showDebugModal}
-                onClose={() => this.setState({ showDebugModal: false })}
+                onClose={() => this.setStateTo({ showDebugModal: false })}
                 title="Test Modal"
                 data={repeat(75, i => 48 + i).map(code => ({ code, character: String.fromCharCode(code) }))}
             >
                 <Text>Character Codes</Text>
             </DebugModal>
 
-            <TextButton title={'showAlertModal ' + this.state.showAlertModal} onClick={() => this.setState({ showAlertModal: !this.state.showAlertModal })} />
+            <TextButton title={'showAlertModal ' + this.state.showAlertModal} onClick={() => this.setStateTo(draft => draft.showAlertModal = !draft.showAlertModal)} />
             <AlertModal
                 open={this.state.showAlertModal}
-                onClose={() => this.setState({ showAlertModal: false })}
+                onClose={() => this.setStateTo({ showAlertModal: false })}
                 title="Alert"
                 message="Message"
             >
@@ -142,7 +146,7 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
                 <View style={{ borderWidth: 1, paddingHorizontal: 1 }}>
                     <TextInput multiline />
                 </View>
-                <TextButton title={'showDebugModal ' + this.state.showDebugModal} onClick={() => this.setState({ showDebugModal: !this.state.showDebugModal })} />
+                <TextButton title={'showDebugModal ' + this.state.showDebugModal} onClick={() => this.setStateTo(draft => draft.showDebugModal = !draft.showDebugModal)} />
             </AlertModal>
 
         </View>;
@@ -153,7 +157,7 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
             return <TextButton
                 title={toastType}
                 disabled={toastType === this.state.toastType}
-                onClick={() => this.setState({ toastType })}
+                onClick={() => this.setStateTo({ toastType })}
                 style={styles.rowButton}
             />;
         }
@@ -176,10 +180,10 @@ export class TempScreen extends Component<TempScreenProps & TempScreenStoreProps
             />
         </View>;
     }
-    onToggleToast = () => this.setState({ showToast: !this.state.showToast });
+    onToggleToast = () => this.setStateTo(draft => draft.showToast = !draft.showToast);
     onCloseToast = (action: boolean, timeout: boolean) => {
         console.log('onCloseToast', { action, timeout });
-        this.setState({ showToast: false });
+        this.setStateTo({ showToast: false });
     };
 
 }
@@ -208,6 +212,7 @@ function Row(props: PropsWithChildren<{
         flexDirection: 'row'
     }}>{props.children}</View>
 }
+const MemoRow = React.memo(Row);
 
 export default reduxConnector(TempScreen);
 

@@ -9,7 +9,7 @@ import {getUIColorTheme} from "../../styles/UIColorTheme";
 import {numberOrDefault} from "../../utils/math";
 export * from './IconButton.common';
 
-export function IconButton(props: IconButtonProps) {
+export const IconButton = React.memo(function IconButton(props: IconButtonProps) {
     const { onClick, disabled, icon, style, text, transparent, flat, color, invertColor, width, height, margin } = iconButtonPropsWithDefaults(props);
     const theme = getUIColorTheme(color, invertColor);
     const defaultIconSize = text ? undefined : 24;
@@ -33,5 +33,5 @@ export function IconButton(props: IconButtonProps) {
             {text && <TextComponent>{text}</TextComponent>}
         </ContainerButton>
     </ButtonWrapper>;
-}
+});
 export default IconButton;

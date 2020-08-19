@@ -1,6 +1,7 @@
 import React from "react";
 import {View, LayoutChangeEvent} from "react-native";
 import {Video, VideoNaturalSize, VideoReadyForDisplayEvent} from 'expo-av';
+import ImmutablePureComponent from "../../../ImmutablePureComponent";
 import {CardMediaVideoProps} from "./CardMediaVideo.common";
 import {CardMediaError} from "./CardMediaError";
 
@@ -16,39 +17,39 @@ interface Dimensions {
     height: number;
 }
 
-export class CardMediaVideo extends React.Component<CardMediaVideoProps, CardMediaVideoState> {
-    state = {
+export class CardMediaVideo extends ImmutablePureComponent<CardMediaVideoProps, CardMediaVideoState> {
+    readonly state = {
         videoSize: { width: 0, height: 0, orientation: "landscape" },
         viewWidth: 0,
         displaySize: { width: 0, height: 0 },
-    } as CardMediaVideoState;
+    } as Readonly<CardMediaVideoState>;
 
     componentDidUpdate(prevProps: Readonly<CardMediaVideoProps>/*, prevState: Readonly<CardMediaVideoState>, snapshot?: any*/) {
         if (prevProps.content.value !== this.props.content.value) { // URI changed
-            this.setState({ error: undefined });
+            this.setStateTo({ error: undefined });
         }
     }
 
     onViewLayout = (event: LayoutChangeEvent) => {
         const viewWidth = event.nativeEvent.layout.width;
         const {videoSize} = this.state;
-        this.setState({
-            viewWidth,
-            displaySize: CardMediaVideo.calculateDisplaySize(viewWidth, videoSize),
+        this.setStateTo(draft => {
+            draft.viewWidth = viewWidth;
+            draft.displaySize = CardMediaVideo.calculateDisplaySize(viewWidth, videoSize);
         });
     }
 
     onVideoReadyForDisplay = (event: VideoReadyForDisplayEvent) => {
         const videoSize = event.naturalSize;
         const {viewWidth} = this.state;
-        this.setState({
-            videoSize,
-            displaySize: CardMediaVideo.calculateDisplaySize(viewWidth, videoSize),
+        this.setStateTo(draft => {
+            draft.videoSize = videoSize;
+            draft.displaySize = CardMediaVideo.calculateDisplaySize(viewWidth, videoSize);
         });
     }
 
     onError = (error: string) => {
-        this.setState({ error });
+        this.setStateTo({ error });
     }
 
     static calculateDisplaySize(viewWidth: number, videoSize: VideoNaturalSize): Dimensions {

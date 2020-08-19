@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, Text, FlatList, LayoutChangeEvent} from 'react-native';
+import ImmutablePureComponent from "../ImmutablePureComponent";
 import CardView from "../card/CardView";
 import {preloadCards} from "../../utils/media/card";
 import {CardCarouselProps} from "./CardCarousel.common";
@@ -10,10 +11,10 @@ export * from "./CardCarousel.common";
 export interface CardCarouselState {
     width: number;
 }
-export class CardCarousel extends React.Component<CardCarouselProps, CardCarouselState>{
+export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, CardCarouselState>{
     state = {
         width: 0,
-    } as CardCarouselState;
+    } as Readonly<CardCarouselState>;
 
     flatList = React.createRef<FlatList>();
 
@@ -22,7 +23,7 @@ export class CardCarousel extends React.Component<CardCarouselProps, CardCarouse
     }
 
     onLayout = (event: LayoutChangeEvent) => {
-        this.setState({ width: event.nativeEvent.layout.width });
+        this.setStateTo({ width: event.nativeEvent.layout.width });
     }
 
     onUpdateCard = (card: CardModel, index: number) => {

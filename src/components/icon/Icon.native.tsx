@@ -24,7 +24,7 @@ const nameMap = {
 /**
  * Show an icon by its `type`.
  */
-export function Icon(props: IconProps) {
+export const Icon = React.memo(function Icon(props: IconProps) {
     const { style = {} } = props;
     const name = nameMap[props.type];
     if (name) {
@@ -34,5 +34,5 @@ export function Icon(props: IconProps) {
         } as NativeBase.Icon);
     }
     return null;
-}
+});
 export default Icon;

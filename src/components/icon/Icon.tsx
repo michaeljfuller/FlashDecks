@@ -38,7 +38,7 @@ const componentMap = {
 /**
  * Show an icon by its `type`.
  */
-export function Icon(props: IconProps) {
+export const Icon = React.memo(function Icon(props: IconProps) {
     const { style = {} } = props;
     const component = componentMap[props.type];
     if (component) {
@@ -52,5 +52,5 @@ export function Icon(props: IconProps) {
         } as SvgIconProps);
     }
     return null;
-}
+});
 export default Icon;

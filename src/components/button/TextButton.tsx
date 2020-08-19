@@ -7,7 +7,7 @@ import {getUIColorTheme} from "../../styles/UIColorTheme";
 import {numberOrDefault} from "../../utils/math";
 export * from './TextButton.common';
 
-export function TextButton(props: TextButtonProps) {
+export const TextButton = React.memo(function TextButton(props: TextButtonProps) {
     const { onClick, disabled, title, color, invertColor, style, width, height } = textButtonPropsWithDefaults(props);
     const theme = getUIColorTheme(color, invertColor);
 
@@ -22,5 +22,5 @@ export function TextButton(props: TextButtonProps) {
             }}
         >{title}</StyledButton>
     </ButtonWrapper>;
-}
+});
 export default TextButton;

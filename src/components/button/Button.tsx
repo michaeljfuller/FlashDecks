@@ -10,7 +10,7 @@ export * from './Button.common';
 /**
  * A bridge to a Material-UI Button
  */
-export function Button(props: ButtonProps) {
+export const Button = React.memo(function Button(props: ButtonProps) {
     const { onClick, disabled, title, flat, style, color, square, invertColor, width, height } = buttonPropsWithDefaults(props);
     const theme = getUIColorTheme(color, invertColor);
     const StyledButton = getStyledButtonBase(theme, square);
@@ -26,6 +26,6 @@ export function Button(props: ButtonProps) {
             }}
         >{title}</StyledButton>
     </ButtonWrapper>;
-}
+});
 export default Button;
 

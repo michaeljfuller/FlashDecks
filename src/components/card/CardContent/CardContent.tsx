@@ -4,6 +4,7 @@ import CardContentActions from "./CardContentActions";
 import CardContentMedia from "./CardContentMedia";
 import CardContentResizer from "./CardContentResizer";
 import {CardContentModel} from "../../../models";
+import ImmutablePureComponent from "../../ImmutablePureComponent";
 
 /** Minimum absolute height of the content. */
 const MIN_HEIGHT = 40;
@@ -36,10 +37,10 @@ export interface CardContentState {
 }
 
 /** A view representing a content item on a card. */
-export class CardContentView extends React.Component<CardContentProps, CardContentState> {
-    state = {
+export class CardContentView extends ImmutablePureComponent<CardContentProps, CardContentState> {
+    readonly state = {
         resizePreviewHeight: null,
-    } as CardContentState;
+    } as Readonly<CardContentState>;
 
     /** The absolute height, calculated off the recorded content size and the parent height.  */
     get calculatedHeight() {
@@ -76,7 +77,7 @@ export class CardContentView extends React.Component<CardContentProps, CardConte
     }
 
     /** Update the resize height. */
-    onResize = (offsetY: number) => this.setState({
+    onResize = (offsetY: number) => this.setStateTo({
         resizePreviewHeight: Math.max(MIN_HEIGHT, (this.calculatedHeight || 0) + offsetY), // TODO Replace 0 with measured size?
     });
 
@@ -90,7 +91,7 @@ export class CardContentView extends React.Component<CardContentProps, CardConte
                 this.props.contentIndex || 0
             );
         }
-        this.setState({ resizePreviewHeight: null });
+        this.setStateTo({ resizePreviewHeight: null });
     };
 
     render() {

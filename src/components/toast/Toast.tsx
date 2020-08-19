@@ -6,7 +6,7 @@ import {ToastProps} from "./Toast.common";
 import Button, {ButtonProps} from "../button/Button";
 import withDefaultProps from "../../utils/hoc/withDefaultProps/withDefaultProps";
 
-export function Toast(props: ToastProps) {
+export const Toast = React.memo(function Toast(props: ToastProps) {
     // On close (timeout, click on screen, or `show` set to false)
     const onClose = useCallback((event: SyntheticEvent<any, Event>, reason: SnackbarCloseReason) => {
         return props.onClose(false, reason === "timeout");
@@ -34,7 +34,8 @@ export function Toast(props: ToastProps) {
             />}
         />
     </Snackbar>;
-}
+});
+export default Toast;
 
 //<editor-fold desc="Content Components">
 
