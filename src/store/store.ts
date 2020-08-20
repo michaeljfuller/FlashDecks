@@ -18,3 +18,6 @@ export default store;
 export * from './store_manifest';
 export * from './store_actions';
 export * from './loggedInUser/loggedInUser_actions';
+export * from './loggedInUser/loggedInUser_reducer';
+export * from './decks/decks_actions';
+export * from './decks/decks_reducer';

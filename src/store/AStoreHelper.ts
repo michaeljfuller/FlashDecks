@@ -1,14 +1,14 @@
-import {store as defaultStore} from "./store";
+import {store as defaultStore, StateName} from "./store";
 import {Store, Unsubscribe} from "redux";
 
 /**
  * Helper to get and subscribe to a sub-state.
  */
 export default abstract class AStoreHelper<StateType> {
-    constructor(protected readonly store: Store = defaultStore){}
-
-    /** The sub-state we're interested in. */
-    abstract readonly stateName: string;
+    constructor(
+        protected readonly stateName: StateName,
+        protected readonly store: Store = defaultStore,
+    ){}
 
     /** Get the current value of [stateName] from the store. */
     get state(): StateType {

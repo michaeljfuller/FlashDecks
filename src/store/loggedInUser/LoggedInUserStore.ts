@@ -4,7 +4,9 @@ import {LoggedInUserState} from "./loggedInUser_reducer";
 import {UserModel} from "../../models";
 
 export class LoggedInUserStore extends AStoreHelper<LoggedInUserState> {
-    readonly stateName: string = 'loggedInUser';
+    constructor() {
+        super('loggedInUser');
+    }
 
     /** Add user to the store. */
     update(user: UserModel) {

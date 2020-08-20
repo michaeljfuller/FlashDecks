@@ -38,3 +38,25 @@ export function removeItem<Type>(array: readonly Type[], index: number): Type[] 
         ...array.slice(index+1),
     ];
 }
+
+/** Filter for items that match all the filter values. */
+export function simpleFilter<
+    Item,
+    Filter extends Partial<Item>
+>(
+    items: Item[],
+    filter?: Filter
+): Item[] {
+    if (filter) {
+        const filterKeys = Object.keys(filter) as Array<keyof Filter>;
+        if (filterKeys.length) {
+            return items.filter((item: any) => {
+                return filterKeys.reduce<boolean>( // Reduce down matching values for each key. Result is false if any are negative.
+                    (result, key) => result && item[key] === filter[key],
+                    true,
+                );
+            });
+        }
+    }
+    return items;
+}

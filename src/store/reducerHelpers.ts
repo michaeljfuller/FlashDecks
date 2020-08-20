@@ -1,4 +1,5 @@
 import produce, {Draft, Immutable} from "immer";
+export * from "immer";
 import {IAction} from "./store_actions";
 
 /** Immer recipe for a reducer to update state. */
