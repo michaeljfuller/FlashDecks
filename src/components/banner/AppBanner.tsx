@@ -7,14 +7,15 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Slide from '@material-ui/core/Slide';
 import {IconButton, IconType} from "../button/IconButton";
+import Avatar from "../avatar/Avatar";
 
 import AppBreadcrumbs from "./breadcrumbs/AppBreadcrumbs";
 import {AppBannerProps} from "./AppBanner.common";
-import Avatar from "../avatar/Avatar";
+import {reduxConnector, AppBannerStoreProps} from "./AppBanner_redux";
 
 export {AppBannerProps} from "./AppBanner.common";
 
-export const AppBanner = React.memo(function AppBanner(props: AppBannerProps) {
+export const AppBanner = React.memo(reduxConnector(function AppBanner(props: AppBannerProps & AppBannerStoreProps) {
     const {
         loggedInUser, onToggleSidebar, onSignOutClick, routerDetails
     } = props;
@@ -49,7 +50,7 @@ export const AppBanner = React.memo(function AppBanner(props: AppBannerProps) {
             </AppBar>
         </HideOnScroll>
     </div>;
-});
+}));
 export default AppBanner;
 
 function HideOnScroll(props: { window?: () => Window; children: React.ReactElement }) {
