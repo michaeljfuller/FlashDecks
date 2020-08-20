@@ -1,10 +1,9 @@
 import {connect} from 'react-redux';
-import {StoreState} from "../../store/store";
-import {UserModel} from "../../models";
+import {StoreState, LoggedInUserState} from "../../store/store";
 
 // Extra properties for the screen
 export interface TempScreenStoreProps {
-    loggedInUser: UserModel|null;
+    loggedInUser: LoggedInUserState['value'];
 }
 
 // Properties to add to screen from store state
