@@ -2,7 +2,6 @@ import React from "react";
 import * as Linking from 'expo-linking';
 import {BackHandler, NativeEventSubscription} from "react-native";
 import {NavigationContainer, NavigationContainerRef, DrawerActions, LinkingOptions} from '@react-navigation/native';
-import {Auth} from "aws-amplify";
 import {AppRoutes, AppRoutesTree} from "./AppRouteTree";
 import {
     createExtendableDrawerNavigator,
@@ -14,6 +13,7 @@ import InfoBanner from "../components/banner/InfoBanner";
 import DashboardScreen from "./Dashboard/DashboardScreen";
 import {TempScreen} from "./Temp/TempScreen";
 import DeckRouteContainer from "./Deck/DeckRouteContainer";
+import AuthApi from "../api/AuthApi";
 const {Navigator, Screen} = createExtendableDrawerNavigator();
 
 export const appNavigation = React.createRef<NavigationContainerRef>();
@@ -34,6 +34,7 @@ export interface AppNavigationState {
  */
 export class AppNavigation extends React.Component<AppNavigationParams, AppNavigationState> {
     state = {} as AppNavigationState;
+    auth = new AuthApi();
 
     /**
      * https://reactnavigation.org/docs/deep-linking/
@@ -47,6 +48,7 @@ export class AppNavigation extends React.Component<AppNavigationParams, AppNavig
 
     hardwareBackPress?: NativeEventSubscription;
     componentDidMount() {
+        this.auth = new AuthApi();
         this.hardwareBackPress = BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
     }
     componentWillUnmount() {
@@ -67,7 +69,7 @@ export class AppNavigation extends React.Component<AppNavigationParams, AppNavig
 
     renderContents: ExtendableDrawerRender = (contents, routerDetails) => {
         const toggleDrawer = () => routerDetails.navigation.dispatch(DrawerActions.toggleDrawer());
-        const signOut = () => Auth.signOut().catch(e => console.warn('Error signing out', e)); // TODO Add toast
+        const signOut = () => this.auth.signOut().catch(e => console.warn('Error signing out', e)); // TODO Add toast
 
         return <React.Fragment>
             <AppBanner

@@ -6,6 +6,7 @@ import AppAuthenticator from './Authenticator/AppAuthenticator';
 import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import AppNavigation from "../screens/AppNavigation";
 import store from '../store/store';
+import Toast from "../components/toast/Toast";
 
 export class AppRoot extends AppRootBase {
 
@@ -14,8 +15,17 @@ export class AppRoot extends AppRootBase {
             <ReduxProvider store={store}>
                 {this.renderAuth() || this.renderApp()}
             </ReduxProvider>
+            <Toast
+                show={!!this.state.errorMessage}
+                text={this.state.errorMessage||''}
+                onClose={this.closeErrorToast}
+                type="warning"
+                duration={3000}
+            />
         </ErrorBoundary>;
     }
+
+    closeErrorToast = () => this.clearErrorMessage();
 
     renderAuth() {
         if (!this.state.cognitoUser) {
