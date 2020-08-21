@@ -1,8 +1,11 @@
 import React from 'react';
-import {Text, View, StatusBar} from 'react-native';
+import {Text, YellowBox} from 'react-native';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { Root as NativeBaseRoot, Container as NativeBaseContainer } from "native-base";
+
+// TODO Remove work-around when fix is merged. https://github.com/GeekyAnts/NativeBase/issues/3109
+YellowBox.ignoreWarnings(['Animated: `useNativeDriver` was bit specified,']);
 
 import Amplify, {Analytics} from 'aws-amplify';
 // @ts-ignore
