@@ -1,16 +1,17 @@
 import {connect} from 'react-redux';
-import {StoreState} from "../../../store/store";
-import {UserModel} from "../../../models";
+import {DecksState, LoggedInUserState, StoreState} from "../../../store/store";
 
 // Extra properties for the screen
 export interface DeckEditScreenStoreProps {
-    loggedInUser: UserModel|null;
+    loggedInUser: LoggedInUserState['value']|null;
+    decks: DecksState['collection'];
 }
 
 // Properties to add to screen from store state
 function mapStateToProps(state: StoreState): DeckEditScreenStoreProps {
     return {
-        loggedInUser: state.loggedInUser.value
+        loggedInUser: state.loggedInUser.value,
+        decks: state.decks.collection,
     };
 }
 
