@@ -6,7 +6,7 @@ import {
     createNavigatorFactory,
     DefaultNavigatorOptions,
     DrawerActions,
-    DrawerNavigationState as DrawerRouterState,
+    DrawerNavigationState,
     DrawerRouter,
     DrawerRouterOptions,
     NavigationHelpersContext,
@@ -21,8 +21,9 @@ import ExtendableDrawerContents from "./ExtendableDrawerContents";
 //</editor-fold>
 //<editor-fold desc="Types">
 
+export type ExtendableDrawerNavigationState = DrawerNavigationState;
 export type ExtendableDrawerRouterDetails = NavigationRouterDetails<
-    ExtendableDrawerNavigation, DrawerRouterState, ExtendableDrawerNavigationRouteDescriptors
+    ExtendableDrawerNavigation, ExtendableDrawerNavigationState, ExtendableDrawerNavigationRouteDescriptors
 >;
 
 /** Properties for the component, extending DrawerNavigationOptions. */
@@ -32,8 +33,8 @@ export type ExtendableDrawerProps = DefaultNavigatorOptions<DrawerNavigationOpti
     & {
         /** Returns a wrapper around the passed contents. */
         render?: ExtendableDrawerRender;
-        /** Pass on RouterDetails */
-        onRouterDetails?: (details: ExtendableDrawerRouterDetails) => void;
+        /** Pass on ExtendableDrawerRouterState */
+        onChange?: (state: ExtendableDrawerNavigationState) => void;
     };
 
 /** Definition of the render function. */
@@ -43,11 +44,11 @@ export interface ExtendableDrawerRender {
 
 /** The Navigation type for the Drawer. */
 export type ExtendableDrawerNavigation = Navigation & {
-    dispatch(action: DrawerActionType | ((state: DrawerRouterState) => DrawerActionType)): void;
+    dispatch(action: DrawerActionType | ((state: ExtendableDrawerNavigationState) => DrawerActionType)): void;
 }
 
 /** The descriptors for the Drawer routes. */
-export type ExtendableDrawerNavigationRouteDescriptors = NavigationRouteDescriptors<DrawerRouterState, DrawerNavigationOptions>
+export type ExtendableDrawerNavigationRouteDescriptors = NavigationRouteDescriptors<ExtendableDrawerNavigationState, DrawerNavigationOptions>
 
  /** Copied from source, since it's not exported. */
 type DrawerNavigationEventMap = {
@@ -61,10 +62,10 @@ type DrawerNavigationEventMap = {
  * A Drawer navigator that allows you to pass in a `render` function to wrap around the contents.
  * @link https://reactnavigation.org/docs/custom-navigators/
  */
-export function ExtendableDrawerNavigator(props: PropsWithChildren<ExtendableDrawerProps>) {
-    const { render = defaultRender, initialRouteName, onRouterDetails } = props;
-    const attr = useNavigationBuilder<
-        DrawerRouterState,
+export function ExtendableDrawerNavigator(props: ExtendableDrawerProps) {
+    const { render = defaultRender, initialRouteName, onChange } = props;
+    const navAttributes = useNavigationBuilder<
+        ExtendableDrawerNavigationState,
         DrawerRouterOptions,
         DrawerNavigationOptions,
         DrawerNavigationEventMap
@@ -75,28 +76,25 @@ export function ExtendableDrawerNavigator(props: PropsWithChildren<ExtendableDra
         openByDefault: props.openByDefault,
         screenOptions: props.screenOptions,
     });
-    const {navigation, state, descriptors} = attr;
-    const routerDetails: ExtendableDrawerRouterDetails = {
-        navigation: navigation as any,
-        state,
-        descriptors,
-        initialRouteName
-    };
+    const {navigation, state, descriptors} = navAttributes;
 
-    // useEffect(() => {
-    //     if (onRouterDetails) onRouterDetails(routerDetails);
-    // }, [onRouterDetails, routerDetails]);
-    if (onRouterDetails) {
-        // TODO Bring outside conditional without breaking sidebar.
-        // TODO Currently checks `routerDetails.state` only, since checking all of routerDetails redraws constantly.
-        useEffect(() => onRouterDetails(routerDetails), [onRouterDetails, routerDetails.state]);
-    }
+    // Pass on state changes
+    useEffect(() => {
+        onChange && onChange(state);
+    }, [onChange, state]);
 
+    // Render the children
+    const children = render(
+        <DrawerView {...navAttributes} drawerContent={ExtendableDrawerContents} />,
+        {
+            navigation: navigation as any,
+            state,
+            descriptors,
+            initialRouteName,
+        },
+    );
     return <NavigationHelpersContext.Provider value={navigation}>
-        {render(
-            <DrawerView {...attr} drawerContent={ExtendableDrawerContents} />,
-            routerDetails
-        )}
+        {children}
     </NavigationHelpersContext.Provider>;
 }
 export const createExtendableDrawerNavigator = createNavigatorFactory(ExtendableDrawerNavigator);

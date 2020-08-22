@@ -6,7 +6,7 @@ import {AppRoutes, AppRoutesTree} from "./AppRouteTree";
 import {
     createExtendableDrawerNavigator,
     ExtendableDrawerRender,
-    ExtendableDrawerRouterDetails,
+    ExtendableDrawerNavigationState,
 } from "../navigation/navigators/ExtendableDrawerNavigator/ExtendableDrawerNavigator";
 import AppBanner from "../components/banner/AppBanner";
 import InfoBanner from "../components/banner/InfoBanner";
@@ -26,7 +26,7 @@ export interface AppNavigationParams {
     title?: string;
 }
 export interface AppNavigationState {
-    routerDetails?: ExtendableDrawerRouterDetails;
+    navigationState?: ExtendableDrawerNavigationState;
 }
 
 /**
@@ -82,8 +82,8 @@ export class AppNavigation extends React.Component<AppNavigationParams, AppNavig
         </React.Fragment>;
     };
 
-    onRouterDetails = (routerDetails: ExtendableDrawerRouterDetails) => {
-        this.setState({routerDetails});
+    onChange = (navigationState: ExtendableDrawerNavigationState) => {
+        this.setState({navigationState});
     };
 
     /**
@@ -93,8 +93,7 @@ export class AppNavigation extends React.Component<AppNavigationParams, AppNavig
         name: string,
         Component: React.FunctionComponent|typeof React.Component
     ) {
-        const {state} = this.state.routerDetails || {};
-        const {routes, index = 0} = state || {};
+        const {routes, index = 0} = this.state.navigationState || {};
         const currentRoute = routes ? routes[index].name : '';
         const isCurrentRoute = currentRoute === name;
         return <Screen
@@ -115,7 +114,7 @@ export class AppNavigation extends React.Component<AppNavigationParams, AppNavig
                         };
                     }}
                     render={this.renderContents}
-                    onRouterDetails={this.onRouterDetails}
+                    onChange={this.onChange}
                 >
 
                     <Screen name={AppRoutes.Home}  component={DashboardScreen} options={{icon: null} /* TODO Add icon to options */}/>
