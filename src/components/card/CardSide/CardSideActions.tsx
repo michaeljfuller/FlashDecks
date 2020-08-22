@@ -51,25 +51,32 @@ export interface CardSideActionsMenuProps {
     onPressDelete: () => void;
 }
 export function CardSideActionsMenu(props: CardSideActionsMenuProps) {
+    const {
+        onClose: _onClose,
+        onPressEdit: _onPressEdit,
+        onPressDelete: _onPressDelete,
+        onPressAddBefore: _onPressAddBefore,
+        onPressAddAfter: _onPressAddAfter,
+    } = props;
     const onPressEdit = useCallback(() => {
-        props.onClose();
-        props.onPressEdit();
-    }, [props.onPressEdit]);
+        _onClose();
+        _onPressEdit();
+    }, [_onClose, _onPressEdit]);
 
     const onPressDelete = useCallback(() => {
-        props.onClose();
-        props.onPressDelete();
-    }, [props.onPressDelete]);
+        _onClose();
+        _onPressDelete();
+    }, [_onClose, _onPressDelete]);
 
     const onPressAddBefore = useCallback(() => {
-        props.onClose();
-        props.onPressAddBefore();
-    }, [props.onPressAddBefore]);
+        _onClose();
+        _onPressAddBefore();
+    }, [_onClose, _onPressAddBefore]);
 
     const onPressAddAfter = useCallback(() => {
-        props.onClose();
-        props.onPressAddAfter();
-    }, [props.onPressAddAfter]);
+        _onClose();
+        _onPressAddAfter();
+    }, [_onClose, _onPressAddAfter]);
 
     return <StyledPopover
         open={!!props.anchor}

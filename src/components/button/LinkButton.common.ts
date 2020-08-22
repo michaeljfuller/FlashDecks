@@ -35,7 +35,6 @@ export function linkButtonPropsWithDefaults(props: LinkButtonProps): Required<Li
 }
 
 function getHostname(uri?: string): string {
-    const [protocol, urn = ''] = (uri||'').split('://');
-    const [host, path = ''] = urn.split('/', 2);
-    return host;
+    const urn = (uri||'').split('://', 2)[1] || '';
+    return urn.split('/', 2)[0];
 }

@@ -7,15 +7,16 @@ import Button, {ButtonProps} from "../button/Button";
 import withDefaultProps from "../../utils/hoc/withDefaultProps/withDefaultProps";
 
 export const Toast = React.memo(function Toast(props: ToastProps) {
+    const { onClose: _onClose } = props;
     // On close (timeout, click on screen, or `show` set to false)
     const onClose = useCallback((event: SyntheticEvent<any, Event>, reason: SnackbarCloseReason) => {
-        return props.onClose(false, reason === "timeout");
-    }, [props.onClose]);
+        return _onClose(false, reason === "timeout");
+    }, [_onClose]);
 
     // On action clicked
     const onClick = useCallback(() => {
-        props.onClose(true, false);
-    }, [props.onClose]);
+        _onClose(true, false);
+    }, [_onClose]);
 
     // Get components styled by ToastType
     const Content = getContentComponent(props.type);

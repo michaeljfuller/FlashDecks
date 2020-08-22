@@ -13,11 +13,11 @@ export const CardContentActions = React.memo(function CardContentActions(props: 
 
     const openActions = useCallback((event?: React.MouseEvent) => {
         setActionsAnchor(event?.nativeEvent.target as Element);
-    }, []);
+    }, [setActionsAnchor]);
 
     const closeActions = useCallback(() => {
         setActionsAnchor(undefined);
-    }, []);
+    }, [setActionsAnchor]);
 
     const buttons = [] as React.ReactElement[];
     if (props.resizing) {
@@ -50,30 +50,34 @@ export interface CardContentActionsMenuProps {
     onPressDelete: () => void;
 }
 export function CardContentActionsMenu(props: CardContentActionsMenuProps) {
+    const {
+        onClose: _onClose,
+        onPressEdit: _onPressEdit,
+        onPressResize: _onPressResize,
+        onPressDelete: _onPressDelete,
+        onPressAddBefore: _onPressAddBefore,
+        onPressAddAfter: _onPressAddAfter,
+    } = props;
+
     const onPressEdit = useCallback(() => {
-        props.onClose();
-        props.onPressEdit();
-    }, [props.onPressEdit]);
+        _onClose(); _onPressEdit();
+    }, [_onClose, _onPressEdit]);
 
     const onPressResize = useCallback(() => {
-        props.onClose();
-        props.onPressResize();
-    }, [props.onPressResize]);
+        _onClose(); _onPressResize();
+    }, [_onClose, _onPressResize]);
 
     const onPressDelete = useCallback(() => {
-        props.onClose();
-        props.onPressDelete();
-    }, [props.onPressDelete]);
+        _onClose(); _onPressDelete();
+    }, [_onClose, _onPressDelete]);
 
     const onPressAddBefore = useCallback(() => {
-        props.onClose();
-        props.onPressAddBefore();
-    }, [props.onPressAddBefore]);
+        _onClose(); _onPressAddBefore();
+    }, [_onClose, _onPressAddBefore]);
 
     const onPressAddAfter = useCallback(() => {
-        props.onClose();
-        props.onPressAddAfter();
-    }, [props.onPressAddAfter]);
+        _onClose(); _onPressAddAfter();
+    }, [_onClose, _onPressAddAfter]);
 
     return <StyledPopover
         open={!!props.anchor}

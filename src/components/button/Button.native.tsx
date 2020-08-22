@@ -28,7 +28,7 @@ export default Button;
 //<editor-fold desc="Styles">
 
 function getBackgroundStyle(props: ButtonProps): RnViewStyleProp {
-    const {color, invertColor, flat, width, height} = buttonPropsWithDefaults(props);
+    const {color, invertColor, /*flat, */width, height} = buttonPropsWithDefaults(props);
     const theme = getUIColorTheme(color, invertColor);
     return {
         width: numberOrDefault(width, undefined),

@@ -87,7 +87,7 @@ export function ExtendableDrawerNavigator(props: PropsWithChildren<ExtendableDra
     //     if (onRouterDetails) onRouterDetails(routerDetails);
     // }, [onRouterDetails, routerDetails]);
     if (onRouterDetails) {
-        useEffect(() => onRouterDetails(routerDetails), [routerDetails.state]); // TODO Bring outside conditional without breaking sidebar
+        useEffect(() => onRouterDetails(routerDetails), [onRouterDetails, routerDetails]); // TODO Bring outside conditional without breaking sidebar
     }
 
     return <NavigationHelpersContext.Provider value={navigation}>

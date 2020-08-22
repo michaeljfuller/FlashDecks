@@ -6,7 +6,6 @@ import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
 import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
 
 import {reduxConnector, DeckEditScreenStoreProps} from "./DeckEditScreen_redux";
-import {repeat} from "../../../utils/array";
 import DeckView from "../../../components/deck/DeckView/DeckView";
 import Button from "../../../components/button/Button";
 import DeckScreenHeader from "../common/DeckScreenHeader";

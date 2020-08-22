@@ -34,7 +34,7 @@ export default class DeckList extends DeckListBase {
     handleActions = (deck: DeckModel) => this.showActions(deck);
 
     render() {
-        const {decks, loggedInUser} = this.props;
+        const {decks/*, loggedInUser*/} = this.props;
         return <View>
             {decks.map(deck => <DeckListItem
                 key={deck.id}
