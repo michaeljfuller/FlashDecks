@@ -20,7 +20,7 @@ export interface IconProps {
     style?: IconStyles;
 }
 export const IconPropTypes: Record<keyof IconProps, any> = {
-    type: PropTypes.object.isRequired,
+    type: PropTypes.number.isRequired,
     style: PropTypes.object,
 };
 
