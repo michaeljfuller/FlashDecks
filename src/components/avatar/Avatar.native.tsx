@@ -2,10 +2,10 @@ import React from 'react';
 import {Thumbnail} from 'native-base';
 import {StyleSheet, Text, View} from "react-native";
 
-import {AvatarProps} from "./Avatar.common";
+import {AvatarProps, AvatarPropTypes} from "./Avatar.common";
 export * from "./Avatar.common";
 
-export const Avatar = React.memo(function Avatar(props: AvatarProps) {
+export const Avatar: React.ComponentType<AvatarProps> = React.memo(function Avatar(props: AvatarProps) {
     const {user, style, size=40, labelStyle, labelPlacement} = props;
     const label = props.label || (user && user.displayName) || 'Unknown';
 
@@ -30,6 +30,7 @@ export const Avatar = React.memo(function Avatar(props: AvatarProps) {
 
     return icon;
 });
+Avatar.propTypes = AvatarPropTypes;
 export default Avatar;
 
 const styles = StyleSheet.create({

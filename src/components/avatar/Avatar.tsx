@@ -5,7 +5,7 @@ import MaterialAvatar from '@material-ui/core/Avatar';
 import MaterialTooltip from '@material-ui/core/Tooltip';
 import {withStyles} from "@material-ui/core/styles";
 
-import {AvatarProps} from "./Avatar.common";
+import {AvatarProps, AvatarPropTypes} from "./Avatar.common";
 export * from "./Avatar.common";
 
 const Tooltip = withStyles({
@@ -14,7 +14,7 @@ const Tooltip = withStyles({
     }
 })(MaterialTooltip) as typeof MaterialTooltip;
 
-export const Avatar = React.memo(function Avatar(props: AvatarProps) {
+export const Avatar: React.ComponentType<AvatarProps> = React.memo(function Avatar(props: AvatarProps) {
     const {user, style, size=40, labelStyle, labelPlacement} = props;
     const label = props.label || (user && user.displayName) || 'Unknown';
 
@@ -41,6 +41,7 @@ export const Avatar = React.memo(function Avatar(props: AvatarProps) {
         <View style={style}>{icon}</View>
     </Tooltip>;
 });
+Avatar.propTypes = AvatarPropTypes;
 export default Avatar;
 
 const styles = StyleSheet.create({

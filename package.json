@@ -4,7 +4,8 @@
     "start": "expo start --web",
     "start:prod": "expo start --web --no-dev --minify",
     "expo:eject": "expo eject",
-    "postinstall": "react-native link"
+    "postinstall": "react-native link",
+    "test:reports": "node test/output/servers/run-all.js"
   },
   "dependencies": {
     "@expo/vector-icons": "^10.0.0",
@@ -25,6 +26,7 @@
     "expo-font": "~8.2.1",
     "immer": "^7.0.7",
     "native-base": "^2.13.14",
+    "prop-types": "^15.7.2",
     "react": "16.11.0",
     "react-dom": "16.11.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.0.tar.gz",
@@ -43,6 +45,7 @@
   "devDependencies": {
     "@babel/core": "^7.8.6",
     "@types/enzyme-adapter-react-16": "^1.0.6",
+    "@types/prop-types": "^15.7.3",
     "@types/react": "~16.9.41",
     "@types/react-native": "~0.62.13",
     "@types/react-navigation": "^3.4.0",

@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from "react";
 import {View, StyleSheet, TextInput} from "react-native";
+import PropTypes from 'prop-types';
 import Tag from "../../tag/Tag";
 import IconButton, {IconType} from "../../button/IconButton";
 import PromptModal from "../../modal/PromptModal/PromptModal";
@@ -11,8 +12,15 @@ export interface DeckInfoModelTagsProps {
     editable?: boolean;
     onChange?: (tags: string[]) => void;
 }
+const DeckInfoModelTagsPropTypes = {
+    tags: PropTypes.array,
+    editable: PropTypes.bool,
+    onChange: PropTypes.func,
+};
 
-export const DeckInfoModelTags = React.memo(function DeckInfoModelTags(props: DeckInfoModelTagsProps) {
+export const DeckInfoModelTags: React.ComponentType<DeckInfoModelTagsProps> = React.memo(
+    function DeckInfoModelTags(props: DeckInfoModelTagsProps
+) {
     const {tags=[], editable=false, onChange} = props;
     const [openAddTagModal, setOpenAddTagModal] = useState(false);
     const [tagInput, setTagInput] = useState('');
@@ -59,6 +67,7 @@ export const DeckInfoModelTags = React.memo(function DeckInfoModelTags(props: De
     }
     return null;
 });
+DeckInfoModelTags.propTypes = DeckInfoModelTagsPropTypes;
 export default DeckInfoModelTags;
 
 const styles = StyleSheet.create({

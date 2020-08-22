@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export enum IconType {
     QuestionMark,
     Menu,
@@ -17,6 +19,11 @@ export interface IconProps {
     type: IconType;
     style?: IconStyles;
 }
+export const IconPropTypes: Record<keyof IconProps, any> = {
+    type: PropTypes.object.isRequired,
+    style: PropTypes.object,
+};
+
 export interface IconStyles {
     width?: number;
     height?: number;

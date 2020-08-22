@@ -1,5 +1,6 @@
 import React, {useRef, useState} from "react";
 import {StyleSheet, Text, View, PanResponder, ViewStyle} from "react-native";
+import PropTypes from 'prop-types';
 import globalStyles from "../../../styles/globalStyleSheet";
 import {isPlatformWeb} from "../../../platform";
 
@@ -11,9 +12,19 @@ interface CardContentResizerProps {
     onFinished?: (canceled: boolean) => void;
     style?: ViewStyle;
 }
+const CardContentResizerPropTypes = {
+    editing: PropTypes.bool.isRequired,
+    text: PropTypes.string,
+    onStart: PropTypes.func,
+    onMove: PropTypes.func,
+    onFinished: PropTypes.func,
+    style: PropTypes.object,
+}
 
 /** A draggable bar to identify what to resize the content to. */
-export const CardContentResizer = React.memo(function CardContentResizer(props: CardContentResizerProps) {
+export const CardContentResizer: React.ComponentType<CardContentResizerProps> = React.memo(
+    function CardContentResizer(props: CardContentResizerProps
+) {
     const [isDragging, setIsDragging] = useState(false);
     const panResponder = useRef(
         PanResponder.create({
@@ -69,6 +80,7 @@ export const CardContentResizer = React.memo(function CardContentResizer(props: 
         return null;
     }
 });
+CardContentResizer.propTypes = CardContentResizerPropTypes;
 export default CardContentResizer;
 
 const height = isPlatformWeb ? 20 : 35;

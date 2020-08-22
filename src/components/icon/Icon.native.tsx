@@ -1,7 +1,7 @@
 import React from 'react';
 import {Icon as NativeBaseIcon, NativeBase} from 'native-base';
 
-import {IconType, IconProps} from './Icon.common';
+import {IconType, IconProps, IconPropTypes} from './Icon.common';
 export * from './Icon.common';
 
 const nameMap = {
@@ -24,7 +24,7 @@ const nameMap = {
 /**
  * Show an icon by its `type`.
  */
-export const Icon = React.memo(function Icon(props: IconProps) {
+export const Icon: React.ComponentType<IconProps> = React.memo(function Icon(props: IconProps) {
     const { style = {} } = props;
     const name = nameMap[props.type];
     if (name) {
@@ -35,4 +35,5 @@ export const Icon = React.memo(function Icon(props: IconProps) {
     }
     return null;
 });
+Icon.propTypes = IconPropTypes;
 export default Icon;
