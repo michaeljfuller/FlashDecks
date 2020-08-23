@@ -17,6 +17,6 @@ export const AvatarPropTypes: Record<keyof AvatarProps, any> = {
     labelPlacement: PropTypes.string,
     label: PropTypes.string,
     size: PropTypes.number,
-    style: PropTypes.object,
-    labelStyle: PropTypes.object,
+    style: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
+    labelStyle: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
 };

@@ -18,7 +18,7 @@ const CardContentResizerPropTypes = {
     onStart: PropTypes.func,
     onMove: PropTypes.func,
     onFinished: PropTypes.func,
-    style: PropTypes.object,
+    style: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
 }
 
 /** A draggable bar to identify what to resize the content to. */
