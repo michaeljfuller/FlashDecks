@@ -1,18 +1,13 @@
 import {connect} from 'react-redux';
-import {DecksState, LoggedInUserState, StoreState} from "../../../store/store";
-
-// Extra properties for the screen
-export interface DeckEditScreenStoreProps {
-    loggedInUser: LoggedInUserState['value']|null;
-    decks: DecksState['collection'];
-}
+import {StoreState} from "../../../store/store";
 
 // Properties to add to screen from store state
-function mapStateToProps(state: StoreState): DeckEditScreenStoreProps {
+function mapStateToProps(state: StoreState) {
     return {
         loggedInUser: state.loggedInUser.value,
         decks: state.decks.collection,
     };
 }
 
+export type DeckEditScreenStoreProps = ReturnType<typeof mapStateToProps>;
 export const reduxConnector = connect(mapStateToProps);
