@@ -25,7 +25,7 @@ export function getCurrentRoutes(state: NavigationRouteState, options?: { filter
     return result;
 }
 function _getCurrentRoutes(state: NavigationRouteState): StatefulRoute[] {
-    const {index, routes} = state;
+    const {index=0, routes} = state;
     const route = routes[index];
     if (!route) return [];
     if (route.state) return [route, ...getCurrentRoutes(route.state as NavigationRouteState)];
@@ -65,7 +65,8 @@ export function navigateTo(routes: StatefulRoute[], navigation: Navigation) {
             }
         }
      */
-    const params = Object.assign({},
+    const params = Object.assign(
+        { screen: leafRouteName } as NavigateParams,
         rootRoute.params,
         subRoutes.reduceRight<NavigateParams|undefined>(
             (result, route) => ({

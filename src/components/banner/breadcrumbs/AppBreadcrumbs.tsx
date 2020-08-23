@@ -16,7 +16,7 @@ export const AppBreadcrumbs = React.memo(function AppBreadcrumbs(props: AppBread
     // Convert routes to breadcrumbs
     const items = currentRoutes.map((route, index) => {
         return <BreadcrumbButton
-            key={route.key}
+            key={route.key||route.name}
             title={readableRoute(route.name)}
             disabled={index+1 >= currentRoutes.length}
             onClick={() => navigateTo(currentRoutes.slice(0, index+1), navigation)}
