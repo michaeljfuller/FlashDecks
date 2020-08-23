@@ -12,8 +12,9 @@ import {IconButton, IconType} from "../../components/button/IconButton";
 import {repeat} from "../../utils/array";
 import {AlertModal} from "../../components/modal/AlertModal/AlertModal";
 import {DebugModal} from "../../components/modal/DebugModal/DebugModal";
-import {Toast} from "../../components/toast/Toast";
-import {ToastType} from "../../components/toast/Toast.common";
+import {ToastStore} from "../../store/toast/ToastStore";
+import {randomIntString} from "../../utils/math";
+import {ToastQueueItem} from "../../store/toast/toast_actions";
 
 export enum TestIds {
     User='TempScreen_User',
@@ -28,8 +29,6 @@ export type TempScreenState = Readonly<{
     contextValue2: number;
     showDebugModal: boolean;
     showAlertModal: boolean;
-    showToast: boolean;
-    toastType: ToastType;
 }>;
 
 export class TempScreen extends ImmutablePureComponent<
@@ -42,9 +41,12 @@ export class TempScreen extends ImmutablePureComponent<
         contextValue2: 2,
         showDebugModal: false,
         showAlertModal: false,
-        showToast: false,
-        toastType: "default",
     } as TempScreenState;
+    toastStore = new ToastStore(this);
+
+    componentWillUnmount() {
+        this.toastStore.removeByRef();
+    }
 
     render() {
         const {loggedInUser} = this.props;
@@ -153,37 +155,29 @@ export class TempScreen extends ImmutablePureComponent<
     }
 
     renderToast() {
-        const toastBtn = (toastType: ToastType) => {
-            return <TextButton
-                title={toastType}
-                disabled={toastType === this.state.toastType}
-                onClick={() => this.setStateTo({ toastType })}
-                style={styles.rowButton}
-            />;
-        }
         return <View style={{ marginTop: 2, borderWidth: 1 }}>
             <View style={styles.row}>
-                <Button title="Toggle Toast" onClick={this.onToggleToast} style={styles.rowButton} square />
+                <Button title="Pop Toast" onClick={this.onPopToast} style={styles.rowButton} square />
             </View>
-            <View style={[styles.row, styles.wrap]}>
-                {toastBtn("default")}
-                {toastBtn("success")}
-                {toastBtn("warning")}
-                {toastBtn("error")}
-            </View>
-            <Toast
-                text="Example Toast"
-                show={this.state.showToast}
-                type={this.state.toastType}
-                duration={5000}
-                onClose={this.onCloseToast}
-            />
         </View>;
     }
-    onToggleToast = () => this.setStateTo(draft => draft.showToast = !draft.showToast);
+    onPopToast = () => {
+        const addToast = (type: ToastQueueItem['type']) => {
+            this.toastStore.add({
+                text: `Example "${type}" Toast. #${randomIntString(5)}`,
+                actionText: 'Close',
+                duration: 2000,
+                onClose: this.onCloseToast,
+                type,
+            });
+        };
+        addToast("default");
+        addToast("success");
+        addToast("warning");
+        addToast("error");
+    }
     onCloseToast = (action: boolean, timeout: boolean) => {
         console.log('onCloseToast', { action, timeout });
-        this.setStateTo({ showToast: false });
     };
 
 }

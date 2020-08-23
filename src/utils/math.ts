@@ -19,3 +19,10 @@ export function numberOrDefault<T>(value: any, defaultValue: T): number|T {
     }
     return defaultValue;
 }
+
+export function randomInt(digits = 4) {
+    return Math.floor(Math.random() * Math.pow(10, digits));
+}
+export function randomIntString(digits = 4) {
+    return randomInt(digits).toString().padStart(digits, '0');
+}

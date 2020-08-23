@@ -21,3 +21,5 @@ export * from './loggedInUser/loggedInUser_actions';
 export * from './loggedInUser/loggedInUser_reducer';
 export * from './decks/decks_actions';
 export * from './decks/decks_reducer';
+export * from './toast/toast_actions';
+export * from './toast/toast_reducer';

@@ -3,12 +3,12 @@ import LoggedInUserStore from '../store/loggedInUser/LoggedInUserStore';
 import {CognitoUserModel, UserModel} from "../models";
 import userApi from "../api/UserApi";
 import AuthApi from "../api/AuthApi";
+import ToastStore from "../store/toast/ToastStore";
 
 export interface AppRootProps {}
 export interface AppRootState {
     user?: UserModel;
     cognitoUser?: CognitoUserModel;
-    errorMessage?: string;
 }
 
 export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppRootState> {
@@ -17,6 +17,7 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
         cognitoUser: undefined,
     };
     auth: AuthApi = new AuthApi;
+    toast = new ToastStore(this);
 
     async componentDidMount() {
         this.auth = new AuthApi;
@@ -27,12 +28,13 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
         await this.fetchUserData();
     }
 
+    componentWillUnmount() {
+        this.toast.removeByRef();
+    }
+
     onErrorMessage(message: string, details?: string) { // TODO Child implementations to use Toast
         console.warn('AppRoot Auth Error:', message, details);
-        this.setState({ errorMessage: message });
-    }
-    clearErrorMessage() {
-        this.setState({ errorMessage: undefined });
+        this.toast.add({ text: message, type: "warning", duration: 3000 });
     }
 
     protected clearUser() {

@@ -4,6 +4,10 @@ import {ToastProps, ToastType} from "./Toast.common";
 
 export class Toast extends React.PureComponent<ToastProps, any> {
 
+    componentDidMount() {
+        if (this.props.show) this.show();
+    }
+
     componentDidUpdate(prevProps: Readonly<ToastProps>/*, prevState: Readonly<any>, snapshot?: any*/) {
         if (prevProps.show !== this.props.show) {
             this.props.show ? this.show() : this.hide();
