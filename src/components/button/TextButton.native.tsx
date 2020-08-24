@@ -22,7 +22,7 @@ export const TextButton = React.memo(function TextButton(props: TextButtonProps)
                 height: numberOrDefault(height, undefined),
             }}
         >
-            <NativeBaseText style={{ color: theme.primary.base }}>{title}</NativeBaseText>
+            <NativeBaseText style={{ color: disabled ? theme.primary.disabled : theme.primary.base }}>{title}</NativeBaseText>
         </NativeBaseButton>
     </ButtonWrapper>;
 });

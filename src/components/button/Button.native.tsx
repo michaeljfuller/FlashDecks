@@ -10,16 +10,17 @@ import {numberOrDefault} from "../../utils/math";
 export * from './Button.common';
 
 export const Button = React.memo(function Button(props: ButtonProps) {
-    const { onClick, disabled, title, square, style } = buttonPropsWithDefaults(props);
+    const allProps = buttonPropsWithDefaults(props);
+    const { onClick, disabled, title, square, style } = allProps;
 
     return <ButtonWrapper style={style}>
         <NativeBaseButton
             onPress={onClick}
             disabled={disabled}
-            style={getBackgroundStyle(props)}
+            style={getBackgroundStyle(allProps)}
             rounded={!square}
         >
-            <NativeBaseText style={getTextStyle(props)} uppercase={false}>{title}</NativeBaseText>
+            <NativeBaseText style={getTextStyle(allProps)} uppercase={false}>{title}</NativeBaseText>
         </NativeBaseButton>
     </ButtonWrapper>;
 });
@@ -27,13 +28,14 @@ export default Button;
 
 //<editor-fold desc="Styles">
 
-function getBackgroundStyle(props: ButtonProps): RnViewStyleProp {
-    const {color, invertColor, /*flat, */width, height} = buttonPropsWithDefaults(props);
+function getBackgroundStyle(
+    {color, invertColor, /*flat, */width, height, disabled}: Required<ButtonProps>
+): RnViewStyleProp {
     const theme = getUIColorTheme(color, invertColor);
     return {
         width: numberOrDefault(width, undefined),
         height: numberOrDefault(height, undefined),
-        backgroundColor: theme.primary.base,
+        backgroundColor: disabled ? theme.primary.disabled : theme.primary.base,
 
         // TODO handle shadow/flat
         shadowOffset: { height: 3, width: 3 },
@@ -41,8 +43,9 @@ function getBackgroundStyle(props: ButtonProps): RnViewStyleProp {
         // shadowOpacity: 100,
     };
 }
-function getTextStyle(props: ButtonProps): TextStyle {
-    const {color, invertColor} = buttonPropsWithDefaults(props);
+function getTextStyle(
+    {color, invertColor}: Required<ButtonProps>
+): TextStyle {
     const theme = getUIColorTheme(color, invertColor);
     return {
         color: theme.secondary.base,
