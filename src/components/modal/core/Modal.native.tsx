@@ -1,13 +1,14 @@
 import React from 'react';
 import {Modal as NativeModal} from 'react-native';
 import {ModalProps} from "./Modal.common";
+import ImmutableComponent from "../../ImmutableComponent";
 
 export * from "./Modal.common";
 
 export abstract class Modal<
     Props extends ModalProps = ModalProps,
     State = any
-> extends React.Component<Props, State> {
+> extends ImmutableComponent<Props, State> {
     state = {} as State;
 
     render() {
