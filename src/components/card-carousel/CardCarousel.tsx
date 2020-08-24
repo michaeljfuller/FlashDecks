@@ -3,7 +3,7 @@ import {View, StyleSheet, Text, Animated, LayoutChangeEvent} from 'react-native'
 import ImmutablePureComponent from "../ImmutablePureComponent";
 import {isPlatformWeb} from "../../platform";
 import CardView from "../card/CardView";
-import {CardCarouselProps} from "./CardCarousel.common";
+import {CardCarouselProps, resizeCard} from "./CardCarousel.common";
 import Button from "../button/Button";
 import {UIColorThemeMap} from "../../styles/UIColorTheme";
 import {preloadCards} from "../../utils/media/card";
@@ -49,24 +49,9 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
     }
 
     onLayout = (event: LayoutChangeEvent) => {
-        let {width, height} = event.nativeEvent.layout;
-
-        const cardMargin = 10;
-        width -= cardMargin * 2;
-        height -= cardMargin * 2;
-
-        const minSize = 100;
-        width = Math.max(width, minSize);
-        height = Math.max(height, minSize);
-
-        const cardAspectRatio = 0.7;
-        if (width / cardAspectRatio > height) {
-            width = height * cardAspectRatio;
-        } else {
-            height = width / cardAspectRatio;
-        }
-
-        this.setStateTo({ cardWidth: width, cardHeight: height });
+        const {width, height} = event.nativeEvent.layout;
+        const size = resizeCard(width, height, 10, 100);
+        this.setStateTo({ cardWidth: size.width, cardHeight: size.height });
     };
 
     onKeyDown = (event: KeyboardEvent) => {

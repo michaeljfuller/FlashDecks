@@ -1,19 +1,28 @@
 import React from 'react';
-import {View, StyleSheet, Text, FlatList, LayoutChangeEvent} from 'react-native';
+import {View, StyleSheet, Text, FlatList, LayoutChangeEvent, ViewStyle} from 'react-native';
 import ImmutablePureComponent from "../ImmutablePureComponent";
 import CardView from "../card/CardView";
 import {preloadCards} from "../../utils/media/card";
-import {CardCarouselProps} from "./CardCarousel.common";
+import {CardCarouselProps, resizeCard} from "./CardCarousel.common";
 import {CardModel} from "../../models";
 import {replaceItem} from "../../utils/array";
 export * from "./CardCarousel.common";
 
 export interface CardCarouselState {
     width: number;
+    cardWidth: number;
+    cardHeight: number;
 }
+// Used to restore previous measurements
+let cachedWidth = 0;
+let cachedCardWidth = 0;
+let cachedCardHeight = 0;
+
 export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, CardCarouselState>{
     state = {
-        width: 0,
+        width: cachedWidth,
+        cardWidth: cachedCardWidth,
+        cardHeight: cachedCardHeight,
     } as Readonly<CardCarouselState>;
 
     flatList = React.createRef<FlatList>();
@@ -23,7 +32,13 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
     }
 
     onLayout = (event: LayoutChangeEvent) => {
-        this.setStateTo({ width: event.nativeEvent.layout.width });
+        const {width, height} = event.nativeEvent.layout;
+        const size = resizeCard(width, height, 10, 100);
+        this.setStateTo({
+            width: cachedWidth = event.nativeEvent.layout.width,
+            cardWidth: cachedCardWidth = size.width,
+            cardHeight: cachedCardHeight = size.height,
+        });
     }
 
     onUpdateCard = (card: CardModel, index: number) => {
@@ -35,7 +50,7 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
 
     render() {
         const {cards, style} = this.props;
-        const {width} = this.state;
+        const {width, cardWidth, cardHeight} = this.state;
 
         if (!cards?.length) {
             return <View style={[styles.root, style]}>
@@ -43,15 +58,22 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
             </View>;
         }
 
+        const cardStyle = {
+            width: cardWidth,
+            height: cardHeight,
+            marginHorizontal: (width - cardWidth)/2 || 0,
+            opacity: cardWidth ? undefined : 0, // Hide until sized
+        } as ViewStyle;
+
         return <View style={[styles.root, style]}>
             <FlatList<CardModel>
                 ref={this.flatList}
                 data={cards}
                 renderItem={({item}) => {
-                    return <View key={item.id} style={[styles.cardContainer, { width }]}>
+                    return <View key={item.id} style={styles.cardContainer}>
                         <CardView
                             item={item}
-                            style={styles.cardView}
+                            style={[styles.cardView, cardStyle]}
                             editable={this.props.editable}
                             onUpdate={this.onUpdateCard}
                         />
@@ -77,7 +99,6 @@ const styles = StyleSheet.create({
     cardContainer: {
         flex: 1,
         alignItems: "center",
-        paddingHorizontal: 10,
         paddingVertical: 10,
     },
     cardView: {
