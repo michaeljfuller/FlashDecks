@@ -5,6 +5,7 @@ import {
     StatefulRoute
 } from "../../../navigation/navigation_types";
 import {getBaseRouteFromName} from '../../../routes';
+import {AppBreadcrumbsStoreProps} from "./AppBreadcrumbs_redux";
 
 export interface AppBreadcrumbsProps {
     routerDetails: NavigationRouterDetails;
@@ -34,11 +35,23 @@ function _getCurrentRoutes(state: NavigationRouteState): StatefulRoute[] {
 
 /**
  * Navigate to a particular route, based on its position in the chain.
- * @param {StatefulRoute[]} routes     - The route chain, ending with the route we want to end up at.
- * @param {Navigation}      navigation - Navigator to do the action.
+ * @param {StatefulRoute[]}        routes     - The route chain, ending with the route we want to end up at.
+ * @param {Navigation}             navigation - Navigator to do the action.
+ * @param {NavigationBlockPayload} blockers   - Potential navigation blockers.
  * @link https://reactnavigation.org/docs/nesting-navigators/#navigating-to-a-screen-in-a-nested-navigator
  */
-export function navigateTo(routes: StatefulRoute[], navigation: Navigation) {
+export function navigateTo(
+    routes: StatefulRoute[],
+    navigation: Navigation,
+    blockers: AppBreadcrumbsStoreProps['navBlockers']
+) {
+    if (blockers.length) {
+        blockers.forEach(({attemptCallback, reason, ref}) => {
+            attemptCallback && attemptCallback(reason, ref);
+        });
+        return;
+    }
+
     if (routes.length === 0) throw new Error('No routes passed to AppBreadcrumbs navigateTo()');
     const rootRoute = routes[0];
     const subRoutes = routes.slice(1); // Remove rootRoute

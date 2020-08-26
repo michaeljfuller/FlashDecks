@@ -15,6 +15,7 @@ import {DebugModal} from "../../components/modal/DebugModal/DebugModal";
 import {ToastStore} from "../../store/toast/ToastStore";
 import {randomIntString} from "../../utils/math";
 import {ToastQueueItem} from "../../store/toast/toast_actions";
+import navigationStore from "../../store/navigation/NavigationStore";
 
 export enum TestIds {
     User='TempScreen_User',
@@ -34,8 +35,7 @@ export type TempScreenState = Readonly<{
 export class TempScreen extends ImmutablePureComponent<
     TempScreenProps & TempScreenStoreProps,
     TempScreenState
->
-{
+> {
     readonly state = {
         contextValue1: 1,
         contextValue2: 2,
@@ -46,6 +46,7 @@ export class TempScreen extends ImmutablePureComponent<
 
     componentWillUnmount() {
         this.toastStore.removeByRef();
+        this.onUnblockNav();
     }
 
     render() {
@@ -58,7 +59,7 @@ export class TempScreen extends ImmutablePureComponent<
                     <Text testID={TestIds.Env}>Environment: &quot;{envName}&quot;</Text>
                 </View>
 
-                {this.renderToast()}
+                {this.renderMisc()}
                 {this.renderButtons()}
                 {this.renderContexts()}
                 {this.renderModals()}
@@ -154,13 +155,22 @@ export class TempScreen extends ImmutablePureComponent<
         </View>;
     }
 
-    renderToast() {
+    renderMisc() {
+        const {navBlocked} = this.props;
         return <View style={{ marginTop: 2, borderWidth: 1 }}>
             <View style={styles.row}>
-                <Button title="Pop Toast" onClick={this.onPopToast} style={styles.rowButton} square />
+                <Button square style={styles.rowButton}
+                    title="Pop Toast"
+                    onClick={this.onPopToast}
+                />
+                <Button square style={styles.rowButton}
+                    title={navBlocked ? "Unblock Navigation" : "Block Navigation"}
+                    onClick={navBlocked ? this.onUnblockNav : this.onBlockNav}
+                />
             </View>
         </View>;
     }
+
     onPopToast = () => {
         const addToast = (type: ToastQueueItem['type']) => {
             this.toastStore.add({
@@ -179,6 +189,19 @@ export class TempScreen extends ImmutablePureComponent<
     onCloseToast = (action: boolean, timeout: boolean) => {
         console.log('onCloseToast', { action, timeout });
     };
+
+    onBlockNav = () => {
+        navigationStore.block({
+            ref: "TempScreen",
+            reason: "TempScreen blocked navigation.",
+            attemptCallback: reason => this.toastStore.add({
+                text: reason,
+                actionText: "Unblock",
+                onClose: action => action && this.onUnblockNav(),
+            }),
+        });
+    }
+    onUnblockNav = () => navigationStore.unblock("TempScreen");
 
 }
 

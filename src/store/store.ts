@@ -23,3 +23,5 @@ export * from './decks/decks_actions';
 export * from './decks/decks_reducer';
 export * from './toast/toast_actions';
 export * from './toast/toast_reducer';
+export * from './navigation/navigation_actions';
+export * from './navigation/navigation_reducer';

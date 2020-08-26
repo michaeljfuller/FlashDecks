@@ -11,7 +11,7 @@ import {
 import AppBanner from "../components/banner/AppBanner";
 import InfoBanner from "../components/banner/InfoBanner";
 import DashboardScreen from "./Dashboard/DashboardScreen";
-import {TempScreen} from "./Temp/TempScreen";
+import TempScreen from "./Temp/TempScreen";
 import DeckRouteContainer from "./Deck/DeckRouteContainer";
 import AuthApi from "../api/AuthApi";
 const {Navigator, Screen} = createExtendableDrawerNavigator();
@@ -89,10 +89,7 @@ export class AppNavigation extends React.Component<AppNavigationParams, AppNavig
     /**
      * Create a screen that will be destroyed when navigating away.
      */
-    createScreen(
-        name: string,
-        Component: React.FunctionComponent|typeof React.Component
-    ) {
+    createScreen(name: string, Component: React.ComponentType<any>) {
         const {routes, index = 0} = this.state.navigationState || {};
         const currentRoute = routes ? routes[index].name : '';
         const isCurrentRoute = currentRoute === name;

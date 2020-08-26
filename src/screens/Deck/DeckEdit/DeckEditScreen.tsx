@@ -11,7 +11,8 @@ import Button from "../../../components/button/Button";
 import DeckScreenHeader from "../common/DeckScreenHeader";
 import {DeckModel} from "../../../models";
 import deckApi from "../../../api/DeckApi";
-import ToastStore from "../../../store/toast/ToastStore";
+import ToastStore, {toastStore} from "../../../store/toast/ToastStore";
+import navigationStore from "../../../store/navigation/NavigationStore";
 
 export interface DeckEditScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -50,6 +51,25 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     }
     componentWillUnmount() {
         this.toast.removeByRef();
+        this.blockNavigation(false);
+    }
+
+    blockNavigation(value = true) {
+        const ref = 'DeckEditScreen_Modified';
+        if (value) {
+            !navigationStore.has(ref) && navigationStore.block({
+                ref, reason: "There are unsaved changes.", attemptCallback: this.onBlockedNavAttempt
+            });
+        } else {
+            navigationStore.unblock(ref);
+        }
+    }
+    onBlockedNavAttempt = (reason: string) => {
+        toastStore.add({
+            text: reason,
+            actionText: "Clear Changes",
+            onClose: action => action && this.clearChanges(),
+        });
     }
 
     async getDeck(deckId: DeckModel['id']): Promise<DeckModel|undefined> {
@@ -58,13 +78,16 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
 
     onChange = (deck: DeckModel) => {
         this.setState({ modifiedDeck: deck });
+        this.blockNavigation(true);
+    }
+    clearChanges = () => {
+        this.setState({ modifiedDeck: undefined, });
+        this.blockNavigation(false);
     }
 
     onSavePressed = () => {
-        this.setState({
-            originalDeck: this.state.modifiedDeck,
-            modifiedDeck: undefined,
-        });
+        this.setState({ originalDeck: this.state.modifiedDeck });
+        this.clearChanges();
         this.toast.add({ type: "success", text: `Saved: "${this.state.modifiedDeck?.name}".` });
     }
 
