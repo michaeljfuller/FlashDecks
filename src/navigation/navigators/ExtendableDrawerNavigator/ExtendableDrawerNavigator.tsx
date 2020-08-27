@@ -17,7 +17,7 @@ import {Navigation, NavigationRouteDescriptors, NavigationRouterDetails} from ".
 import ExtendableDrawerContents from "./ExtendableDrawerContents";
 import {ExtendableDrawerRender, defaultRender} from "./ExtendableDrawerRenderer";
 
-export {ExtendableDrawerRender} from "./ExtendableDrawerRenderer";
+export * from "./ExtendableDrawerRenderer";
 
 //</editor-fold>
 //<editor-fold desc="Types">
