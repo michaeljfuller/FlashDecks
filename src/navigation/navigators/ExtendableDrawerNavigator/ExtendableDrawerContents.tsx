@@ -5,6 +5,7 @@ import {withStyles} from "@material-ui/core/styles";
 import MaterialButton from "@material-ui/core/Button";
 import {Color, DefaultTheme} from "../../../styles/UIColorTheme";
 import {readableRoute} from "../../../routes";
+import {navigatorReduxConnector, NavigatorStoreProps} from "../navigator_redux";
 
 export function ExtendableDrawerContents(props: DrawerContentComponentProps) {
     const {
@@ -15,17 +16,42 @@ export function ExtendableDrawerContents(props: DrawerContentComponentProps) {
     } = props;
 
     return <View style={{ flex: 1, backgroundColor: Color.OffWhite }}>
-        {state.routes.map((route, index) => {
-            // const descriptor = descriptors[route.key];
-            return <DrawerButton
-                key={route.key}
-                onClick={() => navigation.navigate(route.name, route.params)}
-                disabled={index === state.index}
-            >{readableRoute(route.name)}</DrawerButton>;
-        })}
+        <ExtendableDrawerButtons navigation={navigation} state={state} />
     </View>;
 }
 export default ExtendableDrawerContents;
+
+interface ExtendableDrawerButtonsProps {
+    state: DrawerContentComponentProps['state'];
+    navigation: DrawerContentComponentProps['navigation'];
+}
+const ExtendableDrawerButtons = navigatorReduxConnector(
+    function ExtendableDrawerButtons(props: ExtendableDrawerButtonsProps){
+        const { state, navigation, navBlockers } = props as DrawerContentComponentProps & NavigatorStoreProps;
+        return <React.Fragment>{
+            state.routes.map((route, index) => {
+                // const descriptor = descriptors[route.key];
+
+                const onClick = () => {
+                    if (navBlockers.length) {
+                        navBlockers.forEach(({attemptCallback, reason, ref}) => {
+                            attemptCallback && attemptCallback(reason, ref);
+                        });
+                    } else {
+                        navigation.navigate(route.name, route.params);
+                    }
+                };
+
+                return <DrawerButton
+                    key={route.key}
+                    onClick={onClick}
+                    disabled={index === state.index}
+                >{readableRoute(route.name)}</DrawerButton>;
+
+            })
+        }</React.Fragment>;
+    }
+);
 
 const buttonColor = DefaultTheme;
 const DrawerButton = withStyles({

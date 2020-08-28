@@ -7,8 +7,9 @@ import withDefaultProps from '../../../utils/hoc/withDefaultProps/withDefaultPro
 import {AppBreadcrumbsProps, getCurrentRoutes, navigateTo} from './AppBreadcrumbs.common';
 import {Color} from "../../../styles/Color";
 import {readableRoute} from "../../../routes";
+import {reduxConnector, AppBreadcrumbsStoreProps} from "./AppBreadcrumbs_redux";
 
-export const AppBreadcrumbs = React.memo(function AppBreadcrumbs(props: AppBreadcrumbsProps) {
+export const AppBreadcrumbs = React.memo(function AppBreadcrumbs(props: AppBreadcrumbsProps & AppBreadcrumbsStoreProps) {
     const {navigation, state, initialRouteName} = props.routerDetails;
     const initialRoute = state.routes.find(route => route.name === initialRouteName) || state.routes[0];
     const currentRoutes = getCurrentRoutes(state, {filterInitial:true});
@@ -19,7 +20,7 @@ export const AppBreadcrumbs = React.memo(function AppBreadcrumbs(props: AppBread
             key={route.key||route.name}
             title={readableRoute(route.name)}
             disabled={index+1 >= currentRoutes.length}
-            onClick={() => navigateTo(currentRoutes.slice(0, index+1), navigation)}
+            onClick={() => navigateTo(currentRoutes.slice(0, index+1), navigation, props.navBlockers)}
         />;
     });
 
@@ -29,13 +30,13 @@ export const AppBreadcrumbs = React.memo(function AppBreadcrumbs(props: AppBread
             key={initialRoute.key}
             title={readableRoute(initialRoute.name)}
             disabled={currentRoutes.length === 0}
-            onClick={() => navigateTo([initialRoute], navigation)}
+            onClick={() => navigateTo([initialRoute], navigation, props.navBlockers)}
         />)
     }
 
     return <StyledBreadcrumbs maxItems={3}>{items}</StyledBreadcrumbs>;
 });
-export default AppBreadcrumbs;
+export default reduxConnector(AppBreadcrumbs);
 
 export const BreadcrumbButton = withDefaultProps(TextButton, {
     color: "White"
