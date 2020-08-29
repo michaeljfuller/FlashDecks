@@ -1,3 +1,5 @@
+import React from 'react';
+
 export interface ToastProps {
     /** If the Toast should show. */
     show: boolean;
@@ -16,6 +18,42 @@ export interface ToastProps {
 
     /** Duration in milliseconds. Default is indefinite. */
     duration?: number;
+
+    canDismiss?: boolean;
 }
 
 export type ToastType = "default"|"success"|"error"|"warning";
+
+export class ToastBase extends React.PureComponent<ToastProps> {
+    private timeoutId: any
+
+    componentDidMount() {
+        if (this.props.show) {
+            this.onShow();
+        }
+    }
+
+    componentDidUpdate(prevProps: Readonly<ToastProps>/*, prevState: Readonly<{}>, snapshot?: any*/) {
+        if (!prevProps.show && this.props.show) {
+            this.onShow();
+        }
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timeoutId);
+    }
+
+    startTimer() {
+        if (this.props.duration) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = setTimeout(this.onTimeout, this.props.duration);
+        }
+    }
+
+    onShow() {
+        this.startTimer();
+    }
+    onTimeout = () => {
+        this.props.onClose(false, true);
+    }
+}

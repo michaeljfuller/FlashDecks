@@ -1,85 +1,87 @@
-import React, {SyntheticEvent, useCallback} from "react";
-import {withStyles} from '@material-ui/core/styles';
-import Snackbar, {SnackbarCloseReason} from '@material-ui/core/Snackbar'; // https://material-ui.com/components/snackbars/
-import SnackbarContent from '@material-ui/core/SnackbarContent'; // https://material-ui.com/api/snackbar-content/;
-import {ToastProps} from "./Toast.common";
-import Button, {ButtonProps} from "../button/Button";
-import withDefaultProps from "../../utils/hoc/withDefaultProps/withDefaultProps";
+import React from "react";
+import {View, Text, StyleSheet} from "react-native";
+import {ToastProps, ToastType} from "./Toast.common";
+import {GetUIColorThemeInput} from "../../styles/UIColorTheme";
+import FullScreen from "../fullscreen/FullScreen";
+import Button from "../button/Button";
 
-export const Toast = React.memo(function Toast(props: ToastProps) {
-    const { onClose: _onClose } = props;
-    // On close (timeout, click on screen, or `show` set to false)
-    const onClose = useCallback((event: SyntheticEvent<any, Event>, reason: SnackbarCloseReason) => {
-        return _onClose(false, reason === "timeout");
-    }, [_onClose]);
+export class Toast extends React.PureComponent<ToastProps> {
 
-    // On action clicked
-    const onClick = useCallback(() => {
-        _onClose(true, false);
-    }, [_onClose]);
+    readonly onAction = () => {
+        this.props.onClose(true, false);
+    }
+    readonly onDismiss = () => {
+        if (this.props.canDismiss !== false) {
+            this.props.onClose(false, false);
+        }
+    }
 
-    // Get components styled by ToastType
-    const Content = getContentComponent(props.type);
-    const Action = getActionComponent(props.type);
+    render() {
+        if (!this.props.show) return null;
+        const {text, actionText = 'OK', type} = this.props;
 
-    return <Snackbar
-        open={props.show}
-        onClose={onClose}
-        autoHideDuration={props.duration || null}
-    >
-        <Content
-            message={props.text}
-            action={<Action
-                title={props.actionText||"OK"}
-                onClick={onClick}
-            />}
-        />
-    </Snackbar>;
-});
+        return <FullScreen style={styles.backdrop} contentStyle={styles.placement} onPress={this.onDismiss}>
+            <View style={backgroundStyle(type)}>
+                <Text style={styles.text}>{text}</Text>
+                <Button
+                    title={actionText}
+                    onClick={this.onAction}
+                    style={styles.button}
+                    color={buttonColor(type)}
+                    height={30}
+                    square
+                />
+            </View>
+        </FullScreen>;
+    }
+}
+
+function backgroundStyle(type?: ToastType) {
+    switch (type){
+        case "success": return [styles.background, styles.backgroundSuccess];
+        case "warning": return [styles.background, styles.backgroundWarning];
+        case "error": return [styles.background, styles.backgroundError];
+    }
+    return styles.background;
+}
+
+function buttonColor(type?: ToastType): GetUIColorThemeInput {
+    switch (type){
+        case "success": return "Green";
+        case "warning": return "Orange";
+        case "error": return "Red";
+    }
+    return undefined;
+}
+
 export default Toast;
 
-//<editor-fold desc="Content Components">
-
-function getContentComponent(type: ToastProps['type']) {
-    switch (type) {
-        case "success": return SuccessContent;
-        case "warning": return WarningContent;
-        case "error": return ErrorContent;
+const margin = 5;
+const styles = StyleSheet.create({
+    backdrop: {
+        opacity: 0,
+    },
+    placement: {
+        bottom: margin,
+        left: margin,
+        right: margin,
+    },
+    background: {
+        marginHorizontal: 'auto',
+        flexDirection: 'column',
+        borderRadius: 5,
+        backgroundColor: 'black',
+        padding: 5,
+    },
+    backgroundSuccess: { backgroundColor: 'green' },
+    backgroundWarning: { backgroundColor: 'orange' },
+    backgroundError: { backgroundColor: 'red' },
+    text: {
+        color: 'white',
+        flexGrow: 1,
+    },
+    button: {
+        marginTop: 3,
     }
-    return DefaultContent;
-}
+});
 
-const DefaultContent = SnackbarContent;
-const SuccessContent = styleContent('green');
-const WarningContent = styleContent('orange');
-const ErrorContent = styleContent('red');
-
-function styleContent(backgroundColor: string) {
-    return withStyles({
-        root: { backgroundColor }
-    })(SnackbarContent) as typeof SnackbarContent;
-}
-
-
-//</editor-fold>
-//<editor-fold desc="Action Components">
-
-function getActionComponent(type: ToastProps['type']) {
-    switch (type) {
-        case "success": return SuccessButton;
-        case "warning": return WarningButton;
-        case "error": return ErrorButton;
-    }
-    return DefaultButton;
-}
-
-const DefaultButton = styleButton('Grey');
-const SuccessButton = styleButton('Green');
-const WarningButton = styleButton('Orange');
-const ErrorButton = styleButton('Red');
-
-function styleButton(color: ButtonProps['color']) {
-    return withDefaultProps(Button, { color } as ButtonProps);
-}
-
-//</editor-fold>
