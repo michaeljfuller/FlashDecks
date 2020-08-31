@@ -77,16 +77,16 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     }
 
     onChange = (deck: DeckModel) => {
-        this.setState({ modifiedDeck: deck });
+        this.setStateTo(draft => draft.modifiedDeck = castDraft(deck));
         this.blockNavigation(true);
     }
     clearChanges = () => {
-        this.setState({ modifiedDeck: undefined, });
+        this.setStateTo({ modifiedDeck: undefined, });
         this.blockNavigation(false);
     }
 
     onSavePressed = () => {
-        this.setState({ originalDeck: this.state.modifiedDeck });
+        this.setStateTo(draft => draft.originalDeck = castDraft(this.state.modifiedDeck));
         this.clearChanges();
         this.toast.add({ type: "success", text: `Saved: "${this.state.modifiedDeck?.name}".` });
     }
