@@ -14,6 +14,7 @@ import DashboardScreen from "./Dashboard/DashboardScreen";
 import TempScreen from "./Temp/TempScreen";
 import DeckRouteContainer from "./Deck/DeckRouteContainer";
 import AuthApi from "../api/AuthApi";
+import {toastStore} from "../store/toast/ToastStore";
 const {Navigator, Screen} = createExtendableDrawerNavigator();
 
 export const appNavigation = React.createRef<NavigationContainerRef>();
@@ -69,7 +70,7 @@ export class AppNavigation extends React.Component<AppNavigationParams, AppNavig
 
     renderContents: ExtendableDrawerRender = (contents, routerDetails) => {
         const toggleDrawer = () => routerDetails.navigation.dispatch(DrawerActions.toggleDrawer());
-        const signOut = () => this.auth.signOut().catch(e => console.warn('Error signing out', e)); // TODO Add toast
+        const signOut = () => this.auth.signOut().catch(e => toastStore.addError(e, 'Error signing out'));
 
         return <React.Fragment>
             <AppBanner

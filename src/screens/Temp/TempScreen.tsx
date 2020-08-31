@@ -161,7 +161,22 @@ export class TempScreen extends ImmutablePureComponent<
             <View style={styles.row}>
                 <Button square style={styles.rowButton}
                     title="Pop Toast"
-                    onClick={this.onPopToast}
+                    onClick={() => this.addToast(
+                        "default",
+                        0,
+                        "Example toast with a longer message to see how it looks and if it wraps onto multiple lines on "+
+                        "a smaller screen, such as on a phone, tablet, or another mobile device.",
+                        ''
+                    )}
+                />
+                <Button square style={styles.rowButton}
+                    title="Pop Multiple Toast"
+                    onClick={() => {
+                        this.addToast("success");
+                        this.addToast("warning");
+                        this.addToast("error");
+                        this.addToast("default", 0);
+                    }}
                 />
                 <Button square style={styles.rowButton}
                     title={navBlocked ? "Unblock Navigation" : "Block Navigation"}
@@ -171,24 +186,18 @@ export class TempScreen extends ImmutablePureComponent<
         </View>;
     }
 
-    onPopToast = () => {
-        const addToast = (type: ToastQueueItem['type']) => {
-            this.toastStore.add({
-                text: `Example "${type}" Toast. #${randomIntString(5)}`,
-                actionText: 'Close',
-                duration: 2000,
-                onClose: this.onCloseToast,
-                type,
-            });
-        };
-        addToast("default");
-        addToast("success");
-        addToast("warning");
-        addToast("error");
+    addToast(type: ToastQueueItem['type'], duration = 500, text = '', title = type?.toUpperCase()) {
+        this.toastStore.add({
+            text: text || `Example ${type} Toast. #${randomIntString(5)}`,
+            title,
+            actionText: 'Close',
+            onClose: (action: boolean, timeout: boolean) => {
+                console.log('onCloseToast', JSON.stringify({ action, timeout }));
+            },
+            duration,
+            type,
+        });
     }
-    onCloseToast = (action: boolean, timeout: boolean) => {
-        console.log('onCloseToast', { action, timeout });
-    };
 
     onBlockNav = () => {
         navigationStore.block({

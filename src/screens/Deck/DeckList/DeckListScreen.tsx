@@ -10,6 +10,7 @@ import {reduxConnector, DeckListScreenStoreProps} from "./DeckListScreen_redux";
 import DeckRoutes from "../DeckRoutes";
 import {DeckModel} from "../../../models";
 import deckApi from "../../../api/DeckApi";
+import {toastStore} from "../../../store/toast/ToastStore";
 
 export interface DeckListScreenProps extends NavigationScreenProps {}
 export interface DeckListScreenState {
@@ -37,7 +38,7 @@ export class DeckListScreen extends ImmutablePureComponent<
         this.setStateTo({ loading: true });
         deckApi.getList().then(
             decks => this.setStateTo(draft => draft.decks = castDraft(decks)),
-            (e) => console.warn('Error loading decks', e) // TODO Toast
+            (e) => toastStore.addError(e, 'Error loading decks')
         ).finally(
             () => this.setStateTo({ loading: false })
         );

@@ -1,6 +1,7 @@
 import AStoreHelper from "../AStoreHelper";
 import {ActionType, ToastAdd, ToastShift, ToastQueueItem, ToastRemoveByRef} from "../store";
 import {ToastState} from "./toast_reducer";
+import {getErrorText} from "../../utils/string";
 
 /**
  * Facade for adding toast to the store queue.
@@ -20,6 +21,18 @@ export class ToastStore extends AStoreHelper<ToastState> {
         item.ref = item.ref || this.defaultRef;
         const action: ToastAdd = {type: ActionType.TOAST_ADD, item};
         this.store.dispatch(action);
+    }
+
+    /** Add error item to the queue */
+    addError(error: Error|string|unknown, title: string, overrides?: Partial<ToastQueueItem>): void {
+        const text = getErrorText(error);
+        this.add(
+            Object.assign({
+                title: text ? title : undefined,
+                text: text || title,
+                type: "error",
+            } as ToastQueueItem, overrides)
+        );
     }
 
     /** Remove item from start of the queue. */
