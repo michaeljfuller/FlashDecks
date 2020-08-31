@@ -161,15 +161,21 @@ export class TempScreen extends ImmutablePureComponent<
             <View style={styles.row}>
                 <Button square style={styles.rowButton}
                     title="Pop Toast"
-                    onClick={() => this.addToast("default", 0)}
+                    onClick={() => this.addToast(
+                        "default",
+                        0,
+                        "Example toast with a longer message to see how it looks and if it wraps onto multiple lines on "+
+                        "a smaller screen, such as on a phone, tablet, or another mobile device.",
+                        ''
+                    )}
                 />
                 <Button square style={styles.rowButton}
                     title="Pop Multiple Toast"
                     onClick={() => {
-                        this.addToast("default");
                         this.addToast("success");
                         this.addToast("warning");
                         this.addToast("error");
+                        this.addToast("default", 0);
                     }}
                 />
                 <Button square style={styles.rowButton}
@@ -180,9 +186,10 @@ export class TempScreen extends ImmutablePureComponent<
         </View>;
     }
 
-    addToast(type: ToastQueueItem['type'], duration = 500) {
+    addToast(type: ToastQueueItem['type'], duration = 500, text = '', title = type?.toUpperCase()) {
         this.toastStore.add({
-            text: `Example "${type}" Toast. #${randomIntString(5)}`,
+            text: text || `Example ${type} Toast. #${randomIntString(5)}`,
+            title,
             actionText: 'Close',
             onClose: (action: boolean, timeout: boolean) => {
                 console.log('onCloseToast', JSON.stringify({ action, timeout }));

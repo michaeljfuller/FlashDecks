@@ -9,6 +9,7 @@ export interface ToastProps {
 
     /** Toast message */
     text: string;
+    title?: string;
 
     /** Text of the action button */
     actionText?: string;

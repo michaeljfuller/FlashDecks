@@ -10,7 +10,7 @@ import {toastStore} from "../../store/toast/ToastStore";
 export const RootToast = React.memo(reduxConnector(
     function RootToast(props: RootToastStoreProps) {
         const currentToast = props.toast[0];
-        const {onClose: onCloseNext} = currentToast || {};
+        const {onClose: onCloseNext, ref, ...toastProps} = currentToast || {};
 
         // When the toast is closed, call the callback and remove item from the queue.
         const onClose = useCallback<ToastProps['onClose']>((action, timeout) => {
@@ -21,13 +21,10 @@ export const RootToast = React.memo(reduxConnector(
         // Show the current toast.
         // Use `key` with unique ID so a new instance is created for each item, and the `duration` timer is reset.
         return currentToast ? <Toast
-            key={currentToast.id}
+            key={ref+'_'+currentToast.id}
             show={true}
             onClose={onClose}
-            text={currentToast.text}
-            duration={currentToast.duration}
-            type={currentToast.type}
-            actionText={currentToast.actionText}
+            {...toastProps}
         /> : null;
     }
 ));

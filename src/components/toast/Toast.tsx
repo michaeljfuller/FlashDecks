@@ -8,10 +8,11 @@ import Button from "../button/Button";
 export class Toast extends ToastBase {
     render() {
         if (!this.props.show) return null;
-        const {text, actionText = 'OK', type} = this.props;
+        const {text, title, actionText = 'OK', type} = this.props;
 
         return <FullScreen style={styles.backdrop} contentStyle={styles.placement} onPress={this.onDismiss}>
             <View style={backgroundStyle(type)}>
+                {title ? <Text style={styles.title}>{title}</Text> : null}
                 <Text style={styles.text}>{text}</Text>
                 <Button
                     title={actionText}
@@ -66,9 +67,11 @@ const styles = StyleSheet.create({
     backgroundSuccess: { backgroundColor: 'green' },
     backgroundWarning: { backgroundColor: 'orange' },
     backgroundError: { backgroundColor: 'red' },
-    text: {
+    text: { color: 'white' },
+    title: {
         color: 'white',
-        flexGrow: 1,
+        fontWeight: "bold",
+        letterSpacing: 1,
     },
     button: {
         marginTop: 3,
