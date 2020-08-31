@@ -1,21 +1,11 @@
 import React from "react";
 import {View, Text, StyleSheet} from "react-native";
-import {ToastProps, ToastType} from "./Toast.common";
+import {ToastBase, ToastType} from "./Toast.common";
 import {GetUIColorThemeInput} from "../../styles/UIColorTheme";
 import FullScreen from "../fullscreen/FullScreen";
 import Button from "../button/Button";
 
-export class Toast extends React.PureComponent<ToastProps> {
-
-    readonly onAction = () => {
-        this.props.onClose(true, false);
-    }
-    readonly onDismiss = () => {
-        if (this.props.canDismiss !== false) {
-            this.props.onClose(false, false);
-        }
-    }
-
+export class Toast extends ToastBase {
     render() {
         if (!this.props.show) return null;
         const {text, actionText = 'OK', type} = this.props;

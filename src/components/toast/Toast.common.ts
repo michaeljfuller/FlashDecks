@@ -53,7 +53,17 @@ export class ToastBase extends React.PureComponent<ToastProps> {
     onShow() {
         this.startTimer();
     }
-    onTimeout = () => {
+    readonly onTimeout = () => {
         this.props.onClose(false, true);
     }
+
+    readonly onAction = () => {
+        this.props.onClose(true, false);
+    }
+    readonly onDismiss = () => {
+        if (this.props.canDismiss !== false) {
+            this.props.onClose(false, false);
+        }
+    }
+
 }
