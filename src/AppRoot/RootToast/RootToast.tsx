@@ -13,10 +13,10 @@ export const RootToast = React.memo(reduxConnector(
         const {onClose: onCloseNext, ref, ...toastProps} = currentToast || {};
 
         // When the toast is closed, call the callback and remove item from the queue.
-        const onClose = useCallback<ToastProps['onClose']>((action, timeout) => {
+        const onClose = useCallback<NonNullable<ToastProps['onClose']>>((action, timeout) => {
             onCloseNext && onCloseNext(action, timeout);
             toastStore.shift();
-        }, [onCloseNext, toastStore]);
+        }, [onCloseNext]);
 
         // Show the current toast.
         // Use `key` with unique ID so a new instance is created for each item, and the `duration` timer is reset.

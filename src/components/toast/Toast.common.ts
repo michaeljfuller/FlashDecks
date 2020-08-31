@@ -5,7 +5,7 @@ export interface ToastProps {
     show: boolean;
 
     /** Callback on the Toast closing, and if the action button was pressed. Defaults to "OK".  */
-    onClose: (action: boolean, timeout: boolean) => void;
+    onClose?: (action: boolean, timeout: boolean) => void;
 
     /** Toast message */
     text: string;
@@ -55,15 +55,15 @@ export class ToastBase extends React.PureComponent<ToastProps> {
         this.startTimer();
     }
     readonly onTimeout = () => {
-        this.props.onClose(false, true);
+        this.props.onClose && this.props.onClose(false, true);
     }
 
     readonly onAction = () => {
-        this.props.onClose(true, false);
+        this.props.onClose && this.props.onClose(true, false);
     }
     readonly onDismiss = () => {
         if (this.props.canDismiss !== false) {
-            this.props.onClose(false, false);
+            this.props.onClose && this.props.onClose(false, false);
         }
     }
 
