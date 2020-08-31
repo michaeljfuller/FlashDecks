@@ -4,6 +4,7 @@ import {CognitoUserModel, UserModel} from "../models";
 import userApi from "../api/UserApi";
 import AuthApi from "../api/AuthApi";
 import ToastStore from "../store/toast/ToastStore";
+import {getErrorText} from "../utils/string";
 
 export interface AppRootProps {}
 export interface AppRootState {
@@ -34,7 +35,7 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
 
     onErrorMessage(message: string, details?: string) { // TODO Child implementations to use Toast
         console.warn('AppRoot Auth Error:', message, details);
-        this.toast.add({ text: message, type: "warning", duration: 3000 });
+        this.toast.add({ title: 'Auth Error', text: message, type: "warning", duration: 3000 });
     }
 
     protected clearUser() {
@@ -53,7 +54,7 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
         try {
             cognitoUser = await this.auth.getUser();
         } catch (e) {
-            this.onErrorMessage('Unable to sign in.', getErrorMessage(e));
+            this.onErrorMessage('Unable to sign in.', getErrorText(e));
         }
 
         // Get user data from DataBase.
@@ -61,7 +62,7 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
             try {
                 user = await userApi.getUser(cognitoUser.sub);
             } catch (e) {
-                this.onErrorMessage('Error getting current user.', getErrorMessage(e));
+                this.onErrorMessage('Error getting current user.', getErrorText(e));
             }
         }
 
@@ -74,10 +75,4 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
         }
     }
 
-}
-
-function getErrorMessage(e: unknown): string|undefined {
-    if (e instanceof Error) return e.message;
-    if (typeof e === 'string') return e;
-    return undefined;
 }
