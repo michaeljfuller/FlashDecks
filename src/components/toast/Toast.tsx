@@ -67,11 +67,15 @@ const styles = StyleSheet.create({
     backgroundSuccess: { backgroundColor: 'green' },
     backgroundWarning: { backgroundColor: 'orange' },
     backgroundError: { backgroundColor: 'red' },
-    text: { color: 'white' },
+    text: {
+        color: 'white',
+        paddingHorizontal: 2,
+    },
     title: {
         color: 'white',
         fontWeight: "bold",
         letterSpacing: 1,
+        paddingHorizontal: 2,
     },
     button: {
         marginTop: 3,
