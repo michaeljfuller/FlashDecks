@@ -25,8 +25,15 @@ export interface ToastProps {
 
 export type ToastType = "default"|"success"|"error"|"warning";
 
-export class ToastBase extends React.PureComponent<ToastProps> {
+export interface BaseToastState {
+    enabled: boolean;
+}
+export class ToastBase<State extends BaseToastState = BaseToastState> extends React.PureComponent<ToastProps, State> {
     private timeoutId: any
+
+    state = {
+        enabled: false,
+    } as State;
 
     componentDidMount() {
         if (this.props.show) {
@@ -55,14 +62,18 @@ export class ToastBase extends React.PureComponent<ToastProps> {
         this.startTimer();
     }
     readonly onTimeout = () => {
-        this.props.onClose && this.props.onClose(false, true);
+        if (this.props.onClose) {
+            this.props.onClose(false, true);
+        }
     }
 
     readonly onAction = () => {
-        this.props.onClose && this.props.onClose(true, false);
+        if (this.state.enabled && this.props.onClose) {
+            this.props.onClose(true, false);
+        }
     }
     readonly onDismiss = () => {
-        if (this.props.canDismiss !== false) {
+        if (this.state.enabled && this.props.canDismiss !== false) {
             this.props.onClose && this.props.onClose(false, false);
         }
     }

@@ -1,17 +1,33 @@
 import React from "react";
-import {View, Text, StyleSheet} from "react-native";
+import {Animated, Easing, Text, StyleSheet} from "react-native";
 import {ToastBase, ToastType} from "./Toast.common";
 import {GetUIColorThemeInput} from "../../styles/UIColorTheme";
 import FullScreen from "../fullscreen/FullScreen";
 import Button from "../button/Button";
 
 export class Toast extends ToastBase {
+    opacityAnim = new Animated.Value(0.01);
+    bottomAnim = new Animated.Value(-80);
+
+    onShow() {
+        super.onShow();
+        this.setState({ enabled: false });
+        const duration = 500;
+
+        Animated.timing(this.bottomAnim, {
+            toValue: 0, duration, useNativeDriver: false, easing: Easing.out(Easing.cubic)
+        }).start();
+
+        Animated.timing(this.opacityAnim, {
+            toValue: 1, duration, useNativeDriver: false,
+        }).start(() => this.setState({ enabled: true }));
+    }
     render() {
         if (!this.props.show) return null;
         const {text, title, actionText = 'OK', type} = this.props;
 
         return <FullScreen style={styles.backdrop} contentStyle={styles.placement} onPress={this.onDismiss}>
-            <View style={backgroundStyle(type)}>
+            <Animated.View style={[ backgroundStyle(type), { opacity: this.opacityAnim, bottom: this.bottomAnim } ]}>
                 {title ? <Text style={styles.title}>{title}</Text> : null}
                 <Text style={styles.text}>{text}</Text>
                 <Button
@@ -22,7 +38,7 @@ export class Toast extends ToastBase {
                     height={30}
                     square
                 />
-            </View>
+            </Animated.View>
         </FullScreen>;
     }
 }
@@ -63,6 +79,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: 'black',
         padding: 5,
+        opacity: 0,
     },
     backgroundSuccess: { backgroundColor: 'green' },
     backgroundWarning: { backgroundColor: 'orange' },
