@@ -8,7 +8,7 @@ import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/
 import {reduxConnector, DeckViewScreenStoreProps} from "./DeckViewScreen_redux";
 import DeckScreenHeader from "../common/DeckScreenHeader";
 import {DeckModel} from "../../../models";
-import deckApi from "../../../api/DeckApi";
+import deckApi from "../../../api/DeckApi.mock";
 
 export interface DeckViewScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
