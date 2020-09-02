@@ -12,6 +12,7 @@ import AppBanner from "../components/banner/AppBanner";
 import InfoBanner from "../components/banner/InfoBanner";
 import DashboardScreen from "./Dashboard/DashboardScreen";
 import TempScreen from "./Temp/TempScreen";
+import ApiTempScreen from "./ApiTemp/ApiTempScreen";
 import DeckRouteContainer from "./Deck/DeckRouteContainer";
 import AuthApi from "../api/AuthApi";
 import {toastStore} from "../store/toast/ToastStore";
@@ -117,6 +118,7 @@ export class AppNavigation extends React.Component<AppNavigationParams, AppNavig
 
                     <Screen name={AppRoutes.Home}  component={DashboardScreen} options={{icon: null} /* TODO Add icon to options */}/>
                     {this.createScreen(AppRoutes.Temp, TempScreen)}
+                    {this.createScreen(AppRoutes.ApiTemp, ApiTempScreen)}
                     {this.createScreen(AppRoutes.Decks, DeckRouteContainer)}
 
                 </Navigator>
