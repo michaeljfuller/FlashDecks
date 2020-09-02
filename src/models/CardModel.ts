@@ -1,4 +1,5 @@
 import Model from "./core/Model";
+import {ApiList} from "./core/ApiTypes";
 import {ApiUser, UserModel} from "./UserModel";
 import {ApiCardSide, CardSideModel} from "./CardSideModel";
 
@@ -7,7 +8,7 @@ export interface ApiCard {
     name: string;
     ownerId: string;
     owner: ApiUser;
-    sides?: ApiCardSide[];
+    sides?: ApiList<ApiCardSide>;
 }
 
 export class CardModel extends Model implements Omit<ApiCard, 'owner'|'sides'> {
@@ -18,13 +19,12 @@ export class CardModel extends Model implements Omit<ApiCard, 'owner'|'sides'> {
     readonly sides: readonly CardSideModel[] = [];
 
     static fromApi(obj: ApiCard) {
-        const { sides=[] } = obj;
         return (new CardModel()).update({
             id: obj.id,
             ownerId: obj.ownerId,
             owner: UserModel.fromApi(obj.owner),
             name: obj.name,
-            sides: sides.map(CardSideModel.fromApi),
+            sides: obj.sides?.items?.map(CardSideModel.fromApi) || [],
         });
     }
 }

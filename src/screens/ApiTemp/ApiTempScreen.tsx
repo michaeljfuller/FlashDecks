@@ -20,11 +20,14 @@ export class ApiTempScreen extends ImmutablePureComponent<
     readonly state = {} as ApiTempScreenState;
 
     async componentDidMount() {
-        const user = this.props.loggedInUser;
-        if (user) {
-            const decks = await deckApi.getForUser(user.id);
-            this.setStateTo(draft => draft.decks = castDraft(decks));
-        }
+        // const user = this.props.loggedInUser;
+        // if (user) {
+        //     const decks = await deckApi.getForUser(user.id);
+        //     this.setStateTo(draft => draft.decks = castDraft(decks));
+        // }
+
+        const decks = await deckApi.getList();
+        this.setStateTo(draft => draft.decks = castDraft(decks));
     }
 
     render() {
@@ -37,7 +40,7 @@ export class ApiTempScreen extends ImmutablePureComponent<
                     <View>{decks.map(
                         deck => <DeckInfo key={deck.id} deck={deck} />
                     )}</View>
-                    <Text>{JSON.stringify(this.state.decks, null, 4)}</Text>
+                    <Text>this.state.decks = {JSON.stringify(this.state.decks, null, 4)};</Text>
                 </View>
             </ScreenContainer>
         );
@@ -45,6 +48,8 @@ export class ApiTempScreen extends ImmutablePureComponent<
 
 }
 export default reduxConnector(ApiTempScreen);
+
+//<editor-fold desc="Sub-components">
 
 const NameValue = React.memo(function NameValue(
     {name, value, maxHeight=150, minNameWidth=80}: { name: string; value: any; maxHeight?: number; minNameWidth?: number }
@@ -66,7 +71,7 @@ const DeckInfo = React.memo(function DeckInfo({deck}: { deck: DeckModel }) {
     return <View style={deckStyles.view}>
         <NameValue name="Deck ID" value={deck.id} />
         <NameValue name="Description" value={deck.description} />
-        <NameValue name="Tags" value={deck.tags.join(' | ')} />
+        <NameValue name={`Tags (${deck.tags.length})`} value={deck.tags.join(' | ')} />
         <NameValue name="Owner" value={`${deck.ownerId} - ${deck.owner?.displayName || '?'}`} />
         <NameValue name="Cards" value={deck.cards.length} />
         <View>{deck.cards.map(
@@ -135,3 +140,5 @@ const sideStyles = StyleSheet.create({
         backgroundColor: 'orange',
     },
 });
+
+//</editor-fold>
