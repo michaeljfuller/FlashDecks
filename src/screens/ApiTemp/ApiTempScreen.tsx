@@ -13,13 +13,19 @@ export type ApiTempScreenProps = NavigationScreenProps;
 export type ApiTempScreenState = Readonly<{
     decks: DeckModel[];
     userDecks: DeckModel[];
+    loadingDecks: boolean;
+    loadingUserDecks: boolean;
 }>;
 
 export class ApiTempScreen extends ImmutablePureComponent<
     ApiTempScreenProps & ApiTempScreenStoreProps,
     ApiTempScreenState
 > {
-    readonly state = {} as ApiTempScreenState;
+    readonly state = {
+        loadingDecks: true,
+        loadingUserDecks: true,
+    } as ApiTempScreenState;
+    
     toast = new ToastStore(this);
 
     async componentDidMount() {
@@ -27,7 +33,10 @@ export class ApiTempScreen extends ImmutablePureComponent<
         if (user) {
             try {
                 const userDecks = await deckApi.getForUser(user.id);
-                this.setStateTo(draft => draft.userDecks = castDraft(userDecks));
+                this.setStateTo(draft => {
+                    draft.userDecks = castDraft(userDecks);
+                    draft.loadingUserDecks = false;
+                });
             } catch (e) {
                 console.warn(e);
                 this.toast.addError(e, 'Error getting Own Decks');
@@ -36,7 +45,10 @@ export class ApiTempScreen extends ImmutablePureComponent<
 
         try {
             const decks = await deckApi.getList();
-            this.setStateTo(draft => draft.decks = castDraft(decks));
+            this.setStateTo(draft => {
+                draft.decks = castDraft(decks);
+                draft.loadingDecks = false;
+            });
         } catch (e) {
             console.warn(e);
             this.toast.addError(e, 'Error getting All Decks');
@@ -57,17 +69,18 @@ export class ApiTempScreen extends ImmutablePureComponent<
                 <View>
                     <Text style={{ fontWeight: 'bold', textAlign: "center" }}>ApiTempScreen</Text>
 
-                    <Text style={{ fontWeight: 'bold' }}>Own Decks ({user?.displayName || '?'} : {user?.id || '?'} ): {userDecks.length}</Text>
-                    <View>{userDecks.map(
-                        deck => <DeckInfo key={deck.id} deck={deck} />
-                    )}</View>
-                    <Text>this.state.userDecks = {JSON.stringify(this.state.userDecks, null, 4) || typeof this.state.userDecks};</Text>
-
-                    <Text style={{ fontWeight: 'bold' }}>All Decks: {decks.length}</Text>
-                    <View>{decks.map(
-                        deck => <DeckInfo key={deck.id} deck={deck} />
-                    )}</View>
-                    <Text>this.state.decks = {JSON.stringify(this.state.decks, null, 4) || typeof this.state.decks};</Text>
+                    <View>
+                        <Text style={{ fontWeight: 'bold' }}>Own Decks ({user?.displayName || '?'} : {user?.id || '?'} ): {userDecks.length}</Text>
+                        <LoadingText show={this.state.loadingUserDecks} />
+                        <View>{userDecks.map( deck => <DeckInfo key={deck.id} deck={deck} /> )}</View>
+                        {/*<Text>this.state.userDecks = {JSON.stringify(this.state.userDecks, null, 4) || typeof this.state.userDecks};</Text>*/}
+                    </View>
+                    <View>
+                        <Text style={{ fontWeight: 'bold' }}>All Decks: {decks.length}</Text>
+                        <LoadingText show={this.state.loadingDecks} />
+                        <View>{decks.map( deck => <DeckInfo key={deck.id} deck={deck} /> )}</View>
+                        {/*<Text>this.state.decks = {JSON.stringify(this.state.decks, null, 4) || typeof this.state.decks};</Text>*/}
+                    </View>
 
                 </View>
             </ScreenContainer>
@@ -167,6 +180,10 @@ const sideStyles = StyleSheet.create({
         marginTop: 5,
         backgroundColor: 'orange',
     },
+});
+
+const LoadingText = React.memo(function LoadingText({show}: { show: boolean }) {
+    return show ? <Text>Loading...</Text> : null;
 });
 
 //</editor-fold>

@@ -15,8 +15,13 @@ export class DeckApi {
         return parseApiDeckList(response?.data?.listDecks?.items);
     }
 
+    // TODO Replace 'listDecks' with 'searchDecks' when ElasticSearch is re-added or replaced.
     async getForUser(ownerId: UserModel['id']): Promise<DeckModel[]> {
-        const response: any = await API.graphql(graphqlOperation(searchDecks, { ownerId }));
+        const response: any = await API.graphql(graphqlOperation(listDecks, {
+            filter: {
+                ownerId: { eq: ownerId }
+            }
+        }));
         return parseApiDeckList(response?.data?.listDecks?.items);
     }
 
