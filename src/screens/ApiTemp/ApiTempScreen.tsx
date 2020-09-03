@@ -11,6 +11,7 @@ import {castDraft} from "immer";
 export type ApiTempScreenProps = NavigationScreenProps;
 export type ApiTempScreenState = Readonly<{
     decks: DeckModel[];
+    userDecks: DeckModel[];
 }>;
 
 export class ApiTempScreen extends ImmutablePureComponent<
@@ -20,27 +21,38 @@ export class ApiTempScreen extends ImmutablePureComponent<
     readonly state = {} as ApiTempScreenState;
 
     async componentDidMount() {
-        // const user = this.props.loggedInUser;
-        // if (user) {
-        //     const decks = await deckApi.getForUser(user.id);
-        //     this.setStateTo(draft => draft.decks = castDraft(decks));
-        // }
+        const user = this.props.loggedInUser;
+        if (user) {
+            const userDecks = await deckApi.getForUser(user.id);
+            this.setStateTo(draft => draft.userDecks = castDraft(userDecks));
+        }
 
         const decks = await deckApi.getList();
         this.setStateTo(draft => draft.decks = castDraft(decks));
     }
 
     render() {
+        const user = this.props.loggedInUser;
         const decks = this.state.decks || [];
+        const userDecks = this.state.userDecks || [];
+
         return (
             <ScreenContainer style={{ paddingHorizontal: 10 }}>
                 <View>
                     <Text style={{ fontWeight: 'bold', textAlign: "center" }}>ApiTempScreen</Text>
-                    <Text style={{ fontWeight: 'bold' }}>Decks: {decks.length}</Text>
+
+                    <Text style={{ fontWeight: 'bold' }}>Own Decks ({user?.displayName || '?'}): {userDecks.length}</Text>
+                    <View>{userDecks.map(
+                        deck => <DeckInfo key={deck.id} deck={deck} />
+                    )}</View>
+                    <Text>this.state.userDecks = {JSON.stringify(this.state.userDecks, null, 4) || typeof this.state.userDecks};</Text>
+
+                    <Text style={{ fontWeight: 'bold' }}>All Decks: {decks.length}</Text>
                     <View>{decks.map(
                         deck => <DeckInfo key={deck.id} deck={deck} />
                     )}</View>
-                    <Text>this.state.decks = {JSON.stringify(this.state.decks, null, 4)};</Text>
+                    <Text>this.state.decks = {JSON.stringify(this.state.decks, null, 4) || typeof this.state.decks};</Text>
+
                 </View>
             </ScreenContainer>
         );

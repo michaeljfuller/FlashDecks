@@ -1,5 +1,5 @@
 import {API, graphqlOperation} from "aws-amplify";
-import {getDeck, listDecks} from "../graphql/queries";
+import {getDeck, listDecks, searchDecks} from "../graphql/queries";
 import {ApiDeck, DeckModel, UserModel} from "../models";
 import decksStore from "../store/decks/DecksStore";
 
@@ -15,26 +15,9 @@ export class DeckApi {
         return parseApiDeckList(response?.data?.listDecks?.items);
     }
 
-    /// TODO
-    async getForUser(userId: UserModel['id']): Promise<DeckModel[]> {
-        // return new Promise(resolve => {
-        //     setTimeout(() => {
-        //
-        //         const result = repeat(7, index => DeckModel.fromApi({
-        //             id: `deck-${index+1}`,
-        //             name: `Deck #${index+1}`,
-        //             description: `Sample deck for ${userId}.`,
-        //             tags: repeat(15, i => `tag-${i+1}`),
-        //             ownerId: userId,
-        //             owner: { id: userId, displayName: 'Owner Name' },
-        //             cards: mockCards(),
-        //         } as ApiDeck));
-        //
-        //         decksStore.add(result);
-        //         resolve(result);
-        //
-        //     }, 1000);
-        // });
+    async getForUser(ownerId: UserModel['id']): Promise<DeckModel[]> {
+        const response: any = await API.graphql(graphqlOperation(searchDecks, { ownerId }));
+        return parseApiDeckList(response?.data?.listDecks?.items);
     }
 
 }
