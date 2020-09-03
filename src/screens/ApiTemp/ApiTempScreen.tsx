@@ -7,6 +7,7 @@ import {reduxConnector, ApiTempScreenStoreProps} from "./ApiTempScreen_redux";
 import deckApi from "../../api/DeckApi";
 import {CardModel, CardSideModel, DeckModel} from "../../models";
 import {castDraft} from "immer";
+import ToastStore from "../../store/toast/ToastStore";
 
 export type ApiTempScreenProps = NavigationScreenProps;
 export type ApiTempScreenState = Readonly<{
@@ -19,16 +20,31 @@ export class ApiTempScreen extends ImmutablePureComponent<
     ApiTempScreenState
 > {
     readonly state = {} as ApiTempScreenState;
+    toast = new ToastStore(this);
 
     async componentDidMount() {
         const user = this.props.loggedInUser;
         if (user) {
-            const userDecks = await deckApi.getForUser(user.id);
-            this.setStateTo(draft => draft.userDecks = castDraft(userDecks));
+            try {
+                const userDecks = await deckApi.getForUser(user.id);
+                this.setStateTo(draft => draft.userDecks = castDraft(userDecks));
+            } catch (e) {
+                console.warn(e);
+                this.toast.addError(e, 'Error getting Own Decks');
+            }
         }
 
-        const decks = await deckApi.getList();
-        this.setStateTo(draft => draft.decks = castDraft(decks));
+        try {
+            const decks = await deckApi.getList();
+            this.setStateTo(draft => draft.decks = castDraft(decks));
+        } catch (e) {
+            console.warn(e);
+            this.toast.addError(e, 'Error getting All Decks');
+        }
+    }
+
+    componentWillUnmount() {
+        this.toast.removeByRef();
     }
 
     render() {
@@ -41,7 +57,7 @@ export class ApiTempScreen extends ImmutablePureComponent<
                 <View>
                     <Text style={{ fontWeight: 'bold', textAlign: "center" }}>ApiTempScreen</Text>
 
-                    <Text style={{ fontWeight: 'bold' }}>Own Decks ({user?.displayName || '?'}): {userDecks.length}</Text>
+                    <Text style={{ fontWeight: 'bold' }}>Own Decks ({user?.displayName || '?'} : {user?.id || '?'} ): {userDecks.length}</Text>
                     <View>{userDecks.map(
                         deck => <DeckInfo key={deck.id} deck={deck} />
                     )}</View>
