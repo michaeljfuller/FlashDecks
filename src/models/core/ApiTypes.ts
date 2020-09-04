@@ -1,4 +1,4 @@
 export interface ApiList<ListElement> {
-    nextToken: string|null;
+    nextToken?: string|null;
     items?: ListElement[];
 }
