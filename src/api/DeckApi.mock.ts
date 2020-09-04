@@ -2,13 +2,14 @@ import {ApiCard, ApiDeck, DeckModel, UserModel} from "../models";
 import decksStore from "../store/decks/DecksStore";
 import {repeat} from "../utils/array";
 import {DeckApi} from "./DeckApi";
-import {delayedPromise} from "./util/mock-helpers";
+import {delayedResponse} from "./util/mock-helpers";
+import ApiRequest from "./util/ApiRequest";
 
 let nextMockDeckId = 1;
 export class MockDeckApi implements DeckApi {
 
-    async getById(id: DeckModel['id']): Promise<DeckModel|undefined> {
-        return delayedPromise(() => {
+    getById(id: DeckModel['id']): ApiRequest<DeckModel|undefined> {
+        return delayedResponse(() => {
             const result = DeckModel.fromApi({
                 id,
                 name: `Deck #${id}`,
@@ -26,8 +27,8 @@ export class MockDeckApi implements DeckApi {
         });
     }
 
-    async getList(): Promise<DeckModel[]> {
-        return delayedPromise(() => {
+    getList(): ApiRequest<DeckModel[]> {
+        return delayedResponse(() => {
             const result = repeat(7, index => DeckModel.fromApi({
                 id: `deck-${index+1}`,
                 name: `Deck #${index+1}`,
@@ -45,8 +46,8 @@ export class MockDeckApi implements DeckApi {
         });
     }
 
-    async getForUser(userId: UserModel['id']): Promise<DeckModel[]> {
-        return delayedPromise(() => {
+    getForUser(userId: UserModel['id']): ApiRequest<DeckModel[]> {
+        return delayedResponse(() => {
             const result = repeat(7, index => DeckModel.fromApi({
                 id: `deck-${index+1}`,
                 name: `Deck #${index+1}`,
@@ -64,21 +65,23 @@ export class MockDeckApi implements DeckApi {
         });
     }
 
-    async create(deck: DeckModel): Promise<DeckModel> {
-        return delayedPromise(() => {
+    create(deck: DeckModel): ApiRequest<DeckModel> {
+        return delayedResponse(() => {
             const result = deck.update({ id: `MOCK-DECK-${nextMockDeckId++}` });
             decksStore.add(result);
             return result;
         });
     }
-    async update(deck: DeckModel): Promise<DeckModel> {
-        return delayedPromise(() => {
+
+    update(deck: DeckModel): ApiRequest<DeckModel> {
+        return delayedResponse(() => {
             const result = deck.update({ name: 'MOCK-UPDATE: ' + deck.name });
             decksStore.add(result);
             return result;
         });
     }
-    async push(deck: DeckModel): Promise<DeckModel> {
+
+    push(deck: DeckModel): ApiRequest<DeckModel> {
         return deck.id ? this.update(deck) : this.create(deck);
     }
 

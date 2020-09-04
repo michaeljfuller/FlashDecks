@@ -11,6 +11,7 @@ import DeckRoutes from "../DeckRoutes";
 import {DeckModel} from "../../../models";
 import deckApi from "../../../api/DeckApi.mock";
 import {toastStore} from "../../../store/toast/ToastStore";
+import ApiRequest from "../../../api/util/ApiRequest";
 
 export interface DeckListScreenProps extends NavigationScreenProps {}
 export interface DeckListScreenState {
@@ -26,6 +27,8 @@ export class DeckListScreen extends ImmutablePureComponent<
         decks: [],
     } as DeckListScreenState;
 
+    getDeckListRequest?: ApiRequest<DeckModel[]>;
+
     get decks() {
         return this.state.decks;
     }
@@ -33,15 +36,22 @@ export class DeckListScreen extends ImmutablePureComponent<
     componentDidMount() {
         this.loadDecks();
     }
+    componentWillUnmount() {
+        this.getDeckListRequest && this.getDeckListRequest.cancel();
+    }
 
     loadDecks() {
         this.setStateTo({ loading: true });
-        deckApi.getList().then(
-            decks => this.setStateTo(draft => draft.decks = castDraft(decks)),
-            (e) => toastStore.addError(e, 'Error loading decks')
-        ).finally(
-            () => this.setStateTo({ loading: false })
-        );
+        this.getDeckListRequest = deckApi.getList();
+
+        this.getDeckListRequest.wait().then(({payload, cancelled, error}) => {
+            if (!cancelled) {
+                if (payload) this.setStateTo(draft => draft.decks = castDraft(payload));
+                if (error) toastStore.addError(error, 'Error loading decks');
+                this.setStateTo({ loading: false });
+            }
+            delete this.getDeckListRequest;
+        });
     }
 
     goTo(routeName: string, deck: DeckModel) {

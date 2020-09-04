@@ -13,6 +13,7 @@ import {DeckModel} from "../../../models";
 import deckApi from "../../../api/DeckApi.mock";
 import ToastStore, {toastStore} from "../../../store/toast/ToastStore";
 import navigationStore from "../../../store/navigation/NavigationStore";
+import ApiRequest from "../../../api/util/ApiRequest";
 
 export interface DeckEditScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -31,7 +32,10 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         loading: false,
         saving: false,
     } as DeckEditScreenState;
+
     toast = new ToastStore(this);
+    getDeckRequest?: ApiRequest<DeckModel|undefined>;
+    saveDeckRequest?: ApiRequest<DeckModel|undefined>;
 
     get deck() {
         return this.state.modifiedDeck || this.state.originalDeck;
@@ -43,17 +47,13 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
             return console.warn('No ID'); // TODO Redirect
         }
 
-        this.setStateTo({ loading: true });
-        this.getDeck(deckId).then(
-            deck => this.setStateTo(draft => draft.originalDeck = castDraft(deck)),
-            _ => this.setStateTo({ error: `Failed to get deck.` }),
-        ).finally(
-            () => this.setStateTo({ loading: false }),
-        );
+        this.getDeck(deckId);
     }
     componentWillUnmount() {
         this.toast.removeByRef();
         this.blockNavigation(false);
+        this.getDeckRequest && this.getDeckRequest.cancel();
+        this.saveDeckRequest && this.saveDeckRequest.cancel();
     }
 
     blockNavigation(value = true) {
@@ -74,8 +74,27 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         });
     }
 
-    async getDeck(deckId: DeckModel['id']): Promise<DeckModel|undefined> {
-        return this.props.decks[deckId] || await deckApi.getById(deckId);
+    getDeck(deckId: DeckModel['id']) {
+        let deck: DeckModel|undefined = this.props.decks[deckId];
+        if (deck) {
+            return this.setStateTo(draft => draft.originalDeck = castDraft(deck));
+        }
+
+        this.setStateTo({ loading: true });
+        this.getDeckRequest = deckApi.getById(deckId);
+
+        this.getDeckRequest.wait(true).then(
+            ({payload, error, cancelled}) => {
+                deck = payload;
+                delete this.getDeckRequest;
+
+                if (!cancelled) {
+                    this.setStateTo({ loading: false });
+                    if (error) this.toast.addError(error, "Error getting deck.");
+                }
+                this.setStateTo(draft => draft.originalDeck = castDraft(deck));
+            }
+        );
     }
 
     onChange = (deck: DeckModel) => {
@@ -89,18 +108,31 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
 
     onSavePressed = async () => {
         if (this.state.modifiedDeck) {
-            try {
-                this.setStateTo({ saving: true });
-                const deck = await deckApi.push(this.state.modifiedDeck);
+            this.setStateTo({ saving: true });
+            this.saveDeckRequest = deckApi.push(this.state.modifiedDeck);
+
+            await this.saveDeckRequest.wait(false);
+            const deck = this.saveDeckRequest.payload;
+            const {cancelled, error} = this.saveDeckRequest;
+
+            // If complete (not canceled or errored), update state
+            if (cancelled) {
                 this.setStateTo(draft => {
                     draft.originalDeck = castDraft(deck);
                     draft.saving = false;
                 });
                 this.clearChanges();
-                this.toast.add({ type: "success", text: `Saved: "${deck?.name}".`, duration: 2000 });
-            } catch (e) {
-                this.toast.addError(e, "Error saving deck.")
             }
+
+            // Show toast
+            const toastRef = 'DeckEditScreen-save';
+            if (error) {
+                this.toast.addError(error, "Error saving deck.", { ref: toastRef })
+            } else {
+                this.toast.add({ type: "success", text: `Saved: "${deck?.name}".`, duration: 2000, ref: toastRef })
+            }
+
+            delete this.saveDeckRequest;
         } else {
             this.toast.add({type: "warning", text: `No changes to save.`});
         }

@@ -9,6 +9,8 @@ import {reduxConnector, DeckViewScreenStoreProps} from "./DeckViewScreen_redux";
 import DeckScreenHeader from "../common/DeckScreenHeader";
 import {DeckModel} from "../../../models";
 import deckApi from "../../../api/DeckApi.mock";
+import ApiRequest from "../../../api/util/ApiRequest";
+import ToastStore from "../../../store/toast/ToastStore";
 
 export interface DeckViewScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -24,23 +26,42 @@ export class DeckViewScreen extends ImmutablePureComponent<DeckViewScreenProps &
         loading: false,
     } as DeckViewScreenState;
 
+    toast = new ToastStore(this);
+    getDeckRequest?: ApiRequest<DeckModel|undefined>;
+
     componentDidMount() {
         const {deckId} = this.props.route.params || {};
         if (!deckId) {
             return console.warn('No ID'); // TODO Redirect
         }
-
-        this.setStateTo({ loading: true });
-        this.getDeck(deckId).then(
-            deck => this.setStateTo(draft => draft.deck = castDraft(deck)),
-            _ => this.setStateTo({ error: `Failed to get deck.` }),
-        ).finally(
-            () => this.setStateTo({ loading: false }),
-        );
+        this.getDeck(deckId);
+    }
+    componentWillUnmount() {
+        this.getDeckRequest && this.getDeckRequest.cancel();
+        this.toast.removeByRef();
     }
 
-    async getDeck(deckId: DeckModel['id']): Promise<DeckModel|undefined> {
-        return this.props.decks[deckId] || await deckApi.getById(deckId);
+    getDeck(deckId: DeckModel['id']) {
+        let deck: DeckModel|undefined = this.props.decks[deckId];
+        if (deck) {
+            return this.setStateTo(draft => draft.deck = castDraft(deck));
+        }
+
+        this.setStateTo({ loading: true });
+        this.getDeckRequest = deckApi.getById(deckId);
+
+        this.getDeckRequest.wait(true).then(
+            ({payload, error, cancelled}) => {
+                deck = payload;
+                delete this.getDeckRequest;
+
+                if (!cancelled) {
+                    this.setStateTo({ loading: false });
+                    if (error) this.toast.addError(error, "Error getting deck.");
+                }
+                this.setStateTo(draft => draft.deck = castDraft(deck));
+            }
+        );
     }
 
     render() {

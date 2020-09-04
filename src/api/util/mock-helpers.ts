@@ -1,6 +1,8 @@
 /**
  * Resolves/rejects from the callback, after the set duration.
  */
+import ApiRequest from "./ApiRequest";
+
 export function delayedPromise<T>(
     callback: (() => T),
     duration = 500
@@ -16,4 +18,11 @@ export function delayedPromise<T>(
             resolve(result);
         }, duration);
     });
+}
+
+export function delayedResponse<T>(
+    callback: (() => T),
+    duration = 500
+) {
+    return new ApiRequest(delayedPromise(callback, duration));
 }

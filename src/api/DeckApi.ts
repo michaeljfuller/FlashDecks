@@ -3,54 +3,62 @@ import {getDeck, listDecks, searchDecks} from "../graphql/queries";
 import {createDeck, updateDeck} from "../graphql/mutations";
 import {ApiDeck, DeckModel, UserModel} from "../models";
 import decksStore from "../store/decks/DecksStore";
+import ApiRequest from "./util/ApiRequest";
+import {GraphQueryResponse, ApiList} from "./util/ApiTypes";
+import {delayedResponse} from "./util/mock-helpers";
 
 export class DeckApi {
 
-    async getById(id: DeckModel['id']): Promise<DeckModel|undefined> {
-        const response: any = await API.graphql(graphqlOperation(getDeck, { id }));
-        return parseApiDeck(response?.data?.getDeck);
+    getById(id: DeckModel['id']): ApiRequest<DeckModel|undefined> {
+        const promise = API.graphql(
+            graphqlOperation(getDeck, { id })
+        ) as GraphQueryResponse<{getDeck: ApiDeck}>;
+
+        return new ApiRequest(promise.then(
+            response => parseApiDeck(response?.data?.getDeck)
+        ));
     }
 
-    async getList(): Promise<DeckModel[]> {
-        const response: any = await API.graphql(graphqlOperation(listDecks));
-        return parseApiDeckList(response?.data?.listDecks?.items);
+    getList(): ApiRequest<DeckModel[]> {
+        const promise = API.graphql(
+            graphqlOperation(listDecks)
+        ) as GraphQueryResponse<{listDecks: ApiList<ApiDeck>}>;
+
+        return new ApiRequest(promise.then(
+            response => parseApiDeckList(response?.data?.listDecks?.items)
+        ));
     }
 
     // TODO Replace 'listDecks' with 'searchDecks' when ElasticSearch is re-added or replaced.
-    async getForUser(ownerId: UserModel['id']): Promise<DeckModel[]> {
-        const response: any = await API.graphql(graphqlOperation(listDecks, {
+    getForUser(ownerId: UserModel['id']): ApiRequest<DeckModel[]> {
+        const promise = API.graphql(graphqlOperation(listDecks, {
             filter: {
                 ownerId: { eq: ownerId }
             }
-        }));
-        return parseApiDeckList(response?.data?.listDecks?.items);
+        })) as GraphQueryResponse<{listDecks: ApiList<ApiDeck>}>;
+
+        return new ApiRequest(promise.then(
+            response => parseApiDeckList(response?.data?.listDecks?.items)
+        ));
     }
 
-    // TODO
-    async create(deck: DeckModel): Promise<DeckModel> {
-        // const response: any = await API.graphql(graphqlOperation(createDeck, {
-        //     input: TODO deck.toApiObject()
-        // }))
-        // return parseApiDeck(response?.data?.createDeck);
-        return new Promise(resolve => {
+    // TODO + deck.toApiObject()
+    create(deck: DeckModel): ApiRequest<DeckModel> {
+        return delayedResponse(() => {
             const result = deck.update({ id: 'TODO-'+deck.name });
             decksStore.add(result);
-            resolve(result);
+            return result;
         });
     }
-    async update(deck: DeckModel): Promise<DeckModel> {
-        // const response: any = await API.graphql(graphqlOperation(updateDeck, {
-        //     input: TODO deck.toApiObject()
-        // }))
-        // return parseApiDeck(response?.data?.updateDeck);
-        return new Promise(resolve => {
+    update(deck: DeckModel): ApiRequest<DeckModel> {
+        return delayedResponse(() => {
             const result = deck.update({ name: 'TODO Update: '+deck.name });
             decksStore.add(result);
-            resolve(result);
+            return result;
         });
     }
 
-    async push(deck: DeckModel): Promise<DeckModel> {
+    push(deck: DeckModel): ApiRequest<DeckModel> {
         return deck.id ? this.update(deck) : this.create(deck);
     }
 }

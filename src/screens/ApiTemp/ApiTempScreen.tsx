@@ -8,6 +8,7 @@ import deckApi from "../../api/DeckApi";
 import {CardModel, CardSideModel, DeckModel} from "../../models";
 import {castDraft} from "immer";
 import ToastStore from "../../store/toast/ToastStore";
+import ApiRequest from "../../api/util/ApiRequest";
 
 export type ApiTempScreenProps = NavigationScreenProps;
 export type ApiTempScreenState = Readonly<{
@@ -25,38 +26,55 @@ export class ApiTempScreen extends ImmutablePureComponent<
         loadingDecks: true,
         loadingUserDecks: true,
     } as ApiTempScreenState;
-    
+
     toast = new ToastStore(this);
+    private userDecksRequest?: ApiRequest<DeckModel[]>;
+    private allDecksRequest?: ApiRequest<DeckModel[]>;
 
     async componentDidMount() {
-        const user = this.props.loggedInUser;
-        if (user) {
-            try {
-                const userDecks = await deckApi.getForUser(user.id);
-                this.setStateTo(draft => {
-                    draft.userDecks = castDraft(userDecks);
-                    draft.loadingUserDecks = false;
-                });
-            } catch (e) {
-                console.warn(e);
-                this.toast.addError(e, 'Error getting Own Decks');
-            }
-        }
+        this.loadUserDecks();
+        this.loadAllDecks();
+    }
 
-        try {
-            const decks = await deckApi.getList();
-            this.setStateTo(draft => {
-                draft.decks = castDraft(decks);
-                draft.loadingDecks = false;
-            });
-        } catch (e) {
-            console.warn(e);
-            this.toast.addError(e, 'Error getting All Decks');
+    loadUserDecks() {
+        const user = this.props.loggedInUser;
+        if (user && !this.userDecksRequest) {
+            this.userDecksRequest = deckApi.getForUser(user.id);
+            this.userDecksRequest.wait().then(
+                ({ cancelled, payload }) => {
+                    delete this.userDecksRequest;
+                    if (cancelled) return;
+                    this.setStateTo(draft => {
+                        draft.userDecks = castDraft(payload) || [];
+                        draft.loadingUserDecks = false;
+                    });
+                },
+                error => this.toast.addError(error, 'Error getting own decks')
+            );
+        }
+    }
+
+    loadAllDecks() {
+        if (!this.allDecksRequest) {
+            this.allDecksRequest = deckApi.getList();
+            this.allDecksRequest.wait().then(
+                ({cancelled, payload}) => {
+                    delete this.allDecksRequest;
+                    if (cancelled) return;
+                    this.setStateTo(draft => {
+                        draft.decks = castDraft(payload) || [];
+                        draft.loadingDecks = false;
+                    });
+                },
+                error => this.toast.addError(error, 'Error getting all decks')
+            );
         }
     }
 
     componentWillUnmount() {
         this.toast.removeByRef();
+        if (this.userDecksRequest) this.userDecksRequest.cancel();
+        if (this.allDecksRequest) this.allDecksRequest.cancel();
     }
 
     render() {
