@@ -21,6 +21,7 @@ export interface DeckEditScreenState {
     originalDeck?: DeckModel;
     modifiedDeck?: DeckModel;
     loading: boolean;
+    saving: boolean;
     error?: string;
 }
 
@@ -28,6 +29,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
 {
     state = {
         loading: false,
+        saving: false,
     } as DeckEditScreenState;
     toast = new ToastStore(this);
 
@@ -85,10 +87,23 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         this.blockNavigation(false);
     }
 
-    onSavePressed = () => {
-        this.setStateTo(draft => draft.originalDeck = castDraft(this.state.modifiedDeck));
-        this.clearChanges();
-        this.toast.add({ type: "success", text: `Saved: "${this.state.modifiedDeck?.name}".` });
+    onSavePressed = async () => {
+        if (this.state.modifiedDeck) {
+            try {
+                this.setStateTo({ saving: true });
+                const deck = await deckApi.push(this.state.modifiedDeck);
+                this.setStateTo(draft => {
+                    draft.originalDeck = castDraft(deck);
+                    draft.saving = false;
+                });
+                this.clearChanges();
+                this.toast.add({ type: "success", text: `Saved: "${deck?.name}".`, duration: 2000 });
+            } catch (e) {
+                this.toast.addError(e, "Error saving deck.")
+            }
+        } else {
+            this.toast.add({type: "warning", text: `No changes to save.`});
+        }
     }
 
     render() {
@@ -103,22 +118,23 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         if (this.state.loading) return <Text style={{lineHeight: 50}}>Loading Deck...</Text>;
         if (this.state.error) return <Text>{this.state.error}</Text>;
         if (!this.deck) return <Text>Could not find deck.</Text>;
+        const editable = !this.state.saving;
         return <React.Fragment>
             <DeckScreenHeader
-                editable
+                editable={editable}
                 item={this.deck}
                 onChange={this.onChange}
                 title={`Edit: ${this.deck?.name}`}
             />
             <DeckView
-                editable
+                editable={editable}
                 item={this.deck}
                 onChange={this.onChange}
             />
             <Button
                 title="Save"
                 square
-                disabled={!this.state.modifiedDeck}
+                disabled={!this.state.modifiedDeck || !editable}
                 onClick={this.onSavePressed}
             />
         </React.Fragment>

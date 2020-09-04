@@ -2,76 +2,84 @@ import {ApiCard, ApiDeck, DeckModel, UserModel} from "../models";
 import decksStore from "../store/decks/DecksStore";
 import {repeat} from "../utils/array";
 import {DeckApi} from "./DeckApi";
+import {delayedPromise} from "./util/mock-helpers";
 
-export class MockDeckApi extends DeckApi {
+let nextMockDeckId = 1;
+export class MockDeckApi implements DeckApi {
 
     async getById(id: DeckModel['id']): Promise<DeckModel|undefined> {
-        return new Promise(resolve => {
-            setTimeout(() => {
+        return delayedPromise(() => {
+            const result = DeckModel.fromApi({
+                id,
+                name: `Deck #${id}`,
+                description: `Sample deck for List.`,
+                tags: repeat(15, i => `tag-${i+1}`),
+                ownerId: `user-0`,
+                owner: { id: `user-0`, displayName: `Owner` },
+                cards: {
+                    items: mockCards()
+                },
+            } as ApiDeck);
 
-                const result = DeckModel.fromApi({
-                    id,
-                    name: `Deck #${id}`,
-                    description: `Sample deck for List.`,
-                    tags: repeat(15, i => `tag-${i+1}`),
-                    ownerId: `user-0`,
-                    owner: { id: `user-0`, displayName: `Owner` },
-                    cards: {
-                        items: mockCards()
-                    },
-                } as ApiDeck);
-
-                decksStore.add(result);
-                resolve(result);
-
-            }, 1000);
+            decksStore.add(result);
+            return result;
         });
     }
 
     async getList(): Promise<DeckModel[]> {
-        return new Promise(resolve => {
-            setTimeout(() => {
+        return delayedPromise(() => {
+            const result = repeat(7, index => DeckModel.fromApi({
+                id: `deck-${index+1}`,
+                name: `Deck #${index+1}`,
+                description: `Sample deck for List.`,
+                tags: repeat(15, i => `tag-${i+1}`),
+                ownerId: `user-${index+1}`,
+                owner: { id: `user-${index+1}`, displayName: `Owner ${index+1}` },
+                cards: {
+                    items: mockCards()
+                },
+            } as ApiDeck));
 
-                const result = repeat(7, index => DeckModel.fromApi({
-                    id: `deck-${index+1}`,
-                    name: `Deck #${index+1}`,
-                    description: `Sample deck for List.`,
-                    tags: repeat(15, i => `tag-${i+1}`),
-                    ownerId: `user-${index+1}`,
-                    owner: { id: `user-${index+1}`, displayName: `Owner ${index+1}` },
-                    cards: {
-                        items: mockCards()
-                    },
-                } as ApiDeck));
-
-                decksStore.add(result);
-                resolve(result);
-
-            }, 1000);
+            decksStore.add(result);
+            return  result
         });
     }
 
     async getForUser(userId: UserModel['id']): Promise<DeckModel[]> {
-        return new Promise(resolve => {
-            setTimeout(() => {
+        return delayedPromise(() => {
+            const result = repeat(7, index => DeckModel.fromApi({
+                id: `deck-${index+1}`,
+                name: `Deck #${index+1}`,
+                description: `Sample deck for ${userId}.`,
+                tags: repeat(15, i => `tag-${i+1}`),
+                ownerId: userId,
+                owner: { id: userId, displayName: 'Owner Name' },
+                cards: {
+                    items: mockCards()
+                },
+            } as ApiDeck));
 
-                const result = repeat(7, index => DeckModel.fromApi({
-                    id: `deck-${index+1}`,
-                    name: `Deck #${index+1}`,
-                    description: `Sample deck for ${userId}.`,
-                    tags: repeat(15, i => `tag-${i+1}`),
-                    ownerId: userId,
-                    owner: { id: userId, displayName: 'Owner Name' },
-                    cards: {
-                        items: mockCards()
-                    },
-                } as ApiDeck));
-
-                decksStore.add(result);
-                resolve(result);
-
-            }, 1000);
+            decksStore.add(result);
+            return result;
         });
+    }
+
+    async create(deck: DeckModel): Promise<DeckModel> {
+        return delayedPromise(() => {
+            const result = deck.update({ id: `MOCK-DECK-${nextMockDeckId++}` });
+            decksStore.add(result);
+            return result;
+        });
+    }
+    async update(deck: DeckModel): Promise<DeckModel> {
+        return delayedPromise(() => {
+            const result = deck.update({ name: 'MOCK-UPDATE: ' + deck.name });
+            decksStore.add(result);
+            return result;
+        });
+    }
+    async push(deck: DeckModel): Promise<DeckModel> {
+        return deck.id ? this.update(deck) : this.create(deck);
     }
 
 }
