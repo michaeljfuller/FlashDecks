@@ -1,6 +1,6 @@
 import {ApiCardContent, CardContentModel} from "./CardContentModel";
 import Model from "./core/Model";
-import {ApiList} from "./core/ApiTypes";
+import {ApiList} from "../api/util/ApiTypes";
 import {insertItem} from "../utils/array";
 
 export interface ApiCardSide {
