@@ -38,7 +38,7 @@ function getBaseRoute(tree: IRouteTree): string {
 }
 
 /** Turn a route name into something readable. */
-export function readableRoute(routeName: string, capitaliseAll = false): string {
+export function readableRoute(routeName: string, capitaliseAll = true): string {
     let words = capitalise(routeName).split('-');
     if (capitaliseAll) words = words.map(capitalise)
     return words.join(' ');

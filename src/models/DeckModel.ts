@@ -1,4 +1,5 @@
 import Model from "./core/Model";
+import {ApiList} from "./core/ApiTypes";
 import {ApiUser, UserModel} from "./UserModel";
 import {ApiCard, CardModel} from "./CardModel";
 
@@ -9,7 +10,7 @@ export interface ApiDeck {
     name: string;
     description: string;
     tags?: string[];
-    cards?: ApiCard[];
+    cards?: ApiList<ApiCard>;
 }
 
 export class DeckModel extends Model implements Omit<ApiDeck, 'owner'|'cards'>{
@@ -36,8 +37,8 @@ export class DeckModel extends Model implements Omit<ApiDeck, 'owner'|'cards'>{
             owner: UserModel.fromApi(obj.owner),
             name: obj.name,
             description: obj.description,
-            tags: obj.tags,
-            cards: obj.cards?.map(CardModel.fromApi) || [] as CardModel[],
+            tags: obj.tags || [],
+            cards: obj.cards?.items?.map(CardModel.fromApi) || [] as CardModel[],
         });
     }
 }

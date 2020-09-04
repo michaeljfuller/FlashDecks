@@ -1,4 +1,5 @@
 import DeckRoutes from './DeckRoutes';
+import {NavigationTree} from "../screens_types";
 
 export const DeckRoutesTree = {
     base: DeckRoutes.List,
@@ -7,7 +8,7 @@ export const DeckRoutesTree = {
         [DeckRoutes.Edit]: null,
         [DeckRoutes.View]: null,
     }
-};
+} as NavigationTree;
 export {
     DeckRoutes
 }

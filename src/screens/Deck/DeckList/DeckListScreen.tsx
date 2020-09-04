@@ -9,7 +9,7 @@ import DeckList from "../../../components/deck/DeckList/DeckList";
 import {reduxConnector, DeckListScreenStoreProps} from "./DeckListScreen_redux";
 import DeckRoutes from "../DeckRoutes";
 import {DeckModel} from "../../../models";
-import deckApi from "../../../api/DeckApi";
+import deckApi from "../../../api/DeckApi.mock";
 import {toastStore} from "../../../store/toast/ToastStore";
 
 export interface DeckListScreenProps extends NavigationScreenProps {}

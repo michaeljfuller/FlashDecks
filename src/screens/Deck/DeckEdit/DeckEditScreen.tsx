@@ -10,7 +10,7 @@ import DeckView from "../../../components/deck/DeckView/DeckView";
 import Button from "../../../components/button/Button";
 import DeckScreenHeader from "../common/DeckScreenHeader";
 import {DeckModel} from "../../../models";
-import deckApi from "../../../api/DeckApi";
+import deckApi from "../../../api/DeckApi.mock";
 import ToastStore, {toastStore} from "../../../store/toast/ToastStore";
 import navigationStore from "../../../store/navigation/NavigationStore";
 

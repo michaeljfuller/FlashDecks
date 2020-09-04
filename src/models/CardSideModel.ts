@@ -1,18 +1,18 @@
 import {ApiCardContent, CardContentModel} from "./CardContentModel";
 import Model from "./core/Model";
+import {ApiList} from "./core/ApiTypes";
 import {insertItem} from "../utils/array";
 
 export interface ApiCardSide {
-    content?: ApiCardContent[];
+    content?: ApiList<ApiCardContent>;
 }
 
 export class CardSideModel extends Model {
     readonly content = [] as readonly CardContentModel[];
 
     static fromApi(obj: ApiCardSide) {
-        const { content=[] } = obj;
         return (new CardSideModel).update(draft => {
-            draft.content = content.map(CardContentModel.fromApi);
+            draft.content = obj.content?.items?.map(CardContentModel.fromApi) || [];
         });
     }
 
