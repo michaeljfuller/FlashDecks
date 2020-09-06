@@ -129,6 +129,7 @@ const nameValueStyles = StyleSheet.create({
 const DeckInfo = React.memo(function DeckInfo({deck}: { deck: DeckModel }) {
     return <View style={deckStyles.view}>
         <NameValue name="Deck ID" value={deck.id} />
+        <NameValue name="Name" value={deck.name} />
         <NameValue name="Description" value={deck.description} />
         <NameValue name={`Tags (${deck.tags.length})`} value={deck.tags.join(' | ')} />
         <NameValue name="Owner" value={`${deck.ownerId} - ${deck.owner?.displayName || '?'}`} />
