@@ -1,30 +1,33 @@
 import Model from "./core/Model";
-import {ApiList} from "../api/util/ApiTypes";
 import {ApiUser, UserModel} from "./UserModel";
 import {ApiCardSide, CardSideModel} from "./CardSideModel";
+import {GetCardQuery} from "../API";
 
-export interface ApiCard {
-    id: string;
-    name: string;
-    ownerId: string;
-    owner: ApiUser;
-    sides?: ApiList<ApiCardSide>;
-}
+export type ApiCard = NonNullable<GetCardQuery['getCard']>;
 
-export class CardModel extends Model implements Omit<ApiCard, 'owner'|'sides'> {
+export class CardModel extends Model implements Omit<ApiCard, '__typename'|'owner'|'sides'|'deck'> {
     readonly id: string = '';
     readonly name: string = '';
     readonly ownerId: string = '';
     readonly owner?: UserModel;
     readonly sides: readonly CardSideModel[] = [];
+    readonly popularity: number = 0;
+    // readonly deck?: DeckModel; TODO
+    readonly deckID: string = '';
+    readonly tags: string[] = [];
 
     static fromApi(obj: ApiCard) {
         return (new CardModel()).update({
             id: obj.id,
             ownerId: obj.ownerId,
-            owner: UserModel.fromApi(obj.owner),
+            owner: UserModel.fromApi(obj.owner as ApiUser),
             name: obj.name,
-            sides: obj.sides?.items?.map(CardSideModel.fromApi) || [],
+            popularity: obj.popularity || 0,
+            deckID: obj.deckID,
+            tags: obj.tags || [],
+            sides: obj.sides?.map(
+                (side: ApiCardSide) => CardSideModel.fromApi(side as ApiCardSide)
+            ) || [],
         });
     }
 }

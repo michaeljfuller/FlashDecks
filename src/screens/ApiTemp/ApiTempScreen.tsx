@@ -1,5 +1,6 @@
 import React from "react";
 import {Text, View, ScrollView, StyleSheet} from "react-native";
+import PropTypes from 'prop-types';
 import ImmutablePureComponent from "../../components/ImmutablePureComponent";
 import ScreenContainer from "../ScreenContainer";
 import {NavigationScreenProps} from "../../navigation/navigation_types";
@@ -159,7 +160,7 @@ const CardInfo = React.memo(function CardInfo({card}: { card: CardModel }) {
         <View>{card.sides.map(
             (side, index) => <SideInfo key={index} side={side} index={index} />
         )}</View>
-    </View>
+    </View>;
 });
 const cardStyles = StyleSheet.create({
     view: {
@@ -182,7 +183,7 @@ const SideInfo = React.memo(function SideInfo({side, index}: { side: CardSideMod
                 <NameValue name="Value" value={content.value} />
             </View>
         )}
-    </View>
+    </View>;
 });
 const sideStyles = StyleSheet.create({
     view: {
@@ -201,8 +202,14 @@ const sideStyles = StyleSheet.create({
     },
 });
 
-const LoadingText = React.memo(function LoadingText({show}: { show: boolean }) {
+interface LoadingTextProps {
+    show: boolean;
+}
+const LoadingText: React.ComponentType<LoadingTextProps> = React.memo(function LoadingText({show}: LoadingTextProps) {
     return show ? <Text>Loading...</Text> : null;
 });
+LoadingText.propTypes = {
+    show: PropTypes.bool,
+} as Record<keyof LoadingTextProps, any>;
 
 //</editor-fold>

@@ -1,21 +1,19 @@
 import Model from "./core/Model";
+import {ApiCardSide} from "./CardSideModel";
 
-export type CardContentType = 'Text' | 'Image' | 'Video' | 'Link'|undefined;
-export const cardContentTypes: readonly Exclude<CardContentType, undefined>[] = ["Text", "Image", "Video", "Link"];
-
-export interface ApiCardContent {
+type _ApiCardContent = NonNullable<ApiCardSide["content"]>[0];
+export interface ApiCardContent extends _ApiCardContent { // TODO Add `id` and `size` to API.
     // A unique ID for the content.
     id: string;
-    // The type of content.
-    type: CardContentType;
-    // The content's value.
-    value: string;
     // Fraction of the CardSide height. Total is able to exceed 1.00.
     // If set, content scales to fit size, otherwise no scaling is applied.
     size?: number;
 }
 
-export class CardContentModel extends Model implements ApiCardContent {
+export type CardContentType = 'Text' | 'Image' | 'Video' | 'Link'|undefined;
+export const cardContentTypes: readonly Exclude<CardContentType, undefined>[] = ["Text", "Image", "Video", "Link"];
+
+export class CardContentModel extends Model implements Omit<ApiCardContent, '__typename'|'type'> {
     readonly id: string = '';
     readonly type: CardContentType = undefined;
     readonly value: string = '';
@@ -34,6 +32,11 @@ export class CardContentModel extends Model implements ApiCardContent {
     }
 
     static fromApi(obj: ApiCardContent) {
-        return (new CardContentModel).update(obj);
+        return (new CardContentModel).update({
+            id: obj.id,
+            size: obj.size,
+            value: obj.value,
+            type: obj.type as any,
+        });
     }
 }

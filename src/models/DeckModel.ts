@@ -1,26 +1,19 @@
 import Model from "./core/Model";
-import {ApiList} from "../api/util/ApiTypes";
+import {CreateDeckInput, GetDeckQuery} from "../API";
 import {ApiUser, UserModel} from "./UserModel";
-import {ApiCard, CardModel} from "./CardModel";
+import {CardModel} from "./CardModel";
 
-export interface ApiDeck {
-    id: string;
-    ownerId: string;
-    owner: ApiUser;
-    name: string;
-    description: string;
-    tags?: string[];
-    cards?: ApiList<ApiCard>;
-}
+export type ApiDeck = NonNullable<GetDeckQuery['getDeck']>;
 
-export class DeckModel extends Model implements Omit<ApiDeck, 'owner'|'cards'>{
-    id = '';
-    ownerId = '';
-    owner?: UserModel = undefined;
-    name = '';
-    description = '';
-    tags: string[] = [];
-    cards: CardModel[] = [];
+export class DeckModel extends Model implements Omit<ApiDeck, '__typename'|'owner'|'cards'> {
+    readonly id: string = '';
+    readonly ownerId: string  = '';
+    readonly owner?: UserModel = undefined;
+    readonly name: string  = '';
+    readonly description: string  = '';
+    readonly tags: string[] = [];
+    readonly cards: CardModel[] = [];
+    readonly popularity: number = 0;
 
     static same(first: DeckModel|null|undefined, second: DeckModel|null|undefined): boolean {
         if (!first !== !second) return false; // If only one is truthy, not the same.
@@ -34,11 +27,23 @@ export class DeckModel extends Model implements Omit<ApiDeck, 'owner'|'cards'>{
         return (new DeckModel).update({
             id: obj.id,
             ownerId: obj.ownerId,
-            owner: UserModel.fromApi(obj.owner),
+            owner: UserModel.fromApi(obj.owner as ApiUser),
             name: obj.name,
             description: obj.description,
             tags: obj.tags || [],
-            cards: obj.cards?.items?.map(CardModel.fromApi) || [] as CardModel[],
+            popularity: obj.popularity || 0,
+            cards: obj.cards?.items?.map(
+                card => CardModel.fromApi(card as any) // TODO `any` to ApiCard
+            ) || [] as CardModel[],
         });
     }
+
+    toCreateApi(): CreateDeckInput {
+        return  {
+            name: this.name,
+            description: this.description,
+            tags: this.tags.length ? this.tags : undefined
+        };
+    }
+
 }

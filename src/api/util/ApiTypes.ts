@@ -1,10 +1,5 @@
 import PubSub from '@aws-amplify/pubsub';
 
-export interface ApiList<ListElement> {
-    nextToken?: string|null;
-    items?: ListElement[];
-}
-
 export type GraphQueryResponse<Data=any> = Promise<{
     data?: Data;
 }>;

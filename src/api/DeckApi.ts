@@ -1,56 +1,55 @@
 import {API, graphqlOperation} from "aws-amplify";
-import {getDeck, listDecks, searchDecks} from "../graphql/queries";
-import {createDeck, updateDeck} from "../graphql/mutations";
-import {ApiDeck, DeckModel, UserModel} from "../models";
+import {getDeck, listDecks/*, searchDecks*/} from "../graphql/queries";
+// import {createDeck, updateDeck} from "../graphql/mutations";
+import {GetDeckQuery, GetDeckQueryVariables, ListDecksQuery, ListDecksQueryVariables} from "../API";
+import {DeckModel, UserModel} from "../models";
 import decksStore from "../store/decks/DecksStore";
 import ApiRequest from "./util/ApiRequest";
-import {GraphQueryResponse, ApiList} from "./util/ApiTypes";
+import {GraphQueryResponse} from "./util/ApiTypes";
 import {delayedResponse} from "./util/mock-helpers";
+
+export type DeckApiModel = GetDeckQuery['getDeck'];
+export type DeckApiModelList = ListDecksQuery['listDecks'];
 
 export class DeckApi {
 
     getById(id: DeckModel['id']): ApiRequest<DeckModel|undefined> {
         const promise = API.graphql(
-            graphqlOperation(getDeck, { id })
-        ) as GraphQueryResponse<{getDeck: ApiDeck}>;
+            graphqlOperation(getDeck, { id } as GetDeckQueryVariables)
+        ) as GraphQueryResponse<GetDeckQuery>;
 
         return new ApiRequest(promise.then(
-            response => parseApiDeck(response?.data?.getDeck)
+            response => parseApiDeck(response.data?.getDeck)
         ));
     }
 
-    getList(): ApiRequest<DeckModel[]> {
+    getList(variables?: ListDecksQueryVariables): ApiRequest<DeckModel[]> {
         const promise = API.graphql(
-            graphqlOperation(listDecks)
-        ) as GraphQueryResponse<{listDecks: ApiList<ApiDeck>}>;
+            graphqlOperation(listDecks, variables)
+        ) as GraphQueryResponse<ListDecksQuery>;
 
         return new ApiRequest(promise.then(
-            response => parseApiDeckList(response?.data?.listDecks?.items)
+            response => parseApiDeckList(response.data?.listDecks)
         ));
     }
 
     // TODO Replace 'listDecks' with 'searchDecks' when ElasticSearch is re-added or replaced.
     getForUser(ownerId: UserModel['id']): ApiRequest<DeckModel[]> {
-        const promise = API.graphql(graphqlOperation(listDecks, {
-            filter: {
-                ownerId: { eq: ownerId }
-            }
-        })) as GraphQueryResponse<{listDecks: ApiList<ApiDeck>}>;
-
-        return new ApiRequest(promise.then(
-            response => parseApiDeckList(response?.data?.listDecks?.items)
-        ));
+        return this.getList({ filter: { ownerId: { eq: ownerId } } });
     }
 
     // TODO + deck.toApiObject()
     create(deck: DeckModel): ApiRequest<DeckModel> {
+        console.log('DeckApi.create', deck);
         return delayedResponse(() => {
             const result = deck.update({ id: 'TODO-'+deck.name });
             decksStore.add(result);
             return result;
         });
     }
+
     update(deck: DeckModel): ApiRequest<DeckModel> {
+        console.log('DeckApi.update', deck);
         return delayedResponse(() => {
             const result = deck.update({ name: 'TODO Update: '+deck.name });
             decksStore.add(result);
@@ -66,7 +65,7 @@ export class DeckApi {
 export const deckApi = new DeckApi;
 export default deckApi;
 
-function parseApiDeck(deck: ApiDeck|undefined): DeckModel|undefined {
+function parseApiDeck(deck: DeckApiModel|undefined): DeckModel|undefined {
     if (deck) {
         const result = DeckModel.fromApi(deck);
         decksStore.add(result);
@@ -75,10 +74,9 @@ function parseApiDeck(deck: ApiDeck|undefined): DeckModel|undefined {
     return undefined;
 }
 
-function parseApiDeckList(decks: ApiDeck[]|undefined): DeckModel[] {
-    console.log('parseApiDecks', decks);
-    return (decks || []).map(
-        parseApiDeck
+function parseApiDeckList(decks: DeckApiModelList|undefined): DeckModel[] {
+    return (decks?.items || []).map(
+        deck => parseApiDeck(deck as DeckApiModel)
     ).filter(
         value => value !== undefined
     ) as DeckModel[];

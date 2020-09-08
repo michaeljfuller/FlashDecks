@@ -25,6 +25,7 @@ export class ToastStore extends AStoreHelper<ToastState> {
 
     /** Add error item to the queue */
     addError(error: Error|string|unknown, title: string, overrides?: Partial<ToastQueueItem>): void {
+        console.error('"'+title+'"', error);
         const text = getErrorText(error);
         this.add(
             Object.assign({
