@@ -1,7 +1,14 @@
 import {API, graphqlOperation} from "aws-amplify";
 import {getDeck, listDecks/*, searchDecks*/} from "../graphql/queries";
 // import {createDeck, updateDeck} from "../graphql/mutations";
-import {GetDeckQuery, GetDeckQueryVariables, ListDecksQuery, ListDecksQueryVariables} from "../API";
+import {
+    CreateDeckInput,
+    GetDeckQuery,
+    GetDeckQueryVariables,
+    ListDecksQuery,
+    ListDecksQueryVariables,
+    UpdateDeckInput
+} from "../API";
 import {DeckModel, UserModel} from "../models";
 import decksStore from "../store/decks/DecksStore";
 import ApiRequest from "./util/ApiRequest";
@@ -40,7 +47,12 @@ export class DeckApi {
 
     // TODO + deck.toApiObject()
     create(deck: DeckModel): ApiRequest<DeckModel> {
-        console.log('DeckApi.create', deck);
+        const input: CreateDeckInput = {
+            name: deck.name,
+            description: deck.description,
+            tags: deck.tags,
+        };
+        console.log('DeckApi.create', {deck, input});
         return delayedResponse(() => {
             const result = deck.update({ id: 'TODO-'+deck.name });
             decksStore.add(result);
@@ -49,7 +61,13 @@ export class DeckApi {
     }
 
     update(deck: DeckModel): ApiRequest<DeckModel> {
-        console.log('DeckApi.update', deck);
+        const input: UpdateDeckInput = {
+            id: deck.id,
+            name: deck.name,
+            description: deck.description,
+            tags: deck.tags,
+        };
+        console.log('DeckApi.update', {deck, input});
         return delayedResponse(() => {
             const result = deck.update({ name: 'TODO Update: '+deck.name });
             decksStore.add(result);

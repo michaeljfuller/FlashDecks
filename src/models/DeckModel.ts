@@ -38,12 +38,4 @@ export class DeckModel extends Model implements Omit<ApiDeck, '__typename'|'owne
         });
     }
 
-    toCreateApi(): CreateDeckInput {
-        return  {
-            name: this.name,
-            description: this.description,
-            tags: this.tags.length ? this.tags : undefined
-        };
-    }
-
 }
