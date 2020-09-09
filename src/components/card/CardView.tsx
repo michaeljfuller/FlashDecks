@@ -9,6 +9,7 @@ import {Color} from "../../styles/Color";
 import CardSide from "./CardSide/CardSide";
 import CardViewBase from "./CardView.common";
 import CardSideActions from "./CardSide/CardSideActions";
+import PromptModal from "../modal/PromptModal/PromptModal";
 
 const edgeRadius = 15;
 const sideCountHeight = edgeRadius-2;
@@ -21,7 +22,7 @@ export default class CardView extends CardViewBase {
 
     render() {
         const totalHeight = this.state.viewLayout.height;
-        const bodyHeight = Math.max(0, totalHeight - (headerHeight + footerHeight + marginBottom + borderWidth * 2));
+        const bodyHeight = Math.max(0, totalHeight - (headerHeight + footerHeight + marginBottom + borderWidth * 2));;
         const footerText = this.sides.length > 1 ? `${this.state.sideIndex+1}/${this.sides.length}` : '';
 
         return <View style={this.props.style} onLayout={this.onLayout}>
@@ -35,14 +36,7 @@ export default class CardView extends CardViewBase {
                     </View>
 
                     <ScrollView style={styles.scrollView} contentContainerStyle={styles.body}>
-                        <CardSide
-                            side={this.currentSide}
-                            onPress={this.onPress}
-                            onModifications={this.onSideChange}
-                            height={bodyHeight}
-                            editing={this.state.editing}
-                            style={[styles.side, this.canPress ? globalStyles.pointer : null]}
-                        />
+                        { this.renderCardSide(bodyHeight, this.state.editing, this.canPress) }
                     </ScrollView>
 
                 </View>
@@ -63,9 +57,28 @@ export default class CardView extends CardViewBase {
                 onPressEdit={this.onClickEdit}
                 onPressAddBefore={this.onAddBefore}
                 onPressAddAfter={this.onAddAfter}
-                onPressDelete={this.onDelete}
+                onPressDelete={this.showDeleteSlidePrompt}
             />
+            <PromptModal
+                open={this.state.showDeleteSlidePrompt}
+                onClose={this.hideDeleteSlidePrompt}
+                onOk={this.onDeleteSide}
+                title="Are you sure you want to delete this side?"
+            >
+                { this.renderCardSide() }
+            </PromptModal>
         </View>;
+    }
+
+    renderCardSide(height = 0, editing = false, canPress = false) {
+        return <CardSide
+            side={this.currentSide}
+            onPress={canPress ? this.onPress : undefined}
+            onModifications={this.onSideChange}
+            height={height}
+            editing={editing}
+            style={[styles.side, canPress ? globalStyles.pointer : null]}
+        />;
     }
 }
 
@@ -118,5 +131,8 @@ const styles = StyleSheet.create({
         marginHorizontal: "auto",
         lineHeight: sideCountHeight,
         fontSize: sideCountHeight,
+    },
+    deletePromptContent: {
+        borderWidth: 1,
     },
 });

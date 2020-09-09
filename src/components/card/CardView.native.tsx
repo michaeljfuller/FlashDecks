@@ -4,6 +4,7 @@ import {Color} from "../../styles/Color";
 import CardSide from "./CardSide/CardSide";
 import {CardViewBase} from "./CardView.common";
 import CardSideActions from "./CardSide/CardSideActions";
+import PromptModal from "../modal/PromptModal/PromptModal";
 
 const edgeRadius = 15;
 const sideCountPadding = 2;
@@ -31,14 +32,7 @@ export default class CardView extends CardViewBase {
                 contentContainerStyle={[styles.body, { minHeight: bodyHeight || undefined }]}
                 persistentScrollbar={true}
             >
-                <CardSide
-                    side={this.currentSide}
-                    onPress={this.onPress}
-                    onModifications={this.onSideChange}
-                    height={bodyHeight}
-                    editing={this.state.editing}
-                    style={{ minHeight: bodyHeight || undefined }}
-                />
+                { this.renderCardSide(bodyHeight, this.state.editing, true) }
             </ScrollView>
             <View style={styles.footer}>
                 <Text style={styles.footerText}>{footerText}</Text>
@@ -55,9 +49,28 @@ export default class CardView extends CardViewBase {
                 onPressEdit={this.onClickEdit}
                 onPressAddBefore={this.onAddBefore}
                 onPressAddAfter={this.onAddAfter}
-                onPressDelete={this.onDelete}
+                onPressDelete={this.showDeleteSlidePrompt}
             />
+            <PromptModal
+                open={this.state.showDeleteSlidePrompt}
+                onClose={this.hideDeleteSlidePrompt}
+                onOk={this.onDeleteSide}
+                title="Are you sure you want to delete this side?"
+            >
+                { this.renderCardSide() }
+            </PromptModal>
         </View>;
+    }
+
+    renderCardSide(height = 0, editing = false, canPress = false) {
+        return <CardSide
+            side={this.currentSide}
+            onPress={canPress ? this.onPress : undefined}
+            onModifications={this.onSideChange}
+            height={height}
+            editing={editing}
+            style={{ minHeight: height || undefined }}
+        />;
     }
 }
 

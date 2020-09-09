@@ -17,6 +17,7 @@ export interface CardViewBaseState {
     sideIndex: number;
     viewLayout: LayoutRectangle;
     editing?: boolean;
+    showDeleteSlidePrompt: boolean;
 }
 
 export abstract class CardViewBase<
@@ -26,6 +27,7 @@ export abstract class CardViewBase<
         modifiedCard: null,
         sideIndex: 0,
         viewLayout: { x: 0, y: 0, width: 0, height: 0 },
+        showDeleteSlidePrompt: false,
     } as State;
 
     get card(): CardModel {
@@ -91,12 +93,17 @@ export abstract class CardViewBase<
         });
     }
 
-    /** Delete this slide. */
-    onDelete = () => {
-        const modifiedCard = this.card.update({
-            sides: removeItem(this.card.sides, this.state.sideIndex)
-        });
+    showDeleteSlidePrompt = () => {
+        this.setStateTo({ showDeleteSlidePrompt: true });
+    }
+    hideDeleteSlidePrompt = () => {
+        this.setStateTo({ showDeleteSlidePrompt: false });
+    }
+    onDeleteSide = () => {
         this.setStateTo(draft => {
+            const modifiedCard = this.card.update({
+                sides: removeItem(this.card.sides, this.state.sideIndex)
+            });
             draft.modifiedCard = castDraft(modifiedCard);
             draft.sideIndex = minMax(this.state.sideIndex, 0, modifiedCard.sides.length-1);
         });
