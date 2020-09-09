@@ -19,14 +19,19 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
             </View>
 
             <View style={styles.row}>
-                <Avatar
-                    user={this.props.item.owner}
-                    labelPlacement="right"
-                    size={avatarSize}
-                    style={styles.avatar}
-                    labelStyle={styles.avatarLabel}
-                />
-                <Text style={styles.cardCount}>{this.cardCount} {this.cardCount !== 1 ? 'cards' : 'card'}</Text>
+                <View style={styles.rowLeft}>
+                    <Avatar
+                        user={this.props.item.owner}
+                        labelPlacement="right"
+                        size={avatarSize}
+                        style={styles.avatar}
+                        labelStyle={styles.avatarLabel}
+                    />
+                </View>
+                <View style={styles.rowRight}>
+                    {this.props.editable ? <IconButton icon={IconType.Add} style={styles.addCardButton} onClick={this.addCard} /> : undefined}
+                    <Text style={styles.cardCount}>{this.cardCount} {this.cardCount !== 1 ? 'cards' : 'card'}</Text>
+                </View>
             </View>
 
             <DeckInfoModal
@@ -51,6 +56,14 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         position: "relative",
     },
+    rowLeft: {
+        flexGrow: 1,
+    },
+    rowRight: {
+        flexGrow: 1,
+        flexDirection: "row",
+        justifyContent: "flex-end",
+    },
     titleView: {
         flex: 1,
         paddingHorizontal: 25, // icon size
@@ -73,8 +86,11 @@ const styles = StyleSheet.create({
         color: "black"
     },
     cardCount: {
-        flex: 1,
         lineHeight: avatarSize,
         textAlign: "right",
+    },
+    addCardButton: {
+        paddingTop: (avatarSize-24)/2,
+        paddingRight: 5,
     },
 });

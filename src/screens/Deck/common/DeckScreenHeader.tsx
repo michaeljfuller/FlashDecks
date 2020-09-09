@@ -1,5 +1,5 @@
 import React from "react";
-import {Text, View, StyleSheet} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import DeckScreenHeaderBase from "./DeckScreenHeader.common";
 import Avatar from "../../../components/avatar/Avatar";
 import IconButton, {IconType} from "../../../components/button/IconButton";
@@ -26,6 +26,7 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
             </View>
 
             <View style={styles.cardCountView}>
+                {this.props.editable ? <IconButton icon={IconType.Add} style={styles.addCardButton} onClick={this.addCard} /> : undefined}
                 <Text style={styles.cardCount}>{this.cardCount} {this.cardCount !== 1 ? 'cards' : 'card'}</Text>
             </View>
 
@@ -62,6 +63,8 @@ const styles = StyleSheet.create({
         minHeight: avatarSize,
         flex: 1,
         overflow: "hidden",
+        flexDirection: "row",
+        justifyContent: "flex-end",
     },
     titleText: {
         lineHeight: avatarSize,
@@ -73,6 +76,9 @@ const styles = StyleSheet.create({
     },
     cardCount: {
         lineHeight: avatarSize,
-        textAlign: "right",
+    },
+    addCardButton: {
+        paddingTop: (avatarSize-24)/2,
+        paddingRight: 5,
     },
 });
