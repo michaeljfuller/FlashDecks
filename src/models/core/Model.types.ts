@@ -24,3 +24,9 @@ export type ModelUpdateUnion<
     Target,
     Excludes extends string
 > = ModelUpdateCallback<Target, Excludes>|ModelUpdateObject<Target, Excludes>
+
+export interface ModalValidation {
+    valid: Readonly<boolean>;
+    invalid: Readonly<boolean>;
+    reasons: Readonly<string[]>;
+}

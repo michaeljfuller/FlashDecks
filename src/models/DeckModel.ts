@@ -2,6 +2,7 @@ import Model from "./core/Model";
 import {CreateDeckInput, GetDeckQuery} from "../API";
 import {ApiUser, UserModel} from "./UserModel";
 import {CardModel} from "./CardModel";
+import {ModalValidation} from "./core/Model.types";
 
 export type ApiDeck = NonNullable<GetDeckQuery['getDeck']>;
 
@@ -21,6 +22,16 @@ export class DeckModel extends Model implements Omit<ApiDeck, '__typename'|'owne
     }
     static different(first: DeckModel|null|undefined, second: DeckModel|null|undefined): boolean {
         return !DeckModel.same(first, second);
+    }
+
+    static validate(deck: DeckModel|null|undefined): ModalValidation {
+        const {name, cards=[]} = deck || {};
+        const reasons: string[] = [];
+
+        if (!name) reasons.push('Missing deck name');
+        if (!cards.length) reasons.push('Missing cards');
+
+        return { reasons, valid: reasons.length === 0, invalid: reasons.length > 0 };
     }
 
     static fromApi(obj: ApiDeck) {
