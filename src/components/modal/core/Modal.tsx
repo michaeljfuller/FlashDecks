@@ -20,14 +20,18 @@ export abstract class Modal<
             open={this.props.open}
             onClose={this.props.onClose}
         >
-            <DialogContent>
-                <View style={styles.modalParent}>
-                    <View style={styles.modalWrapper}>
-                        {this.renderModal()}
-                    </View>
-                </View>
-            </DialogContent>
+            { this.props.open ? this.renderContent() : <View /> }
         </MaterialModal>;
+    }
+
+    renderContent() {
+        return <DialogContent>
+            <View style={styles.modalParent}>
+                <View style={styles.modalWrapper}>
+                    { this.renderModal() }
+                </View>
+            </View>
+        </DialogContent>;
     }
 
     abstract renderModal(): React.ReactElement;

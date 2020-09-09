@@ -18,7 +18,7 @@ export abstract class Modal<
             onRequestClose={this.props.onClose}
             onShow={this.props.onOpen}
         >
-            {this.renderModal()}
+            {this.props.open ? this.renderModal() : null}
         </NativeModal>;
     }
 
