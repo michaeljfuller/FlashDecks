@@ -1,18 +1,10 @@
 import React from "react";
-import {Text, View, ScrollView, StyleSheet} from "react-native";
-import {Color} from "../../styles/Color";
+import {Text, View, ScrollView} from "react-native";
 import CardSide from "./CardSide/CardSide";
 import {CardViewBase} from "./CardView.common";
 import CardSideActions from "./CardSide/CardSideActions";
 import PromptModal from "../modal/PromptModal/PromptModal";
-
-const edgeRadius = 15;
-const sideCountPadding = 2;
-const sideCountHeight = edgeRadius - sideCountPadding;
-const titleHeight = 20;
-const headerHeight = edgeRadius + titleHeight;
-const footerHeight = edgeRadius;
-const borderWidth = 1;
+import {styles, headerHeight, borderWidth, footerHeight} from "./CardView.native_styles";
 
 export default class CardView extends CardViewBase {
     render() {
@@ -73,50 +65,3 @@ export default class CardView extends CardViewBase {
         />;
     }
 }
-
-const borderColor = Color.Grey;
-const styles = StyleSheet.create({
-    root: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: Color.OffWhite,
-        borderRadius: edgeRadius,
-    },
-    headerRow: {},
-    headerActions: {
-        flexDirection: "row",
-        position: "absolute",
-        right: 0,
-    //  top: 0,
-    },
-    headerActionIconButtons: {
-        top: 5,
-    },
-    title: {
-        textAlign: "center",
-        fontWeight: "bold",
-        fontSize: titleHeight,
-        lineHeight: headerHeight,
-        borderBottomWidth: borderWidth,
-        borderColor,
-    },
-    scrollView: {
-        backgroundColor: Color.White,
-        flex: 1,
-        flexDirection: "column",
-        marginHorizontal: 1,
-    },
-    body: {
-    },
-    footer: {
-        height: footerHeight,
-        borderTopWidth: borderWidth,
-        borderColor,
-    },
-    footerText: {
-        textAlign: "center",
-        paddingVertical: sideCountPadding,
-        lineHeight: sideCountHeight,
-        fontSize: sideCountHeight,
-    },
-});
