@@ -6,6 +6,7 @@ import {preloadCards} from "../../utils/media/card";
 import {CardCarouselProps, resizeCard} from "./CardCarousel.common";
 import {CardModel} from "../../models";
 import {replaceItem} from "../../utils/array";
+import IconButton, {IconType} from "../button/IconButton";
 export * from "./CardCarousel.common";
 
 export interface CardCarouselState {
@@ -47,15 +48,16 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
             replaceItem(this.props.cards || [], index, card)
         );
     }
+    onAddFirstCard = () => {
+        this.props.onCardsChange && this.props.onCardsChange([ new CardModel ]);
+    }
 
     render() {
         const {cards, style} = this.props;
         const {width, cardWidth, cardHeight} = this.state;
 
         if (!cards?.length) {
-            return <View style={[styles.root, style]}>
-                <Text>No cards found.</Text>
-            </View>;
+            return this.renderNoCards();
         }
 
         const cardStyle = {
@@ -86,6 +88,17 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
             />
         </View>;
     }
+
+    renderNoCards() {
+        const {style, editable} = this.props;
+
+        return <View style={[styles.root, styles.rootWithoutCards, style]}>{
+            editable
+                ? <IconButton icon={IconType.Add} text="Add Card" onClick={this.onAddFirstCard} />
+                : <Text>No cards found.</Text>
+        }</View>;
+    }
+
 }
 export default CardCarousel;
 
@@ -95,6 +108,11 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         width: "100%",
         paddingBottom: 5,
+    },
+    rootWithoutCards: {
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
     },
     cardContainer: {
         flex: 1,

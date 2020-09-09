@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Text, Animated, LayoutChangeEvent} from 'react-native';
+import {Animated, LayoutChangeEvent, StyleSheet, Text, View} from 'react-native';
 import ImmutablePureComponent from "../ImmutablePureComponent";
 import {isPlatformWeb} from "../../platform";
 import CardView from "../card/CardView";
@@ -10,6 +10,8 @@ import {preloadCards} from "../../utils/media/card";
 import {CardModel} from "../../models";
 import {replaceItem} from "../../utils/array";
 import withDefaultProps from "../../utils/hoc/withDefaultProps/withDefaultProps";
+import IconButton, {IconType} from "../button/IconButton";
+
 export * from "./CardCarousel.common";
 
 const useNativeDriver = !isPlatformWeb;
@@ -71,6 +73,9 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
         );
         console.groupEnd();
     }
+    onAddFirstCard = () => {
+        this.props.onCardsChange && this.props.onCardsChange([ new CardModel ]);
+    }
 
     async cardOut(endPosition: number, duration = 250) {
         return new Promise(resolve => {
@@ -116,11 +121,8 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
     render() {
         const {cards, style} = this.props;
         const {index, cardWidth, cardHeight} = this.state;
-
         if (!cards?.length) {
-            return <View style={[styles.root, style]}>
-                <Text>No cards found.</Text>
-            </View>;
+            return this.renderNoCards();
         }
 
         return <View style={[styles.root, style]} onLayout={this.onLayout}>
@@ -141,6 +143,16 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
             <CarouselButton title=">" onClick={this.next} disabled={!this.canGoToNext} />
         </View>;
     }
+
+    renderNoCards() {
+        const {style, editable} = this.props;
+
+        return <View style={[styles.root, styles.rootWithoutCards, style]}>{
+            editable
+            ? <IconButton icon={IconType.Add} text="Add Card" onClick={this.onAddFirstCard} />
+            : <Text>No cards found.</Text>
+        }</View>;
+    }
 }
 export default CardCarousel;
 
@@ -151,6 +163,11 @@ const styles = StyleSheet.create({
         width: "100%",
         height: "100%",
         backgroundColor: theme.primary.disabled,
+    },
+    rootWithoutCards: {
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
     },
     cardContainer: {
         marginVertical: "auto",
