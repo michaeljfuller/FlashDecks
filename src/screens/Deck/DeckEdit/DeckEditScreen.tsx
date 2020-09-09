@@ -44,11 +44,11 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
 
     componentDidMount() {
         const {deckId} = this.props.route.params || {};
-        if (!deckId) {
-            return console.warn('No ID'); // TODO Redirect
+        if (deckId) {
+            this.getDeck(deckId);
+        } else {
+            this.setStateTo( draft => draft.originalDeck = castDraft(new DeckModel()) );
         }
-
-        this.getDeck(deckId);
     }
     componentWillUnmount() {
         this.toast.removeByRef();
@@ -151,13 +151,18 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         if (this.state.loading) return <Text style={{lineHeight: 50}}>Loading Deck...</Text>;
         if (this.state.error) return <Text>{this.state.error}</Text>;
         if (!this.deck) return <Text>Could not find deck.</Text>;
+
+        const newDeck = !this.deck?.id;
         const editable = !this.state.saving;
+        const title = (newDeck? "New" : "Edit") + ": " + (this.deck?.name || 'Untitled');
+        const validation = DeckModel.validate(this.state.modifiedDeck);
+
         return <React.Fragment>
             <DeckScreenHeader
                 editable={editable}
                 item={this.deck}
                 onChange={this.onChange}
-                title={`Edit: ${this.deck?.name}`}
+                title={title}
             />
             <DeckView
                 editable={editable}
@@ -165,9 +170,9 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
                 onChange={this.onChange}
             />
             <Button
-                title="Save"
+                title={validation.valid ? "Save" : `Save: ${validation.reasons[0]}.`}
                 square
-                disabled={!this.state.modifiedDeck || !editable}
+                disabled={validation.invalid || !editable}
                 onClick={this.onSavePressed}
             />
         </React.Fragment>

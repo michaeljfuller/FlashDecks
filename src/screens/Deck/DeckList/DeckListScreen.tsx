@@ -1,10 +1,11 @@
 import React from "react";
-import {Text, View} from "react-native";
+import {Text, View, StyleSheet} from "react-native";
 import {castDraft} from "immer";
 import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
 import ScreenContainer from "../../ScreenContainer";
 import {NavigationScreenProps} from "../../../navigation/navigation_types";
 import DeckList from "../../../components/deck/DeckList/DeckList";
+import IconButton, {IconType} from "../../../components/button/IconButton";
 
 import {reduxConnector, DeckListScreenStoreProps} from "./DeckListScreen_redux";
 import DeckRoutes from "../DeckRoutes";
@@ -54,18 +55,25 @@ export class DeckListScreen extends ImmutablePureComponent<
         });
     }
 
-    goTo(routeName: string, deck: DeckModel) {
-        this.props.navigation.navigate(routeName, {deckId: deck.id})
+    goTo(routeName: string, deck?: DeckModel) {
+        this.props.navigation.navigate(
+            routeName,
+            deck ? {deckId: deck.id} : undefined
+        );
     }
 
+    goToCreate = () => this.goTo(DeckRoutes.New);
     goToEdit = (deck: DeckModel) => this.goTo(DeckRoutes.Edit, deck);
     goToView = (deck: DeckModel) => this.goTo(DeckRoutes.View, deck);
 
     render() {
         return (
             <ScreenContainer>
-                <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{this.constructor.name}</Text>
-                <View style={{ padding: 5 }}>{this.renderBody()}</View>
+                <Text style={styles.title}>{this.constructor.name}</Text>
+                <View style={styles.actionsRow}>
+                    <IconButton icon={IconType.Add} text="New Deck" onClick={this.goToCreate} />
+                </View>
+                <View style={styles.body}>{this.renderBody()}</View>
             </ScreenContainer>
         );
     }
@@ -84,3 +92,18 @@ export class DeckListScreen extends ImmutablePureComponent<
 }
 
 export default reduxConnector(DeckListScreen);
+
+const styles = StyleSheet.create({
+    title: {
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    actionsRow: {
+        padding: 5,
+        flexDirection: "row",
+        justifyContent: "flex-end",
+    },
+    body: {
+        padding: 5,
+    },
+});

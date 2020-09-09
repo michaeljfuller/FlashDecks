@@ -7,6 +7,7 @@ export const DeckRoutesTree = {
         [DeckRoutes.List]: null,
         [DeckRoutes.Edit]: null,
         [DeckRoutes.View]: null,
+        [DeckRoutes.New]: null,
     }
 } as NavigationTree;
 export {
