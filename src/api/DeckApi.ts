@@ -60,6 +60,10 @@ export class DeckApi {
         });
     }
 
+    /**
+     * TODO Delete removed cards. Same for future `DeckApi.remove()`.
+     * TODO `DeckModel.source: ApiDeck` to find removed cards.
+     */
     update(deck: DeckModel): ApiRequest<DeckModel> {
         const input: UpdateDeckInput = {
             id: deck.id,
