@@ -15,6 +15,8 @@ import ToastStore, {toastStore} from "../../../store/toast/ToastStore";
 import navigationStore from "../../../store/navigation/NavigationStore";
 import ApiRequest from "../../../api/util/ApiRequest";
 import {removeItem} from "../../../utils/array";
+import PromptModal from "../../../components/modal/PromptModal/PromptModal";
+import CardView from "../../../components/card/CardView";
 
 export interface DeckEditScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -24,6 +26,7 @@ export interface DeckEditScreenState {
     modifiedDeck?: DeckModel;
     loading: boolean;
     saving: boolean;
+    showDeleteCardPrompt: boolean;
     error?: string;
 }
 
@@ -32,6 +35,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     state = {
         loading: false,
         saving: false,
+        showDeleteCardPrompt: false,
     } as DeckEditScreenState;
 
     toast = new ToastStore(this);
@@ -112,12 +116,6 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         }
     }
 
-    removeCard() {
-        if (this.deck) {
-            this.modifyCards(removeItem(this.deck.cards, this.cardIndex));
-        }
-    }
-
     onChange = (deck: DeckModel) => {
         this.modifyDeck(deck);
     }
@@ -125,6 +123,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         this.setStateTo({ modifiedDeck: undefined, });
         this.blockNavigation(false);
     }
+
     onAddCard = () => {
         if (this.deck) {
             this.onChange(this.deck.update(draft => {
@@ -133,8 +132,20 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
             }));
         }
     }
-    onRemoveCard = () => { // TODO Add modal
-        this.removeCard();
+    onRemoveCard = () => {
+        if (this.deck) {
+            this.modifyCards(removeItem(this.deck.cards, this.cardIndex));
+        }
+    }
+    onScrollCards = (index: number) => {
+        this.cardIndex = index;
+    }
+
+    onOpenDeleteCardPrompt = () => {
+        this.setStateTo({ showDeleteCardPrompt: true });
+    }
+    onCloseDeleteCardPrompt = () => {
+        this.setStateTo({ showDeleteCardPrompt: false });
     }
 
     onSavePressed = async () => {
@@ -169,11 +180,6 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         }
     }
 
-    onScrollCards = (index: number) => {
-        console.log('DeckEditScreen.onScrollCards()', index);
-        this.cardIndex = index;
-    }
-
     render() {
         return (
             <ScreenContainer>
@@ -191,6 +197,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         const editable = !this.state.saving;
         const title = (newDeck? "New" : "Edit") + ": " + (this.deck?.name || 'Untitled');
         const validation = DeckModel.validate(this.state.modifiedDeck);
+        const card = this.deck.cards[this.cardIndex];
 
         return <React.Fragment>
             <DeckScreenHeader
@@ -198,7 +205,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
                 item={this.deck}
                 onChange={this.onChange}
                 onAddCard={this.onAddCard}
-                onRemoveCard={this.onRemoveCard}
+                onRemoveCard={this.onOpenDeleteCardPrompt}
                 title={title}
             />
             <DeckView
@@ -212,6 +219,16 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
                 square
                 disabled={validation.invalid || !editable}
                 onClick={this.onSavePressed}
+            />
+            <PromptModal
+                onOk={this.onRemoveCard}
+                onClose={this.onCloseDeleteCardPrompt}
+                open={this.state.showDeleteCardPrompt}
+                title="Remove Card?"
+                message={
+                    `Are you sure you want to remove "${card?.nameOrPlaceholder()}" from the Deck?\n` +
+                    `This change will take effect next time you save.`
+                }
             />
         </React.Fragment>
     }
