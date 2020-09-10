@@ -15,7 +15,7 @@ export default class CardView extends CardViewBase {
         return <View style={[styles.root, this.props.style]} onLayout={this.onLayout}>
 
             <View style={styles.headerRow}>
-                <Text style={styles.title}>{this.card?.name || "Unknown"}</Text>
+                <Text style={styles.title}>{this.card?.nameOrPlaceholder()}</Text>
                 {this.hasActions ? this.renderHeaderActions() : null}
             </View>
 

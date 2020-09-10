@@ -16,6 +16,10 @@ export class CardModel extends Model implements Omit<ApiCard, '__typename'|'owne
     readonly deckID: string = '';
     readonly tags: string[] = [];
 
+    nameOrPlaceholder(placeholder = "Untitled") {
+        return this.name || placeholder;
+    }
+
     static fromApi(obj: ApiCard) {
         return (new CardModel()).update({
             id: obj.id,

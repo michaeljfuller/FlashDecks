@@ -20,7 +20,7 @@ export default class CardView extends CardViewBase {
                 <View style={styles.inner}>
 
                     <View>
-                        <StyledCardHeader title={this.card?.name || "Unknown"}/>
+                        <StyledCardHeader title={this.card?.nameOrPlaceholder()}/>
                         {this.hasActions ? this.renderHeaderActions() : null}
                     </View>
 
