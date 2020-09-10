@@ -1,12 +1,14 @@
 import React from "react";
-import {CardModel, DeckModel} from "../../../models";
-import ImmutablePureComponent, {castDraft} from "../../../components/ImmutablePureComponent";
+import {DeckModel} from "../../../models";
+import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
 
 export interface DeckScreenHeaderProps {
     item: DeckModel;
     title?: string;
     editable?: boolean;
     onChange?: (item: DeckModel) => void;
+    onAddCard?: () => void;
+    onRemoveCard?: () => void;
 }
 export interface DeckScreenHeaderPropsState {
     showInfo: boolean;
@@ -23,12 +25,4 @@ export default class DeckScreenHeaderBase extends ImmutablePureComponent<DeckScr
 
     openInfoModal = () => this.setStateTo({ showInfo: true });
     closeInfoModal = () => this.setStateTo({ showInfo: false });
-    addCard = () => {
-        if (this.props.onChange && this.props.item) {
-            this.props.onChange(this.props.item.update(draft => {
-                const card = castDraft(new CardModel());
-                draft.cards.push(card);
-            }));
-        }
-    };
 }
