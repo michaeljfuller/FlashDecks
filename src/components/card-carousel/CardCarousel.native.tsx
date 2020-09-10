@@ -26,10 +26,20 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
         cardHeight: cachedCardHeight,
     } as Readonly<CardCarouselState>;
 
+    get index() { return this._index; }
+    set index(num: number) {
+        if (num !== this._index) {
+            this._index = num;
+            this.props.onScrollCards && this.props.onScrollCards(num);
+        }
+    }
+    private _index = -1;
+
     flatList = React.createRef<FlatList>();
 
     componentDidMount() {
         preloadCards(this.props.cards || []);
+        this.index = 0;
     }
 
     onLayout = (event: LayoutChangeEvent) => {
@@ -71,7 +81,8 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
             <FlatList<CardModel>
                 ref={this.flatList}
                 data={cards}
-                renderItem={({item}) => {
+                renderItem={({item, index}) => {
+                    this.index = index;
                     return <View key={item.id} style={styles.cardContainer}>
                         <CardView
                             item={item}

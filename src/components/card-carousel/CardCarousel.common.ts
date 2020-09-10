@@ -7,8 +7,10 @@ export interface CardCarouselProps {
     style?: ViewStyle;
     editable?: boolean;
     onCardsChange?: CardCarouselDeckChange;
+    onScrollCards?: CardCarouselScrollCards;
 }
 export type CardCarouselDeckChange = (cards: CardModel[]) => void;
+export type CardCarouselScrollCards = (index: number) => void;
 
 export const cardAspectRatio = 0.7;
 

@@ -45,6 +45,7 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
     componentDidMount() {
         document.addEventListener('keydown', this.onKeyDown);
         preloadCards(this.props.cards || []);
+        this.setIndex(0); // TODO Add/update routing for card index?
     }
     componentWillUnmount() {
         document.removeEventListener('keydown', this.onKeyDown);
@@ -102,7 +103,7 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
         if (this.canGoToNext) {
             this.setStateTo({isAnimating: true});
             await this.cardOut(-300);
-            this.setStateTo({index: this.state.index + 1});
+            this.setIndex(this.state.index + 1);
             await this.cardIn(300);
             this.setStateTo({isAnimating: false});
         }
@@ -112,11 +113,16 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
         if (this.canGoToPrevious) {
             this.setStateTo({isAnimating: true});
             await this.cardOut(300);
-            this.setStateTo({ index: this.state.index - 1 });
+            this.setIndex(this.state.index - 1);
             await this.cardIn(-300);
             this.setStateTo({isAnimating: false});
         }
     };
+
+    setIndex(index: number) {
+        this.setStateTo({ index });
+        this.props.onScrollCards && this.props.onScrollCards(index);
+    }
 
     render() {
         const {cards, style} = this.props;
