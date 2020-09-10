@@ -14,6 +14,7 @@ export enum IconType {
     Done,
     Resize,
     Add,
+    Remove,
 }
 export interface IconProps {
     type: IconType;
