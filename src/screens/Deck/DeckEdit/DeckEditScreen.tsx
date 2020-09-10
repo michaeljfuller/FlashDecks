@@ -1,20 +1,20 @@
 import React from "react";
 import {Text} from "react-native";
-import {castDraft} from "immer";
 import ScreenContainer from "../../ScreenContainer";
-import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
+import ImmutablePureComponent, {castDraft} from "../../../components/ImmutablePureComponent";
 import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
 
 import {reduxConnector, DeckEditScreenStoreProps} from "./DeckEditScreen_redux";
 import DeckView from "../../../components/deck/DeckView/DeckView";
 import Button from "../../../components/button/Button";
 import DeckScreenHeader from "../common/DeckScreenHeader";
-import {DeckModel} from "../../../models";
+import {CardModel, DeckModel} from "../../../models";
 import mockDeckApi from "../../../api/DeckApi.mock";
 import deckApi from "../../../api/DeckApi";
 import ToastStore, {toastStore} from "../../../store/toast/ToastStore";
 import navigationStore from "../../../store/navigation/NavigationStore";
 import ApiRequest from "../../../api/util/ApiRequest";
+import {removeItem} from "../../../utils/array";
 
 export interface DeckEditScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -37,6 +37,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     toast = new ToastStore(this);
     getDeckRequest?: ApiRequest<DeckModel|undefined>;
     saveDeckRequest?: ApiRequest<DeckModel|undefined>;
+    cardIndex = 0;
 
     get deck() {
         return this.state.modifiedDeck || this.state.originalDeck;
@@ -98,13 +99,42 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         );
     }
 
-    onChange = (deck: DeckModel) => {
+    modifyDeck(deck: DeckModel) {
         this.setStateTo(draft => draft.modifiedDeck = castDraft(deck));
         this.blockNavigation(true);
+    }
+
+    modifyCards(cards: CardModel[]) {
+        if (this.deck) {
+            this.modifyDeck(
+                this.deck.update( draft => draft.cards = castDraft(cards) )
+            );
+        }
+    }
+
+    removeCard() {
+        if (this.deck) {
+            this.modifyCards(removeItem(this.deck.cards, this.cardIndex));
+        }
+    }
+
+    onChange = (deck: DeckModel) => {
+        this.modifyDeck(deck);
     }
     clearChanges = () => {
         this.setStateTo({ modifiedDeck: undefined, });
         this.blockNavigation(false);
+    }
+    onAddCard = () => {
+        if (this.deck) {
+            this.onChange(this.deck.update(draft => {
+                const card = castDraft(new CardModel());
+                draft.cards.push(card);
+            }));
+        }
+    }
+    onRemoveCard = () => { // TODO Add modal
+        this.removeCard();
     }
 
     onSavePressed = async () => {
@@ -139,6 +169,11 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         }
     }
 
+    onScrollCards = (index: number) => {
+        console.log('DeckEditScreen.onScrollCards()', index);
+        this.cardIndex = index;
+    }
+
     render() {
         return (
             <ScreenContainer>
@@ -162,12 +197,15 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
                 editable={editable}
                 item={this.deck}
                 onChange={this.onChange}
+                onAddCard={this.onAddCard}
+                onRemoveCard={this.onRemoveCard}
                 title={title}
             />
             <DeckView
                 editable={editable}
                 item={this.deck}
                 onChange={this.onChange}
+                onScrollCards={this.onScrollCards}
             />
             <Button
                 title={validation.valid ? "Save" : `Save: ${validation.reasons[0]}.`}
