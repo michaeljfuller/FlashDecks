@@ -155,14 +155,11 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
 
             await this.saveDeckRequest.wait(false);
             const deck = this.saveDeckRequest.payload;
-            const {cancelled, error} = this.saveDeckRequest;
+            const {complete, error} = this.saveDeckRequest;
 
             // If complete (not canceled or errored), update state
-            if (cancelled) {
-                this.setStateTo(draft => {
-                    draft.originalDeck = castDraft(deck);
-                    draft.saving = false;
-                });
+            if (complete) {
+                this.setStateTo(draft => draft.originalDeck = castDraft(deck) );
                 this.clearChanges();
             }
 
@@ -175,6 +172,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
             }
 
             delete this.saveDeckRequest;
+            this.setStateTo({ saving: false });
         } else {
             this.toast.add({type: "warning", text: `No changes to save.`});
         }
