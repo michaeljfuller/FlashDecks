@@ -17,3 +17,6 @@ export function getErrorText(e: Error|string|unknown, defaultText = ''): string 
 
     return defaultText
 }
+export function getErrorName(e: Error|string|unknown, defaultTitle = 'Error'): string {
+    return (e instanceof Error && e.name) || defaultTitle;
+}

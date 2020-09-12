@@ -1,11 +1,15 @@
-export interface ApiResponseData <Payload> {
+export interface ApiResponseData <Payload, RequestBody> {
     payload?: Payload;
+    requestBody?: Readonly<RequestBody>;
     error?: any;
     cancelled?: boolean;
 }
 type ApiResponseCancel = () => void;
 
-export default class ApiRequest <Payload = object> implements ApiResponseData<Payload> {
+export default class ApiRequest<
+    Payload = object,
+    RequestBody = object
+> implements ApiResponseData<Payload, RequestBody> {
 
     // If the request was a success (even if cancelled).
     get success() { return this._success; }
@@ -36,15 +40,16 @@ export default class ApiRequest <Payload = object> implements ApiResponseData<Pa
     private readonly promise: Promise<void>
 
     // The data at the time this is called.
-    get snapshot(): ApiResponseData<Payload> {
+    get snapshot(): ApiResponseData<Payload, RequestBody> {
         return {
             payload: this.payload,
+            requestBody: this.requestBody,
             cancelled: this.cancelled,
             error: this.error
         };
     }
 
-    constructor(promise: Promise<Payload>) {
+    constructor(promise: Promise<Payload|undefined>, readonly requestBody?: RequestBody) {
         this.promise = promise.then(
             payload => {
                 // Capture payload and flag success. No need to re-resolve.
@@ -63,7 +68,7 @@ export default class ApiRequest <Payload = object> implements ApiResponseData<Pa
      * Wait for the request to finish.
      * @param {boolean} stopOnCancel - If true and `cancel()` was called, finish immediately.
      */
-    async wait(stopOnCancel = true): Promise<ApiResponseData<Payload>> {
+    async wait(stopOnCancel = true): Promise<ApiResponseData<Payload, RequestBody>> {
         if (!this.waiting) {
             return this.snapshot;
         }

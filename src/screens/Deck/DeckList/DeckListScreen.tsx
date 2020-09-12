@@ -10,7 +10,7 @@ import IconButton, {IconType} from "../../../components/button/IconButton";
 import {reduxConnector, DeckListScreenStoreProps} from "./DeckListScreen_redux";
 import DeckRoutes from "../DeckRoutes";
 import {DeckModel} from "../../../models";
-import deckApi from "../../../api/DeckApi.mock";
+import deckApi from "../../../api/DeckApi";
 import {toastStore} from "../../../store/toast/ToastStore";
 import ApiRequest from "../../../api/util/ApiRequest";
 

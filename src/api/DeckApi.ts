@@ -1,13 +1,13 @@
 import {API, graphqlOperation} from "aws-amplify";
 import {getDeck, listDecks/*, searchDecks*/} from "../graphql/queries";
-// import {createDeck, updateDeck} from "../graphql/mutations";
+import {createDeck, updateDeck} from "../graphql/mutations";
 import {
-    CreateDeckInput,
+    CreateDeckInput, CreateDeckMutation, CreateDeckMutationVariables,
     GetDeckQuery,
     GetDeckQueryVariables,
     ListDecksQuery,
     ListDecksQueryVariables,
-    UpdateDeckInput
+    UpdateDeckInput, UpdateDeckMutation, UpdateDeckMutationVariables
 } from "../API";
 import {DeckModel, UserModel} from "../models";
 import decksStore from "../store/decks/DecksStore";
@@ -20,14 +20,16 @@ export type DeckApiModelList = ListDecksQuery['listDecks'];
 
 export class DeckApi {
 
-    getById(id: DeckModel['id']): ApiRequest<DeckModel|undefined> {
+    getById(id: DeckModel['id']): ApiRequest<DeckModel> {
+        const variables = { id } as GetDeckQueryVariables;
         const promise = API.graphql(
-            graphqlOperation(getDeck, { id } as GetDeckQueryVariables)
+            graphqlOperation(getDeck, variables)
         ) as GraphQueryResponse<GetDeckQuery>;
 
-        return new ApiRequest(promise.then(
-            response => parseApiDeck(response.data?.getDeck)
-        ));
+        return new ApiRequest(
+            promise.then( response => parseApiDeck(response.data?.getDeck) ),
+            variables
+        );
     }
 
     getList(variables?: ListDecksQueryVariables): ApiRequest<DeckModel[]> {
@@ -35,9 +37,10 @@ export class DeckApi {
             graphqlOperation(listDecks, variables)
         ) as GraphQueryResponse<ListDecksQuery>;
 
-        return new ApiRequest(promise.then(
-            response => parseApiDeckList(response.data?.listDecks)
-        ));
+        return new ApiRequest(
+            promise.then( response => parseApiDeckList(response.data?.listDecks) ),
+            variables
+        );
     }
 
     // TODO Replace 'listDecks' with 'searchDecks' when ElasticSearch is re-added or replaced.
@@ -52,12 +55,24 @@ export class DeckApi {
             description: deck.description,
             tags: deck.tags,
         };
-        console.log('DeckApi.create', {deck, input});
-        return delayedResponse(() => {
-            const result = deck.update({ id: 'TODO-'+deck.name });
-            decksStore.add(result);
-            return result;
-        });
+        const variables = { input } as CreateDeckMutationVariables;
+
+        const promise = API.graphql(
+            graphqlOperation(createDeck, variables)
+        ) as GraphQueryResponse<CreateDeckMutation>;
+
+        console.log('DeckApi.create', graphqlOperation(createDeck, variables));
+
+        return new ApiRequest(
+            promise.then( response => parseApiDeck(response.data?.createDeck) ),
+            variables
+        );
+
+        // return delayedResponse(() => {
+        //     const result = deck.update({ id: 'TODO-'+deck.name });
+        //     decksStore.add(result);
+        //     return result;
+        // });
     }
 
     /**
@@ -71,12 +86,24 @@ export class DeckApi {
             description: deck.description,
             tags: deck.tags,
         };
-        console.log('DeckApi.update', {deck, input});
-        return delayedResponse(() => {
-            const result = deck.update({ name: 'TODO Update: '+deck.name });
-            decksStore.add(result);
-            return result;
-        });
+        const variables = { input } as UpdateDeckMutationVariables;
+
+        const promise = API.graphql(
+            graphqlOperation(updateDeck, variables)
+        ) as GraphQueryResponse<UpdateDeckMutation>;
+
+        console.log('DeckApi.update', graphqlOperation(updateDeck, variables));
+
+        return new ApiRequest(
+            promise.then( response => parseApiDeck(response.data?.updateDeck) ),
+            variables
+        );
+
+        // return delayedResponse(() => {
+        //     const result = deck.update({ name: 'TODO Update: '+deck.name });
+        //     decksStore.add(result);
+        //     return result;
+        // });
     }
 
     push(deck: DeckModel): ApiRequest<DeckModel> {

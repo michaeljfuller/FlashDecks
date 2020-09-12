@@ -166,9 +166,10 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
             // Show toast
             const toastRef = 'DeckEditScreen-save';
             if (error) {
-                this.toast.addError(error, "Error saving deck.", { ref: toastRef })
+                this.toast.addError(error, "Error saving deck.", { log: false, ref: toastRef });
+                console.error("Error saving deck", { error,  request: this.saveDeckRequest });
             } else {
-                this.toast.add({ type: "success", text: `Saved: "${deck?.name}".`, duration: 2000, ref: toastRef })
+                this.toast.add({ type: "success", text: `Saved: "${deck?.name}".`, duration: 2000, ref: toastRef });
             }
 
             delete this.saveDeckRequest;
