@@ -8,7 +8,7 @@ import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/
 import {reduxConnector, DeckViewScreenStoreProps} from "./DeckViewScreen_redux";
 import DeckScreenHeader from "../common/DeckScreenHeader";
 import {DeckModel} from "../../../models";
-import deckApi from "../../../api/DeckApi.mock";
+import deckApi from "../../../api/DeckApi";
 import ApiRequest from "../../../api/util/ApiRequest";
 import ToastStore from "../../../store/toast/ToastStore";
 

@@ -9,14 +9,12 @@ import DeckView from "../../../components/deck/DeckView/DeckView";
 import Button from "../../../components/button/Button";
 import DeckScreenHeader from "../common/DeckScreenHeader";
 import {CardModel, DeckModel} from "../../../models";
-import mockDeckApi from "../../../api/DeckApi.mock";
 import deckApi from "../../../api/DeckApi";
 import ToastStore, {toastStore} from "../../../store/toast/ToastStore";
 import navigationStore from "../../../store/navigation/NavigationStore";
 import ApiRequest from "../../../api/util/ApiRequest";
 import {removeItem} from "../../../utils/array";
 import PromptModal from "../../../components/modal/PromptModal/PromptModal";
-import CardView from "../../../components/card/CardView";
 
 export interface DeckEditScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -87,7 +85,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         }
 
         this.setStateTo({ loading: true });
-        this.getDeckRequest = mockDeckApi.getById(deckId);
+        this.getDeckRequest = deckApi.getById(deckId);
 
         this.getDeckRequest.wait(true).then(
             ({payload, error, cancelled}) => {
