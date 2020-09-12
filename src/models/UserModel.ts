@@ -11,7 +11,7 @@ export class UserModel extends Model implements Omit<ApiUser, '__typename'> {
         return (new UserModel).update({
             id: obj.id,
             displayName: obj.displayName,
-        });
+        }, false);
     }
 
     static same(first: UserModel|null|undefined, second: UserModel|null|undefined) {

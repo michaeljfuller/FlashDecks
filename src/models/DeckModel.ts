@@ -46,7 +46,7 @@ export class DeckModel extends Model implements Omit<ApiDeck, '__typename'|'owne
             cards: obj.cards?.items?.map(
                 card => CardModel.fromApi(card as any) // TODO `any` to ApiCard
             ) || [] as CardModel[],
-        });
+        }, false);
     }
 
 }

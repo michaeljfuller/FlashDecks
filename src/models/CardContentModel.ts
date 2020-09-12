@@ -37,6 +37,6 @@ export class CardContentModel extends Model implements Omit<ApiCardContent, '__t
             size: obj.size,
             value: obj.value,
             type: obj.type as any,
-        });
+        }, false);
     }
 }

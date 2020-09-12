@@ -13,7 +13,7 @@ export class CardSideModel extends Model {
             draft.content = obj.content?.map(
                 item => CardContentModel.fromApi(item as any) // TODO remove `any` with ApiCardContent
             ) || [];
-        });
+        }, false);
     }
 
     setContent(item: CardContentModel, index: number) {

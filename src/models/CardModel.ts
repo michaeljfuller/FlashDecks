@@ -6,6 +6,7 @@ import {GetCardQuery} from "../API";
 export type ApiCard = NonNullable<GetCardQuery['getCard']>;
 
 export class CardModel extends Model implements Omit<ApiCard, '__typename'|'owner'|'sides'|'deck'> {
+
     readonly id: string = '';
     readonly name: string = '';
     readonly ownerId: string = '';
@@ -32,6 +33,6 @@ export class CardModel extends Model implements Omit<ApiCard, '__typename'|'owne
             sides: obj.sides?.map(
                 (side: ApiCardSide) => CardSideModel.fromApi(side as ApiCardSide)
             ) || [],
-        });
+        }, false);
     }
 }

@@ -10,6 +10,9 @@ import {ModelUpdateCallback, ModelUpdateObject, ModelUpdateUnion} from "./Model.
 export abstract class Model<
     ModelUpdateExcludes extends string = ''
 > {
+    /** Flag indicating if the modal has been modified from its source. */
+    get isDirty() { return this._isDirty; }
+    private _isDirty = false;
 
     /**
      * Create an immutable copy with changes specified by passed function/object.
@@ -18,8 +21,10 @@ export abstract class Model<
      * Modifying the Draft will make the corresponding changes to the output.
      */
     update(
-        input: ModelUpdateUnion<this, ModelUpdateExcludes>
+        input: ModelUpdateUnion<this, ModelUpdateExcludes>,
+        isDirty = true
     ): this {
+        this._isDirty = isDirty;
         if (typeof input === 'function') {
             return this.updateFromCallback(input);
         }

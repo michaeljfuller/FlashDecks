@@ -25,6 +25,6 @@ export class CognitoUserModel extends Model implements
             email: obj.attributes.email,
             email_verified: obj.attributes.email_verified,
             sub: obj.attributes.sub,
-        });
+        }, false);
     }
 }
