@@ -1,6 +1,11 @@
 const gulp = require('gulp');
 const shell = require('gulp-shell');
 
+gulp.task('start', shell.task('npm start'));
+gulp.task('start:prod', shell.task('npm run start:prod'));
+
+gulp.task('reports', shell.task('node test/output/servers/run-all.js'));
+
 gulp.task('amplify:status', shell.task('amplify status'));
 gulp.task('amplify:print:auth:client_id', logUserPoolClientId);
 gulp.task('amplify:api:compile', shell.task('amplify api gql-compile'));
