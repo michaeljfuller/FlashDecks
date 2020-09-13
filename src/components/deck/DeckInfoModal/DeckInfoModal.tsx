@@ -6,6 +6,8 @@ import {ModalContainer, ModalHeader, ModalFooter, ModalBody} from "../../modal/p
 import {DeckModel} from "../../../models";
 import {DeckInfoModelTags} from "./DeckInfoModalTags";
 import {castDraft} from "immer";
+import deckApi from "../../../api/DeckApi";
+import ToastStore from "../../../store/toast/ToastStore";
 
 export type DeckInfoModalProps = {
     deck: DeckModel;
@@ -15,13 +17,19 @@ export type DeckInfoModalProps = {
 
 export interface DeckInfoModalState {
     modifiedDeck?: DeckModel;
+    saving: boolean;
 }
 
 /**
  * A simple modal with a close button.
  */
 export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState> {
-    state = {} as DeckInfoModalState;
+    state = {
+        saving: false,
+    } as DeckInfoModalState;
+
+    toast = new ToastStore(this);
+    saveRequest?: ReturnType<typeof deckApi.push>;
 
     get deck(): DeckModel {
         return this.state.modifiedDeck || this.props.deck;
@@ -32,14 +40,40 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
             this.setStateTo({ modifiedDeck: undefined });
         }
     }
+    componentWillUnmount() {
+        this.toast.removeByRef();
+        this.saveRequest?.cancel();
+    }
 
-    onPressOk = () => {
-        if (this.props.onChange && this.state.modifiedDeck) {
-            this.props.onChange(this.state.modifiedDeck);
+    save() {
+        const deck = this.state.modifiedDeck;
+        if (deck) {
+            // TODO Disable, Save, Toast, Success=Close / Error=Enable.
+            this.setStateTo({saving: true});
+            deckApi.push(deck).wait(false).then(request => {
+
+                if (request.error) {
+                    this.toast.addError(request.error, "Failed to save Deck.", {ref: 'DeckInfoModal.save'});
+                } else {
+                    this.toast.add({ type: "success", text: "Saved Deck.", duration: 3000 });
+                }
+
+                if (!request.cancelled) {
+                    this.setStateTo({ saving: false });
+                    if (!request.error) {
+                        this.props.onChange && this.props.onChange(request.payload || deck);
+                        this.props.onClose && this.props.onClose();
+                    }
+                }
+
+            });
+        } else {
+            this.toast.add({ type: "warning", text: "No changes to save.", duration: 3000 });
         }
-        if (this.props.onClose) {
-            this.props.onClose();
-        }
+    }
+
+    onPressSave = () => {
+        this.save();
     }
 
     onChangeName = (name: string) => {
@@ -83,27 +117,31 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
 
     renderEditModal() {
         const numberOfDescriptionLines = Math.max(12, (this.deck.description || '').split('\n').length);
+        const focusTitle = !this.deck.name;
 
         return <ModalContainer>
 
-            <ModalHeader title={this.deck.name} user={this.deck.owner} />
+            <ModalHeader title="Deck Details" user={this.deck.owner} />
 
             <ModalBody>
                 <View style={styles.titleInputRow}>
                     <Text style={styles.titleLabel}>Title:</Text>
                     <TextInput
                         editable
+                        focusable
+                        autoFocus={focusTitle}
                         style={styles.titleInput}
                         value={this.deck.name}
                         onChangeText={this.onChangeName}
                     />
                 </View>
                 <DeckInfoModelTags editable tags={this.deck.tags} onChange={this.onChangeTags} />
+                <Text style={styles.titleLabel}>Description</Text>
                 <TextInput
                     editable
                     multiline
                     focusable
-                    autoFocus
+                    autoFocus={!focusTitle}
                     numberOfLines={numberOfDescriptionLines}
                     style={styles.descriptionInput}
                     value={this.deck.description}
@@ -112,8 +150,20 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
             </ModalBody>
 
             <ModalFooter style={styles.footer}>
-                <Button title="OK" style={styles.footerItem} onClick={this.onPressOk} square disabled={!this.state.modifiedDeck} />
-                <Button title="Cancel" style={styles.footerItem} onClick={this.props.onClose} square />
+                <Button
+                    title="Save"
+                    style={styles.footerItem}
+                    onClick={this.onPressSave}
+                    disabled={this.state.saving || !this.state.modifiedDeck}
+                    square
+                />
+                <Button
+                    title="Cancel"
+                    style={styles.footerItem}
+                    onClick={this.props.onClose}
+                    disabled={this.state.saving}
+                    square
+                />
             </ModalFooter>
 
         </ModalContainer>;
