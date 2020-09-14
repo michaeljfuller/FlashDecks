@@ -16,6 +16,9 @@ type Deck @model
   description: String! # Description for the Card.
   tags: [String!] # Tags on the Card.
   #TODO popularity: Int # How many times the card has been favourited.
+
+  #TODO Store order of the cards.
+  #TODO Do same time as modifying Card schema to allow them to belong to multiple decks.
   cards: [Card!] @connection(keyName: "byDeck", fields: ["id"]) # A one-to-many connection to Card items.
 }
 

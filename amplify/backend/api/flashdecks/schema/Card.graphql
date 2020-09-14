@@ -6,6 +6,8 @@ type Card @model
   @auth(rules: [ #TODO Can we add a Privacy enum to an Item and factor that in?
     { allow: owner, operations: [create, update, delete], ownerField: "ownerId", identityClaim: "sub" }
   ])
+  #TODO Allow cards to belong to multiple decks.
+  #TODO Remove deck, or make many-to-many - https://docs.amplify.aws/cli/graphql-transformer/directives#many-to-many-connections
   @key(name: "byDeck", fields: ["deckID", "id"]) # https://docs.amplify.aws/cli/graphql-transformer/directives#has-many
   @searchable
 {

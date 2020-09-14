@@ -8,9 +8,11 @@ https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html
 # Screen
 * Toast on BaseScreen, tidying itself up.
 
-# Client/Server API
+# Server API (+ Client)
 * Media upload
 * Search (i.e. DeckApi.getDecksByUserId).
+* Allow Cards to belong to multiple Decks.
+* Check Card ordering.
 
 # Client
 * Add Existing Card
