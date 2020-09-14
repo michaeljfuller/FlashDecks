@@ -3,7 +3,6 @@ import {Text, View, StyleSheet} from "react-native";
 import DeckScreenHeaderBase from "./DeckScreenHeader.common";
 import Avatar from "../../../components/avatar/Avatar";
 import IconButton, {IconType} from "../../../components/button/IconButton";
-import {DeckInfoModal} from "../../../components/deck/DeckInfoModal/DeckInfoModal";
 
 const avatarSize = 24;
 
@@ -15,7 +14,7 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
                 <View style={styles.titleView}>
                     <Text style={styles.titleText}>{this.props.title || this.props.item.name}</Text>
                 </View>
-                <IconButton style={styles.infoButton} flat icon={IconType.Info} onClick={this.openInfoModal} />
+                <IconButton style={styles.infoButton} flat icon={IconType.Info} onClick={this.props.onOpenInfoModal} />
             </View>
 
             <View style={styles.row}>
@@ -34,14 +33,6 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
                     <Text style={styles.cardCount}>{this.cardCount} {this.cardCount !== 1 ? 'cards' : 'card'}</Text>
                 </View>
             </View>
-
-            <DeckInfoModal
-                deck={this.props.item}
-                open={this.state.showInfo}
-                editable={this.props.editable}
-                onChange={this.props.onChange}
-                onClose={this.closeInfoModal}
-            />
 
         </View>;
     }

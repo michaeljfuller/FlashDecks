@@ -6,7 +6,7 @@ export interface DeckScreenHeaderProps {
     item: DeckModel;
     title?: string;
     editable?: boolean;
-    onChange?: (item: DeckModel) => void;
+    onOpenInfoModal?: () => void;
     onAddCard?: () => void;
     onRemoveCard?: () => void;
 }
@@ -22,7 +22,4 @@ export default class DeckScreenHeaderBase extends ImmutablePureComponent<DeckScr
     get cardCount() {
         return this.props.item.cards?.length || 0;
     }
-
-    openInfoModal = () => this.setStateTo({ showInfo: true });
-    closeInfoModal = () => this.setStateTo({ showInfo: false });
 }

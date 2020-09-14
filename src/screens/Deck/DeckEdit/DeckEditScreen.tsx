@@ -1,5 +1,5 @@
 import React from "react";
-import {Text} from "react-native";
+import {Text, View} from "react-native";
 import ScreenContainer from "../../ScreenContainer";
 import ImmutablePureComponent, {castDraft} from "../../../components/ImmutablePureComponent";
 import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
@@ -15,6 +15,9 @@ import navigationStore from "../../../store/navigation/NavigationStore";
 import ApiRequest from "../../../api/util/ApiRequest";
 import {removeItem} from "../../../utils/array";
 import PromptModal from "../../../components/modal/PromptModal/PromptModal";
+import {DeckInfoModal} from "../../../components/deck/DeckInfoModal/DeckInfoModal";
+import {appTree} from "../../../routes";
+import {goBack} from "../../../navigation/navigationHelpers";
 
 export interface DeckEditScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -24,6 +27,7 @@ export interface DeckEditScreenState {
     modifiedDeck?: DeckModel;
     loading: boolean;
     saving: boolean;
+    showInfoModal: boolean;
     showDeleteCardPrompt: boolean;
     error?: string;
 }
@@ -33,6 +37,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     state = {
         loading: false,
         saving: false,
+        showInfoModal: false,
         showDeleteCardPrompt: false,
     } as DeckEditScreenState;
 
@@ -50,7 +55,10 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         if (deckId) {
             this.getDeck(deckId);
         } else {
-            this.setStateTo( draft => draft.originalDeck = castDraft(new DeckModel()) );
+            this.setStateTo(draft => {
+                draft.originalDeck = castDraft(new DeckModel);
+                draft.showInfoModal = true;
+            });
         }
     }
     componentWillUnmount() {
@@ -139,12 +147,16 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         this.cardIndex = index;
     }
 
-    onOpenDeleteCardPrompt = () => {
-        this.setStateTo({ showDeleteCardPrompt: true });
-    }
-    onCloseDeleteCardPrompt = () => {
-        this.setStateTo({ showDeleteCardPrompt: false });
-    }
+    onOpenDeleteCardPrompt = () => this.setStateTo({ showDeleteCardPrompt: true });
+    onCloseDeleteCardPrompt = () => this.setStateTo({ showDeleteCardPrompt: false });
+
+    onOpenInfoModal = () => this.setStateTo({ showInfoModal: true });
+    onCloseInfoModal = () => this.setStateTo({ showInfoModal: false });
+    onCancelInfoModal = () => {
+        if (!this.deck?.id) {
+            goBack(this.props.navigation, appTree.DeckRoutes.List);
+        }
+    };
 
     onSavePressed = async () => {
         if (this.state.modifiedDeck) {
@@ -200,7 +212,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
             <DeckScreenHeader
                 editable={editable}
                 item={this.deck}
-                onChange={this.onChange}
+                onOpenInfoModal={this.onOpenInfoModal}
                 onAddCard={this.onAddCard}
                 onRemoveCard={this.onOpenDeleteCardPrompt}
                 title={title}
@@ -216,6 +228,15 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
                 square
                 disabled={validation.invalid || !editable}
                 onClick={this.onSavePressed}
+            />
+
+            <DeckInfoModal
+                deck={this.deck}
+                open={this.state.showInfoModal}
+                editable={editable}
+                onChange={this.onChange}
+                onCancel={this.onCancelInfoModal}
+                onClose={this.onCloseInfoModal}
             />
             <PromptModal
                 onOk={this.onRemoveCard}

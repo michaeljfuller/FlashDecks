@@ -13,6 +13,7 @@ export type DeckInfoModalProps = {
     deck: DeckModel;
     editable?: boolean;
     onChange?: (deck: DeckModel) => void;
+    onCancel?: () => void;
 } & ModalProps;
 
 export interface DeckInfoModalState {
@@ -74,6 +75,10 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
 
     onPressSave = () => {
         this.save();
+    }
+    onPressCancel = () => {
+        this.props.onCancel && this.props.onCancel();
+        this.props.onClose && this.props.onClose();
     }
 
     onChangeName = (name: string) => {
@@ -160,7 +165,7 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
                 <Button
                     title="Cancel"
                     style={styles.footerItem}
-                    onClick={this.props.onClose}
+                    onClick={this.onPressCancel}
                     disabled={this.state.saving}
                     square
                 />
