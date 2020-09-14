@@ -21,6 +21,17 @@ export class CardModel extends Model implements Omit<ApiCard, '__typename'|'owne
         return this.name || placeholder;
     }
 
+    static same(first: CardModel|null|undefined, second: CardModel|null|undefined): boolean {
+        if (first && second) {
+            const idMatch = (first.id || second.id) ? first.id === second.id : true;
+            return idMatch; // TODO Is an ID match alone enough?
+        }
+        return first == second; // True if both are falsy.
+    }
+    static different(first: CardModel|null|undefined, second: CardModel|null|undefined): boolean {
+        return !CardModel.same(first, second);
+    }
+
     static fromApi(obj: ApiCard) {
         return (new CardModel()).update({
             id: obj.id,
