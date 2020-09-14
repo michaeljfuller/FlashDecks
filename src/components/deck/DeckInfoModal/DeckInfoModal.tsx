@@ -37,7 +37,7 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
     }
 
     componentDidUpdate(prevProps: Readonly<DeckInfoModalProps>/*, prevState: Readonly<DeckInfoModalState>, snapshot?: any*/) {
-        if (prevProps.deck.id !== prevProps.deck.id) {
+        if (DeckModel.different(prevProps.deck, this.props.deck)) {
             this.setStateTo({ modifiedDeck: undefined });
         }
     }
@@ -204,4 +204,4 @@ const styles = StyleSheet.create({
     footerItem: {
         flex: 1,
     },
-})
+});
