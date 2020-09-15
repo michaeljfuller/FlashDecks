@@ -18,6 +18,7 @@ export interface CardViewBaseState {
     viewLayout: LayoutRectangle;
     editing?: boolean;
     showDeleteSlidePrompt: boolean;
+    showCreateCardModal: boolean;
 }
 
 export abstract class CardViewBase<
@@ -28,6 +29,7 @@ export abstract class CardViewBase<
         sideIndex: 0,
         viewLayout: { x: 0, y: 0, width: 0, height: 0 },
         showDeleteSlidePrompt: false,
+        showCreateCardModal: false,
     } as State;
 
     get card(): CardModel {
@@ -63,12 +65,16 @@ export abstract class CardViewBase<
         }
     }
 
+    updateCard(card: CardModel = this.card) {
+        this.props.onUpdate && this.props.onUpdate(card, this.props.itemIndex || 0);
+    }
+
     onClickEdit = () => this.setStateTo({ editing: true });
     onClickCancel = () => this.setStateTo({ editing: false, modifiedCard: null });
     onClickDone = () => {
         console.group('CardView.onClickDone');
         console.log(this.state.modifiedCard);
-        this.props.onUpdate && this.props.onUpdate(this.card, this.props.itemIndex || 0);
+        this.updateCard();
         this.setStateTo({ editing: false, modifiedCard: null });
         console.groupEnd();
     }
@@ -93,12 +99,12 @@ export abstract class CardViewBase<
         });
     }
 
-    showDeleteSlidePrompt = () => {
-        this.setStateTo({ showDeleteSlidePrompt: true });
-    }
-    hideDeleteSlidePrompt = () => {
-        this.setStateTo({ showDeleteSlidePrompt: false });
-    }
+    showCreateCardModal = () => this.setStateTo({ showCreateCardModal: true });
+    hideCreateCardModal = () => this.setStateTo({ showCreateCardModal: false });
+
+    showDeleteSlidePrompt = () => this.setStateTo({ showDeleteSlidePrompt: true });
+    hideDeleteSlidePrompt = () => this.setStateTo({ showDeleteSlidePrompt: false });
+
     onDeleteSide = () => {
         this.setStateTo(draft => {
             const modifiedCard = this.card.update({

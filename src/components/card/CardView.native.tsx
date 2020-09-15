@@ -5,8 +5,13 @@ import {CardViewBase} from "./CardView.common";
 import CardSideActions from "./CardSide/CardSideActions";
 import PromptModal from "../modal/PromptModal/PromptModal";
 import {styles, headerHeight, borderWidth, footerHeight} from "./CardView.native_styles";
+import {CardInfoModal} from "./CardInfo/CardInfoModal";
+import {CardModel} from "../../models";
 
 export default class CardView extends CardViewBase {
+
+    onCreateCard = (card: CardModel) => this.updateCard(card);
+
     render() {
         const totalHeight = this.state.viewLayout.height;
         const bodyHeight = Math.max(0, totalHeight - (headerHeight + footerHeight + borderWidth * 2));
@@ -29,6 +34,13 @@ export default class CardView extends CardViewBase {
             <View style={styles.footer}>
                 <Text style={styles.footerText}>{footerText}</Text>
             </View>
+
+            <CardInfoModal
+                editable={this.props.editable}
+                open={this.state.showCreateCardModal}
+                onChange={this.onCreateCard}
+            />
+
         </View>;
     }
 
