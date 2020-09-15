@@ -1,5 +1,6 @@
+import {isEqual} from "underscore";
 import Model from "./core/Model";
-import {CreateDeckInput, GetDeckQuery} from "../API";
+import {GetDeckQuery} from "../API";
 import {ApiUser, UserModel} from "./UserModel";
 import {CardModel} from "./CardModel";
 import {ModalValidation} from "./core/Model.types";
@@ -18,7 +19,7 @@ export class DeckModel extends Model implements Omit<ApiDeck, '__typename'|'owne
 
     static same(first: DeckModel|null|undefined, second: DeckModel|null|undefined): boolean {
         if (!first !== !second) return false; // If only one is truthy, not the same.
-        return first !== second; // TODO Check this works as expected.
+        return isEqual(first, second);
     }
     static different(first: DeckModel|null|undefined, second: DeckModel|null|undefined): boolean {
         return !DeckModel.same(first, second);
