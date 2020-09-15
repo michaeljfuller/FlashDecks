@@ -22,6 +22,7 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
         width: cachedWidth,
         cardWidth: cachedCardWidth,
         cardHeight: cachedCardHeight,
+        showCreateCardModal: false,
     } as Readonly<CardCarouselState>;
 
     get index() { return this._index; }

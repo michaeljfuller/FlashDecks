@@ -26,6 +26,7 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
         isAnimating: false,
         cardWidth: 0,
         cardHeight: 0,
+        showCreateCardModal: false,
     } as Readonly<CardCarouselState>;
 
     get canGoToPrevious() {
