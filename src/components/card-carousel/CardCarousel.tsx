@@ -113,7 +113,7 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
         const {cards, style} = this.props;
         const {index, cardWidth, cardHeight} = this.state;
         if (!cards?.length) {
-            return [this.renderNoCards(), this.renderCreateCardModal()];
+            return this.renderNoCards();
         }
 
         return <View style={[styles.root, style]} onLayout={this.onLayout}>
@@ -138,11 +138,14 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
     renderNoCards() {
         const {style, editable} = this.props;
 
-        return <View style={[styles.root, styles.rootWithoutCards, style]}>{
-            editable
-            ? <IconButton icon={IconType.Add} text="Add Card" onClick={this.onShowCreateCardModal} />
-            : <Text>No cards found.</Text>
-        }</View>;
+        return <React.Fragment>
+            <View style={[styles.root, styles.rootWithoutCards, style]}>{
+                editable
+                ? <IconButton icon={IconType.Add} text="Add Card" onClick={this.onShowCreateCardModal} />
+                : <Text>No cards found.</Text>
+            }</View>
+            {this.renderCreateCardModal()}
+        </React.Fragment>;
     }
 }
 export default CardCarousel;
