@@ -8,9 +8,9 @@ import {castDraft} from "immer";
 import Button from "../../button/Button";
 
 export type EditCardModalProps = {
-    card: CardModel;
+    card?: CardModel;
     editable?: boolean;
-    onChange?: (deck: CardModel) => void;
+    onChange?: (card: CardModel) => void;
     onCancel?: () => void;
 } & ModalProps;
 
@@ -27,7 +27,7 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
     toast = new ToastStore(this);
 
     get card() {
-        return this.props.card || this.state.modifiedCard;
+        return this.state.modifiedCard || this.props.card || new CardModel;
     }
 
     componentDidUpdate(prevProps: Readonly<EditCardModalProps>/*, prevState: Readonly<EditCardModalState>, snapshot?: {}*/) {
@@ -39,9 +39,13 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
         this.toast.removeByRef();
     }
 
-
     save() {
-        this.toast.add({ text: "EditCardModal.save", duration: 2000 });
+        this.props.onChange && this.props.onChange(this.card);
+        this.close();
+    }
+    close() {
+        this.setStateTo({ modifiedCard: null, saving: false });
+        this.props.onClose && this.props.onClose();
     }
 
     onPressSave = () => {
@@ -49,7 +53,7 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
     }
     onPressCancel = () => {
         this.props.onCancel && this.props.onCancel();
-        this.props.onClose && this.props.onClose();
+        this.close();
     }
 
     onChangeName = (name: string) => {
@@ -84,8 +88,8 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
             <ModalHeader title={`${this.card?.id ? 'Edit' : 'Create'} Card`} user={this.card.owner} />
 
             <ModalBody>
-                <View style={styles.titleInputRow}>
-                    <Text style={styles.titleLabel}>Title:</Text>
+                <View style={styles.row}>
+                    <Text style={styles.titleLabel}>Name:</Text>
                     <TextInput
                         editable
                         focusable
@@ -95,6 +99,8 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
                         onChangeText={this.onChangeName}
                     />
                 </View>
+
+                <Text>Tags: TODO</Text>
             </ModalBody>
 
             <ModalFooter style={styles.footer}>
@@ -121,7 +127,7 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
 
 const titleInputHeight = 25;
 const styles = StyleSheet.create({
-    titleInputRow: {
+    row: {
         flexDirection: "row",
         marginBottom: 2,
     },
