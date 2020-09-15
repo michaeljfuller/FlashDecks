@@ -1,14 +1,11 @@
 import React from 'react';
 import {Animated, LayoutChangeEvent, StyleSheet, Text, View} from 'react-native';
-import ImmutablePureComponent from "../ImmutablePureComponent";
 import {isPlatformWeb} from "../../platform";
 import CardView from "../card/CardView";
-import {CardCarouselProps, resizeCard} from "./CardCarousel.common";
+import {CardCarouselBase, CardCarouselBaseState, resizeCard} from "./CardCarousel.common";
 import Button from "../button/Button";
 import {UIColorThemeMap} from "../../styles/UIColorTheme";
 import {preloadCards} from "../../utils/media/card";
-import {CardModel} from "../../models";
-import {replaceItem} from "../../utils/array";
 import withDefaultProps from "../../utils/hoc/withDefaultProps/withDefaultProps";
 import IconButton, {IconType} from "../button/IconButton";
 
@@ -17,13 +14,13 @@ export * from "./CardCarousel.common";
 const useNativeDriver = !isPlatformWeb;
 const theme = UIColorThemeMap.Orange;
 
-interface CardCarouselState {
+interface CardCarouselState extends CardCarouselBaseState{
     index: number;
     isAnimating: boolean;
     cardWidth: number;
     cardHeight: number;
 }
-export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, CardCarouselState>{
+export class CardCarousel extends CardCarouselBase<CardCarouselState>{
     state = {
         index: 0,
         isAnimating: false,
@@ -64,18 +61,6 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
                 case "ArrowRight": return this.next();
             }
         }
-    }
-
-    onUpdateCard = (card: CardModel, index: number) => {
-        console.group('CardCarousel.onUpdateCard');
-        console.log(`Index: ${index}`, card);
-        this.props.onCardsChange && this.props.onCardsChange(
-            replaceItem(this.props.cards || [], index, card)
-        );
-        console.groupEnd();
-    }
-    onAddFirstCard = () => {
-        this.props.onCardsChange && this.props.onCardsChange([ new CardModel ]);
     }
 
     async cardOut(endPosition: number, duration = 250) {
@@ -128,7 +113,7 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
         const {cards, style} = this.props;
         const {index, cardWidth, cardHeight} = this.state;
         if (!cards?.length) {
-            return this.renderNoCards();
+            return [this.renderNoCards(), this.renderCreateCardModal()];
         }
 
         return <View style={[styles.root, style]} onLayout={this.onLayout}>
@@ -142,7 +127,7 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
                         item={cards[index]}
                         style={[styles.cardView, { width: cardWidth, height: cardHeight }]}
                         editable={this.props.editable}
-                        onUpdate={this.onUpdateCard}
+                        onUpdate={this.onSetCard}
                     />
                 </Animated.View>
             </View>
@@ -155,7 +140,7 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
 
         return <View style={[styles.root, styles.rootWithoutCards, style]}>{
             editable
-            ? <IconButton icon={IconType.Add} text="Add Card" onClick={this.onAddFirstCard} />
+            ? <IconButton icon={IconType.Add} text="Add Card" onClick={this.onShowCreateCardModal} />
             : <Text>No cards found.</Text>
         }</View>;
     }

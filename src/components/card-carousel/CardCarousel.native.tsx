@@ -1,15 +1,13 @@
 import React from 'react';
 import {View, StyleSheet, Text, FlatList, LayoutChangeEvent, ViewStyle} from 'react-native';
-import ImmutablePureComponent from "../ImmutablePureComponent";
 import CardView from "../card/CardView";
 import {preloadCards} from "../../utils/media/card";
-import {CardCarouselProps, resizeCard} from "./CardCarousel.common";
+import {CardCarouselBase, CardCarouselBaseState, resizeCard} from "./CardCarousel.common";
 import {CardModel} from "../../models";
-import {replaceItem} from "../../utils/array";
 import IconButton, {IconType} from "../button/IconButton";
 export * from "./CardCarousel.common";
 
-export interface CardCarouselState {
+export interface CardCarouselState extends CardCarouselBaseState {
     width: number;
     cardWidth: number;
     cardHeight: number;
@@ -19,7 +17,7 @@ let cachedWidth = 0;
 let cachedCardWidth = 0;
 let cachedCardHeight = 0;
 
-export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, CardCarouselState>{
+export class CardCarousel extends CardCarouselBase<CardCarouselState>{
     state = {
         width: cachedWidth,
         cardWidth: cachedCardWidth,
@@ -52,22 +50,12 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
         });
     }
 
-    onUpdateCard = (card: CardModel, index: number) => {
-        console.log('CardCarousel', card, index);
-        this.props.onCardsChange && this.props.onCardsChange(
-            replaceItem(this.props.cards || [], index, card)
-        );
-    }
-    onAddFirstCard = () => {
-        this.props.onCardsChange && this.props.onCardsChange([ new CardModel ]);
-    }
-
     render() {
         const {cards, style} = this.props;
         const {width, cardWidth, cardHeight} = this.state;
 
         if (!cards?.length) {
-            return this.renderNoCards();
+            return [this.renderNoCards(), this.renderCreateCardModal()];
         }
 
         const cardStyle = {
@@ -88,7 +76,7 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
                             item={item}
                             style={[styles.cardView, cardStyle]}
                             editable={this.props.editable}
-                            onUpdate={this.onUpdateCard}
+                            onUpdate={this.onSetCard}
                         />
                     </View>;
                 }}
@@ -105,7 +93,7 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
 
         return <View style={[styles.root, styles.rootWithoutCards, style]}>{
             editable
-                ? <IconButton icon={IconType.Add} text="Add Card" onClick={this.onAddFirstCard} />
+                ? <IconButton icon={IconType.Add} text="Add Card" onClick={this.onShowCreateCardModal} />
                 : <Text>No cards found.</Text>
         }</View>;
     }
