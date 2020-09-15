@@ -12,11 +12,14 @@ https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html
 * Media upload
 * Search (i.e. DeckApi.getDecksByUserId).
 * Allow Cards to belong to multiple Decks.
+  * Add warning when editing card belonging to other decks, with option to clone.
 * Check Card ordering.
 
 # Client
 * Add Existing Card
 * Card Management Screen
+* Deck Tag editing.
+* Edit Card details.
 
 # Client API
 * Load from API
