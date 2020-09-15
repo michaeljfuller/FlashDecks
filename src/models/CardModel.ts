@@ -34,7 +34,7 @@ export class CardModel extends Model implements Omit<ApiCard, '__typename'|'owne
         return (new CardModel()).update({
             id: obj.id,
             ownerId: obj.ownerId,
-            owner: UserModel.fromApi(obj.owner as ApiUser),
+            owner: obj.owner ? UserModel.fromApi(obj.owner as ApiUser) : undefined,
             name: obj.name,
             popularity: obj.popularity || 0,
             deckID: obj.deckID,
