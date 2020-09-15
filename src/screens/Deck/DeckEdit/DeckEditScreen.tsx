@@ -1,5 +1,5 @@
 import React from "react";
-import {Text, View} from "react-native";
+import {Text} from "react-native";
 import ScreenContainer from "../../ScreenContainer";
 import ImmutablePureComponent, {castDraft} from "../../../components/ImmutablePureComponent";
 import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
@@ -18,6 +18,7 @@ import PromptModal from "../../../components/modal/PromptModal/PromptModal";
 import {DeckInfoModal} from "../../../components/deck/DeckInfoModal/DeckInfoModal";
 import {appTree} from "../../../routes";
 import {goBack} from "../../../navigation/navigationHelpers";
+import {CardInfoModal} from "../../../components/card/CardInfo/CardInfoModal";
 
 export interface DeckEditScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -29,6 +30,7 @@ export interface DeckEditScreenState {
     saving: boolean;
     showInfoModal: boolean;
     showDeleteCardPrompt: boolean;
+    showCreateCardModal: boolean;
     error?: string;
 }
 
@@ -39,6 +41,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         saving: false,
         showInfoModal: false,
         showDeleteCardPrompt: false,
+        showCreateCardModal: false,
     } as DeckEditScreenState;
 
     toast = new ToastStore(this);
@@ -123,6 +126,10 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     }
 
     onChange = (deck: DeckModel) => {
+        if (!this.deck?.cards.length && deck.cards.length === 1 && !deck.cards[0].name) { // Added first card
+            deck = deck.update(draft => draft.cards = []); // Remove for now
+            this.onShowCreateCardModal();
+        }
         this.modifyDeck(deck);
     }
     clearChanges = () => {
@@ -130,11 +137,10 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         this.blockNavigation(false);
     }
 
-    onAddCard = () => {
+    onAddCard = (card = new CardModel) => {
         if (this.deck) {
             this.onChange(this.deck.update(draft => {
-                const card = castDraft(new CardModel());
-                draft.cards.push(card);
+                draft.cards.push(castDraft(card));
             }));
         }
     }
@@ -157,6 +163,9 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
             goBack(this.props.navigation, appTree.DeckRoutes.List);
         }
     };
+
+    onShowCreateCardModal = () => this.setStateTo({ showCreateCardModal: true });
+    onHideCreateCardModal = () => this.setStateTo({ showCreateCardModal: false });
 
     onSavePressed = async () => {
         if (this.state.modifiedDeck) {
@@ -213,7 +222,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
                 editable={editable}
                 item={this.deck}
                 onOpenInfoModal={this.onOpenInfoModal}
-                onAddCard={this.onAddCard}
+                onAddCard={this.onShowCreateCardModal}
                 onRemoveCard={this.onOpenDeleteCardPrompt}
                 title={title}
             />
@@ -237,6 +246,12 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
                 onChange={this.onChange}
                 onCancel={this.onCancelInfoModal}
                 onClose={this.onCloseInfoModal}
+            />
+            <CardInfoModal
+                editable
+                open={this.state.showCreateCardModal}
+                onChange={this.onAddCard}
+                onClose={this.onHideCreateCardModal}
             />
             <PromptModal
                 onOk={this.onRemoveCard}
