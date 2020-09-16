@@ -1,4 +1,4 @@
-import Model from "./core/Model";
+import Model, {ModelUpdate} from "./core/Model";
 import {ApiCardSide} from "./CardSideModel";
 
 type _ApiCardContent = NonNullable<ApiCardSide["content"]>[0];
@@ -18,6 +18,10 @@ export class CardContentModel extends Model implements Omit<ApiCardContent, '__t
     readonly type: CardContentType = undefined;
     readonly value: string = '';
     readonly size: number = 0;
+
+    static create(input: ModelUpdate<CardContentModel>) {
+        return (new CardContentModel).update(input, false);
+    }
 
     get valid(): boolean {
         return this.validType && this.validValue;

@@ -1,4 +1,4 @@
-import Model from "./core/Model";
+import Model, {ModelUpdate} from "./core/Model";
 import {GetUserQuery} from "../API";
 
 export type ApiUser = NonNullable<GetUserQuery['getUser']>;
@@ -6,6 +6,10 @@ export type ApiUser = NonNullable<GetUserQuery['getUser']>;
 export class UserModel extends Model implements Omit<ApiUser, '__typename'> {
     readonly id: string = '';
     readonly displayName: string = '';
+
+    static create(input: ModelUpdate<UserModel>) {
+        return (new UserModel).update(input, false);
+    }
 
     static fromApi(obj: ApiUser) {
         return (new UserModel).update({

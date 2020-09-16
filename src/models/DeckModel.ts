@@ -1,5 +1,5 @@
 import {isEqual} from "underscore";
-import Model from "./core/Model";
+import Model, {ModelUpdate} from "./core/Model";
 import {GetDeckQuery} from "../API";
 import {ApiUser, UserModel} from "./UserModel";
 import {CardModel} from "./CardModel";
@@ -16,6 +16,10 @@ export class DeckModel extends Model implements Omit<ApiDeck, '__typename'|'owne
     readonly tags: string[] = [];
     readonly cards: CardModel[] = [];
     readonly popularity: number = 0;
+
+    static create(input: ModelUpdate<DeckModel>) {
+        return (new DeckModel).update(input, false);
+    }
 
     static same(first: DeckModel|null|undefined, second: DeckModel|null|undefined): boolean {
         if (!first !== !second) return false; // If only one is truthy, not the same.

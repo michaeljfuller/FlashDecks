@@ -3,6 +3,7 @@ import immutable from "./immutable";
 import {ModelUpdateCallback, ModelUpdateObject, ModelUpdateUnion} from "./Model.types";
 
 type DefaultModelUpdateExcludes = 'isDirty';
+export type ModelUpdate<TargetModel, UpdateExcludes extends string = ''> = ModelUpdateUnion<TargetModel, UpdateExcludes|DefaultModelUpdateExcludes>;
 
 /**
  * The base Model class built for "Immer.js" to make it immutable.
@@ -22,7 +23,7 @@ export abstract class Model<
      * Modifying the Draft will make the corresponding changes to the output.
      */
     update(
-        input: ModelUpdateUnion<this, ModelUpdateExcludes|DefaultModelUpdateExcludes>,
+        input: ModelUpdate<this, ModelUpdateExcludes>,
         isDirty = true
     ): this {
         if (typeof input === 'function') {

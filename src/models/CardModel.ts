@@ -1,5 +1,5 @@
 import {isEqual} from "underscore";
-import Model from "./core/Model";
+import Model, {ModelUpdate} from "./core/Model";
 import {ApiUser, UserModel} from "./UserModel";
 import {ApiCardSide, CardSideModel} from "./CardSideModel";
 import {GetCardQuery} from "../API";
@@ -17,6 +17,10 @@ export class CardModel extends Model implements Omit<ApiCard, '__typename'|'owne
     // readonly deck?: DeckModel; TODO
     readonly deckID: string = '';
     readonly tags: string[] = [];
+
+    static create(input: ModelUpdate<CardModel>) {
+        return (new CardModel).update(input, false);
+    }
 
     nameOrPlaceholder(placeholder = "Untitled") {
         return this.name || placeholder;

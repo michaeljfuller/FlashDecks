@@ -1,5 +1,5 @@
 import {CardContentModel} from "./CardContentModel";
-import Model from "./core/Model";
+import Model, {ModelUpdate} from "./core/Model";
 import {insertItem} from "../utils/array";
 import {ApiCard} from "./CardModel";
 
@@ -7,6 +7,10 @@ export type ApiCardSide = NonNullable<ApiCard['sides']>[0];
 
 export class CardSideModel extends Model {
     readonly content: CardContentModel[] = [];
+
+    static create(input: ModelUpdate<CardSideModel>) {
+        return (new CardSideModel).update(input, false);
+    }
 
     static fromApi(obj: ApiCardSide) {
         return (new CardSideModel).update(draft => {
