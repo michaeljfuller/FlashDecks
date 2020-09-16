@@ -5,6 +5,8 @@ import {ModelUpdateCallback, ModelUpdateObject, ModelUpdateUnion} from "./Model.
 type DefaultModelUpdateExcludes = 'isDirty';
 export type ModelUpdate<TargetModel, UpdateExcludes extends string = ''> = ModelUpdateUnion<TargetModel, UpdateExcludes|DefaultModelUpdateExcludes>;
 
+let nextModelNumber = 1;
+
 /**
  * The base Model class built for "Immer.js" to make it immutable.
  * WHen `update()` is called, a new instance is created with the changes.
@@ -15,6 +17,9 @@ export abstract class Model<
 > {
     /** Flag indicating if the modal has been modified from its source. */
     readonly isDirty: boolean = false;
+
+    /** Unique key to identify a model, such as for React render lists. */
+    readonly transientKey = 'model:' + nextModelNumber++;
 
     /**
      * Create an immutable copy with changes specified by passed function/object.

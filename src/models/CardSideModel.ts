@@ -15,7 +15,7 @@ export class CardSideModel extends Model {
     static fromApi(obj: ApiCardSide) {
         return CardSideModel.create(draft => {
             draft.content = obj.content?.map(
-                item => CardContentModel.fromApi(item as any) // TODO remove `any` with ApiCardContent
+                item => CardContentModel.fromApi(item)
             ) || [];
         });
     }

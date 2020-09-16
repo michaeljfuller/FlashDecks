@@ -144,7 +144,7 @@ export class CardSide extends ImmutablePureComponent<CardSideProps, CardSideStat
             <TouchableWithoutFeedback onPress={onPress}>
                 <View style={[styles.root, style].flat()}>
                     {this.currentContent.map((content, index) => <CardContentView
-                        key={content.id}
+                        key={content.transientKey}
                         content={content}
                         contentIndex={index}
                         parentHeight={height}
