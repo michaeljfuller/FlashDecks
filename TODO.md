@@ -14,6 +14,7 @@ https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html
 * Allow Cards to belong to multiple Decks.
   * Add warning when editing card belonging to other decks, with option to clone.
 * Check Card ordering.
+* Add Card content sizes.
 
 # Client
 * Add Existing Card

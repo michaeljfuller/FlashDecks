@@ -2,7 +2,7 @@ import Model, {ModelUpdate} from "./core/Model";
 import {ApiCardSide} from "./CardSideModel";
 
 type _ApiCardContent = NonNullable<ApiCardSide["content"]>[0];
-export interface ApiCardContent extends _ApiCardContent { // TODO Add `id` and `size` to API.
+export interface ApiCardContent extends _ApiCardContent { // TODO Add `size` to API.
     // Fraction of the CardSide height. Total is able to exceed 1.00.
     // If set, content scales to fit size, otherwise no scaling is applied.
     size?: number;
