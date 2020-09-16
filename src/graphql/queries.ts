@@ -99,6 +99,12 @@ export const getDeck = /* GraphQL */ `
           tags
           popularity
           deckID
+          sides {
+            content {
+              type
+              value
+            }
+          }
         }
         nextToken
       }
