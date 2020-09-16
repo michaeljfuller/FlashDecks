@@ -13,11 +13,11 @@ export class CardSideModel extends Model {
     }
 
     static fromApi(obj: ApiCardSide) {
-        return (new CardSideModel).update(draft => {
+        return CardSideModel.create(draft => {
             draft.content = obj.content?.map(
                 item => CardContentModel.fromApi(item as any) // TODO remove `any` with ApiCardContent
             ) || [];
-        }, false);
+        });
     }
 
     setContent(item: CardContentModel, index: number) {

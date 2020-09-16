@@ -35,7 +35,7 @@ export class CardModel extends Model implements Omit<ApiCard, '__typename'|'owne
     }
 
     static fromApi(obj: ApiCard) {
-        return (new CardModel()).update({
+        return CardModel.create({
             id: obj.id,
             ownerId: obj.ownerId,
             owner: obj.owner ? UserModel.fromApi(obj.owner as ApiUser) : undefined,
@@ -46,6 +46,6 @@ export class CardModel extends Model implements Omit<ApiCard, '__typename'|'owne
             sides: obj.sides?.map(
                 (side: ApiCardSide) => CardSideModel.fromApi(side as ApiCardSide)
             ) || [],
-        }, false);
+        });
     }
 }

@@ -40,7 +40,7 @@ export class DeckModel extends Model implements Omit<ApiDeck, '__typename'|'owne
     }
 
     static fromApi(obj: ApiDeck) {
-        return (new DeckModel).update({
+        return DeckModel.create({
             id: obj.id,
             ownerId: obj.ownerId,
             owner: UserModel.fromApi(obj.owner as ApiUser),
@@ -51,7 +51,7 @@ export class DeckModel extends Model implements Omit<ApiDeck, '__typename'|'owne
             cards: obj.cards?.items?.map(
                 card => CardModel.fromApi(card as any) // TODO `any` to ApiCard
             ) || [] as CardModel[],
-        }, false);
+        });
     }
 
 }

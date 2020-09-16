@@ -12,10 +12,10 @@ export class UserModel extends Model implements Omit<ApiUser, '__typename'> {
     }
 
     static fromApi(obj: ApiUser) {
-        return (new UserModel).update({
+        return UserModel.create({
             id: obj.id,
             displayName: obj.displayName,
-        }, false);
+        });
     }
 
     static same(first: UserModel|null|undefined, second: UserModel|null|undefined) {

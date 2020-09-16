@@ -24,11 +24,11 @@ export class CognitoUserModel extends Model implements
     }
 
     static fromApi(obj: ApiCognitoUser) {
-        return (new CognitoUserModel).update({
+        return CognitoUserModel.create({
             username: obj.username,
             email: obj.attributes.email,
             email_verified: obj.attributes.email_verified,
             sub: obj.attributes.sub,
-        }, false);
+        });
     }
 }

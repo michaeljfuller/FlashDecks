@@ -36,11 +36,11 @@ export class CardContentModel extends Model implements Omit<ApiCardContent, '__t
     }
 
     static fromApi(obj: ApiCardContent) {
-        return (new CardContentModel).update({
+        return CardContentModel.create({
             id: obj.id,
             size: obj.size,
             value: obj.value,
             type: obj.type as any,
-        }, false);
+        });
     }
 }
