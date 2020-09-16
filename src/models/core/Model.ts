@@ -2,7 +2,7 @@ import {produce} from "immer";
 import immutable from "./immutable";
 import {ModelUpdateCallback, ModelUpdateObject, ModelUpdateUnion} from "./Model.types";
 
-type DefaultModelUpdateExcludes = 'isDirty';
+type DefaultModelUpdateExcludes = 'isDirty'|'transientKey';
 export type ModelUpdate<TargetModel, UpdateExcludes extends string = ''> = ModelUpdateUnion<TargetModel, UpdateExcludes|DefaultModelUpdateExcludes>;
 
 let nextModelNumber = 1;
