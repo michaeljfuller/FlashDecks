@@ -20,3 +20,14 @@ export function getErrorText(e: Error|string|unknown, defaultText = ''): string 
 export function getErrorName(e: Error|string|unknown, defaultTitle = 'Error'): string {
     return (e instanceof Error && e.name) || defaultTitle;
 }
+
+// /** Split a string in two, at the given index. */
+// export function divideString(str: string, index: number): [string, string] {
+//     return [str.slice(0, index), str.slice(index)];
+// }
+//
+// /** Insert a string at the give index. */
+// export function insertString(original: string, index: number, addition: string): string {
+//     const [start, end] = divideString(original, index);
+//     return start + addition + end;
+// }
