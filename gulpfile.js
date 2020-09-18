@@ -9,6 +9,7 @@ gulp.task('reports', shell.task('node test/output/servers/run-all.js'));
 gulp.task('amplify:status', shell.task('amplify status'));
 gulp.task('amplify:print:auth:client_id', logUserPoolClientId);
 gulp.task('amplify:api:compile', shell.task('amplify api gql-compile'));
+gulp.task('amplify:api:codegen', shell.task('amplify codegen'));
 
 gulp.task('amplify:console', shell.task('amplify console'));
 gulp.task('amplify:console:api', shell.task('amplify api console'));

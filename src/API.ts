@@ -2,30 +2,20 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateCardInput = {
+export type CreateDeckInput = {
   name: string,
-  sides?: Array< CardSideInput > | null,
+  description: string,
   tags?: Array< string > | null,
-  deckID: string,
 };
 
-export type CardSideInput = {
-  content?: Array< CardSideContentInput > | null,
-};
-
-export type CardSideContentInput = {
-  type: string,
-  value: string,
-};
-
-export type ModelCardConditionInput = {
+export type ModelDeckConditionInput = {
   name?: ModelStringInput | null,
+  description?: ModelStringInput | null,
   tags?: ModelStringInput | null,
   popularity?: ModelIntInput | null,
-  deckID?: ModelIDInput | null,
-  and?: Array< ModelCardConditionInput | null > | null,
-  or?: Array< ModelCardConditionInput | null > | null,
-  not?: ModelCardConditionInput | null,
+  and?: Array< ModelDeckConditionInput | null > | null,
+  or?: Array< ModelDeckConditionInput | null > | null,
+  not?: ModelDeckConditionInput | null,
 };
 
 export type ModelStringInput = {
@@ -80,6 +70,25 @@ export type ModelIntInput = {
   attributeType?: ModelAttributeTypes | null,
 };
 
+export type UpdateDeckInput = {
+  id?: string | null,
+  name: string,
+  description: string,
+  tags?: Array< string > | null,
+};
+
+export type ModelDeckFilterInput = {
+  id?: ModelIDInput | null,
+  ownerId?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  description?: ModelStringInput | null,
+  tags?: ModelStringInput | null,
+  popularity?: ModelIntInput | null,
+  and?: Array< ModelDeckFilterInput | null > | null,
+  or?: Array< ModelDeckFilterInput | null > | null,
+  not?: ModelDeckFilterInput | null,
+};
+
 export type ModelIDInput = {
   ne?: string | null,
   eq?: string | null,
@@ -96,6 +105,32 @@ export type ModelIDInput = {
   size?: ModelSizeInput | null,
 };
 
+export type CreateCardInput = {
+  name: string,
+  sides?: Array< CardSideInput > | null,
+  tags?: Array< string > | null,
+  deckID: string,
+};
+
+export type CardSideInput = {
+  content?: Array< CardSideContentInput > | null,
+};
+
+export type CardSideContentInput = {
+  type: string,
+  value: string,
+};
+
+export type ModelCardConditionInput = {
+  name?: ModelStringInput | null,
+  tags?: ModelStringInput | null,
+  popularity?: ModelIntInput | null,
+  deckID?: ModelIDInput | null,
+  and?: Array< ModelCardConditionInput | null > | null,
+  or?: Array< ModelCardConditionInput | null > | null,
+  not?: ModelCardConditionInput | null,
+};
+
 export type UpdateCardInput = {
   id: string,
   name?: string | null,
@@ -106,29 +141,6 @@ export type UpdateCardInput = {
 
 export type DeleteCardInput = {
   id?: string | null,
-};
-
-export type CreateDeckInput = {
-  name: string,
-  description: string,
-  tags?: Array< string > | null,
-};
-
-export type ModelDeckConditionInput = {
-  name?: ModelStringInput | null,
-  description?: ModelStringInput | null,
-  tags?: ModelStringInput | null,
-  popularity?: ModelIntInput | null,
-  and?: Array< ModelDeckConditionInput | null > | null,
-  or?: Array< ModelDeckConditionInput | null > | null,
-  not?: ModelDeckConditionInput | null,
-};
-
-export type UpdateDeckInput = {
-  id?: string | null,
-  name: string,
-  description: string,
-  tags?: Array< string > | null,
 };
 
 export type DeleteDeckInput = {
@@ -145,18 +157,6 @@ export type ModelCardFilterInput = {
   and?: Array< ModelCardFilterInput | null > | null,
   or?: Array< ModelCardFilterInput | null > | null,
   not?: ModelCardFilterInput | null,
-};
-
-export type ModelDeckFilterInput = {
-  id?: ModelIDInput | null,
-  ownerId?: ModelIDInput | null,
-  name?: ModelStringInput | null,
-  description?: ModelStringInput | null,
-  tags?: ModelStringInput | null,
-  popularity?: ModelIntInput | null,
-  and?: Array< ModelDeckFilterInput | null > | null,
-  or?: Array< ModelDeckFilterInput | null > | null,
-  not?: ModelDeckFilterInput | null,
 };
 
 export type SearchableCardFilterInput = {
@@ -260,6 +260,131 @@ export enum SearchableDeckSortableFields {
   popularity = "popularity",
 }
 
+
+export type CreateDeckReturningPartialMutationVariables = {
+  input: CreateDeckInput,
+  condition?: ModelDeckConditionInput | null,
+};
+
+export type CreateDeckReturningPartialMutation = {
+  createDeckReturningPartial:  {
+    __typename: "Deck",
+    id: string,
+    ownerId: string,
+    name: string,
+    description: string,
+    tags: Array< string > | null,
+    popularity: number | null,
+  } | null,
+};
+
+export type UpdateDeckReturningPartialMutationVariables = {
+  input: UpdateDeckInput,
+  condition?: ModelDeckConditionInput | null,
+};
+
+export type UpdateDeckReturningPartialMutation = {
+  updateDeckReturningPartial:  {
+    __typename: "Deck",
+    id: string,
+    ownerId: string,
+    name: string,
+    description: string,
+    tags: Array< string > | null,
+    popularity: number | null,
+  } | null,
+};
+
+export type GetCardExcludingDeckQueryVariables = {
+  id: string,
+};
+
+export type GetCardExcludingDeckQuery = {
+  getCardExcludingDeck:  {
+    __typename: "Card",
+    id: string,
+    ownerId: string,
+    owner:  {
+      __typename: "User",
+      id: string,
+      displayName: string,
+    } | null,
+    name: string,
+    sides:  Array< {
+      __typename: "CardSide",
+      content:  Array< {
+        __typename: "CardSideContent",
+        type: string,
+        value: string,
+      } > | null,
+    } > | null,
+    tags: Array< string > | null,
+    popularity: number | null,
+    deckID: string,
+  } | null,
+};
+
+export type GetDeckIncludingCardsQueryVariables = {
+  id: string,
+};
+
+export type GetDeckIncludingCardsQuery = {
+  getDeckIncludingCards:  {
+    __typename: "Deck",
+    id: string,
+    ownerId: string,
+    owner:  {
+      __typename: "User",
+      id: string,
+      displayName: string,
+    } | null,
+    name: string,
+    description: string,
+    tags: Array< string > | null,
+    popularity: number | null,
+    cards:  {
+      __typename: "ModelCardConnection",
+      items:  Array< {
+        __typename: "Card",
+        id: string,
+        name: string,
+        sides:  Array< {
+          __typename: "CardSide",
+          content:  Array< {
+            __typename: "CardSideContent",
+            type: string,
+            value: string,
+          } > | null,
+        } > | null,
+        tags: Array< string > | null,
+        popularity: number | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+  } | null,
+};
+
+export type ListDecksReturningPartialQueryVariables = {
+  filter?: ModelDeckFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListDecksReturningPartialQuery = {
+  listDecksReturningPartial:  {
+    __typename: "ModelDeckConnection",
+    items:  Array< {
+      __typename: "Deck",
+      id: string,
+      ownerId: string,
+      name: string,
+      description: string,
+      tags: Array< string > | null,
+      popularity: number | null,
+    } | null > | null,
+    nextToken: string | null,
+  } | null,
+};
 
 export type CreateCardMutationVariables = {
   input: CreateCardInput,
