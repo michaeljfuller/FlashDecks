@@ -13,7 +13,7 @@ let nextModelNumber = 1;
  */
 @immutable
 export abstract class Model<
-    ModelUpdateExcludes extends string = ''
+    ModelUpdateExcludes extends string = never
 > {
     /** Flag indicating if the modal has been modified from its source. */
     readonly isDirty: boolean = false;

@@ -30,7 +30,7 @@ export class DeckViewScreen extends ImmutablePureComponent<DeckViewScreenProps &
     } as DeckViewScreenState;
 
     toast = new ToastStore(this);
-    getDeckRequest?: ApiRequest<DeckModel|undefined>;
+    getDeckRequest?: ApiRequest<DeckModel>;
 
     componentDidMount() {
         const {deckId} = this.props.route.params || {};

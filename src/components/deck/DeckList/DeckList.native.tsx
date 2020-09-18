@@ -4,11 +4,11 @@ import {ActionSheet} from "native-base";
 
 import DeckListItem from "./DeckListItem/DeckListItem";
 import DeckListBase from "./DeckList.common";
-import {DeckModel} from "../../../models";
+import {DeckListItemModel} from "../../../models";
 
 export default class DeckList extends DeckListBase {
 
-    showActions(deck: DeckModel) {
+    showActions(deck: DeckListItemModel) {
         const DeleteLabel = 'Delete', CancelLabel = 'Cancel';
         const buttons: Record<string, Function|null> = {
             'Edit': () => this.editDeck(deck),
@@ -30,8 +30,8 @@ export default class DeckList extends DeckListBase {
         );
     }
 
-    handleClick = (deck: DeckModel) => this.gotToDeck(deck);
-    handleActions = (deck: DeckModel) => this.showActions(deck);
+    handleClick = (deck: DeckListItemModel) => this.gotToDeck(deck);
+    handleActions = (deck: DeckListItemModel) => this.showActions(deck);
 
     render() {
         const {decks/*, loggedInUser*/} = this.props;

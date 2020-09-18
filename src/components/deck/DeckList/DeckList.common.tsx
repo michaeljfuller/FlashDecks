@@ -1,26 +1,26 @@
 import React from "react";
 import ImmutablePureComponent from "../../ImmutablePureComponent";
-import {DeckModel, UserModel} from "../../../models";
+import {DeckListItemModel, UserModel} from "../../../models";
 
 export interface DeckListProps {
-    decks: DeckModel[];
+    decks: DeckListItemModel[];
     loggedInUser: UserModel|null;
-    goToEdit: (deck: DeckModel) => void;
-    goToView: (deck: DeckModel) => void;
+    goToEdit: (deck: DeckListItemModel) => void;
+    goToView: (deck: DeckListItemModel) => void;
 }
 
 export default class DeckListBase<State = {}> extends ImmutablePureComponent<DeckListProps, State>{
-    gotToDeck(deck: DeckModel) {
+    gotToDeck(deck: DeckListItemModel) {
         this.props.goToView(deck);
     }
-    editDeck(deck: DeckModel) {
+    editDeck(deck: DeckListItemModel) {
         this.props.goToEdit(deck);
     }
-    deleteDeck(deck: DeckModel) {
+    deleteDeck(deck: DeckListItemModel) {
         console.log('DeckListBase', 'deleteDeck', deck);
     }
 
-    canShowActions(_: DeckModel): boolean {
+    canShowActions(_: DeckListItemModel): boolean {
         return true;
         // TODO
         // const user = this.props.loggedInUser;

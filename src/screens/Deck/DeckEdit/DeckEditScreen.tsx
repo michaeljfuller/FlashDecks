@@ -8,7 +8,7 @@ import {reduxConnector, DeckEditScreenStoreProps} from "./DeckEditScreen_redux";
 import DeckView from "../../../components/deck/DeckView/DeckView";
 import Button from "../../../components/button/Button";
 import DeckScreenHeader from "../common/DeckScreenHeader";
-import {CardModel, DeckModel} from "../../../models";
+import {CardModel, DeckModel, DeckBaseModel} from "../../../models";
 import deckApi from "../../../api/DeckApi";
 import ToastStore, {toastStore} from "../../../store/toast/ToastStore";
 import navigationStore from "../../../store/navigation/NavigationStore";
@@ -46,9 +46,9 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     } as DeckEditScreenState;
 
     toast = new ToastStore(this);
-    getDeckRequest?: ApiRequest<DeckModel|undefined>;
-    saveDeckRequest?: ApiRequest<DeckModel|undefined>;
-    saveCardRequest?: ApiRequest<CardModel|undefined>;
+    getDeckRequest?: ApiRequest<DeckModel>;
+    saveDeckRequest?: ApiRequest<DeckBaseModel>;
+    saveCardRequest?: ApiRequest<CardModel>;
     cardIndex = 0;
 
     get deck() {
@@ -208,8 +208,14 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
             const {complete, error} = this.saveDeckRequest;
 
             // If complete (not canceled or errored), update state
-            if (complete) {
-                this.setStateTo(draft => draft.originalDeck = castDraft(deck) );
+            if (complete && deck) {
+                const updatedDeck = this.state.originalDeck?.update({
+                    name: deck.name,
+                    description: deck.description,
+                    popularity: deck.popularity,
+                    tags: deck.tags
+                });
+                this.setStateTo(draft => draft.originalDeck = castDraft(updatedDeck) );
                 this.clearChanges();
             }
 

@@ -6,15 +6,15 @@ import ScreenContainer from "../ScreenContainer";
 import {NavigationScreenProps} from "../../navigation/navigation_types";
 import {reduxConnector, ApiTempScreenStoreProps} from "./ApiTempScreen_redux";
 import deckApi from "../../api/DeckApi";
-import {CardModel, CardSideModel, DeckModel} from "../../models";
+import {DeckListItemModel} from "../../models";
 import {castDraft} from "immer";
 import ToastStore from "../../store/toast/ToastStore";
 import ApiRequest from "../../api/util/ApiRequest";
 
 export type ApiTempScreenProps = NavigationScreenProps;
 export type ApiTempScreenState = Readonly<{
-    decks: DeckModel[];
-    userDecks: DeckModel[];
+    decks: DeckListItemModel[];
+    userDecks: DeckListItemModel[];
     loadingDecks: boolean;
     loadingUserDecks: boolean;
 }>;
@@ -29,8 +29,8 @@ export class ApiTempScreen extends ImmutablePureComponent<
     } as ApiTempScreenState;
 
     toast = new ToastStore(this);
-    private userDecksRequest?: ApiRequest<DeckModel[]>;
-    private allDecksRequest?: ApiRequest<DeckModel[]>;
+    private userDecksRequest?: ApiRequest<DeckListItemModel[]>;
+    private allDecksRequest?: ApiRequest<DeckListItemModel[]>;
 
     async componentDidMount() {
         this.loadUserDecks();
@@ -127,17 +127,13 @@ const nameValueStyles = StyleSheet.create({
     value: {},
 });
 
-const DeckInfo = React.memo(function DeckInfo({deck}: { deck: DeckModel }) {
+const DeckInfo = React.memo(function DeckInfo({deck}: { deck: DeckListItemModel }) {
     return <View style={deckStyles.view}>
         <NameValue name="Deck ID" value={deck.id} />
         <NameValue name="Name" value={deck.name} />
         <NameValue name="Description" value={deck.description} />
         <NameValue name={`Tags (${deck.tags.length})`} value={deck.tags.join(' | ')} />
         <NameValue name="Owner" value={`${deck.ownerId} - ${deck.owner?.displayName || '?'}`} />
-        <NameValue name="Cards" value={deck.cards.length} />
-        <View>{deck.cards.map(
-            card => <CardInfo key={card.id} card={card} />
-        )}</View>
     </View>;
 });
 const deckStyles = StyleSheet.create({
@@ -151,56 +147,56 @@ const deckStyles = StyleSheet.create({
     cards: { backgroundColor: 'red' }
 });
 
-const CardInfo = React.memo(function CardInfo({card}: { card: CardModel }) {
-    return <View style={cardStyles.view}>
-        <NameValue name="Card ID" value={card.id} />
-        <NameValue name="Name" value={card.name} />
-        <NameValue name="Owner" value={`${card.ownerId} - ${card.owner?.displayName || '?'}`} />
-        <NameValue name="Sides" value={card.sides.length} />
-        <View>{card.sides.map(
-            (side, index) => <SideInfo key={index} side={side} index={index} />
-        )}</View>
-    </View>;
-});
-const cardStyles = StyleSheet.create({
-    view: {
-        borderWidth: 1,
-        padding: 2,
-        paddingLeft: 5,
-        marginTop: 10,
-        backgroundColor: 'lightblue',
-    },
-});
+// const CardInfo = React.memo(function CardInfo({card}: { card: CardModel }) {
+//     return <View style={cardStyles.view}>
+//         <NameValue name="Card ID" value={card.id} />
+//         <NameValue name="Name" value={card.name} />
+//         <NameValue name="Owner" value={`${card.ownerId} - ${card.owner?.displayName || '?'}`} />
+//         <NameValue name="Sides" value={card.sides.length} />
+//         <View>{card.sides.map(
+//             (side, index) => <SideInfo key={index} side={side} index={index} />
+//         )}</View>
+//     </View>;
+// });
+// const cardStyles = StyleSheet.create({
+//     view: {
+//         borderWidth: 1,
+//         padding: 2,
+//         paddingLeft: 5,
+//         marginTop: 10,
+//         backgroundColor: 'lightblue',
+//     },
+// });
 
-const SideInfo = React.memo(function SideInfo({side, index}: { side: CardSideModel; index: number }) {
-    return <View style={sideStyles.view}>
-        <NameValue name="Side" value={index+1} />
-        {side.content.map(
-            content => <View key={content.id} style={sideStyles.content}>
-                <NameValue name="Content ID" value={content.id} />
-                <NameValue name="Type" value={content.type} />
-                <NameValue name="Size" value={content.size} />
-                <NameValue name="Value" value={content.value} />
-            </View>
-        )}
-    </View>;
-});
-const sideStyles = StyleSheet.create({
-    view: {
-        borderWidth: 1,
-        padding: 2,
-        paddingLeft: 5,
-        marginTop: 10,
-        backgroundColor: 'lightgreen',
-    },
-    content: {
-        borderWidth: 1,
-        padding: 2,
-        paddingLeft: 5,
-        marginTop: 5,
-        backgroundColor: 'orange',
-    },
-});
+// const SideInfo = React.memo(function SideInfo({side, index}: { side: CardSideModel; index: number }) {
+//     return <View style={sideStyles.view}>
+//         <NameValue name="Side" value={index+1} />
+//         {side.content.map(
+//             content => <View key={content.id} style={sideStyles.content}>
+//                 <NameValue name="Content ID" value={content.id} />
+//                 <NameValue name="Type" value={content.type} />
+//                 <NameValue name="Size" value={content.size} />
+//                 <NameValue name="Value" value={content.value} />
+//             </View>
+//         )}
+//     </View>;
+// });
+// const sideStyles = StyleSheet.create({
+//     view: {
+//         borderWidth: 1,
+//         padding: 2,
+//         paddingLeft: 5,
+//         marginTop: 10,
+//         backgroundColor: 'lightgreen',
+//     },
+//     content: {
+//         borderWidth: 1,
+//         padding: 2,
+//         paddingLeft: 5,
+//         marginTop: 5,
+//         backgroundColor: 'orange',
+//     },
+// });
 
 interface LoadingTextProps {
     show: boolean;

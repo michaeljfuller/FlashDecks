@@ -364,19 +364,24 @@ export type GetDeckIncludingCardsQuery = {
   } | null,
 };
 
-export type ListDecksReturningPartialQueryVariables = {
+export type ListDecksReturningListItemsQueryVariables = {
   filter?: ModelDeckFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type ListDecksReturningPartialQuery = {
-  listDecksReturningPartial:  {
+export type ListDecksReturningListItemsQuery = {
+  listDecksReturningListItems:  {
     __typename: "ModelDeckConnection",
     items:  Array< {
       __typename: "Deck",
       id: string,
       ownerId: string,
+      owner:  {
+        __typename: "User",
+        id: string,
+        displayName: string,
+      } | null,
       name: string,
       description: string,
       tags: Array< string > | null,

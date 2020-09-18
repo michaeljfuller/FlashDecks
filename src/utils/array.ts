@@ -60,3 +60,11 @@ export function simpleFilter<
     }
     return items;
 }
+
+/** Filter out values that are null|undefined. */
+export function filterExists<T>(array?: T[]|null): NonNullable<T>[] {
+    if (array) {
+        return array.filter(value => value !== null && value !== undefined) as NonNullable<T>[];
+    }
+    return [];
+}

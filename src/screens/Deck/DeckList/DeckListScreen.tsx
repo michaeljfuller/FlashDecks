@@ -9,7 +9,7 @@ import IconButton, {IconType} from "../../../components/button/IconButton";
 
 import {reduxConnector, DeckListScreenStoreProps} from "./DeckListScreen_redux";
 import DeckRoutes from "../DeckRoutes";
-import {DeckModel} from "../../../models";
+import {DeckListItemModel} from "../../../models";
 import deckApi from "../../../api/DeckApi";
 import {toastStore} from "../../../store/toast/ToastStore";
 import ApiRequest from "../../../api/util/ApiRequest";
@@ -17,7 +17,7 @@ import ApiRequest from "../../../api/util/ApiRequest";
 export interface DeckListScreenProps extends NavigationScreenProps {}
 export interface DeckListScreenState {
     loading: boolean;
-    decks: DeckModel[];
+    decks: DeckListItemModel[];
 }
 export class DeckListScreen extends ImmutablePureComponent<
     DeckListScreenProps & DeckListScreenStoreProps,
@@ -28,7 +28,7 @@ export class DeckListScreen extends ImmutablePureComponent<
         decks: [],
     } as DeckListScreenState;
 
-    getDeckListRequest?: ApiRequest<DeckModel[]>;
+    getDeckListRequest?: ApiRequest<DeckListItemModel[]>;
 
     get decks() {
         return this.state.decks;
@@ -55,7 +55,7 @@ export class DeckListScreen extends ImmutablePureComponent<
         });
     }
 
-    goTo(routeName: string, deck?: DeckModel) {
+    goTo(routeName: string, deck?: DeckListItemModel) {
         this.props.navigation.navigate(
             routeName,
             deck ? {deckId: deck.id} : undefined
@@ -63,8 +63,8 @@ export class DeckListScreen extends ImmutablePureComponent<
     }
 
     goToCreate = () => this.goTo(DeckRoutes.New);
-    goToEdit = (deck: DeckModel) => this.goTo(DeckRoutes.Edit, deck);
-    goToView = (deck: DeckModel) => this.goTo(DeckRoutes.View, deck);
+    goToEdit = (deck: DeckListItemModel) => this.goTo(DeckRoutes.Edit, deck);
+    goToView = (deck: DeckListItemModel) => this.goTo(DeckRoutes.View, deck);
 
     render() {
         return (

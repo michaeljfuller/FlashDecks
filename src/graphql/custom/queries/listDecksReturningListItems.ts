@@ -1,16 +1,20 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export const listDecksReturningPartial = /* GraphQL */ `
-  query ListDecksReturningPartial(
+export const listDecksReturningListItems = /* GraphQL */ `
+  query ListDecksReturningListItems(
     $filter: ModelDeckFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listDecksReturningPartial: listDecks(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listDecksReturningListItems: listDecks(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
         ownerId
+        owner {
+          id
+          displayName
+        }
         name
         description
         tags
