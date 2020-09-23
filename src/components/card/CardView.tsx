@@ -15,6 +15,7 @@ export default class CardView extends CardViewBase {
 
     onCreateCard = (card: CardModel) => this.updateCard(card);
     onAddSide = () => this.addSide();
+    onRemoveSide = () => this.removeSide();
 
     render() {
         const totalHeight = this.state.viewLayout.height;
@@ -42,6 +43,7 @@ export default class CardView extends CardViewBase {
                     style={styles.footer}
                     textStyle={styles.footerText}
                     onAddSide={this.props.editable ? this.onAddSide : undefined}
+                    onRemoveSide={this.props.editable ? this.onRemoveSide : undefined}
                 />
 
             </StyledCard>

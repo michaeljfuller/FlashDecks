@@ -69,7 +69,14 @@ export abstract class CardViewBase<
         this.props.onUpdate && this.props.onUpdate(card, this.props.itemIndex || 0);
     }
     addSide() {
-        console.log('CardView.addSide');
+        const modifiedCard = this.card.update(draft => draft.sides.push(new CardSideModel));
+        this.setStateTo(draft => {
+            draft.modifiedCard = castDraft(modifiedCard);
+            draft.sideIndex = modifiedCard.sides.length - 1;
+        });
+    }
+    removeSide() {
+        console.log('CardView.removeSide', this.state.sideIndex); // TODO Before calling, prompt.
     }
 
     onClickEdit = () => this.setStateTo({ editing: true });
