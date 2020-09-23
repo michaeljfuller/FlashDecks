@@ -7,15 +7,16 @@ import PromptModal from "../modal/PromptModal/PromptModal";
 import {styles, headerHeight, borderWidth, footerHeight} from "./CardView.native_styles";
 import {CardInfoModal} from "./CardInfo/CardInfoModal";
 import {CardModel} from "../../models";
+import CardFooter from "./CardFooter/CardFooter";
 
 export default class CardView extends CardViewBase {
 
     onCreateCard = (card: CardModel) => this.updateCard(card);
+    onAddSide = () => this.addSide();
 
     render() {
         const totalHeight = this.state.viewLayout.height;
         const bodyHeight = Math.max(0, totalHeight - (headerHeight + footerHeight + borderWidth * 2));
-        const footerText = this.sides.length > 1 ? `${this.state.sideIndex+1}/${this.sides.length}` : '';
 
         return <View style={[styles.root, this.props.style]} onLayout={this.onLayout}>
 
@@ -31,9 +32,14 @@ export default class CardView extends CardViewBase {
             >
                 { this.renderCardSide(bodyHeight, this.state.editing, true) }
             </ScrollView>
-            <View style={styles.footer}>
-                <Text style={styles.footerText}>{footerText}</Text>
-            </View>
+
+            <CardFooter
+                sideNumber={this.state.sideIndex+1}
+                totalSides={this.sides.length}
+                style={styles.footer}
+                textStyle={styles.footerText}
+                onAddSide={this.props.editable ? this.onAddSide : undefined}
+            />
 
             <CardInfoModal
                 editable={this.props.editable}

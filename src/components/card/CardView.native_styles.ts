@@ -2,11 +2,9 @@ import {StyleSheet} from "react-native";
 import {Color} from "../../styles/Color";
 
 export const edgeRadius = 15;
-export const sideCountPadding = 2;
-export const sideCountHeight = edgeRadius - sideCountPadding;
 export const titleHeight = 20;
 export const headerHeight = edgeRadius + titleHeight;
-export const footerHeight = edgeRadius;
+export const footerHeight = 43 - edgeRadius;
 export const borderWidth = 1;
 
 export const borderColor = Color.Grey;
@@ -50,8 +48,7 @@ export const styles = StyleSheet.create({
     },
     footerText: {
         textAlign: "center",
-        paddingVertical: sideCountPadding,
-        lineHeight: sideCountHeight,
-        fontSize: sideCountHeight,
+        lineHeight: footerHeight,
+        fontSize: 14,
     },
 });

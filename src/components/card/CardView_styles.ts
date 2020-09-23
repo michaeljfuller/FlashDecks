@@ -5,9 +5,8 @@ import CardHeader from '@material-ui/core/CardHeader';
 import {Color} from "../../styles/Color";
 
 export const edgeRadius = 15;
-export const sideCountHeight = edgeRadius-2;
 export const headerHeight = 35;
-export const footerHeight = edgeRadius;
+export const footerHeight = 42 - edgeRadius;
 export const borderWidth = 1;
 export const marginBottom = 5;
 
@@ -55,11 +54,12 @@ export const styles = StyleSheet.create({
     side: {
         height: "100%",
     },
-    footer: {},
+    footer: {
+    },
     footerText: {
         marginHorizontal: "auto",
-        lineHeight: sideCountHeight,
-        fontSize: sideCountHeight,
+        lineHeight: footerHeight,
+        fontSize: 14,
     },
     deletePromptContent: {
         borderWidth: 1,

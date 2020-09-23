@@ -68,6 +68,9 @@ export abstract class CardViewBase<
     updateCard(card: CardModel = this.card) {
         this.props.onUpdate && this.props.onUpdate(card, this.props.itemIndex || 0);
     }
+    addSide() {
+        console.log('CardView.addSide');
+    }
 
     onClickEdit = () => this.setStateTo({ editing: true });
     onClickCancel = () => this.setStateTo({ editing: false, modifiedCard: null });

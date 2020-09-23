@@ -1,5 +1,5 @@
 import React from "react";
-import {ScrollView, Text, View} from "react-native";
+import {ScrollView, View} from "react-native";
 
 import globalStyles from "../../styles/globalStyleSheet";
 import CardSide from "./CardSide/CardSide";
@@ -9,15 +9,16 @@ import PromptModal from "../modal/PromptModal/PromptModal";
 import { styles, StyledCard, StyledCardHeader, headerHeight, footerHeight, borderWidth, marginBottom }  from "./CardView_styles";
 import {CardInfoModal} from "./CardInfo/CardInfoModal";
 import {CardModel} from "../../models";
+import CardFooter from "./CardFooter/CardFooter";
 
 export default class CardView extends CardViewBase {
 
     onCreateCard = (card: CardModel) => this.updateCard(card);
+    onAddSide = () => this.addSide();
 
     render() {
         const totalHeight = this.state.viewLayout.height;
         const bodyHeight = Math.max(0, totalHeight - (headerHeight + footerHeight + marginBottom + borderWidth * 2));
-        const footerText = this.sides.length > 1 ? `${this.state.sideIndex+1}/${this.sides.length}` : '';
 
         return <View style={this.props.style} onLayout={this.onLayout}>
             <StyledCard variant="elevation" raised={true} elevation={5}>
@@ -34,9 +35,14 @@ export default class CardView extends CardViewBase {
                     </ScrollView>
 
                 </View>
-                <View style={styles.footer}>
-                    <Text style={styles.footerText}>{footerText}</Text>
-                </View>
+
+                <CardFooter
+                    sideNumber={this.state.sideIndex+1}
+                    totalSides={this.sides.length}
+                    style={styles.footer}
+                    textStyle={styles.footerText}
+                    onAddSide={this.props.editable ? this.onAddSide : undefined}
+                />
 
             </StyledCard>
         </View>;
