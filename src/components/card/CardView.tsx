@@ -13,9 +13,17 @@ import CardFooter from "./CardFooter/CardFooter";
 
 export default class CardView extends CardViewBase {
 
+    onClickEdit = () => this.startEditing();
+    onClickCancel = () => this.stopEditing();
+    onClickDone = () => {
+        this.updateCard();
+        this.stopEditing();
+    }
+
     onCreateCard = (card: CardModel) => this.updateCard(card);
-    onAddSide = () => this.addSide();
-    onRemoveSide = () => this.removeSide();
+    onAddSideBefore = () => this.addSideBefore();
+    onAddSideAfter = () => this.addSideAfter();
+    onAddSideToEnd = () => this.addSideToEnd();
 
     render() {
         const totalHeight = this.state.viewLayout.height;
@@ -42,8 +50,8 @@ export default class CardView extends CardViewBase {
                     totalSides={this.sides.length}
                     style={styles.footer}
                     textStyle={styles.footerText}
-                    onAddSide={this.props.editable ? this.onAddSide : undefined}
-                    onRemoveSide={this.props.editable ? this.onRemoveSide : undefined}
+                    onAddSide={this.props.editable ? this.onAddSideToEnd : undefined}
+                    onRemoveSide={this.props.editable ? this.showDeleteSidePrompt : undefined}
                 />
 
             </StyledCard>
@@ -57,9 +65,9 @@ export default class CardView extends CardViewBase {
                 onPressDone={this.state.modifiedCard ? this.onClickDone : undefined}
                 onPressCancel={this.onClickCancel}
                 onPressEdit={this.onClickEdit}
-                onPressAddBefore={this.onAddBefore}
-                onPressAddAfter={this.onAddAfter}
-                onPressDelete={this.showDeleteSlidePrompt}
+                onPressAddBefore={this.addSideBefore}
+                onPressAddAfter={this.addSideAfter}
+                onPressDelete={this.showDeleteSidePrompt}
             />
             <CardInfoModal
                 editable={this.props.editable}
@@ -67,8 +75,8 @@ export default class CardView extends CardViewBase {
                 onChange={this.onCreateCard}
             />
             <PromptModal
-                open={this.state.showDeleteSlidePrompt}
-                onClose={this.hideDeleteSlidePrompt}
+                open={this.state.showDeleteSidePrompt}
+                onClose={this.hideDeleteSidePrompt}
                 onOk={this.onDeleteSide}
                 title="Are you sure you want to delete this side?"
             >

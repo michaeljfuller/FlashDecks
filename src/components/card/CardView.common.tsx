@@ -17,7 +17,7 @@ export interface CardViewBaseState {
     sideIndex: number;
     viewLayout: LayoutRectangle;
     editing?: boolean;
-    showDeleteSlidePrompt: boolean;
+    showDeleteSidePrompt: boolean;
     showCreateCardModal: boolean;
 }
 
@@ -28,7 +28,7 @@ export abstract class CardViewBase<
         modifiedCard: null,
         sideIndex: 0,
         viewLayout: { x: 0, y: 0, width: 0, height: 0 },
-        showDeleteSlidePrompt: false,
+        showDeleteSidePrompt: false,
         showCreateCardModal: false,
     } as State;
 
@@ -68,38 +68,24 @@ export abstract class CardViewBase<
     updateCard(card: CardModel = this.card) {
         this.props.onUpdate && this.props.onUpdate(card, this.props.itemIndex || 0);
     }
-    addSide() {
-        const modifiedCard = this.card.update(draft => draft.sides.push(new CardSideModel));
-        this.setStateTo(draft => {
-            draft.modifiedCard = castDraft(modifiedCard);
-            draft.sideIndex = modifiedCard.sides.length - 1;
-        });
-    }
-    removeSide() {
-        console.log('CardView.removeSide', this.state.sideIndex); // TODO Before calling, prompt.
-    }
 
-    onClickEdit = () => this.setStateTo({ editing: true });
-    onClickCancel = () => this.setStateTo({ editing: false, modifiedCard: null });
-    onClickDone = () => {
-        console.group('CardView.onClickDone');
-        console.log(this.state.modifiedCard);
-        this.updateCard();
+    startEditing() {
+        this.setStateTo({ editing: true });
+    }
+    stopEditing() {
         this.setStateTo({ editing: false, modifiedCard: null });
-        console.groupEnd();
     }
 
     /** Add a new slide before this one. */
-    onAddBefore = () => {
+    addSideBefore() {
         const modifiedCard = this.card.update({
             sides: insertItem(this.card.sides, this.state.sideIndex, new CardSideModel)
         });
-        console.info('TODO', 'CardView.onAddBefore', this.state.sideIndex, modifiedCard); // TODO
         this.setStateTo(draft => draft.modifiedCard = castDraft(modifiedCard));
     }
 
     /** Add a new slide after this one. */
-    onAddAfter = () => {
+    addSideAfter() {
         const modifiedCard = this.card.update({
             sides: insertItem(this.card.sides, this.state.sideIndex+1, new CardSideModel)
         });
@@ -109,11 +95,20 @@ export abstract class CardViewBase<
         });
     }
 
+    /** Add a new slide to the end. */
+    addSideToEnd() {
+        const modifiedCard = this.card.update(draft => draft.sides.push(new CardSideModel));
+        this.setStateTo(draft => {
+            draft.modifiedCard = castDraft(modifiedCard);
+            draft.sideIndex = modifiedCard.sides.length - 1;
+        });
+    }
+
     showCreateCardModal = () => this.setStateTo({ showCreateCardModal: true });
     hideCreateCardModal = () => this.setStateTo({ showCreateCardModal: false });
 
-    showDeleteSlidePrompt = () => this.setStateTo({ showDeleteSlidePrompt: true });
-    hideDeleteSlidePrompt = () => this.setStateTo({ showDeleteSlidePrompt: false });
+    showDeleteSidePrompt = () => this.setStateTo({ showDeleteSidePrompt: true });
+    hideDeleteSidePrompt = () => this.setStateTo({ showDeleteSidePrompt: false });
 
     onDeleteSide = () => {
         this.setStateTo(draft => {

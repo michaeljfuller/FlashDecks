@@ -13,7 +13,7 @@ export interface CardFooterProps {
 export const CardFooter = React.memo(function CardFooter(
     {sideNumber, totalSides, style, textStyle, onAddSide, onRemoveSide}: CardFooterProps
 ) {
-    const footerText = (onAddSide || totalSides > 1) ? `${sideNumber}/${totalSides || 1}` : '';
+    const footerText = (onAddSide || totalSides > 1) ? `${sideNumber || 1}/${totalSides || 1}` : '';
     return <View style={style}>
         <Text style={textStyle}>{footerText}</Text>
         <View style={styles.actions}>
