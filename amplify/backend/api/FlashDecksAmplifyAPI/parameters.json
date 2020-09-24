@@ -1,10 +1,10 @@
 {
-    "AppSyncApiName": "FlashDecksAmplifyAPI",
+    "AppSyncApiName": "FlashDecksAmplifyApi",
     "DynamoDBBillingMode": "PAY_PER_REQUEST",
     "DynamoDBEnableServerSideEncryption": false,
     "AuthCognitoUserPoolId": {
         "Fn::GetAtt": [
-            "authflashdecksamplifya3053350",
+            "authFlashDecksAmplifyAuth",
             "Outputs.UserPoolId"
         ]
     }

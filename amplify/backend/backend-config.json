@@ -8,7 +8,7 @@
     }
   },
   "api": {
-    "FlashDecksAmplifyAPI": {
+    "FlashDecksAmplifyApi": {
       "service": "AppSync",
       "providerPlugin": "awscloudformation",
       "output": {
@@ -16,7 +16,7 @@
           "defaultAuthentication": {
             "authenticationType": "AMAZON_COGNITO_USER_POOLS",
             "userPoolConfig": {
-              "userPoolId": "authflashdecksamplifya3053350"
+              "userPoolId": "authFlashDecksAmplifyAuth"
             }
           },
           "additionalAuthenticationProviders": []
