@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-flashdecksamplify-dev-161344-authRole",
+      "UnauthRoleArn": "arn:aws:iam::632011903710:role/amplify-flashdecksamplify-dev-161344-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::632011903710:role/amplify-flashdecksamplify-dev-161344-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-flashdecksamplify-dev-161344-deployment",
+      "UnauthRoleName": "amplify-flashdecksamplify-dev-161344-unauthRole",
+      "StackName": "amplify-flashdecksamplify-dev-161344",
+      "StackId": "arn:aws:cloudformation:us-east-1:632011903710:stack/amplify-flashdecksamplify-dev-161344/8fe4d250-fe78-11ea-847a-0a39c55408a9",
+      "AmplifyAppId": "dxo0dgmryo0au"
+    }
+  }
+}
