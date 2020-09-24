@@ -1,1 +1,10 @@
-{}
+{
+  "auth": {
+    "flashdecksamplifya3053350": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}
