@@ -1,0 +1,14 @@
+# Deck
+# A collection of cards
+type Deck @model
+@auth(rules: [
+    { allow: owner, operations: [create, update, delete], ownerField: "ownerId", identityClaim: "sub" }
+])
+{
+    id: ID!
+    ownerId: ID!
+    title: String!
+    description: String!
+    tags: [String!]
+    cards: [Card!]
+}
