@@ -1,6 +1,6 @@
 {
   "auth": {
-    "flashdecksamplifya3053350": {
+    "FlashDecksAmplifyAuth": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],

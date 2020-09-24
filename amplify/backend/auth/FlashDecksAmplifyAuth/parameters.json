@@ -1,8 +1,6 @@
 {
-    "identityPoolName": "flashdecksamplifya3053350_identitypool_a3053350",
-    "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "flashda3053350",
-    "userPoolName": "flashdecksamplifya3053350_userpool_a3053350",
+    "resourceNameTruncated": "flashd5161d449",
+    "userPoolName": "FlashDecksAmplify_UserPool",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -18,7 +16,8 @@
     "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [],
     "requiredAttributes": [
-        "email"
+        "email",
+        "name"
     ],
     "userpoolClientGenerateSecret": true,
     "userpoolClientRefreshTokenValidity": 30,
@@ -28,11 +27,11 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "flashda3053350_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "FlashD5161d449_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "a3053350",
-    "resourceName": "flashdecksamplifya3053350",
-    "authSelections": "identityPoolAndUserPool",
+    "sharedId": "5161d449",
+    "resourceName": "FlashDecksAmplifyAuth",
+    "authSelections": "userPoolOnly",
     "authRoleArn": {
         "Fn::GetAtt": [
             "AuthRole",
@@ -45,11 +44,16 @@
             "Arn"
         ]
     },
-    "useDefault": "default",
-    "usernameAttributes": [
-        "email"
-    ],
+    "useDefault": "manual",
+    "userPoolGroups": false,
+    "adminQueries": false,
+    "triggers": "{}",
+    "hostedUI": false,
     "userPoolGroupList": [],
     "serviceName": "Cognito",
+    "parentStack": {
+        "Ref": "AWS::StackId"
+    },
+    "permissions": [],
     "dependsOn": []
 }
