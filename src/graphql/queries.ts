@@ -7,7 +7,10 @@ export const getDeck = /* GraphQL */ `
     getDeck(id: $id) {
       id
       ownerId
-      owner
+      owner {
+        id
+        userName
+      }
       title
       description
       tags
@@ -29,7 +32,10 @@ export const listDecks = /* GraphQL */ `
       items {
         id
         ownerId
-        owner
+        owner {
+          id
+          userName
+        }
         title
         description
         tags

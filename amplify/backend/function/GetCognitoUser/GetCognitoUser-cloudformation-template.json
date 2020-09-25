@@ -76,7 +76,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-flashdecksamplify-dev-161344-deployment",
-          "S3Key": "amplify-builds/GetCognitoUser-54553232615768546238-build.zip"
+          "S3Key": "amplify-builds/GetCognitoUser-6449766e773855496248-build.zip"
         }
       }
     },

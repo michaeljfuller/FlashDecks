@@ -10,12 +10,15 @@ const cognito = new CognitoService(userPoolId);
 
 /**
  * @typedef {object} LambdaEvent
- * @property {object} [identity]            - Data on the logged in CognitoUser.
- * @property {string} [identity.sub]        - The logged in user's sub.
- * @property {string} [identity.username]   - The logged in user's username.
+ *
  * @property {string} [typeName]            - Name of the entity, if it was on one in a GraphQL query.
  * @property {string} [fieldName]           - Name of the field on an entity, if it was on one in a GraphQL query.
  * @property {object} [source]              - Current entity data, if it was on one in a GraphQL query.
+ *
+ * @property {boolean} [getLoggedInUser]    - If the logged in user should be returned.
+ * @property {object} [identity]            - Data on the logged in CognitoUser.
+ * @property {string} [identity.sub]        - The logged in user's sub.
+ * @property {string} [identity.username]   - The logged in user's username.
  */
 
 /**
@@ -25,15 +28,22 @@ const cognito = new CognitoService(userPoolId);
  * @return {Promise<User|null>}
  */
 exports.handler = async (event) => {
-    const entity = event.source;
-    if (entity) {
-        const fieldName = event.fieldName;
-        const itemOwnerSub = (entity && fieldName && entity[fieldName+'Id']) || undefined; // fieldName+'Id' => 'owner'+'Id' => 'ownerId'
-        if (itemOwnerSub) return cognito.getUserById(itemOwnerSub);
-    } else {
+    if (event.getLoggedInUser) {
+
         const loggedInSub = event.identity && event.identity.sub;
         if (loggedInSub) return cognito.getUserById(loggedInSub);
+
+    } else {
+
+        const entity = event.source;
+        if (entity) {
+            const fieldName = event.fieldName;
+            const itemOwnerSub = (entity && fieldName && entity[fieldName+'Id']) || undefined; // fieldName+'Id' => 'owner'+'Id' => 'ownerId'
+            if (itemOwnerSub) return cognito.getUserById(itemOwnerSub);
+        }
+
     }
+
     return null;
 };
 

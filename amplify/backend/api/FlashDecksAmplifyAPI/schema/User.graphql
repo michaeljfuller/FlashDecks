@@ -1,0 +1,4 @@
+type User {
+    id: ID! # The CognitoUser 'sub'
+    userName: String!
+}
