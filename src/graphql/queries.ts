@@ -10,15 +10,16 @@ export const getDeck = /* GraphQL */ `
       owner {
         id
         userName
+        displayName
       }
+      createdAt
+      updatedAt
       title
       description
       tags
       cards {
         title
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -35,15 +36,16 @@ export const listDecks = /* GraphQL */ `
         owner {
           id
           userName
+          displayName
         }
+        createdAt
+        updatedAt
         title
         description
         tags
         cards {
           title
         }
-        createdAt
-        updatedAt
       }
       nextToken
     }

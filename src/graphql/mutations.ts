@@ -13,15 +13,16 @@ export const createDeck = /* GraphQL */ `
       owner {
         id
         userName
+        displayName
       }
+      createdAt
+      updatedAt
       title
       description
       tags
       cards {
         title
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -36,15 +37,16 @@ export const updateDeck = /* GraphQL */ `
       owner {
         id
         userName
+        displayName
       }
+      createdAt
+      updatedAt
       title
       description
       tags
       cards {
         title
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -59,15 +61,16 @@ export const deleteDeck = /* GraphQL */ `
       owner {
         id
         userName
+        displayName
       }
+      createdAt
+      updatedAt
       title
       description
       tags
       cards {
         title
       }
-      createdAt
-      updatedAt
     }
   }
 `;

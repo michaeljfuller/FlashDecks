@@ -32,6 +32,8 @@ export enum CardSideContentType {
 
 
 export type ModelDeckConditionInput = {
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   title?: ModelStringInput | null,
   description?: ModelStringInput | null,
   tags?: ModelStringInput | null,
@@ -95,6 +97,8 @@ export type DeleteDeckInput = {
 export type ModelDeckFilterInput = {
   id?: ModelIDInput | null,
   ownerId?: ModelIDInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   title?: ModelStringInput | null,
   description?: ModelStringInput | null,
   tags?: ModelStringInput | null,
@@ -131,9 +135,12 @@ export type CreateDeckMutation = {
     ownerId: string,
     owner:  {
       __typename: "User",
-      id: string | null,
-      userName: string | null,
+      id: string,
+      userName: string,
+      displayName: string,
     } | null,
+    createdAt: string,
+    updatedAt: string,
     title: string,
     description: string,
     tags: Array< string > | null,
@@ -141,8 +148,6 @@ export type CreateDeckMutation = {
       __typename: "Card",
       title: string,
     } > | null,
-    createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -158,9 +163,12 @@ export type UpdateDeckMutation = {
     ownerId: string,
     owner:  {
       __typename: "User",
-      id: string | null,
-      userName: string | null,
+      id: string,
+      userName: string,
+      displayName: string,
     } | null,
+    createdAt: string,
+    updatedAt: string,
     title: string,
     description: string,
     tags: Array< string > | null,
@@ -168,8 +176,6 @@ export type UpdateDeckMutation = {
       __typename: "Card",
       title: string,
     } > | null,
-    createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -185,9 +191,12 @@ export type DeleteDeckMutation = {
     ownerId: string,
     owner:  {
       __typename: "User",
-      id: string | null,
-      userName: string | null,
+      id: string,
+      userName: string,
+      displayName: string,
     } | null,
+    createdAt: string,
+    updatedAt: string,
     title: string,
     description: string,
     tags: Array< string > | null,
@@ -195,8 +204,6 @@ export type DeleteDeckMutation = {
       __typename: "Card",
       title: string,
     } > | null,
-    createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -211,9 +218,12 @@ export type GetDeckQuery = {
     ownerId: string,
     owner:  {
       __typename: "User",
-      id: string | null,
-      userName: string | null,
+      id: string,
+      userName: string,
+      displayName: string,
     } | null,
+    createdAt: string,
+    updatedAt: string,
     title: string,
     description: string,
     tags: Array< string > | null,
@@ -221,8 +231,6 @@ export type GetDeckQuery = {
       __typename: "Card",
       title: string,
     } > | null,
-    createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -241,9 +249,12 @@ export type ListDecksQuery = {
       ownerId: string,
       owner:  {
         __typename: "User",
-        id: string | null,
-        userName: string | null,
+        id: string,
+        userName: string,
+        displayName: string,
       } | null,
+      createdAt: string,
+      updatedAt: string,
       title: string,
       description: string,
       tags: Array< string > | null,
@@ -251,8 +262,6 @@ export type ListDecksQuery = {
         __typename: "Card",
         title: string,
       } > | null,
-      createdAt: string,
-      updatedAt: string,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -265,9 +274,12 @@ export type OnCreateDeckSubscription = {
     ownerId: string,
     owner:  {
       __typename: "User",
-      id: string | null,
-      userName: string | null,
+      id: string,
+      userName: string,
+      displayName: string,
     } | null,
+    createdAt: string,
+    updatedAt: string,
     title: string,
     description: string,
     tags: Array< string > | null,
@@ -275,8 +287,6 @@ export type OnCreateDeckSubscription = {
       __typename: "Card",
       title: string,
     } > | null,
-    createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -287,9 +297,12 @@ export type OnUpdateDeckSubscription = {
     ownerId: string,
     owner:  {
       __typename: "User",
-      id: string | null,
-      userName: string | null,
+      id: string,
+      userName: string,
+      displayName: string,
     } | null,
+    createdAt: string,
+    updatedAt: string,
     title: string,
     description: string,
     tags: Array< string > | null,
@@ -297,8 +310,6 @@ export type OnUpdateDeckSubscription = {
       __typename: "Card",
       title: string,
     } > | null,
-    createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -309,9 +320,12 @@ export type OnDeleteDeckSubscription = {
     ownerId: string,
     owner:  {
       __typename: "User",
-      id: string | null,
-      userName: string | null,
+      id: string,
+      userName: string,
+      displayName: string,
     } | null,
+    createdAt: string,
+    updatedAt: string,
     title: string,
     description: string,
     tags: Array< string > | null,
@@ -319,7 +333,5 @@ export type OnDeleteDeckSubscription = {
       __typename: "Card",
       title: string,
     } > | null,
-    createdAt: string,
-    updatedAt: string,
   } | null,
 };
