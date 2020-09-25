@@ -11,7 +11,6 @@ export const getDeck = /* GraphQL */ `
       description
       tags
       cards {
-        id
         title
       }
       createdAt
@@ -33,7 +32,6 @@ export const listDecks = /* GraphQL */ `
         description
         tags
         cards {
-          id
           title
         }
         createdAt

@@ -3,8 +3,6 @@
 //  This file was automatically generated and should not be edited.
 
 export type CreateDeckInput = {
-  id?: string | null,
-  ownerId: string,
   title: string,
   description: string,
   tags?: Array< string > | null,
@@ -12,7 +10,6 @@ export type CreateDeckInput = {
 };
 
 export type CardInput = {
-  id: string,
   title: string,
   sides?: Array< CardSideInput > | null,
 };
@@ -85,7 +82,6 @@ export type ModelSizeInput = {
 
 export type UpdateDeckInput = {
   id: string,
-  ownerId?: string | null,
   title?: string | null,
   description?: string | null,
   tags?: Array< string > | null,
@@ -138,7 +134,6 @@ export type CreateDeckMutation = {
     tags: Array< string > | null,
     cards:  Array< {
       __typename: "Card",
-      id: string,
       title: string,
     } > | null,
     createdAt: string,
@@ -161,7 +156,6 @@ export type UpdateDeckMutation = {
     tags: Array< string > | null,
     cards:  Array< {
       __typename: "Card",
-      id: string,
       title: string,
     } > | null,
     createdAt: string,
@@ -184,7 +178,6 @@ export type DeleteDeckMutation = {
     tags: Array< string > | null,
     cards:  Array< {
       __typename: "Card",
-      id: string,
       title: string,
     } > | null,
     createdAt: string,
@@ -206,7 +199,6 @@ export type GetDeckQuery = {
     tags: Array< string > | null,
     cards:  Array< {
       __typename: "Card",
-      id: string,
       title: string,
     } > | null,
     createdAt: string,
@@ -232,7 +224,6 @@ export type ListDecksQuery = {
       tags: Array< string > | null,
       cards:  Array< {
         __typename: "Card",
-        id: string,
         title: string,
       } > | null,
       createdAt: string,
@@ -252,7 +243,6 @@ export type OnCreateDeckSubscription = {
     tags: Array< string > | null,
     cards:  Array< {
       __typename: "Card",
-      id: string,
       title: string,
     } > | null,
     createdAt: string,
@@ -270,7 +260,6 @@ export type OnUpdateDeckSubscription = {
     tags: Array< string > | null,
     cards:  Array< {
       __typename: "Card",
-      id: string,
       title: string,
     } > | null,
     createdAt: string,
@@ -288,7 +277,6 @@ export type OnDeleteDeckSubscription = {
     tags: Array< string > | null,
     cards:  Array< {
       __typename: "Card",
-      id: string,
       title: string,
     } > | null,
     createdAt: string,

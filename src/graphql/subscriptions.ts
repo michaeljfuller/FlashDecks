@@ -11,7 +11,6 @@ export const onCreateDeck = /* GraphQL */ `
       description
       tags
       cards {
-        id
         title
       }
       createdAt
@@ -28,7 +27,6 @@ export const onUpdateDeck = /* GraphQL */ `
       description
       tags
       cards {
-        id
         title
       }
       createdAt
@@ -45,7 +43,6 @@ export const onDeleteDeck = /* GraphQL */ `
       description
       tags
       cards {
-        id
         title
       }
       createdAt
