@@ -11,7 +11,7 @@ type Deck @model
 ]) {
     id: ID! # Required by @model
     ownerId: ID! # Auto-created. Use @function to get owner object.
-#   owner # https://docs.amplify.aws/cli/graphql-transformer/directives#function
+    owner: String @function(name: "FlashDecks-GetCognitoUser-${env}") # Use Lambda to get User object from ownerId.
     title: String!
     description: String!
     tags: [String!]

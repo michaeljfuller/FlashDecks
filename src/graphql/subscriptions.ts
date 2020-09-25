@@ -7,6 +7,7 @@ export const onCreateDeck = /* GraphQL */ `
     onCreateDeck {
       id
       ownerId
+      owner
       title
       description
       tags
@@ -23,6 +24,7 @@ export const onUpdateDeck = /* GraphQL */ `
     onUpdateDeck {
       id
       ownerId
+      owner
       title
       description
       tags
@@ -39,6 +41,7 @@ export const onDeleteDeck = /* GraphQL */ `
     onDeleteDeck {
       id
       ownerId
+      owner
       title
       description
       tags

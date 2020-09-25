@@ -10,6 +10,7 @@ export const createDeck = /* GraphQL */ `
     createDeck(input: $input, condition: $condition) {
       id
       ownerId
+      owner
       title
       description
       tags
@@ -29,6 +30,7 @@ export const updateDeck = /* GraphQL */ `
     updateDeck(input: $input, condition: $condition) {
       id
       ownerId
+      owner
       title
       description
       tags
@@ -48,6 +50,7 @@ export const deleteDeck = /* GraphQL */ `
     deleteDeck(input: $input, condition: $condition) {
       id
       ownerId
+      owner
       title
       description
       tags
