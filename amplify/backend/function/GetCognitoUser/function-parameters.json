@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "auth": {
+      "FlashDecksAmplifyAuth": [
+        "read"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

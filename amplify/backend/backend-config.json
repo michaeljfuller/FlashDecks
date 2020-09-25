@@ -23,5 +23,21 @@
         }
       }
     }
+  },
+  "function": {
+    "GetCognitoUser": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "auth",
+          "resourceName": "FlashDecksAmplifyAuth",
+          "attributes": [
+            "UserPoolId"
+          ]
+        }
+      ]
+    }
   }
 }
