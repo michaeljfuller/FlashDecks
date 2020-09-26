@@ -207,6 +207,19 @@ export type DeleteDeckMutation = {
   } | null,
 };
 
+export type GetUserQueryVariables = {
+  id?: string | null,
+};
+
+export type GetUserQuery = {
+  getUser:  {
+    __typename: "User",
+    id: string,
+    userName: string,
+    displayName: string,
+  } | null,
+};
+
 export type GetDeckQueryVariables = {
   id: string,
 };
