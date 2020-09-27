@@ -6,6 +6,7 @@
 
 # Custom Queries
 type Query {
+    "Get a user by ID, or the logged in user if ID isn't specified."
     getUser(id: ID): User
 }
 # type Mutation {}

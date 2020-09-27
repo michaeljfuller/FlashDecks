@@ -10,15 +10,16 @@ const cognito = new CognitoService(userPoolId);
 
 /**
  * @typedef {object} LambdaEvent
- *
- * @property {string} [typeName]            - Name of the entity, if it was on one in a GraphQL query.
- * @property {string} [fieldName]           - Name of the field on an entity, if it was on one in a GraphQL query.
- * @property {object} [source]              - Current entity data, if it was on one in a GraphQL query.
- *
- * @property {boolean} [getLoggedInUser]    - If the logged in user should be returned.
  * @property {object} [identity]            - Data on the logged in CognitoUser.
  * @property {string} [identity.sub]        - The logged in user's sub.
  * @property {string} [identity.username]   - The logged in user's username.
+ *
+ * @property {object} arguments         - Arguments passed to function.
+ * @property {object} [arguments.id]    - [Case: By ID] Specified ID of te user to get.
+ *
+ * @property {string} [typeName]    - [Case: From Entity] Name of the entity, if it was on one in a GraphQL query.
+ * @property {string} [fieldName]   - [Case: From Entity] Name of the field on an entity, if it was on one in a GraphQL query.
+ * @property {object} [source]      - [Case: From Entity] Current entity data, if it was on one in a GraphQL query.
  */
 
 /**
@@ -28,22 +29,19 @@ const cognito = new CognitoService(userPoolId);
  * @return {Promise<User|null>}
  */
 exports.handler = async (event) => {
-    if (event.getLoggedInUser) {
+    const entity = event.source;
+    const passedId = event.arguments.id;
+    const loggedInSub = event.identity && event.identity.sub;
 
-        const loggedInSub = event.identity && event.identity.sub;
-        if (loggedInSub) return cognito.getUserById(loggedInSub);
-
-    } else {
-
-        const entity = event.source;
-        if (entity) {
-            const fieldName = event.fieldName;
-            const itemOwnerSub = (entity && fieldName && entity[fieldName+'Id']) || undefined; // fieldName+'Id' => 'owner'+'Id' => 'ownerId'
-            if (itemOwnerSub) return cognito.getUserById(itemOwnerSub);
-        }
-
+    if (entity) { // Get from Entity
+        const fieldName = event.fieldName;
+        const itemOwnerSub = (entity && fieldName && entity[fieldName+'Id']) || undefined; // fieldName+'Id' => 'owner'+'Id' => 'ownerId'
+        if (itemOwnerSub) return cognito.getUserById(itemOwnerSub);
+    } else if (passedId) { // Get from passed ID
+        return cognito.getUserById(passedId);
+    } else if (loggedInSub) { // Get logged in user
+        return cognito.getUserById(loggedInSub);
     }
-
     return null;
 };
 
