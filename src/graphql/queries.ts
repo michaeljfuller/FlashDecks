@@ -28,6 +28,12 @@ export const getDeck = /* GraphQL */ `
       tags
       cards {
         title
+        sides {
+          content {
+            type
+            value
+          }
+        }
       }
     }
   }

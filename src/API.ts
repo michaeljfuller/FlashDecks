@@ -147,6 +147,14 @@ export type CreateDeckMutation = {
     cards:  Array< {
       __typename: "Card",
       title: string,
+      sides:  Array< {
+        __typename: "CardSide",
+        content:  Array< {
+          __typename: "CardSideContent",
+          type: CardSideContentType,
+          value: string,
+        } > | null,
+      } > | null,
     } > | null,
   } | null,
 };
@@ -175,6 +183,14 @@ export type UpdateDeckMutation = {
     cards:  Array< {
       __typename: "Card",
       title: string,
+      sides:  Array< {
+        __typename: "CardSide",
+        content:  Array< {
+          __typename: "CardSideContent",
+          type: CardSideContentType,
+          value: string,
+        } > | null,
+      } > | null,
     } > | null,
   } | null,
 };
@@ -203,6 +219,14 @@ export type DeleteDeckMutation = {
     cards:  Array< {
       __typename: "Card",
       title: string,
+      sides:  Array< {
+        __typename: "CardSide",
+        content:  Array< {
+          __typename: "CardSideContent",
+          type: CardSideContentType,
+          value: string,
+        } > | null,
+      } > | null,
     } > | null,
   } | null,
 };
@@ -243,6 +267,14 @@ export type GetDeckQuery = {
     cards:  Array< {
       __typename: "Card",
       title: string,
+      sides:  Array< {
+        __typename: "CardSide",
+        content:  Array< {
+          __typename: "CardSideContent",
+          type: CardSideContentType,
+          value: string,
+        } > | null,
+      } > | null,
     } > | null,
   } | null,
 };
@@ -299,6 +331,14 @@ export type OnCreateDeckSubscription = {
     cards:  Array< {
       __typename: "Card",
       title: string,
+      sides:  Array< {
+        __typename: "CardSide",
+        content:  Array< {
+          __typename: "CardSideContent",
+          type: CardSideContentType,
+          value: string,
+        } > | null,
+      } > | null,
     } > | null,
   } | null,
 };
@@ -322,6 +362,14 @@ export type OnUpdateDeckSubscription = {
     cards:  Array< {
       __typename: "Card",
       title: string,
+      sides:  Array< {
+        __typename: "CardSide",
+        content:  Array< {
+          __typename: "CardSideContent",
+          type: CardSideContentType,
+          value: string,
+        } > | null,
+      } > | null,
     } > | null,
   } | null,
 };
@@ -345,6 +393,14 @@ export type OnDeleteDeckSubscription = {
     cards:  Array< {
       __typename: "Card",
       title: string,
+      sides:  Array< {
+        __typename: "CardSide",
+        content:  Array< {
+          __typename: "CardSideContent",
+          type: CardSideContentType,
+          value: string,
+        } > | null,
+      } > | null,
     } > | null,
   } | null,
 };

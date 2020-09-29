@@ -22,6 +22,12 @@ export const createDeck = /* GraphQL */ `
       tags
       cards {
         title
+        sides {
+          content {
+            type
+            value
+          }
+        }
       }
     }
   }
@@ -46,6 +52,12 @@ export const updateDeck = /* GraphQL */ `
       tags
       cards {
         title
+        sides {
+          content {
+            type
+            value
+          }
+        }
       }
     }
   }
@@ -70,6 +82,12 @@ export const deleteDeck = /* GraphQL */ `
       tags
       cards {
         title
+        sides {
+          content {
+            type
+            value
+          }
+        }
       }
     }
   }
