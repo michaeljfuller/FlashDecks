@@ -8,7 +8,7 @@ import {reduxConnector, DeckEditScreenStoreProps} from "./DeckEditScreen_redux";
 import DeckView from "../../../components/deck/DeckView/DeckView";
 import Button from "../../../components/button/Button";
 import DeckScreenHeader from "../common/DeckScreenHeader";
-import {CardModel, DeckModel, DeckBaseModel} from "../../../models";
+import {CardModel, DeckModel} from "../../../models";
 import deckApi from "../../../api/DeckApi";
 import ToastStore, {toastStore} from "../../../store/toast/ToastStore";
 import navigationStore from "../../../store/navigation/NavigationStore";
@@ -19,7 +19,6 @@ import {DeckInfoModal} from "../../../components/deck/DeckInfoModal/DeckInfoModa
 import {appTree} from "../../../routes";
 import {goBack} from "../../../navigation/navigationHelpers";
 import {CardInfoModal} from "../../../components/card/CardInfo/CardInfoModal";
-import cardApi from "../../../api/CardApi";
 
 export interface DeckEditScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -47,8 +46,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
 
     toast = new ToastStore(this);
     getDeckRequest?: ApiRequest<DeckModel>;
-    saveDeckRequest?: ApiRequest<DeckBaseModel>;
-    saveCardRequest?: ApiRequest<CardModel>;
+    saveDeckRequest?: ApiRequest<DeckModel>;
     cardIndex = 0;
 
     get deck() {
@@ -71,7 +69,6 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         this.blockNavigation(false);
         this.getDeckRequest && this.getDeckRequest.cancel();
         this.saveDeckRequest && this.saveDeckRequest.cancel();
-        this.saveCardRequest && this.saveCardRequest.cancel();
     }
 
     blockNavigation(value = true) {
@@ -84,6 +81,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
             navigationStore.unblock(ref);
         }
     }
+
     onBlockedNavAttempt = (reason: string) => {
         toastStore.add({
             text: reason,
@@ -120,57 +118,32 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         this.blockNavigation(true);
     }
 
-    onChange = (deck: DeckModel) => {
-        console.group('DeckEditScreen.onChange');
-        if (!this.deck?.cards.length && deck.cards.length === 1 && !deck.cards[0].name) { // Added first card
-            deck = deck.update(draft => draft.cards = []); // Remove for now
-            this.onShowCreateCardModal();
-        }
-        this.modifyDeck(deck);
-        console.groupEnd();
-    }
+    onChange = (deck: DeckModel) => this.modifyDeck(deck);
+
     clearChanges = () => {
         this.setStateTo({ modifiedDeck: undefined, });
         this.blockNavigation(false);
     }
 
     onSetCard = async (card: CardModel, index: number) => {
-        card = card.update(draft => draft.deckID = this.deck.id);
-        this.setStateTo({ saving: true });
-        this.toast.add({ text: `Saving card`, duration: 1000 });
-
-        this.saveCardRequest = cardApi.push(card);
-        await this.saveCardRequest.wait(false);
-
-        const {payload, complete, error} = this.saveCardRequest;
-
-        // If complete (not canceled or errored), update state
-        if (complete && payload) {
-            this.modifyDeck(
-                this.deck.update( draft => draft.cards[index] = castDraft(payload) )
-            );
-        }
-
-        // Show toast
-        const toastRef = 'DeckEditScreen.onSetCard';
-        if (error) {
-            this.toast.addError(error, "Error saving card.", { log: false, ref: toastRef });
-            console.error("Error saving card", { error,  request: this.saveCardRequest });
-        } else {
-            this.toast.add({ type: "success", text: `Saved: "${payload?.name}".`, duration: 2000, ref: toastRef });
-        }
-
-        delete this.saveDeckRequest;
-        this.setStateTo({ saving: false });
+        this.modifyDeck(
+            this.deck.update( draft => {
+                draft.cards[index] = castDraft(card)
+            })
+        );
     }
 
     onAddCard = (card = new CardModel) => {
-        console.log('DeckEditScreen.onAddCard');
-        if (this.deck) {
-            this.onChange(this.deck.update(draft => {
+        // if (!this.deck?.cards.length && deck.cards.length === 1 && !deck.cards[0].title) { // Added first card
+        //     deck = deck.update(draft => draft.cards = []); // Remove for now
+        //     this.onShowCreateCardModal();
+        // }
+        if (this.deck.cards.length === 0)
+        this.modifyDeck(
+            this.deck.update(draft => {
                 draft.cards.push(castDraft(card));
-            }));
-        }
+            })
+        );
     }
     onRemoveCard = () => {
         if (this.deck) {
@@ -199,9 +172,29 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     onHideCreateCardModal = () => this.setStateTo({ showCreateCardModal: false });
 
     onSavePressed = async () => {
-        if (this.state.modifiedDeck) {
+        const modifiedDeck = this.state.modifiedDeck;
+
+        if (modifiedDeck) {
             this.setStateTo({ saving: true });
-            this.saveDeckRequest = deckApi.push(this.state.modifiedDeck);
+            const input = {
+                title: modifiedDeck.title,
+                description: modifiedDeck.description,
+                tags: modifiedDeck.tags,
+                cards: modifiedDeck.cards.map(card => ({
+                    title: card.title,
+                    sides: card.sides.map(side => ({
+                        content: side.content.map(content => ({
+                            value: content.value,
+                            type: content.type as any,
+                        }))
+                    }))
+                }))
+            };
+            if (modifiedDeck.id) {
+                this.saveDeckRequest = deckApi.update({ id: modifiedDeck.id, ...input });
+            } else {
+                this.saveDeckRequest = deckApi.create(input);
+            }
 
             await this.saveDeckRequest.wait(false);
             const deck = this.saveDeckRequest.payload;
@@ -209,23 +202,18 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
 
             // If complete (not canceled or errored), update state
             if (complete && deck) {
-                const updatedDeck = this.state.originalDeck?.update({
-                    name: deck.name,
-                    description: deck.description,
-                    popularity: deck.popularity,
-                    tags: deck.tags
-                });
-                this.setStateTo(draft => draft.originalDeck = castDraft(updatedDeck) );
+                this.setStateTo(draft => draft.originalDeck = castDraft(deck) );
                 this.clearChanges();
             }
 
             // Show toast
             const toastRef = 'DeckEditScreen-save';
             if (error) {
-                this.toast.addError(error, "Error saving deck.", { log: false, ref: toastRef });
+                this.toast.addError(error, `Failed to save ${modifiedDeck.title}`, { log: false, ref: toastRef });
                 console.error("Error saving deck", { error,  request: this.saveDeckRequest });
             } else {
-                this.toast.add({ type: "success", text: `Saved: "${deck?.name}".`, duration: 2000, ref: toastRef });
+                console.log('DeckEditScreen.onSavePressed', { input, response: this.saveDeckRequest, deck });
+                this.toast.add({ type: "success", text: `Saved: "${modifiedDeck.title}"`, duration: 2000, ref: toastRef });
             }
 
             delete this.saveDeckRequest;
@@ -250,9 +238,14 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
 
         const newDeck = !this.deck?.id;
         const editable = !this.state.saving;
-        const title = (newDeck? "New" : "Edit") + ": " + (this.deck?.name || 'Untitled');
-        const validation = DeckModel.validate(this.state.modifiedDeck);
+        const validation = DeckModel.validate(this.deck);
+        const title = (newDeck? "New" : "Edit") + ": " + (this.deck?.title || 'Untitled');
+        const hasChanges = !!this.state.modifiedDeck;
         const card = this.deck.cards[this.cardIndex];
+
+        let saveButtonText = 'Save Cards';
+        if (!this.state.modifiedDeck) saveButtonText = 'Save: No changes';
+        else if (validation.invalid) saveButtonText = `Save: ${validation.reasons[0]}`
 
         return <React.Fragment>
             <DeckScreenHeader
@@ -269,10 +262,9 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
                 onSetCard={this.onSetCard}
                 onScrollCards={this.onScrollCards}
             />
-            <Button
-                title={validation.valid ? "Save" : `Save: ${validation.reasons[0]}.`}
-                square
-                disabled={validation.invalid || !editable}
+            <Button square
+                title={saveButtonText}
+                disabled={validation.invalid || !editable || !hasChanges}
                 onClick={this.onSavePressed}
             />
 

@@ -1,21 +1,23 @@
 import {isEqual} from "underscore";
 import Model, {ModelUpdate} from "./core/Model";
-import {ListDecksReturningListItemsQuery} from "../API";
+import {ListDecksQuery} from "../API";
 import {ModalValidation} from "./core/Model.types";
 import {UserModel} from "./UserModel";
 
-export type ApiDeckList = NonNullable<ListDecksReturningListItemsQuery['listDecksReturningListItems']>;
+export type ApiDeckList = NonNullable<ListDecksQuery['listDecks']>;
 export type ApiDeckListCollection = NonNullable<ApiDeckList['items']>;
 export type ApiDeckListItem = NonNullable<ApiDeckListCollection[0]>;
 
-export class DeckListItemModel extends Model implements Omit<ApiDeckListItem, '__typename'|'owner'> {
+export class DeckListItemModel extends Model implements Omit<ApiDeckListItem, '__typename'|'owner'|'createdAt'|'updatedAt'|'cards'> {
     readonly id: string = '';
     readonly ownerId: string  = '';
-    readonly owner?: UserModel = undefined;
-    readonly name: string  = '';
+    readonly owner?: UserModel;
+    readonly title: string  = '';
     readonly description: string  = '';
     readonly tags: string[] = [];
-    readonly popularity: number = 0;
+    readonly createdAt?: Date;
+    readonly updatedAt?: Date;
+    readonly cardCount: number = 0;
 
     static create(input: ModelUpdate<DeckListItemModel>) {
         return (new DeckListItemModel).update(input, false);
@@ -28,12 +30,14 @@ export class DeckListItemModel extends Model implements Omit<ApiDeckListItem, '_
         }) : undefined;
         return DeckListItemModel.create({
             id: deck.id,
-            name: deck.name,
+            title: deck.title,
             description: deck.description,
             ownerId: deck.ownerId,
             owner,
-            popularity: deck.popularity || 0,
             tags: deck.tags || [],
+            createdAt: new Date(deck.createdAt),
+            updatedAt: new Date(deck.updatedAt),
+            cardCount: deck.cards?.length,
         });
     }
 
@@ -46,10 +50,10 @@ export class DeckListItemModel extends Model implements Omit<ApiDeckListItem, '_
     }
 
     static validate(deck: DeckListItemModel|null|undefined): ModalValidation {
-        const {name} = deck || {};
+        const {title} = deck || {};
         const reasons: string[] = [];
 
-        if (!name) reasons.push('Missing deck name');
+        if (!title) reasons.push('Missing deck title');
 
         return { reasons, valid: reasons.length === 0, invalid: reasons.length > 0 };
     }

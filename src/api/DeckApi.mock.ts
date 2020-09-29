@@ -59,7 +59,7 @@ export class MockDeckApi implements DeckApi {
     update(deck: DeckBaseModel): ApiRequest<DeckBaseModel> {
         return delayedResponse(() => {
             return deck.update({
-                name: 'MOCK-UPDATE: ' + deck.name
+                name: 'MOCK-UPDATE: ' + deck.title
             });
         });
     }

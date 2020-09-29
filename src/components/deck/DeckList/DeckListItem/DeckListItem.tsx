@@ -67,7 +67,7 @@ export function DeckListItem(props: DeckListItemProps) {
             className={classes.header}
             avatar={<Avatar user={owner} />}
             action={actionsButton}
-            title={deck.name}
+            title={deck.title}
             subheader={owner?.displayName || ''}
         />
             <CardCardActionArea onClick={handleOnClick} disabled={!onClick} >

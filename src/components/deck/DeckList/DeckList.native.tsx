@@ -18,7 +18,7 @@ export default class DeckList extends DeckListBase {
         const buttonNames = Object.keys(buttons);
         ActionSheet.show(
             {
-                title: deck.name,
+                title: deck.title,
                 options: buttonNames,
                 cancelButtonIndex: buttonNames.indexOf(CancelLabel), // Separate out in iOS.
                 destructiveButtonIndex: buttonNames.indexOf(DeleteLabel), // Highlight red in iOS.
