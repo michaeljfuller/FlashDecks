@@ -66,3 +66,41 @@ export const listDecks = /* GraphQL */ `
     }
   }
 `;
+export const getDecksByOwner = /* GraphQL */ `
+  query GetDecksByOwner(
+    $ownerId: ID
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelDeckFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    getDecksByOwner(
+      ownerId: $ownerId
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        ownerId
+        owner {
+          id
+          userName
+          displayName
+        }
+        createdAt
+        updatedAt
+        title
+        description
+        tags
+        cards {
+          title
+        }
+      }
+      nextToken
+    }
+  }
+`;

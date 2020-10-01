@@ -3,8 +3,9 @@
 //  This file was automatically generated and should not be edited.
 
 export type CreateDeckInput = {
+  id?: string | null,
   title: string,
-  description: string,
+  description?: string | null,
   tags?: Array< string > | null,
   cards?: Array< CardInput > | null,
 };
@@ -123,6 +124,22 @@ export type ModelIDInput = {
   size?: ModelSizeInput | null,
 };
 
+export type ModelStringKeyConditionInput = {
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+};
+
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
+
 export type CreateDeckMutationVariables = {
   input: CreateDeckInput,
   condition?: ModelDeckConditionInput | null,
@@ -142,7 +159,7 @@ export type CreateDeckMutation = {
     createdAt: string,
     updatedAt: string,
     title: string,
-    description: string,
+    description: string | null,
     tags: Array< string > | null,
     cards:  Array< {
       __typename: "Card",
@@ -178,7 +195,7 @@ export type UpdateDeckMutation = {
     createdAt: string,
     updatedAt: string,
     title: string,
-    description: string,
+    description: string | null,
     tags: Array< string > | null,
     cards:  Array< {
       __typename: "Card",
@@ -214,7 +231,7 @@ export type DeleteDeckMutation = {
     createdAt: string,
     updatedAt: string,
     title: string,
-    description: string,
+    description: string | null,
     tags: Array< string > | null,
     cards:  Array< {
       __typename: "Card",
@@ -262,7 +279,7 @@ export type GetDeckQuery = {
     createdAt: string,
     updatedAt: string,
     title: string,
-    description: string,
+    description: string | null,
     tags: Array< string > | null,
     cards:  Array< {
       __typename: "Card",
@@ -301,7 +318,43 @@ export type ListDecksQuery = {
       createdAt: string,
       updatedAt: string,
       title: string,
-      description: string,
+      description: string | null,
+      tags: Array< string > | null,
+      cards:  Array< {
+        __typename: "Card",
+        title: string,
+      } > | null,
+    } | null > | null,
+    nextToken: string | null,
+  } | null,
+};
+
+export type GetDecksByOwnerQueryVariables = {
+  ownerId?: string | null,
+  createdAt?: ModelStringKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelDeckFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type GetDecksByOwnerQuery = {
+  getDecksByOwner:  {
+    __typename: "ModelDeckConnection",
+    items:  Array< {
+      __typename: "Deck",
+      id: string,
+      ownerId: string,
+      owner:  {
+        __typename: "User",
+        id: string,
+        userName: string,
+        displayName: string,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      title: string,
+      description: string | null,
       tags: Array< string > | null,
       cards:  Array< {
         __typename: "Card",
@@ -326,7 +379,7 @@ export type OnCreateDeckSubscription = {
     createdAt: string,
     updatedAt: string,
     title: string,
-    description: string,
+    description: string | null,
     tags: Array< string > | null,
     cards:  Array< {
       __typename: "Card",
@@ -357,7 +410,7 @@ export type OnUpdateDeckSubscription = {
     createdAt: string,
     updatedAt: string,
     title: string,
-    description: string,
+    description: string | null,
     tags: Array< string > | null,
     cards:  Array< {
       __typename: "Card",
@@ -388,7 +441,7 @@ export type OnDeleteDeckSubscription = {
     createdAt: string,
     updatedAt: string,
     title: string,
-    description: string,
+    description: string | null,
     tags: Array< string > | null,
     cards:  Array< {
       __typename: "Card",

@@ -8,21 +8,24 @@ type Deck @model
         ownerField: "ownerId", # Name of the field to use.
         identityClaim: "sub" # Cognito field to use as the value.
     }
-]) {
+])
+@key(fields: ["ownerId", "createdAt"], name: "byOwner", queryField: "getDecksByOwner") # Create a new "byOwner" key, resulting in a "getDecksByOwner" query.
+{
     id: ID! # Required by @model
     ownerId: ID! # Auto-created. Use @function to get owner object.
     owner: User @function(name: "FlashDecks-GetCognitoUser-${env}") # Use Lambda to get User object from ownerId.
     createdAt: AWSDateTime!
     updatedAt: AWSDateTime!
     title: String!
-    description: String!
+    description: String
     tags: [String!]
     cards: [Card!]
 }
 
 input CreateDeckInput {
+    id: ID
     title: String!
-    description: String!
+    description: String
     tags: [String!]
     cards: [CardInput!]
 }

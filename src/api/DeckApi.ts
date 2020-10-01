@@ -1,14 +1,15 @@
 import {API, graphqlOperation} from "aws-amplify";
-import {getDeck, listDecks} from "../graphql/queries";
+import {getDeck, getDecksByOwner, listDecks} from "../graphql/queries";
 import {createDeck, updateDeck, deleteDeck} from "../graphql/mutations";
 import {
     CreateDeckInput, CreateDeckMutation, CreateDeckMutationVariables,
     UpdateDeckInput, UpdateDeckMutation, UpdateDeckMutationVariables,
     GetDeckQuery, GetDeckQueryVariables,
+    GetDecksByOwnerQuery, GetDecksByOwnerQueryVariables,
     ListDecksQuery, ListDecksQueryVariables,
     DeleteDeckInput, DeleteDeckMutation, DeleteDeckMutationVariables,
 } from "../API";
-import {DeckListItemModel, DeckModel, UserModel} from "../models";
+import {DeckListItemModel, DeckModel} from "../models";
 import decksStore from "../store/decks/DecksStore";
 import ApiRequest from "./util/ApiRequest";
 import {GraphQueryResponse} from "./util/ApiTypes";
@@ -50,9 +51,20 @@ export class DeckApi {
         );
     }
 
-    // TODO Replace 'listDecks' with 'searchDecks' when ElasticSearch is re-added or replaced.
-    getForUser(ownerId: UserModel['id']): ApiRequest<DeckListItemModel[]> {
-        return this.getList({ filter: { ownerId: { eq: ownerId } } });
+    getForUser(ownerId: string, options: Omit<GetDecksByOwnerQueryVariables, 'ownerId'>): ApiRequest<DeckListItemModel[]> {
+        const variables: GetDecksByOwnerQueryVariables = { ownerId, ...options};
+        const promise = API.graphql(
+            graphqlOperation(getDecksByOwner, variables)
+        ) as GraphQueryResponse<GetDecksByOwnerQuery>;
+
+        promise.then(data => console.log('DeckApi.getForUser', variables, data));
+
+        return new ApiRequest(
+            promise.then(
+                response => filterExists(response.data?.getDecksByOwner?.items || []).map(DeckListItemModel.createFromApi)
+            ),
+            variables
+        );
     }
 
     create(input: CreateDeckInput): ApiRequest<DeckModel> {
