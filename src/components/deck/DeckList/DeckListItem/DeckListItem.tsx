@@ -76,12 +76,6 @@ export function DeckListItem(props: DeckListItemProps) {
                         <Typography variant="body1" component="p">
                             {deck.description}
                         </Typography>
-                        <Typography variant="body1" component="p">
-                            {repeat(
-                                parseInt(deck.id.split('-').pop() || '')-1 || 0,
-                                i => `Test sentence number #${i+1} for testing varying paragraph lengths across all decks.`
-                            ).join(' ')}
-                        </Typography>
                     </CardContent>
                 </Fadeout>
             </CardCardActionArea>
