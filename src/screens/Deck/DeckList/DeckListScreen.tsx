@@ -40,16 +40,16 @@ export class DeckListScreen extends ImmutablePureComponent<
         this.loadDecks();
     }
     componentWillUnmount() {
-        this.getDeckListRequest && this.getDeckListRequest.cancel();
-        this.deleteDeckListRequest && this.deleteDeckListRequest.cancel();
+        this.getDeckListRequest && this.getDeckListRequest.drop();
+        this.deleteDeckListRequest && this.deleteDeckListRequest.drop();
     }
 
     loadDecks() {
         this.setStateTo({ loading: true });
         this.getDeckListRequest = deckApi.getList();
 
-        this.getDeckListRequest.wait().then(({payload, cancelled, error}) => {
-            if (!cancelled) {
+        this.getDeckListRequest.wait().then(({payload, dropped, error}) => {
+            if (!dropped) {
                 if (payload) this.setStateTo(draft => draft.decks = castDraft(payload));
                 if (error) toastStore.addError(error, 'Error loading decks');
                 this.setStateTo({ loading: false });
@@ -62,8 +62,8 @@ export class DeckListScreen extends ImmutablePureComponent<
         this.setStateTo({ loading: true });
         this.deleteDeckListRequest = deckApi.remove(deck.id);
 
-        this.deleteDeckListRequest.wait().then(({payload, cancelled, error}) => {
-            if (!cancelled) {
+        this.deleteDeckListRequest.wait().then(({payload, dropped, error}) => {
+            if (!dropped) {
                 if (payload) this.setStateTo(draft => draft.decks = draft.decks.filter(current => current.id !== payload.id));
                 if (error) toastStore.addError(error, `Error deleting "${deck?.title}".`);
                 else toastStore.add({type: "success", duration: 2000, text: `Deleted "${deck?.title}".`})

@@ -44,7 +44,7 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
     }
     componentWillUnmount() {
         this.toast.removeByRef();
-        this.saveRequest?.cancel();
+        this.saveRequest?.drop();
     }
 
     save() {
@@ -68,7 +68,7 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
                     this.toast.add({ type: "success", text: `Saved ${deck.title}`, duration: 3000 });
                 }
 
-                if (!response.cancelled) {
+                if (!response.dropped) {
                     this.setStateTo({ saving: false });
                     if (!response.error) {
                         this.props.onChange && this.props.onChange(response.payload || deck);

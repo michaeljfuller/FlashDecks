@@ -67,8 +67,8 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     componentWillUnmount() {
         this.toast.removeByRef();
         this.blockNavigation(false);
-        this.getDeckRequest && this.getDeckRequest.cancel();
-        this.saveDeckRequest && this.saveDeckRequest.cancel();
+        this.getDeckRequest && this.getDeckRequest.drop();
+        this.saveDeckRequest && this.saveDeckRequest.drop();
     }
 
     blockNavigation(value = true) {
@@ -100,11 +100,11 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         this.getDeckRequest = deckApi.getById(deckId);
 
         this.getDeckRequest.wait(true).then(
-            ({payload, error, cancelled}) => {
+            ({payload, error, dropped}) => {
                 deck = payload;
                 delete this.getDeckRequest;
 
-                if (!cancelled) {
+                if (!dropped) {
                     this.setStateTo({ loading: false });
                     if (error) this.toast.addError(error, "Error getting deck.");
                 }

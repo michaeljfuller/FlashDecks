@@ -40,7 +40,7 @@ export class DeckViewScreen extends ImmutablePureComponent<DeckViewScreenProps &
         this.getDeck(deckId);
     }
     componentWillUnmount() {
-        this.getDeckRequest && this.getDeckRequest.cancel();
+        this.getDeckRequest && this.getDeckRequest.drop();
         this.toast.removeByRef();
     }
 
@@ -54,11 +54,11 @@ export class DeckViewScreen extends ImmutablePureComponent<DeckViewScreenProps &
         this.getDeckRequest = deckApi.getById(deckId);
 
         this.getDeckRequest.wait(true).then(
-            ({payload, error, cancelled}) => {
+            ({payload, error, dropped}) => {
                 deck = payload;
                 delete this.getDeckRequest;
 
-                if (!cancelled) {
+                if (!dropped) {
                     this.setStateTo({ loading: false });
                     if (error) this.toast.addError(error, "Error getting deck.");
                 }
