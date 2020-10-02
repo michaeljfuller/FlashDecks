@@ -7,6 +7,7 @@ export interface DeckListProps {
     loggedInUser: UserModel|null;
     goToEdit: (deck: DeckListItemModel) => void;
     goToView: (deck: DeckListItemModel) => void;
+    onDeleteDeck: (deck: DeckListItemModel) => void;
 }
 
 export default class DeckListBase<State = {}> extends ImmutablePureComponent<DeckListProps, State>{
@@ -17,7 +18,7 @@ export default class DeckListBase<State = {}> extends ImmutablePureComponent<Dec
         this.props.goToEdit(deck);
     }
     deleteDeck(deck: DeckListItemModel) {
-        console.log('DeckListBase', 'deleteDeck', deck);
+        this.props.onDeleteDeck(deck);
     }
 
     canShowActions(_: DeckListItemModel): boolean {

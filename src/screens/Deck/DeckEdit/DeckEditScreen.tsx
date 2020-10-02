@@ -134,16 +134,10 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     }
 
     onAddCard = (card = new CardModel) => {
-        // if (!this.deck?.cards.length && deck.cards.length === 1 && !deck.cards[0].title) { // Added first card
-        //     deck = deck.update(draft => draft.cards = []); // Remove for now
-        //     this.onShowCreateCardModal();
-        // }
-        if (this.deck.cards.length === 0)
-        this.modifyDeck(
-            this.deck.update(draft => {
-                draft.cards.push(castDraft(card));
-            })
-        );
+        const updated = this.deck.update(draft => {
+            draft.cards.push(castDraft(card));
+        });
+        this.modifyDeck(updated);
     }
     onRemoveCard = () => {
         if (this.deck) {
