@@ -5,7 +5,6 @@ import Modal, {ModalProps} from "../../modal/core/Modal";
 import {ModalContainer, ModalHeader, ModalFooter, ModalBody} from "../../modal/parts";
 import {DeckModel} from "../../../models";
 import {DeckInfoModelTags} from "./DeckInfoModalTags";
-import {castDraft} from "immer";
 import deckApi from "../../../api/DeckApi";
 import ToastStore from "../../../store/toast/ToastStore";
 import ApiRequest from "../../../api/util/ApiRequest";
@@ -13,12 +12,18 @@ import ApiRequest from "../../../api/util/ApiRequest";
 export type DeckInfoModalProps = {
     deck: DeckModel;
     editable?: boolean;
-    onChange?: (deck: DeckModel) => void;
+    onChange?: (info: DeckInfo) => void;
     onCancel?: () => void;
 } & ModalProps;
 
+export interface DeckInfo {
+    title: DeckModel['title'];
+    description: DeckModel['description'];
+    tags: DeckModel['tags'];
+}
+
 export interface DeckInfoModalState {
-    modifiedDeck?: DeckModel;
+    modifiedInfo?: DeckInfo;
     saving: boolean;
 }
 
@@ -33,13 +38,17 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
     toast = new ToastStore(this);
     saveRequest?: ApiRequest<DeckModel>;
 
-    get deck(): DeckModel {
-        return this.state.modifiedDeck || this.props.deck;
+    get info(): DeckInfo {
+        return this.state.modifiedInfo || {
+            title: this.props.deck.title,
+            description: this.props.deck.description,
+            tags: this.props.deck.tags,
+        };
     }
 
     componentDidUpdate(prevProps: Readonly<DeckInfoModalProps>/*, prevState: Readonly<DeckInfoModalState>, snapshot?: any*/) {
         if (DeckModel.different(prevProps.deck, this.props.deck)) {
-            this.setStateTo({ modifiedDeck: undefined });
+            this.setStateTo({ modifiedInfo: undefined });
         }
     }
     componentWillUnmount() {
@@ -48,17 +57,14 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
     }
 
     save() {
-        const deck = this.state.modifiedDeck;
-        if (deck) {
-            // TODO Disable, Save, Toast, Success=Close / Error=Enable.
-            this.setStateTo({saving: true});
+        const deck = this.props.deck;
+        const info = this.state.modifiedInfo;
 
-            const input = {
-                title: deck.title,
-                description: deck.description,
-                tags: deck.tags
-            };
-            const request = deck.id ? deckApi.update({...input, id: deck.id}) : deckApi.create(input);
+        if (info) {
+            // TODO Disable, Save, Toast, Success=Close / Error=Enable.
+            this.setStateTo({ saving: true });
+
+            const request = deck.id ? deckApi.update({...info, id: deck.id}) : deckApi.create(info);
 
             request.wait(false).then(response => {
 
@@ -71,7 +77,7 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
                 if (!response.dropped) {
                     this.setStateTo({ saving: false });
                     if (!response.error) {
-                        this.props.onChange && this.props.onChange(response.payload || deck);
+                        this.props.onChange && this.props.onChange(info);
                         this.props.onClose && this.props.onClose();
                     }
                 }
@@ -91,21 +97,15 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
     }
 
     onChangeTitle = (title: string) => {
-        this.setStateTo(draft => {
-            draft.modifiedDeck = castDraft( this.deck.update({ title }) );
-        });
+        this.setStateTo(draft => draft.modifiedInfo = { ...this.info, title });
     }
 
     onChangeDescription = (description: string) => {
-        this.setStateTo(draft => {
-            draft.modifiedDeck = castDraft( this.deck.update({ description }) );
-        });
+        this.setStateTo(draft => draft.modifiedInfo = { ...this.info, description });
     }
 
     onChangeTags = (tags: string[]) => {
-        this.setStateTo(draft => {
-            draft.modifiedDeck = castDraft( this.deck.update({ tags }) );
-        });
+        this.setStateTo(draft => draft.modifiedInfo = { ...this.info, tags });
     }
 
     renderModal() {
@@ -115,11 +115,11 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
     renderInfoModal() {
         return <ModalContainer>
 
-            <ModalHeader title={this.deck.title} user={this.deck.owner} />
+            <ModalHeader title={this.info.title} user={this.props.deck.owner} />
 
             <ModalBody>
-                <DeckInfoModelTags tags={this.deck.tags} />
-                <Text>{this.deck.description}</Text>
+                <DeckInfoModelTags tags={this.info.tags} />
+                <Text>{this.info.description}</Text>
             </ModalBody>
 
             <ModalFooter>
@@ -130,12 +130,12 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
     }
 
     renderEditModal() {
-        const numberOfDescriptionLines = Math.max(12, (this.deck.description || '').split('\n').length);
-        const focusTitle = !this.deck.title;
+        const numberOfDescriptionLines = Math.max(12, (this.info.description || '').split('\n').length);
+        const focusTitle = !this.info.title;
 
         return <ModalContainer>
 
-            <ModalHeader title="Deck Details" user={this.deck.owner} />
+            <ModalHeader title="Deck Details" user={this.props.deck.owner} />
 
             <ModalBody>
                 <View style={styles.titleInputRow}>
@@ -145,11 +145,11 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
                         focusable
                         autoFocus={focusTitle}
                         style={styles.titleInput}
-                        value={this.deck.title}
+                        value={this.info.title}
                         onChangeText={this.onChangeTitle}
                     />
                 </View>
-                <DeckInfoModelTags editable tags={this.deck.tags} onChange={this.onChangeTags} />
+                <DeckInfoModelTags editable tags={this.info.tags} onChange={this.onChangeTags} />
                 <Text style={styles.titleLabel}>Description</Text>
                 <TextInput
                     editable
@@ -158,7 +158,7 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
                     autoFocus={!focusTitle}
                     numberOfLines={numberOfDescriptionLines}
                     style={styles.descriptionInput}
-                    value={this.deck.description}
+                    value={this.info.description}
                     onChangeText={this.onChangeDescription}
                 />
             </ModalBody>
@@ -168,7 +168,7 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
                     title="Save"
                     style={styles.footerItem}
                     onClick={this.onPressSave}
-                    disabled={this.state.saving || !this.state.modifiedDeck}
+                    disabled={this.state.saving || !this.state.modifiedInfo}
                     square
                 />
                 <Button

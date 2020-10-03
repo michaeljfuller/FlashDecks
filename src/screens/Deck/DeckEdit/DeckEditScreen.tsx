@@ -15,7 +15,7 @@ import navigationStore from "../../../store/navigation/NavigationStore";
 import ApiRequest from "../../../api/util/ApiRequest";
 import {removeItem} from "../../../utils/array";
 import PromptModal from "../../../components/modal/PromptModal/PromptModal";
-import {DeckInfoModal} from "../../../components/deck/DeckInfoModal/DeckInfoModal";
+import {DeckInfo, DeckInfoModal} from "../../../components/deck/DeckInfoModal/DeckInfoModal";
 import {appTree} from "../../../routes";
 import {goBack} from "../../../navigation/navigationHelpers";
 import {CardInfoModal} from "../../../components/card/CardInfo/CardInfoModal";
@@ -113,19 +113,21 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         );
     }
 
-    modifyDeck(deck: DeckModel) {
+    modifyDeck(deck: DeckModel, blockNavigation = true) {
         this.setStateTo(draft => draft.modifiedDeck = castDraft(deck));
-        this.blockNavigation(true);
+        if (blockNavigation) this.blockNavigation(true);
     }
 
-    onChange = (deck: DeckModel) => this.modifyDeck(deck);
+    onChangeInfo = (info: DeckInfo) => {
+        this.modifyDeck(this.deck.update(info), false);
+    }
 
     clearChanges = () => {
         this.setStateTo({ modifiedDeck: undefined, });
         this.blockNavigation(false);
     }
 
-    onSetCard = async (card: CardModel, index: number) => {
+    onSetCard = (card: CardModel, index: number) => {
         this.modifyDeck(
             this.deck.update( draft => {
                 draft.cards[index] = castDraft(card)
@@ -266,7 +268,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
                 deck={this.deck}
                 open={this.state.showInfoModal}
                 editable={editable}
-                onChange={this.onChange}
+                onChange={this.onChangeInfo}
                 onCancel={this.onCancelInfoModal}
                 onClose={this.onCloseInfoModal}
             />
