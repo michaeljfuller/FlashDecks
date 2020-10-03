@@ -65,8 +65,9 @@ export function logMethod(options?: LogMethodOptions) {
                     );
                 } else {
                     logMethod(
-                        `%c ${className}%c.%c${functionName} `,
-                        ...groupStyles
+                        `%c ${className}%c.%c${functionName}%c(%cArguments: ${args.length}%c)`,
+                        ...groupStyles,
+                        ...argStyles
                     );
                 }
 
@@ -87,6 +88,37 @@ export function logMethod(options?: LogMethodOptions) {
             }
         };
     };
+}
+/**
+ * When the tagged method is run, log to the console and group everything run under it.
+ * @example
+ *  Class MyClass {
+ *      @logGetter()
+ *      myGetter() { return "my result"; }
+ *  }
+ *  const myInstance = new MyClass;
+ *  myInstance.myGetter; // MyClass.myGetter > {result: "my arg"}
+ */
+export function logGetter() {
+    return function (
+        target: any,
+        propertyName: string,
+        descriptor: PropertyDescriptor
+    ) {
+        const className = getType(target);
+        const getter = descriptor.get;
+        if (getter) {
+            descriptor.get = function () {
+                const result = getter.apply(this);
+                console.log(
+                    `%c ${className}%c.%c${propertyName} `,
+                    ...groupStyles,
+                    {result},
+                );
+                return result;
+            }
+        }
+    }
 }
 
 /** Inline argument list (e.g. '1, true, "one", null, <MyClass> */
