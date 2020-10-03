@@ -77,6 +77,7 @@ export function logMethod(options?: LogMethodOptions) {
                 // Run, log & return result
                 const result = method.apply(this, args); // Run original
                 if (logResult) console.info('%c Result: ', infoStyle, result);
+                if (group) console.groupEnd(); // Close group
                 return result;
 
             } catch(e) {
