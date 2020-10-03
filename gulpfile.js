@@ -6,16 +6,22 @@ gulp.task('start:prod', shell.task('npm run start:prod'));
 
 gulp.task('reports', shell.task('node test/output/servers/run-all.js'));
 
-gulp.task('amplify:status', shell.task('amplify status'));
-gulp.task('amplify:print:auth:client_id', logUserPoolClientId);
-gulp.task('amplify:api:compile', shell.task('amplify api gql-compile'));
-gulp.task('amplify:api:codegen', shell.task('amplify codegen'));
+gulp.task('amp:status', shell.task('amplify status'));
+gulp.task('amp:print:auth:client_id', logUserPoolClientId);
+gulp.task('amp:api:compile', shell.task('amplify api gql-compile'));
+gulp.task('amp:api:codegen', shell.task('amplify codegen'));
 
-gulp.task('amplify:console', shell.task('amplify console'));
-gulp.task('amplify:console:api', shell.task('amplify api console'));
-gulp.task('amplify:console:auth', shell.task('amplify auth console'));
+gulp.task('amp:console', shell.task('amplify console'));
+gulp.task('amp:console:api', shell.task('amplify api console'));
+gulp.task('amp:console:auth', shell.task('amplify auth console'));
 
-gulp.task('amplify:push', shell.task('amplify push'));
+gulp.task('amp:push', shell.task('amplify push'));
+
+gulp.task('amp:env:list', shell.task('amplify env list')); // Displays a list of all the environments in your Amplify project
+gulp.task('amp:env:pull', shell.task('amplify pull')); // Pulls your environment with the current cloud environment.
+gulp.task('amp:env:pull:initial', shell.task('amplify env checkout initial')); // Moves your environment to "initial".
+gulp.task('amp:env:restore', shell.task('amplify pull --restore')); // Pulls your environment with the current cloud environment and overwrite your local backend configs.
+gulp.task('amp:env:restore:initial', shell.task('amplify env checkout initial')); // Moves your environment to "initial" and overwrite your local backend configs.
 
 const color = {
   Reset: '\x1b[0m',

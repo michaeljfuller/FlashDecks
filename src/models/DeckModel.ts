@@ -1,17 +1,22 @@
 import {isEqual} from "underscore";
 import {ModelUpdate} from "./core/Model";
-import {GetDeckIncludingCardsQuery} from "../API";
+import {GetDeckQuery} from "../API";
 import {UserModel} from "./UserModel";
 import {CardModel} from "./CardModel";
 import {ModalValidation} from "./core/Model.types";
 import {filterExists} from "../utils/array";
-import {CardSideModel} from "./CardSideModel";
-import {CardContentModel, CardContentType} from "./CardContentModel";
 import {DeckListItemModel} from "./DeckListItemModel";
 
-export type ApiDeck = NonNullable<GetDeckIncludingCardsQuery['getDeckIncludingCards']>;
+export type ApiDeck = NonNullable<GetDeckQuery['getDeck']>;
 
-export class DeckModel extends DeckListItemModel implements Omit<ApiDeck, '__typename'|'cards'|'owner'> {
+export class DeckModel extends DeckListItemModel implements Omit<ApiDeck, '__typename'|'cards'|'owner'|'createdAt'|'updatedAt'> {
+    readonly ownerId: string  = '';
+    readonly owner?: UserModel;
+    readonly title: string  = '';
+    readonly description: string  = '';
+    readonly tags: string[] = [];
+    readonly createdAt?: Date;
+    readonly updatedAt?: Date;
     readonly cards: CardModel[] = [];
 
     static create(input: ModelUpdate<DeckModel>) {
@@ -27,26 +32,12 @@ export class DeckModel extends DeckListItemModel implements Omit<ApiDeck, '__typ
             id: deck.id,
             ownerId: deck.ownerId,
             owner: owner,
-            name: deck.name,
+            title: deck.title,
             description: deck.description,
             tags: deck.tags || [],
-            popularity: deck.popularity || 0,
-            cards: filterExists(deck.cards?.items).map(card => CardModel.create({
-                id: card.id,
-                deckID: deck.id,
-                name: card.name,
-                ownerId: deck.ownerId,
-                owner: owner,
-                popularity: card.popularity || 0,
-                tags: card.tags || [],
-                sides: filterExists(card.sides).map(side => CardSideModel.create({
-                    content: filterExists(side.content).map(content => CardContentModel.create({
-                        type: content.type as CardContentType,
-                        value: content.value,
-                        //  side: TODO
-                    }))
-                }))
-            })),
+            createdAt: new Date(deck.createdAt),
+            updatedAt: new Date(deck.updatedAt),
+            cards: filterExists(deck.cards).map(CardModel.fromApi),
         });
     }
 
@@ -59,10 +50,10 @@ export class DeckModel extends DeckListItemModel implements Omit<ApiDeck, '__typ
     }
 
     static validate(deck: DeckModel|null|undefined): ModalValidation {
-        const {name, cards=[]} = deck || {};
+        const {title, cards=[]} = deck || {};
         const reasons: string[] = [];
 
-        if (!name) reasons.push('Missing deck name');
+        if (!title) reasons.push('Missing deck title');
         if (!cards.length) reasons.push('Missing cards');
 
         return { reasons, valid: reasons.length === 0, invalid: reasons.length > 0 };

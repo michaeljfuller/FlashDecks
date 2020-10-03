@@ -4,7 +4,7 @@
     "start": "expo start --web",
     "start:prod": "expo start --web --no-dev --minify",
     "expo:eject": "expo eject",
-    "postinstall": "react-native link",
+    "setup": "react-native link",
     "test:reports": "node test/output/servers/run-all.js",
     "amplify:console": "amplify console"
   },

@@ -42,9 +42,9 @@ export class ApiTempScreen extends ImmutablePureComponent<
         if (user && !this.userDecksRequest) {
             this.userDecksRequest = deckApi.getForUser(user.id);
             this.userDecksRequest.wait().then(
-                ({ cancelled, payload }) => {
+                ({ dropped, payload }) => {
                     delete this.userDecksRequest;
-                    if (cancelled) return;
+                    if (dropped) return;
                     this.setStateTo(draft => {
                         draft.userDecks = castDraft(payload) || [];
                         draft.loadingUserDecks = false;
@@ -59,9 +59,9 @@ export class ApiTempScreen extends ImmutablePureComponent<
         if (!this.allDecksRequest) {
             this.allDecksRequest = deckApi.getList();
             this.allDecksRequest.wait().then(
-                ({cancelled, payload}) => {
+                ({dropped, payload}) => {
                     delete this.allDecksRequest;
-                    if (cancelled) return;
+                    if (dropped) return;
                     this.setStateTo(draft => {
                         draft.decks = castDraft(payload) || [];
                         draft.loadingDecks = false;
@@ -74,8 +74,8 @@ export class ApiTempScreen extends ImmutablePureComponent<
 
     componentWillUnmount() {
         this.toast.removeByRef();
-        if (this.userDecksRequest) this.userDecksRequest.cancel();
-        if (this.allDecksRequest) this.allDecksRequest.cancel();
+        if (this.userDecksRequest) this.userDecksRequest.drop();
+        if (this.allDecksRequest) this.allDecksRequest.drop();
     }
 
     render() {
@@ -130,7 +130,7 @@ const nameValueStyles = StyleSheet.create({
 const DeckInfo = React.memo(function DeckInfo({deck}: { deck: DeckListItemModel }) {
     return <View style={deckStyles.view}>
         <NameValue name="Deck ID" value={deck.id} />
-        <NameValue name="Name" value={deck.name} />
+        <NameValue name="Name" value={deck.title} />
         <NameValue name="Description" value={deck.description} />
         <NameValue name={`Tags (${deck.tags.length})`} value={deck.tags.join(' | ')} />
         <NameValue name="Owner" value={`${deck.ownerId} - ${deck.owner?.displayName || '?'}`} />

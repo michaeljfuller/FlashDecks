@@ -34,7 +34,7 @@ export const DeckListItem = React.memo(function DeckListItem(props: DeckListItem
         <View style={{ backgroundColor: headerColor, flexDirection: 'row', height: 40 }}>
 
             <UICardItem button bordered onPress={handleClick} style={{ backgroundColor: headerColor, flexGrow: 1 }}>
-                <Text style={{ color: headerTextColor }}>{deck.name}</Text>
+                <Text style={{ color: headerTextColor }}>{deck.title}</Text>
             </UICardItem>
 
             <UICardItem style={{ backgroundColor: headerColor }}>

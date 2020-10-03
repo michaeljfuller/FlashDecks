@@ -56,9 +56,9 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
         this.close();
     }
 
-    onChangeName = (name: string) => {
+    onChangeTitle = (title: string) => {
         this.setStateTo(draft => {
-            draft.modifiedCard = castDraft( this.card.update({ name }) );
+            draft.modifiedCard = castDraft( this.card.update({ title }) );
         });
     }
 
@@ -69,7 +69,7 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
     renderInfoModal() {
         return <ModalContainer>
 
-            <ModalHeader title={this.card.nameOrPlaceholder()} user={this.card.owner} />
+            <ModalHeader title={this.card.nameOrPlaceholder()} />
 
             <ModalBody>
                 <Text>Tags: TODO</Text>
@@ -85,18 +85,18 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
     renderEditModal() {  // TODO Add edit tags
         return <ModalContainer>
 
-            <ModalHeader title={`${this.card?.id ? 'Edit' : 'Create'} Card`} user={this.card.owner} />
+            <ModalHeader title={'Edit Card'} />
 
             <ModalBody>
                 <View style={styles.row}>
-                    <Text style={styles.titleLabel}>Name:</Text>
+                    <Text style={styles.titleLabel}>Title:</Text>
                     <TextInput
                         editable
                         focusable
                         autoFocus
                         style={styles.titleInput}
-                        value={this.card.name}
-                        onChangeText={this.onChangeName}
+                        value={this.card.title}
+                        onChangeText={this.onChangeTitle}
                     />
                 </View>
 
