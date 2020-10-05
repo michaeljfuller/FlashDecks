@@ -10,24 +10,32 @@ import Button from "../../button/Button";
 export type EditCardModalProps = {
     card?: CardModel;
     editable?: boolean;
-    onChange?: (card: CardModel) => void;
+    onChange?: (card: CardInfo) => void;
     onCancel?: () => void;
 } & ModalProps;
 
 export interface EditCardModalState {
     modifiedCard?: CardModel;
-    saving: boolean;
+}
+
+export interface CardInfo {
+    title: CardModel['title'];
 }
 
 export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState> {
-    state = {
-        saving: false,
-    } as EditCardModalState;
-
+    state = {} as EditCardModalState;
     toast = new ToastStore(this);
 
     get card() {
         return this.state.modifiedCard || this.props.card || new CardModel;
+    }
+    get info(): CardInfo {
+        return {
+            title: this.card.title,
+        };
+    }
+    get changed() {
+        return this.info.title !== this.props.card?.title;
     }
 
     componentDidUpdate(prevProps: Readonly<EditCardModalProps>/*, prevState: Readonly<EditCardModalState>, snapshot?: {}*/) {
@@ -39,17 +47,17 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
         this.toast.removeByRef();
     }
 
-    save() {
-        this.props.onChange && this.props.onChange(this.card);
+    apply() {
+        this.props.onChange && this.props.onChange(this.info);
         this.close();
     }
     close() {
-        this.setStateTo({ modifiedCard: null, saving: false });
+        this.setStateTo({ modifiedCard: null });
         this.props.onClose && this.props.onClose();
     }
 
-    onPressSave = () => {
-        this.save();
+    onPressOK = () => {
+        this.apply();
     }
     onPressCancel = () => {
         this.props.onCancel && this.props.onCancel();
@@ -71,9 +79,9 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
 
             <ModalHeader title={this.card.nameOrPlaceholder()} />
 
-            <ModalBody>
-                <Text>Tags: TODO</Text>
-            </ModalBody>
+            {/*<ModalBody>*/}
+            {/*    <Text>Tags: TODO</Text>*/}
+            {/*</ModalBody>*/}
 
             <ModalFooter style={styles.footer}>
                 <Button title="Close" onClick={this.props.onClose} square />
@@ -82,7 +90,7 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
         </ModalContainer>;
     }
 
-    renderEditModal() {  // TODO Add edit tags
+    renderEditModal() {
         return <ModalContainer>
 
             <ModalHeader title={'Edit Card'} />
@@ -99,23 +107,20 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
                         onChangeText={this.onChangeTitle}
                     />
                 </View>
-
-                <Text>Tags: TODO</Text>
             </ModalBody>
 
             <ModalFooter style={styles.footer}>
                 <Button
-                    title="Save"
+                    title="OK"
                     style={styles.footerItem}
-                    onClick={this.onPressSave}
-                    disabled={this.state.saving || !this.state.modifiedCard}
+                    onClick={this.onPressOK}
+                    disabled={!this.changed}
                     square
                 />
                 <Button
                     title="Cancel"
                     style={styles.footerItem}
                     onClick={this.onPressCancel}
-                    disabled={this.state.saving}
                     square
                 />
             </ModalFooter>

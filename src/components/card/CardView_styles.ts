@@ -35,6 +35,15 @@ export const styles = StyleSheet.create({
         flexDirection: "column",
         height: '100%',
     },
+    headerRow: {
+        flexDirection: "row",
+        justifyContent: "center",
+    },
+    renameButton: {
+        position: "absolute",
+        right: -30,
+        top: 5,
+    },
     headerActions: {
         flexDirection: "row",
         position: "absolute",

@@ -6,21 +6,34 @@ import CardSide from "./CardSide/CardSide";
 import CardViewBase from "./CardView.common";
 import CardSideActions from "./CardSide/CardSideActions";
 import PromptModal from "../modal/PromptModal/PromptModal";
-import { styles, StyledCard, StyledCardHeader, headerHeight, footerHeight, borderWidth, marginBottom }  from "./CardView_styles";
-import {CardInfoModal} from "./CardInfo/CardInfoModal";
+import {
+    borderWidth,
+    footerHeight,
+    headerHeight,
+    marginBottom,
+    StyledCard,
+    StyledCardHeader,
+    styles
+} from "./CardView_styles";
+import {CardInfo, CardInfoModal} from "./CardInfo/CardInfoModal";
+import IconButton, {IconType} from "../button/IconButton";
 import {CardModel} from "../../models";
 import CardFooter from "./CardFooter/CardFooter";
 
 export default class CardView extends CardViewBase {
 
-    onClickEdit = () => this.startEditing();
-    onClickCancel = () => this.stopEditing();
-    onClickDone = () => {
+    onClickEditSide = () => this.startEditing();
+    onClickCancelEditSide = () => this.stopEditing();
+    onClickDoneEditSide = () => {
         this.updateCard();
         this.stopEditing();
     }
+    onEditCard = (info: CardInfo) => {
+        console.log('CardView.onEditCard', info);
+        this.updateCard(this.card.update(info));
+    }
 
-    onCreateCard = (card: CardModel) => this.updateCard(card);
+    onCreateCard = (info: CardInfo) => this.updateCard(CardModel.create(info));
     onAddSideBefore = () => this.addSideBefore();
     onAddSideAfter = () => this.addSideAfter();
     onAddSideToEnd = () => this.addSideToEnd();
@@ -34,8 +47,11 @@ export default class CardView extends CardViewBase {
 
                 <View style={styles.inner}>
 
-                    <View>
-                        <StyledCardHeader title={this.card?.nameOrPlaceholder()}/>
+                    <View style={styles.headerRow}>
+                        <View>
+                            <StyledCardHeader title={this.card?.nameOrPlaceholder()}/>
+                            {this.props.editable ? this.renderHeaderEdit() : null}
+                        </View>
                         {this.hasActions ? this.renderHeaderActions() : null}
                     </View>
 
@@ -58,13 +74,31 @@ export default class CardView extends CardViewBase {
         </View>;
     }
 
+    renderHeaderEdit() {
+        return <React.Fragment>
+            <IconButton
+                icon={IconType.Edit}
+                onClick={this.showEditCardModal}
+                style={styles.renameButton}
+                color="Black"
+            />
+            <CardInfoModal
+                editable
+                card={this.card}
+                open={this.state.showEditCardModal}
+                onClose={this.hideEditCardModal}
+                onChange={this.onEditCard}
+            />
+        </React.Fragment>;
+    }
+
     renderHeaderActions() {
         return <View style={styles.headerActions}>
             <CardSideActions
                 editing={this.state.editing || false}
-                onPressDone={this.state.modifiedCard ? this.onClickDone : undefined}
-                onPressCancel={this.onClickCancel}
-                onPressEdit={this.onClickEdit}
+                onPressDone={this.state.modifiedCard ? this.onClickDoneEditSide : undefined}
+                onPressCancel={this.onClickCancelEditSide}
+                onPressEdit={this.onClickEditSide}
                 onPressAddBefore={this.addSideBefore}
                 onPressAddAfter={this.addSideAfter}
                 onPressDelete={this.showDeleteSidePrompt}
@@ -73,6 +107,7 @@ export default class CardView extends CardViewBase {
                 editable={this.props.editable}
                 open={this.state.showCreateCardModal}
                 onChange={this.onCreateCard}
+                onClose={this.hideCreateCardModal}
             />
             <PromptModal
                 open={this.state.showDeleteSidePrompt}

@@ -19,6 +19,7 @@ export interface CardViewBaseState {
     editing?: boolean;
     showDeleteSidePrompt: boolean;
     showCreateCardModal: boolean;
+    showEditCardModal: boolean;
 }
 
 export abstract class CardViewBase<
@@ -30,6 +31,7 @@ export abstract class CardViewBase<
         viewLayout: { x: 0, y: 0, width: 0, height: 0 },
         showDeleteSidePrompt: false,
         showCreateCardModal: false,
+        showEditCardModal: false,
     } as State;
 
     get card(): CardModel {
@@ -57,7 +59,7 @@ export abstract class CardViewBase<
     }
 
     componentDidUpdate(prevProps: Readonly<CardViewProps>/*, prevState: Readonly<CardViewState>, snapshot?: any*/) {
-        if (prevProps.item?.id !== this.props.item?.id) { // Card changed TODO Not rely on ID.
+        if (prevProps.item?.transientKey !== this.props.item?.transientKey) { // Card changed TODO Not rely on just key?
             this.setStateTo({
                 sideIndex: 0,
                 modifiedCard: null,
@@ -109,6 +111,9 @@ export abstract class CardViewBase<
 
     showDeleteSidePrompt = () => this.setStateTo({ showDeleteSidePrompt: true });
     hideDeleteSidePrompt = () => this.setStateTo({ showDeleteSidePrompt: false });
+
+    showEditCardModal = () => this.setStateTo({ showEditCardModal: true });
+    hideEditCardModal = () => this.setStateTo({ showEditCardModal: false });
 
     onDeleteSide = () => {
         this.setStateTo(draft => {
