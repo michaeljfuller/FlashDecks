@@ -54,10 +54,7 @@ export const DeckListItem = React.memo(function DeckListItem(props: DeckListItem
 
         {/* Body */}
         <UICardItem button bordered onPress={handleClick}>
-            <Text>{deck.description + repeat(
-                parseInt(deck.id.split('-').pop() || '')-1 || 0, // Get repeat count based on `deck.id`
-                i => `${!i&&'\n'}Test sentence number #${i+1} for testing varying paragraph lengths across all decks.`
-            ).join(' ')}</Text>
+            <Text>{deck.description || 'No Description.'}</Text>
         </UICardItem>
 
         {/* Footer */}
