@@ -3,7 +3,7 @@ import {ViewStyle} from "react-native";
 import {CardModel} from "../../models";
 import {fitAspectRatio} from "../../utils/math";
 import ImmutablePureComponent from "../ImmutablePureComponent";
-import {CardInfoModal} from "../card/CardInfo/CardInfoModal";
+import {CardInfo, CardInfoModal} from "../card/CardInfo/CardInfoModal";
 
 export interface CardCarouselProps {
     cards?: CardModel[];
@@ -23,8 +23,8 @@ export class CardCarouselBase<State extends CardCarouselBaseState> extends Immut
     onSetCard = (card: CardModel, index: number) => {
         this.props.onSetCard && this.props.onSetCard(card, index);
     }
-    onAddCard = (card: CardModel) => {
-        this.onSetCard(card, this.props.cards?.length || 0);
+    onAddCard = (info: CardInfo) => {
+        this.onSetCard(CardModel.create(info), this.props.cards?.length || 0);
     }
 
     onShowCreateCardModal = () => this.setStateTo({ showCreateCardModal: true });
