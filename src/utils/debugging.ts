@@ -19,7 +19,14 @@ export interface LogMethodOptions {
     logResult?: boolean;        // 'Result: undefined'
     group?: boolean;            // If a log group should be created
     styleOutput?: boolean;      // If log should be colored.
-    callback?: (instance: any) => string;
+}
+
+const LogRefKey = Symbol('Debugging log ref');
+const lastRefMap: Record<string, number> = {};
+function getLogRef(instance: any): number {
+    if (instance[LogRefKey]) return instance[LogRefKey];
+    const key = getType(instance);
+    return instance[LogRefKey] = lastRefMap[key] = (lastRefMap[key] || 0) + 1;
 }
 
 /**
@@ -36,8 +43,8 @@ export interface LogMethodOptions {
  *      }
  *  }
  *  const myInstance = new MyClass;
- *  myInstance.myMethod("my arg")   // > MyClass.myMethod("my arg")
- *                                  //   > MyClass.mySubMethod("my arg", "!")
+ *  myInstance.myMethod("my arg")   // > MyClass{1}.myMethod("my arg")
+ *                                  //   > MyClass{1}.mySubMethod("my arg", "!")
  *                                  // > Result: "my arg!"
  */
 export function logMethod(options?: LogMethodOptions) {
@@ -53,34 +60,34 @@ export function logMethod(options?: LogMethodOptions) {
             logResult = false,
             group = true,
             styleOutput = isPlatformWeb,
-            callback,
         } = options || {};
         const className = getType(target);
 
         const method = descriptor.value;
         const logMethod = group ? console.group.bind(console) : console.log.bind(console);
 
-        descriptor.value = function (...args: any[]) {
+        descriptor.value = function (this: any, ...args: any[]) {
             try {
+                const instanceRef = '{' + getLogRef(this) + '}';
+
                 // Open group
                 if (logArgsInline) {
                     if (styleOutput) {
-                        logMethod(`%c ${className}%c.%c${functionName}%c(%c${inlineArgsForList(args)}%c) `, ...groupStyles, ...argStyles);
+                        logMethod(`%c ${className + instanceRef}%c.%c${functionName}%c(%c${inlineArgsForList(args)}%c) `, ...groupStyles, ...argStyles);
                     } else {
-                        logMethod(`${className}.${functionName}(${inlineArgsForList(args)})`);
+                        logMethod(`${className + instanceRef}.${functionName}(${inlineArgsForList(args)})`);
                     }
                 } else {
                     if (styleOutput) {
-                        logMethod(`%c ${className}%c.%c${functionName}%c(%cArguments: ${args.length}%c)`, ...groupStyles, ...argStyles);
+                        logMethod(`%c ${className + instanceRef}%c.%c${functionName}%c(%cArguments: ${args.length}%c)`, ...groupStyles, ...argStyles);
                     } else {
-                        logMethod(`${className}.${functionName}(Arguments: ${args.length})`);
+                        logMethod(`${className + instanceRef}.${functionName}(Arguments: ${args.length})`);
                     }
                 }
 
                 // Log objects
                 if (logArgs) logInfo('Args', args, styleOutput);
                 if (logTarget) logInfo('Target', target, styleOutput);
-                if (callback) logInfo('Callback', callback(target), styleOutput);
 
                 // Run, log & return result
                 const result = method.apply(this, args); // Run original
@@ -105,7 +112,7 @@ export function logMethod(options?: LogMethodOptions) {
  *      myGetter() { return "my result"; }
  *  }
  *  const myInstance = new MyClass;
- *  myInstance.myGetter; // MyClass.myGetter > {result: "my arg"}
+ *  myInstance.myGetter; // MyClass{1}.myGetter > {result: "my arg"}
  */
 export function logGetter() {
     return function (
@@ -117,11 +124,13 @@ export function logGetter() {
         const getter = descriptor.get;
         if (getter) {
             descriptor.get = function () {
+                const instanceRef = '{' + getLogRef(this) + '}';
                 const result = getter.apply(this);
+
                 if (isPlatformWeb) {
-                    console.log(`%c ${className}%c.%c${propertyName} `, ...groupStyles, {result});
+                    console.log(`%c ${className + instanceRef}%c.%c${propertyName} `, ...groupStyles, {result});
                 } else {
-                    console.log(`${className}.${propertyName} `, {result});
+                    console.log(`${className + instanceRef}.${propertyName} `, {result});
                 }
                 return result;
             }
