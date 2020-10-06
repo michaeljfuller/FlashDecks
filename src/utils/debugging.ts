@@ -1,3 +1,5 @@
+import {isPlatformWeb} from '../platform';
+
 // Log CSS styles
 function logStyle(foreground: string, background='#555', lineHeight = '18px') {
     return `color: ${foreground}; background: ${background}; line-height: ${lineHeight}; `;
@@ -16,6 +18,8 @@ export interface LogMethodOptions {
     logTarget?: boolean;        // 'Target: MyClass {...}'
     logResult?: boolean;        // 'Result: undefined'
     group?: boolean;            // If a log group should be created
+    styleOutput?: boolean;      // If log should be colored.
+    callback?: (instance: any) => string;
 }
 
 /**
@@ -48,6 +52,8 @@ export function logMethod(options?: LogMethodOptions) {
             logTarget = false,
             logResult = false,
             group = true,
+            styleOutput = isPlatformWeb,
+            callback,
         } = options || {};
         const className = getType(target);
 
@@ -58,26 +64,27 @@ export function logMethod(options?: LogMethodOptions) {
             try {
                 // Open group
                 if (logArgsInline) {
-                    logMethod(
-                        `%c ${className}%c.%c${functionName}%c(%c${inlineArgsForList(args)}%c) `,
-                        ...groupStyles,
-                        ...argStyles
-                    );
+                    if (styleOutput) {
+                        logMethod(`%c ${className}%c.%c${functionName}%c(%c${inlineArgsForList(args)}%c) `, ...groupStyles, ...argStyles);
+                    } else {
+                        logMethod(`${className}.${functionName}(${inlineArgsForList(args)})`);
+                    }
                 } else {
-                    logMethod(
-                        `%c ${className}%c.%c${functionName}%c(%cArguments: ${args.length}%c)`,
-                        ...groupStyles,
-                        ...argStyles
-                    );
+                    if (styleOutput) {
+                        logMethod(`%c ${className}%c.%c${functionName}%c(%cArguments: ${args.length}%c)`, ...groupStyles, ...argStyles);
+                    } else {
+                        logMethod(`${className}.${functionName}(Arguments: ${args.length})`);
+                    }
                 }
 
                 // Log objects
-                if (logArgs) console.info('%c Args: ', infoStyle, args);
-                if (logTarget) console.info('%c Target: ', infoStyle, target);
+                if (logArgs) logInfo('Args', args, styleOutput);
+                if (logTarget) logInfo('Target', target, styleOutput);
+                if (callback) logInfo('Callback', callback(target), styleOutput);
 
                 // Run, log & return result
                 const result = method.apply(this, args); // Run original
-                if (logResult) console.info('%c Result: ', infoStyle, result);
+                if (logResult) logInfo('Result', result, styleOutput);
                 if (group) console.groupEnd(); // Close group
                 return result;
 
@@ -89,6 +96,7 @@ export function logMethod(options?: LogMethodOptions) {
         };
     };
 }
+
 /**
  * When the tagged method is run, log to the console and group everything run under it.
  * @example
@@ -110,14 +118,22 @@ export function logGetter() {
         if (getter) {
             descriptor.get = function () {
                 const result = getter.apply(this);
-                console.log(
-                    `%c ${className}%c.%c${propertyName} `,
-                    ...groupStyles,
-                    {result},
-                );
+                if (isPlatformWeb) {
+                    console.log(`%c ${className}%c.%c${propertyName} `, ...groupStyles, {result});
+                } else {
+                    console.log(`${className}.${propertyName} `, {result});
+                }
                 return result;
             }
         }
+    }
+}
+
+function logInfo(label: string, data: any, styleOutput: boolean) {
+    if (styleOutput) {
+        console.info('%c ' + label + ': ', infoStyle, data);
+    } else {
+        console.info(label + ': ', data);
     }
 }
 
