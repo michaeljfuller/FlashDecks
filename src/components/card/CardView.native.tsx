@@ -5,9 +5,10 @@ import {CardViewBase} from "./CardView.common";
 import CardSideActions from "./CardSide/CardSideActions";
 import PromptModal from "../modal/PromptModal/PromptModal";
 import {styles, headerHeight, borderWidth, footerHeight} from "./CardView.native_styles";
-import {CardInfoModal} from "./CardInfo/CardInfoModal";
+import {CardInfo, CardInfoModal} from "./CardInfo/CardInfoModal";
 import {CardModel} from "../../models";
 import CardFooter from "./CardFooter/CardFooter";
+import IconButton, {IconType} from "../button/IconButton";
 
 export default class CardView extends CardViewBase {
 
@@ -17,8 +18,12 @@ export default class CardView extends CardViewBase {
         this.updateCard();
         this.stopEditing();
     }
+    onEditCard = (info: CardInfo) => {
+        console.log('CardView.onEditCard', info);
+        this.updateCard(this.card.update(info));
+    }
 
-    onCreateCard = (card: CardModel) => this.updateCard(card);
+    onCreateCard = (info: CardInfo) => this.updateCard(CardModel.create(info));
     onAddSideBefore = () => this.addSideBefore();
     onAddSideAfter = () => this.addSideAfter();
     onAddSideToEnd = () => this.addSideToEnd();
@@ -30,7 +35,10 @@ export default class CardView extends CardViewBase {
         return <View style={[styles.root, this.props.style]} onLayout={this.onLayout}>
 
             <View style={styles.headerRow}>
-                <Text style={styles.title}>{this.card?.nameOrPlaceholder()}</Text>
+                <View>
+                    <Text style={styles.title}>{this.card?.nameOrPlaceholder()}</Text>
+                    {this.props.editable ? this.renderHeaderEdit() : null}
+                </View>
                 {this.hasActions ? this.renderHeaderActions() : null}
             </View>
 
@@ -58,6 +66,24 @@ export default class CardView extends CardViewBase {
             />
 
         </View>;
+    }
+
+    renderHeaderEdit() {
+        return <React.Fragment>
+            <IconButton
+                icon={IconType.Edit}
+                onClick={this.showEditCardModal}
+                style={styles.renameButton}
+                color="Black"
+            />
+            <CardInfoModal
+                editable
+                card={this.card}
+                open={this.state.showEditCardModal}
+                onClose={this.hideEditCardModal}
+                onChange={this.onEditCard}
+            />
+        </React.Fragment>;
     }
 
     renderHeaderActions() {

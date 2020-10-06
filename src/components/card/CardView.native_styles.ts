@@ -15,7 +15,17 @@ export const styles = StyleSheet.create({
         backgroundColor: Color.OffWhite,
         borderRadius: edgeRadius,
     },
-    headerRow: {},
+    headerRow: {
+        flexDirection: "row",
+        justifyContent: "center",
+        borderBottomWidth: borderWidth,
+        borderColor,
+    },
+    renameButton: {
+        position: "absolute",
+        right: -30,
+        top: 5,
+    },
     headerActions: {
         flexDirection: "row",
         position: "absolute",
@@ -30,8 +40,6 @@ export const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: titleHeight,
         lineHeight: headerHeight,
-        borderBottomWidth: borderWidth,
-        borderColor,
     },
     scrollView: {
         backgroundColor: Color.White,

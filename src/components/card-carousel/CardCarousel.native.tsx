@@ -72,7 +72,7 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
                 data={cards}
                 renderItem={({item, index}) => {
                     this.index = index;
-                    return <View key={item.id} style={styles.cardContainer}>
+                    return <View key={item.transientKey} style={styles.cardContainer}>
                         <CardView
                             item={item}
                             style={[styles.cardView, cardStyle]}
