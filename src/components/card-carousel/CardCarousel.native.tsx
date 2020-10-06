@@ -70,9 +70,10 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
             <FlatList<CardModel>
                 ref={this.flatList}
                 data={cards}
+                keyExtractor={item => item.transientKey}
                 renderItem={({item, index}) => {
                     this.index = index;
-                    return <View key={item.transientKey} style={styles.cardContainer}>
+                    return <View style={styles.cardContainer}>
                         <CardView
                             item={item}
                             style={[styles.cardView, cardStyle]}
