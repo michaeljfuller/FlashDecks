@@ -34,8 +34,11 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
             title: this.card.title,
         };
     }
-    get changed() {
+    get changed(): boolean {
         return this.info.title !== this.props.card?.title;
+    }
+    get valid(): boolean {
+        return Boolean(this.info.title);
     }
 
     componentDidUpdate(prevProps: Readonly<EditCardModalProps>/*, prevState: Readonly<EditCardModalState>, snapshot?: {}*/) {
@@ -114,7 +117,7 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
                     title="OK"
                     style={styles.footerItem}
                     onClick={this.onPressOK}
-                    disabled={!this.changed}
+                    disabled={!this.changed && this.valid}
                     square
                 />
                 <Button
