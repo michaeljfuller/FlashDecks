@@ -19,6 +19,10 @@ export class DeckModel extends DeckListItemModel implements Omit<ApiDeck, '__typ
     readonly updatedAt?: Date;
     readonly cards: CardModel[] = [];
 
+    get descriptionOrPlaceholder() {
+        return this.description.trim() || "No description.";
+    }
+
     static create(input: ModelUpdate<DeckModel>) {
         return (new DeckModel).update(input, false);
     }
@@ -33,7 +37,7 @@ export class DeckModel extends DeckListItemModel implements Omit<ApiDeck, '__typ
             ownerId: deck.ownerId,
             owner: owner,
             title: deck.title,
-            description: deck.description,
+            description: deck.description || '',
             tags: deck.tags || [],
             createdAt: new Date(deck.createdAt),
             updatedAt: new Date(deck.updatedAt),

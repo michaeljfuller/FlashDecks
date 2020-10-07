@@ -41,9 +41,14 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
     get info(): DeckInfo {
         return this.state.modifiedInfo || {
             title: this.props.deck.title,
-            description: this.props.deck.description,
+            description: this.props.deck.description.trim(),
             tags: this.props.deck.tags,
         };
+    }
+
+    get valid(): boolean {
+        const info = this.state.modifiedInfo;
+        return Boolean(info && info.title && info.description);
     }
 
     componentDidUpdate(prevProps: Readonly<DeckInfoModalProps>/*, prevState: Readonly<DeckInfoModalState>, snapshot?: any*/) {
@@ -113,13 +118,14 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
     }
 
     renderInfoModal() {
+        const deck = this.props.deck;
         return <ModalContainer>
 
-            <ModalHeader title={this.info.title} user={this.props.deck.owner} />
+            <ModalHeader title={deck.title} user={deck.owner} />
 
             <ModalBody>
-                <DeckInfoModelTags tags={this.info.tags} />
-                <Text>{this.info.description}</Text>
+                <DeckInfoModelTags tags={deck.tags} />
+                <Text>{deck.descriptionOrPlaceholder}</Text>
             </ModalBody>
 
             <ModalFooter>
@@ -168,7 +174,7 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
                     title="Save"
                     style={styles.footerItem}
                     onClick={this.onPressSave}
-                    disabled={this.state.saving || !this.state.modifiedInfo}
+                    disabled={this.state.saving || !this.valid}
                     square
                 />
                 <Button

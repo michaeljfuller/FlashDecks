@@ -74,7 +74,7 @@ export function DeckListItem(props: DeckListItemProps) {
                 <Fadeout maxHeight={listItemActionMaxHeight} fadeColor={contentBackgroundColor}>
                     <CardContent className={classes.content}>
                         <Typography variant="body1" component="p">
-                            {deck.description || 'No Description.'}
+                            {deck.descriptionOrPlaceholder}
                         </Typography>
                     </CardContent>
                 </Fadeout>

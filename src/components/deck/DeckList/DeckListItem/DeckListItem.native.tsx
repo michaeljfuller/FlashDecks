@@ -54,7 +54,7 @@ export const DeckListItem = React.memo(function DeckListItem(props: DeckListItem
 
         {/* Body */}
         <UICardItem button bordered onPress={handleClick}>
-            <Text>{deck.description || 'No Description.'}</Text>
+            <Text>{deck.descriptionOrPlaceholder}</Text>
         </UICardItem>
 
         {/* Footer */}
