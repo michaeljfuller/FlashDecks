@@ -11,15 +11,6 @@ const argumentStyle = logStyle('#ff9955');
 const infoStyle = logStyle('#d6b3ff');
 const groupStyles = [classStyle, punctuationStyle, methodStyle];
 
-export interface LogMethodOptions {
-    logArgs?: boolean;          // 'Args: [...]'
-    logArgsInline?: boolean;    // 'MyClass.myMethod("my arg")'
-    logTarget?: boolean;        // 'Target: MyClass {...}'
-    logResult?: boolean;        // 'Result: undefined'
-    group?: boolean;            // If a log group should be created
-    styleOutput?: boolean;      // If log should be colored.
-}
-
 const LogRefKey = Symbol('Debugging log ref');
 const lastRefMap: Record<string, number> = {};
 function getLogRef(instance: any): number {
@@ -46,35 +37,15 @@ function getLogRef(instance: any): number {
  *                                  //   > MyClass{1}.mySubMethod("my arg", "!")
  *                                  //   > Result: "my arg!"
  */
-export function logMethod(options?: LogMethodOptions) {
+export function logMethod(options?: WrapAndLogFunctionOptions) {
     return function (
         target: any,
         functionName: string,
         descriptor: PropertyDescriptor
     ) {
-        const {
-            logArgs = false,
-            logArgsInline = true,
-            logTarget = false,
-            logResult = false,
-            group = true,
-            styleOutput = isPlatformWeb,
-        } = options || {};
-        descriptor.value = wrapAndLogFunction(
-            descriptor.value,
-            null,
-            functionName,
-            group,
-            styleOutput,
-            logArgsInline,
-            logArgs,
-            logTarget,
-            logResult
-        );
+        descriptor.value = wrapAndLogFunction(descriptor.value, null, functionName, options);
     };
 }
-
-export interface LogFunctionOptions extends LogMethodOptions {}
 
 /**
  * @example
@@ -89,27 +60,9 @@ export function logFunction<Func extends Function, Scope extends object>(
     func: Func,
     label = func.name || 'Anonymous',
     scope?: Scope,
-    options?: LogFunctionOptions
+    options?: WrapAndLogFunctionOptions
 ): Func {
-    const {
-        logArgs = false,
-        logArgsInline = true,
-        logTarget = false,
-        logResult = false,
-        group = true,
-        styleOutput = isPlatformWeb,
-    } = options || {};
-    return wrapAndLogFunction(
-        func,
-        scope,
-        label,
-        group,
-        styleOutput,
-        logArgsInline,
-        logArgs,
-        logTarget,
-        logResult
-    ) as any;
+    return wrapAndLogFunction(func, scope, label, options) as any;
 }
 
 /**
@@ -151,13 +104,17 @@ function wrapAndLogFunction(
     func: Function,
     scope: any,
     functionName: string,
-    group: boolean,
-    styleOutput: boolean,
-    logArgsInline: boolean,
-    logArgs: boolean,
-    logTarget: boolean,
-    logResult: boolean,
+    options?: WrapAndLogFunctionOptions,
 ) {
+    const {
+        logArgs = false,
+        logArgsInline = true,
+        logTarget = false,
+        logResult = false,
+        group = true,
+        collapsed = false,
+        styleOutput = isPlatformWeb,
+    } = options || {};
     return giveFunctionName(
         functionName+'_$LogWrapper',
         function (this: any, ...args: any[]) {
@@ -192,8 +149,9 @@ function wrapAndLogFunction(
 
             // Open log
             const openStrings = prepend + targetString + functionString + argsString + append;
-            if (group) console.group(openStrings, ...openStyles);
-            else console.log(openStrings, ...openStyles);
+            if (!group)         console.log(openStrings, ...openStyles);
+            else if (collapsed) console.groupCollapsed(openStrings, ...openStyles);
+            else                console.group(openStrings, ...openStyles);
 
             // Log objects
             if (logArgs) logInfo('Args', args, styleOutput);
@@ -212,6 +170,16 @@ function wrapAndLogFunction(
             }
         } // End of function
     );
+}
+
+export interface WrapAndLogFunctionOptions {
+    logArgs?: boolean;          // 'Args: [...]'
+    logArgsInline?: boolean;    // 'MyClass.myMethod("my arg")'
+    logTarget?: boolean;        // 'Target: MyClass {...}'
+    logResult?: boolean;        // 'Result: undefined'
+    group?: boolean;            // If a log group should be created
+    collapsed?: boolean;        // If the log group should be collapsed
+    styleOutput?: boolean;      // If log should be colored.
 }
 
 /** Attach a name to a function */
