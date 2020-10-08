@@ -174,6 +174,8 @@ function wrapAndLogFunction(
             if (styleOutput) {
                 argsString = `%c(%c${argsString}%c)`;
                 openStyles.push(punctuationStyle, argumentStyle, punctuationStyle);
+            } else {
+                argsString = '(' + argsString + ')';
             }
 
             const append = styleOutput ? ' ' : '';
