@@ -38,9 +38,9 @@ function getLogRef(instance: any): number {
  *                                  //   > MyClass{1}.mySubMethod("my arg", "!")
  *                                  //   > Result: "my arg!"
  */
-export function logMethod(options?: WrapAndLogFunctionOptions) {
+export function logMethod<Class = any, Func extends GenericFunction = GenericFunction>(options?: WrapAndLogFunctionOptions<Class, Func>) {
     return function (
-        target: any,
+        target: Class,
         functionName: string,
         descriptor: PropertyDescriptor
     ) {
@@ -57,13 +57,13 @@ export function logMethod(options?: WrapAndLogFunctionOptions) {
  *  myInstance.exclaim("my string") // > MyClass{1}.exclaim("my string")
  *                                  //   > Result: "my string!"
  */
-export function logFunction<Func extends Function, Scope extends object>(
+export function logFunction<Func extends GenericFunction = GenericFunction, Scope extends object = any>(
     func: Func,
     label = func.name || 'Anonymous',
     scope?: Scope,
-    options?: WrapAndLogFunctionOptions
+    options?: WrapAndLogFunctionOptions<Scope, Func>
 ): Func {
-    return wrapAndLogFunction(func, scope, label, options) as any;
+    return wrapAndLogFunction(func, scope, label, options);
 }
 
 /**
@@ -121,17 +121,18 @@ interface LogGetterOptions {
 }
 
 /** Common code between logMethod & logFunction. */
-function wrapAndLogFunction(
-    func: Function,
+function wrapAndLogFunction<Func extends GenericFunction = GenericFunction>(
+    func: Func,
     scope: any,
     functionName: string,
     options?: WrapAndLogFunctionOptions,
-) {
+): Func {
     const {
         logArgs = false,
         logArgsInline = true,
         logTarget = false,
         logResult = false,
+        extras,
         group = true,
         collapsed = false,
         styleOutput = isPlatformWeb,
@@ -212,6 +213,18 @@ function wrapAndLogFunction(
             if (logTarget) {
                 logInfo('Target', this, styleOutput);
             }
+            if (extras) {
+                Object.keys(extras).forEach(extraKey => {
+                    const extraCallback = extras[extraKey];
+                    if (extraCallback) {
+                        try {
+                            logInfo(extraKey, extraCallback(target, args), styleOutput);
+                        } catch (e) {
+                            logInfo(extraKey, e, styleOutput);
+                        }
+                    }
+                })
+            }
 
             try {
                 // Run, log & return result
@@ -224,27 +237,31 @@ function wrapAndLogFunction(
                 if (group) console.groupEnd(); // Close group
                 throw e; // Re-throw
             }
-        } // End of function
+        } as Func // End of function
     );
 }
 
-export interface WrapAndLogFunctionOptions {
-    logArgs?: boolean;          // 'Args: [...]'
-    logArgsInline?: boolean;    // 'MyClass.myMethod("my arg")'
-    logTarget?: boolean;        // 'Target: MyClass {...}'
-    logResult?: boolean;        // 'Result: undefined'
-    group?: boolean;            // If a log group should be created
-    collapsed?: boolean;        // If the log group should be collapsed
-    styleOutput?: boolean;      // If log should be colored.
-    color?: string;             // Log color for function name
-    parentColor?: string;       // Log color for the class/scope
-    backgroundColor?: string;   // Log color for the background
-    punctuationColor?: string;  // Log color for the punctuation
-    argumentColor?: string;     // Log color for the arguments
+export interface WrapAndLogFunctionOptions<Parent = any, Func extends GenericFunction = GenericFunction> {
+    logArgs?: boolean;              // 'Args: [...]'
+    logArgsInline?: boolean;        // 'MyClass.myMethod("my arg")'
+    logTarget?: boolean;            // 'Target: MyClass {...}'
+    logResult?: boolean;            // 'Result: undefined'
+    extras?: LogExtraMap<Parent, Func>;   // Print out extra info, based on the key and output of the callback
+    group?: boolean;                // If a log group should be created
+    collapsed?: boolean;            // If the log group should be collapsed
+    styleOutput?: boolean;          // If log should be colored.
+    color?: string;                 // Log color for function name
+    parentColor?: string;           // Log color for the class/scope
+    backgroundColor?: string;       // Log color for the background
+    punctuationColor?: string;      // Log color for the punctuation
+    argumentColor?: string;         // Log color for the arguments
 }
+type LogExtraMap<Type = any, Func extends GenericFunction = GenericFunction> = Record<string, LogExtraCallback<Type, Func>>;
+type LogExtraCallback<Type = any, Func extends GenericFunction = GenericFunction> = (instanceOrScope: Type, args: Parameters<Func>) => any;
+type GenericFunction = (...args: any) => any;
 
 /** Attach a name to a function */
-function giveFunctionName<Type extends Function>(name: string, func: Type): Type {
+function giveFunctionName<Type extends GenericFunction>(name: string, func: Type): Type {
     Object.defineProperty(func, 'name', {value: name, writable: false});
     return func;
 }
