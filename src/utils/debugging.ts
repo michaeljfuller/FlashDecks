@@ -1,15 +1,15 @@
 import {isPlatformWeb} from '../platform';
 
 // Log CSS styles
-function logStyle(foreground: string, background='#555', lineHeight = '18px') {
+const defaultBackgroundColor = '#555'
+const defaultPunctuationColor = '#DDD'
+const defaultClassColor = '#55FF55'
+const defaultMethodColor = '#55eeff';
+const defaultArgumentColor = '#ff9955';
+const defaultInfoColor = '#d6b3ff';
+function logStyle(foreground: string, background = defaultBackgroundColor, lineHeight = '18px') {
     return `color: ${foreground}; background: ${background}; line-height: ${lineHeight}; `;
 }
-const punctuationStyle = logStyle('#DDD');
-const classStyle = logStyle('#55FF55');
-const methodStyle = logStyle('#55eeff');
-const argumentStyle = logStyle('#ff9955');
-const infoStyle = logStyle('#d6b3ff');
-const groupStyles = [classStyle, punctuationStyle, methodStyle];
 
 const LogRefKey = Symbol('Debugging log ref');
 const lastRefMap: Record<string, number> = {};
@@ -75,7 +75,18 @@ export function logFunction<Func extends Function, Scope extends object>(
  *  const myInstance = new MyClass;
  *  myInstance.myGetter; // MyClass{1}.myGetter > {result: "my arg"}
  */
-export function logGetter() {
+export function logGetter(options?: LogGetterOptions) {
+    const {
+        styleOutput = isPlatformWeb,
+        color = defaultMethodColor,
+        parentColor = defaultClassColor,
+        backgroundColor = defaultBackgroundColor,
+        punctuationColor = defaultPunctuationColor,
+    } = options || {};
+    const classStyle = logStyle(parentColor, backgroundColor);
+    const methodStyle = logStyle(color, backgroundColor);
+    const punctuationStyle = logStyle(punctuationColor, backgroundColor);
+
     return function (
         target: any,
         propertyName: string,
@@ -88,8 +99,8 @@ export function logGetter() {
                 const instanceRef = '{' + getLogRef(this) + '}';
                 const result = getter.apply(this);
 
-                if (isPlatformWeb) {
-                    console.log(`%c ${className + instanceRef}%c.%c${propertyName} `, ...groupStyles, {result});
+                if (styleOutput) {
+                    console.log(`%c ${className + instanceRef}%c.%c${propertyName} `, classStyle, punctuationStyle, methodStyle, {result});
                 } else {
                     console.log(`${className + instanceRef}.${propertyName} `, {result});
                 }
@@ -97,6 +108,15 @@ export function logGetter() {
             }
         }
     }
+}
+
+interface LogGetterOptions {
+    styleOutput?: boolean;      // If log should be colored.
+    color?: string;             // Log color for function name
+    parentColor?: string;       // Log color for the class/scope
+    backgroundColor?: string;   // Log color for the background
+    punctuationColor?: string;  // Log color for the punctuation
+    argumentColor?: string;     // Log color for the arguments
 }
 
 /** Common code between logMethod & logFunction. */
@@ -114,7 +134,18 @@ function wrapAndLogFunction(
         group = true,
         collapsed = false,
         styleOutput = isPlatformWeb,
+        color = defaultMethodColor,
+        parentColor = defaultClassColor,
+        backgroundColor = defaultBackgroundColor,
+        punctuationColor = defaultPunctuationColor,
+        argumentColor = defaultArgumentColor,
     } = options || {};
+
+    const methodStyle = logStyle(color, backgroundColor);
+    const classStyle = logStyle(parentColor, backgroundColor);
+    const punctuationStyle = logStyle(punctuationColor, backgroundColor);
+    const argumentStyle = logStyle(argumentColor, backgroundColor);
+
     return giveFunctionName(
         functionName+'_$LogWrapper',
         function (this: any, ...args: any[]) {
@@ -180,6 +211,11 @@ export interface WrapAndLogFunctionOptions {
     group?: boolean;            // If a log group should be created
     collapsed?: boolean;        // If the log group should be collapsed
     styleOutput?: boolean;      // If log should be colored.
+    color?: string;             // Log color for function name
+    parentColor?: string;       // Log color for the class/scope
+    backgroundColor?: string;   // Log color for the background
+    punctuationColor?: string;  // Log color for the punctuation
+    argumentColor?: string;     // Log color for the arguments
 }
 
 /** Attach a name to a function */
@@ -190,7 +226,7 @@ function giveFunctionName<Type extends Function>(name: string, func: Type): Type
 
 function logInfo(label: string, data: any, styleOutput: boolean) {
     if (styleOutput) {
-        console.info('%c ' + label + ': ', infoStyle, data);
+        console.info('%c ' + label + ': ', logStyle(defaultInfoColor), data);
     } else {
         console.info(label + ': ', data);
     }
