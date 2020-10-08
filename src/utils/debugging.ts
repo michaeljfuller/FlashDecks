@@ -1,4 +1,5 @@
 import {isPlatformWeb} from '../platform';
+import {mapToObject} from "./object";
 
 // Log CSS styles
 const defaultBackgroundColor = '#555'
@@ -146,18 +147,22 @@ function wrapAndLogFunction(
     const punctuationStyle = logStyle(punctuationColor, backgroundColor);
     const argumentStyle = logStyle(argumentColor, backgroundColor);
 
+    const paramNames = getParamNames(func);
+
     return giveFunctionName(
         functionName+'_$LogWrapper',
         function (this: any, ...args: any[]) {
             const target = scope || this;
             const openStyles = [];
 
+            // Group string: Start
             let prepend = '';
             if (styleOutput) {
                 prepend = '%c ';
                 openStyles.push(punctuationStyle);
             }
 
+            // Group string: Class/Scope
             let targetString = target ? getType(target) + '{' + getLogRef(target) + '}' : '';
             if (targetString) {
                 if (styleOutput) {
@@ -167,10 +172,12 @@ function wrapAndLogFunction(
                 targetString += '.';
             }
 
+            // Group string: Function name
             const functionString = styleOutput ? `%c${functionName}` : functionName;
             if (styleOutput) openStyles.push(methodStyle);
 
-            let argsString = logArgsInline ? inlineArgsForList(args) : `Arguments: ${args.length}`;
+            // Group string: Arguments
+            let argsString = logArgsInline ? inlineArgsForList(args, paramNames) : `${paramNames.slice(0, args.length)}`;
             if (styleOutput) {
                 argsString = `%c(%c${argsString}%c)`;
                 openStyles.push(punctuationStyle, argumentStyle, punctuationStyle);
@@ -178,17 +185,33 @@ function wrapAndLogFunction(
                 argsString = '(' + argsString + ')';
             }
 
+            // Group string: End
             const append = styleOutput ? ' ' : '';
 
-            // Open log
+            // Log: Group string
             const openStrings = prepend + targetString + functionString + argsString + append;
             if (!group)         console.log(openStrings, ...openStyles);
             else if (collapsed) console.groupCollapsed(openStrings, ...openStyles);
             else                console.group(openStrings, ...openStyles);
 
-            // Log objects
-            if (logArgs) logInfo('Args', args, styleOutput);
-            if (logTarget) logInfo('Target', this, styleOutput);
+            // Log: Extras
+            if (logArgs) {
+                logInfo(
+                    'Args',
+                    mapToObject(
+                        args,
+                        (value, key, index) => ({
+                            value,
+                            key: paramNames[index],
+                            skip: !paramNames[index],
+                        })
+                    ),
+                    styleOutput
+                );
+            }
+            if (logTarget) {
+                logInfo('Target', this, styleOutput);
+            }
 
             try {
                 // Run, log & return result
@@ -234,8 +257,20 @@ function logInfo(label: string, data: any, styleOutput: boolean) {
     }
 }
 
+/** Get the names of parameters */
+function getParamNames(func: Function): string[] {
+    const searchResult = /\(.*\)/.exec(func.toString()); // "(a, b, c)"
+    if (searchResult && searchResult[0]) {
+        return searchResult[0]
+            .substr(1, searchResult[0].length-2)
+            .split(',')
+            .map(s => s.trim());
+    }
+    return [];
+}
+
 /** Inline argument list (e.g. '1, true, "one", null, <MyClass> */
-function inlineArgsForList(args: any[], maxStringLength = 50, multilineLengthThreshold = 50) {
+function inlineArgsForList(args: any[], paramNames: string[] = [], maxStringLength = 50, multilineLengthThreshold = 100) {
     if (args.length === 0) return '';
 
     const formattedArgs = args.map(arg => {
@@ -249,14 +284,16 @@ function inlineArgsForList(args: any[], maxStringLength = 50, multilineLengthThr
             case "boolean": return arg;
         }
         return '<' + getType(arg) + '>';
-    });
+    }).map(
+        (arg, index) => paramNames[index] ? `${paramNames[index]}: ${arg}` : null
+    ).filter(value => value);
 
     // Join together
     const joinedArgs = formattedArgs.join(', ');
     if (joinedArgs.length <= multilineLengthThreshold) return joinedArgs;
 
     // If too long for single line, make multiline
-    return ' \n\t' + formattedArgs.join('\n, \n') + ' \n ';
+    return ' \n\t' + formattedArgs.join(',\n\t') + ' \n ';
 }
 
 /** Return the class name, function name, the JS data type, or "null". */
