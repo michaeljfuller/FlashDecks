@@ -10,7 +10,6 @@ const methodStyle = logStyle('#55eeff');
 const argumentStyle = logStyle('#ff9955');
 const infoStyle = logStyle('#d6b3ff');
 const groupStyles = [classStyle, punctuationStyle, methodStyle];
-const argStyles = [punctuationStyle, argumentStyle, punctuationStyle];
 
 export interface LogMethodOptions {
     logArgs?: boolean;          // 'Args: [...]'
@@ -45,7 +44,7 @@ function getLogRef(instance: any): number {
  *  const myInstance = new MyClass;
  *  myInstance.myMethod("my arg")   // > MyClass{1}.myMethod("my arg")
  *                                  //   > MyClass{1}.mySubMethod("my arg", "!")
- *                                  // > Result: "my arg!"
+ *                                  //   > Result: "my arg!"
  */
 export function logMethod(options?: LogMethodOptions) {
     return function (
@@ -61,47 +60,56 @@ export function logMethod(options?: LogMethodOptions) {
             group = true,
             styleOutput = isPlatformWeb,
         } = options || {};
-        const className = getType(target);
-
-        const method = descriptor.value;
-        const logMethod = group ? console.group.bind(console) : console.log.bind(console);
-
-        descriptor.value = function (this: any, ...args: any[]) {
-            try {
-                const instanceRef = '{' + getLogRef(this) + '}';
-
-                // Open group
-                if (logArgsInline) {
-                    if (styleOutput) {
-                        logMethod(`%c ${className + instanceRef}%c.%c${functionName}%c(%c${inlineArgsForList(args)}%c) `, ...groupStyles, ...argStyles);
-                    } else {
-                        logMethod(`${className + instanceRef}.${functionName}(${inlineArgsForList(args)})`);
-                    }
-                } else {
-                    if (styleOutput) {
-                        logMethod(`%c ${className + instanceRef}%c.%c${functionName}%c(%cArguments: ${args.length}%c)`, ...groupStyles, ...argStyles);
-                    } else {
-                        logMethod(`${className + instanceRef}.${functionName}(Arguments: ${args.length})`);
-                    }
-                }
-
-                // Log objects
-                if (logArgs) logInfo('Args', args, styleOutput);
-                if (logTarget) logInfo('Target', target, styleOutput);
-
-                // Run, log & return result
-                const result = method.apply(this, args); // Run original
-                if (logResult) logInfo('Result', result, styleOutput);
-                if (group) console.groupEnd(); // Close group
-                return result;
-
-            } catch(e) {
-                console.error(e); // Log error
-                if (group) console.groupEnd(); // Close group
-                throw e; // Re-throw
-            }
-        };
+        descriptor.value = wrapAndLogFunction(
+            descriptor.value,
+            null,
+            functionName,
+            group,
+            styleOutput,
+            logArgsInline,
+            logArgs,
+            logTarget,
+            logResult
+        );
     };
+}
+
+export interface LogFunctionOptions extends LogMethodOptions {}
+
+/**
+ * @example
+ *  Class MyClass {
+ *      exclaim = logFunction((str: string) => str + '!')
+ *  }
+ *  const myInstance = new MyClass;
+ *  myInstance.exclaim("my string") // > MyClass{1}.exclaim("my string")
+ *                                  //   > Result: "my string!"
+ */
+export function logFunction<Func extends Function, Scope extends object>(
+    func: Func,
+    label = func.name || 'Anonymous',
+    scope?: Scope,
+    options?: LogFunctionOptions
+): Func {
+    const {
+        logArgs = false,
+        logArgsInline = true,
+        logTarget = false,
+        logResult = false,
+        group = true,
+        styleOutput = isPlatformWeb,
+    } = options || {};
+    return wrapAndLogFunction(
+        func,
+        scope,
+        label,
+        group,
+        styleOutput,
+        logArgsInline,
+        logArgs,
+        logTarget,
+        logResult
+    ) as any;
 }
 
 /**
@@ -138,6 +146,80 @@ export function logGetter() {
     }
 }
 
+/** Common code between logMethod & logFunction. */
+function wrapAndLogFunction(
+    func: Function,
+    scope: any,
+    functionName: string,
+    group: boolean,
+    styleOutput: boolean,
+    logArgsInline: boolean,
+    logArgs: boolean,
+    logTarget: boolean,
+    logResult: boolean,
+) {
+    return giveFunctionName(
+        functionName+'_$LogWrapper',
+        function (this: any, ...args: any[]) {
+            const target = scope || this;
+            const openStyles = [];
+
+            let prepend = '';
+            if (styleOutput) {
+                prepend = '%c ';
+                openStyles.push(punctuationStyle);
+            }
+
+            let targetString = target ? getType(target) + '{' + getLogRef(target) + '}' : '';
+            if (targetString) {
+                if (styleOutput) {
+                    targetString = `%c${targetString}%c`;
+                    openStyles.push(classStyle, punctuationStyle);
+                }
+                targetString += '.';
+            }
+
+            const functionString = styleOutput ? `%c${functionName}` : functionName;
+            if (styleOutput) openStyles.push(methodStyle);
+
+            let argsString = logArgsInline ? inlineArgsForList(args) : `Arguments: ${args.length}`;
+            if (styleOutput) {
+                argsString = `%c(%c${argsString}%c)`;
+                openStyles.push(punctuationStyle, argumentStyle, punctuationStyle);
+            }
+
+            const append = styleOutput ? ' ' : '';
+
+            // Open log
+            const openStrings = prepend + targetString + functionString + argsString + append;
+            if (group) console.group(openStrings, ...openStyles);
+            else console.log(openStrings, ...openStyles);
+
+            // Log objects
+            if (logArgs) logInfo('Args', args, styleOutput);
+            if (logTarget) logInfo('Target', this, styleOutput);
+
+            try {
+                // Run, log & return result
+                const result = func.apply(this, args); // Run original
+                if (logResult) logInfo('Result', result, styleOutput);
+                if (group) console.groupEnd(); // Close group
+                return result;
+            } catch (e) {
+                console.error(e); // Log error
+                if (group) console.groupEnd(); // Close group
+                throw e; // Re-throw
+            }
+        } // End of function
+    );
+}
+
+/** Attach a name to a function */
+function giveFunctionName<Type extends Function>(name: string, func: Type): Type {
+    Object.defineProperty(func, 'name', {value: name, writable: false});
+    return func;
+}
+
 function logInfo(label: string, data: any, styleOutput: boolean) {
     if (styleOutput) {
         console.info('%c ' + label + ': ', infoStyle, data);
@@ -171,8 +253,8 @@ function inlineArgsForList(args: any[], maxStringLength = 50, multilineLengthThr
     return ' \n\t' + formattedArgs.join('\n, \n') + ' \n ';
 }
 
-type StandardType = "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function";
-export function getType(target: any): StandardType | "null" | string {
+/** Return the class name, function name, the JS data type, or "null". */
+export function getType(target: any): DataType | "null" | string {
     if (target === null) return "null";
     const type = typeof target;
     switch (type) {
@@ -185,3 +267,4 @@ export function getType(target: any): StandardType | "null" | string {
     }
     return type;
 }
+type DataType = "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function";
