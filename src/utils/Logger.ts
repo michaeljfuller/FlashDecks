@@ -1,6 +1,8 @@
 import {LogColor} from './logging/logColors';
 import {PrintFactory} from "./logging/PrintFactory";
 
+export {LogColor} from './logging/logColors';
+
 //<editor-fold desc="Queue Types">
 
 export type LogQueueItem = LogQueueItemMessage | LogQueueItemColor | LogQueueItemBackground;

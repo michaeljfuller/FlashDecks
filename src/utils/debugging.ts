@@ -1,16 +1,14 @@
 import {isPlatformWeb} from '../platform';
 import {mapToObject} from "./object";
+import {Logger, LogColor} from "./Logger"
 
 // Log CSS styles
-const defaultBackgroundColor = '#555'
-const defaultPunctuationColor = '#DDD'
-const defaultClassColor = '#55FF55'
-const defaultMethodColor = '#55eeff';
-const defaultArgumentColor = '#ff9955';
-const defaultInfoColor = '#d6b3ff';
-function logStyle(foreground: string, background = defaultBackgroundColor, lineHeight = '18px') {
-    return `color: ${foreground}; background: ${background}; line-height: ${lineHeight}; `;
-}
+const defaultBackgroundColor: LogColor = isPlatformWeb ? null: null;
+const defaultPunctuationColor: LogColor = isPlatformWeb ? null : null;
+const defaultClassColor: LogColor = isPlatformWeb ? "Green" : "BrightGreen";
+const defaultMethodColor: LogColor = isPlatformWeb ? "Blue" : "Cyan";
+const defaultArgumentColor: LogColor = isPlatformWeb ? "Yellow" : "Yellow";
+const defaultInfoColor: LogColor = isPlatformWeb ? "BrightRed" : "BrightRed";
 
 const LogRefKey = Symbol('Debugging log ref');
 const lastRefMap: Record<string, number> = {};
@@ -84,10 +82,6 @@ export function logGetter(options?: LogGetterOptions) {
         backgroundColor = defaultBackgroundColor,
         punctuationColor = defaultPunctuationColor,
     } = options || {};
-    const classStyle = logStyle(parentColor, backgroundColor);
-    const methodStyle = logStyle(color, backgroundColor);
-    const punctuationStyle = logStyle(punctuationColor, backgroundColor);
-
     return function (
         target: any,
         propertyName: string,
@@ -100,11 +94,13 @@ export function logGetter(options?: LogGetterOptions) {
                 const instanceRef = '{' + getLogRef(this) + '}';
                 const result = getter.apply(this);
 
-                if (styleOutput) {
-                    console.log(`%c ${className + instanceRef}%c.%c${propertyName} `, classStyle, punctuationStyle, methodStyle, {result});
-                } else {
-                    console.log(`${className + instanceRef}.${propertyName} `, {result});
-                }
+                const logger = new Logger(styleOutput);
+                logger.background(backgroundColor);
+                logger.color(parentColor).add(className + instanceRef);
+                logger.color(punctuationColor).add('.');
+                logger.color(color).add(propertyName);
+                logger.info({result});
+
                 return result;
             }
         }
@@ -112,12 +108,12 @@ export function logGetter(options?: LogGetterOptions) {
 }
 
 interface LogGetterOptions {
-    styleOutput?: boolean;      // If log should be colored.
-    color?: string;             // Log color for function name
-    parentColor?: string;       // Log color for the class/scope
-    backgroundColor?: string;   // Log color for the background
-    punctuationColor?: string;  // Log color for the punctuation
-    argumentColor?: string;     // Log color for the arguments
+    styleOutput?: boolean;          // If log should be colored.
+    color?: LogColor;               // Log color for function name
+    parentColor?: LogColor;         // Log color for the class/scope
+    backgroundColor?: LogColor;     // Log color for the background
+    punctuationColor?: LogColor;    // Log color for the punctuation
+    argumentColor?: LogColor;       // Log color for the arguments
 }
 
 /** Common code between logMethod & logFunction. */
@@ -129,7 +125,6 @@ function wrapAndLogFunction<Func extends GenericFunction = GenericFunction>(
 ): Func {
     const {
         logArgs = false,
-        logArgsInline = true,
         logTarget = false,
         logResult = false,
         extras,
@@ -141,12 +136,8 @@ function wrapAndLogFunction<Func extends GenericFunction = GenericFunction>(
         backgroundColor = defaultBackgroundColor,
         punctuationColor = defaultPunctuationColor,
         argumentColor = defaultArgumentColor,
+        infoColor = defaultInfoColor,
     } = options || {};
-
-    const methodStyle = logStyle(color, backgroundColor);
-    const classStyle = logStyle(parentColor, backgroundColor);
-    const punctuationStyle = logStyle(punctuationColor, backgroundColor);
-    const argumentStyle = logStyle(argumentColor, backgroundColor);
 
     const paramNames = getParamNames(func);
 
@@ -154,51 +145,33 @@ function wrapAndLogFunction<Func extends GenericFunction = GenericFunction>(
         functionName+'_$LogWrapper',
         function (this: any, ...args: any[]) {
             const target = scope || this;
-            const openStyles = [];
 
-            // Group string: Start
-            let prepend = '';
-            if (styleOutput) {
-                prepend = '%c ';
-                openStyles.push(punctuationStyle);
-            }
+            const logger = new Logger(styleOutput);
+            logger.background(backgroundColor);
 
-            // Group string: Class/Scope
-            let targetString = target ? getType(target) + '{' + getLogRef(target) + '}' : '';
-            if (targetString) {
-                if (styleOutput) {
-                    targetString = `%c${targetString}%c`;
-                    openStyles.push(classStyle, punctuationStyle);
+            // Group string: Class/Scope + Function name
+            const runLogTargetAndFunction = () => {
+                if (target) {
+                    logger.color(parentColor).add(getType(target) + '{' + getLogRef(target) + '}');
+                    logger.color(punctuationColor).add('.');
                 }
-                targetString += '.';
-            }
-
-            // Group string: Function name
-            const functionString = styleOutput ? `%c${functionName}` : functionName;
-            if (styleOutput) openStyles.push(methodStyle);
+                logger.color(color).add(functionName);
+            };
+            runLogTargetAndFunction();
 
             // Group string: Arguments
-            let argsString = logArgsInline ? inlineArgsForList(args, paramNames) : `${paramNames.slice(0, args.length)}`;
-            if (styleOutput) {
-                argsString = `%c(%c${argsString}%c)`;
-                openStyles.push(punctuationStyle, argumentStyle, punctuationStyle);
-            } else {
-                argsString = '(' + argsString + ')';
-            }
-
-            // Group string: End
-            const append = styleOutput ? ' ' : '';
+            logger.color(punctuationColor).add('(');
+            logger.color(argumentColor).add(inlineArgsForList(args, paramNames));
+            logger.color(punctuationColor).add(')');
 
             // Log: Group string
-            const openStrings = prepend + targetString + functionString + argsString + append;
-            if (!group)         console.log(openStrings, ...openStyles);
-            else if (collapsed) console.groupCollapsed(openStrings, ...openStyles);
-            else                console.group(openStrings, ...openStyles);
+            if (!group)         logger.info();
+            else if (collapsed) logger.groupCollapsed();
+            else                logger.group();
 
             // Log: Extras
             if (logArgs) {
-                logInfo(
-                    'Args',
+                logger.color(infoColor).add('Args').info(
                     mapToObject(
                         args,
                         (value, key, index) => ({
@@ -206,21 +179,20 @@ function wrapAndLogFunction<Func extends GenericFunction = GenericFunction>(
                             key: paramNames[index],
                             skip: !paramNames[index],
                         })
-                    ),
-                    styleOutput
+                    )
                 );
             }
             if (logTarget) {
-                logInfo('Target', this, styleOutput);
+                logger.color(infoColor).info('Target', this);
             }
             if (extras) {
                 Object.keys(extras).forEach(extraKey => {
                     const extraCallback = extras[extraKey];
                     if (extraCallback) {
                         try {
-                            logInfo(extraKey, extraCallback(target, args), styleOutput);
+                            logger.color(infoColor).info(extraKey, extraCallback(target, args));
                         } catch (e) {
-                            logInfo(extraKey, e, styleOutput);
+                            logger.color(infoColor).error(extraKey, e);
                         }
                     }
                 })
@@ -229,13 +201,16 @@ function wrapAndLogFunction<Func extends GenericFunction = GenericFunction>(
             try {
                 // Run, log & return result
                 const result = func.apply(this, args); // Run original
-                if (logResult) logInfo('Result', result, styleOutput);
-                if (group) console.groupEnd(); // Close group
+                if (logResult) {
+                    runLogTargetAndFunction();
+                    logger.color(infoColor).info(' Result', result);
+                }
                 return result;
             } catch (e) {
-                console.error(e); // Log error
-                if (group) console.groupEnd(); // Close group
+                logger.error(e);
                 throw e; // Re-throw
+            } finally {
+                logger.groupEndAll(); // Close group
             }
         } as Func // End of function
     );
@@ -243,18 +218,18 @@ function wrapAndLogFunction<Func extends GenericFunction = GenericFunction>(
 
 export interface WrapAndLogFunctionOptions<Parent = any, Func extends GenericFunction = GenericFunction> {
     logArgs?: boolean;              // 'Args: [...]'
-    logArgsInline?: boolean;        // 'MyClass.myMethod("my arg")'
     logTarget?: boolean;            // 'Target: MyClass {...}'
     logResult?: boolean;            // 'Result: undefined'
     extras?: LogExtraMap<Parent, Func>;   // Print out extra info, based on the key and output of the callback
     group?: boolean;                // If a log group should be created
     collapsed?: boolean;            // If the log group should be collapsed
     styleOutput?: boolean;          // If log should be colored.
-    color?: string;                 // Log color for function name
-    parentColor?: string;           // Log color for the class/scope
-    backgroundColor?: string;       // Log color for the background
-    punctuationColor?: string;      // Log color for the punctuation
-    argumentColor?: string;         // Log color for the arguments
+    color?: LogColor;               // Log color for function name
+    parentColor?: LogColor;         // Log color for the class/scope
+    backgroundColor?: LogColor;     // Log color for the background
+    punctuationColor?: LogColor;    // Log color for the punctuation
+    argumentColor?: LogColor;       // Log color for the arguments
+    infoColor?: LogColor;           // Log color for extra details
 }
 type LogExtraMap<Type = any, Func extends GenericFunction = GenericFunction> = Record<string, LogExtraCallback<Type, Func>>;
 type LogExtraCallback<Type = any, Func extends GenericFunction = GenericFunction> = (instanceOrScope: Type, args: Parameters<Func>) => any;
@@ -264,14 +239,6 @@ type GenericFunction = (...args: any) => any;
 function giveFunctionName<Type extends GenericFunction>(name: string, func: Type): Type {
     Object.defineProperty(func, 'name', {value: name, writable: false});
     return func;
-}
-
-function logInfo(label: string, data: any, styleOutput: boolean) {
-    if (styleOutput) {
-        console.info('%c ' + label + ': ', logStyle(defaultInfoColor), data);
-    } else {
-        console.info(label + ': ', data);
-    }
 }
 
 /** Get the names of parameters */
@@ -302,7 +269,7 @@ function inlineArgsForList(args: any[], paramNames: string[] = [], maxStringLeng
         }
         return '<' + getType(arg) + '>';
     }).map(
-        (arg, index) => paramNames[index] ? `${paramNames[index]}: ${arg}` : null
+        (arg, index) => paramNames[index] ? `${paramNames[index]}: ${arg}` : arg
     ).filter(value => value);
 
     // Join together
