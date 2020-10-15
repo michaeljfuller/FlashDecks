@@ -39,6 +39,8 @@ export class Logger {
     protected printer: PrintFactory = new PrintFactory();
     public enabled = true;
 
+    constructor(readonly canStyle = true) {}
+
     //<editor-fold desc="Output">
 
     /** Output group */
@@ -100,10 +102,16 @@ export class Logger {
     /** Close the group. */
     groupEnd(): void {
         if (this.enabled) {
-            console.groupEnd();
             if (this.groupDepth > 0) {
+                console.groupEnd();
                 this.groupDepth--;
             }
+        }
+    }
+
+    groupEndAll(): void {
+        while (this.enabled && this.groupDepth > 0) {
+            this.groupEnd();
         }
     }
 
@@ -151,11 +159,11 @@ export class Logger {
     //<editor-fold desc="Color">
 
     color(value: LogColor): this {
-        this.queue.push({ type: LogQueueItemType.Color, value });
+        if (this.canStyle) this.queue.push({ type: LogQueueItemType.Color, value });
         return this;
     }
     background(value: LogColor): this {
-        this.queue.push({ type: LogQueueItemType.Background, value });
+        if (this.canStyle) this.queue.push({ type: LogQueueItemType.Background, value });
         return this;
     }
     resetColors(): this {
