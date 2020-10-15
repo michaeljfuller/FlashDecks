@@ -1,17 +1,7 @@
 import {LogColor} from './logging/logColors';
 import {PrintFactory} from "./logging/PrintFactory";
 
-//<editor-fold desc="Types">
-
-export enum LogType {
-    None,
-    Group,
-    GroupCollapsed,
-    Log,
-    Info,
-    Error,
-    Warning
-}
+//<editor-fold desc="Queue Types">
 
 export type LogQueueItem = LogQueueItemMessage | LogQueueItemColor | LogQueueItemBackground;
 export enum LogQueueItemType {
@@ -37,94 +27,116 @@ export interface LogQueueItemBackground {
 /**
  * A multi-platform logger that can color output.
  * @example
- *  logger.log                  // Flag as "setting up group" and return self
- *      .color('Red')           // Set color & return self
- *      .append('Something:')   // Append text & return self
- *      .blue                   // Set color & return self
- *      .write(data)            // Append text, print data, remove "setting up group" flag, increment indent & return self
- *      .resetColor();          // Reset color & return self
+ *  logger
+ *      .color('Red')       // Set color & return self
+ *      .add('Something:')  // Append text & return self
+ *      .blue               // Set color & return self
+ *      .log(data)          // Append final value and output as "log".
  */
 export class Logger {
-    protected currentType: LogType = LogType.None;
-    protected collapsed = false;
     protected groupDepth = 0;
     protected queue: LogQueueItem[] = [];
     protected printer: PrintFactory = new PrintFactory();
     public enabled = true;
-    public defaultColor: LogColor = null;
-    public defaultBackground: LogColor = null;
 
-    //<editor-fold desc="Start">
+    //<editor-fold desc="Output">
 
-    /** Start a new line of the given type. */
-    start(type: LogType): this {
-        this.currentType = type;
-        return this;
+    /** Output group */
+    group(...items: any[]): void {
+        if (this.enabled) {
+            this.add(...items);
+            console.group(...this.getPrintArgs());
+            this.groupDepth++;
+        }
+        this.clear();
     }
 
-    /** Start a new group line. */
-    get group(): this {
-        this.collapsed = false;
-        return this.start(LogType.Group);
+    /** Output collapsed group */
+    groupCollapsed(...items: any[]): void {
+        if (this.enabled) {
+            this.add(...items);
+            console.groupCollapsed(...this.getPrintArgs());
+            this.groupDepth++;
+        }
+        this.clear();
     }
 
-    /** Start a new collapsed group line. */
-    get groupCollapsed(): this {
-        this.collapsed = true;
-        return this.start(LogType.GroupCollapsed);
+    /** Output log */
+    log(...items: any[]): void {
+        if (this.enabled) {
+            this.add(...items);
+            console.log(...this.getPrintArgs());
+        }
+        this.clear();
     }
 
-    /** Start a new log line. */
-    get log(): this {
-        return this.start(LogType.Log);
+    /** Output info */
+    info(...items: any[]): void {
+        if (this.enabled) {
+            this.add(...items);
+            console.log(...this.getPrintArgs());
+        }
+        this.clear();
     }
 
-    /** Start a new info line. */
-    get info(): this {
-        return this.start(LogType.Info);
+    /** Output void */
+    error(...items: any[]): void {
+        if (this.enabled) {
+            this.add(...items);
+            console.log(...this.getPrintArgs());
+        }
+        this.clear();
     }
 
-    /** Start a new error line. */
-    get error(): this {
-        return this.start(LogType.Error);
+    /** Output warning */
+    warning(...items: any[]): void {
+        if (this.enabled) {
+            this.add(...items);
+            console.log(...this.getPrintArgs());
+        }
+        this.clear();
     }
 
-    /** Start a new warning line. */
-    get warning(): this {
-        return this.start(LogType.Warning);
+    /** Close the group. */
+    groupEnd(): void {
+        if (this.enabled) {
+            console.groupEnd();
+            if (this.groupDepth > 0) {
+                this.groupDepth--;
+            }
+        }
+    }
+
+    clear(): void {
+        this.queue = [];
+        this.printer.clear();
     }
 
     //</editor-fold>
-    //<editor-fold desc="Write">
+    //<editor-fold desc="Add">
 
     /** Queue item to be printed. */
-    append(...items: any[]): this {
+    add(...items: any[]): this {
         items.forEach(value => this.queue.push({ type: LogQueueItemType.Message, value }));
         return this;
     }
 
     /** Queue a line break to be printed. */
     get lineBreak(): this {
-        return this.append('\n');
+        return this.add('\n');
     }
 
     /** Queue a space to be printed. */
     get space(): this {
-        return this.append(' ');
-    }
-
-    /** Add item and print the queue. */
-    write(...items: any[]): this {
-        return this.append(...items).end();
+        return this.add(' ');
     }
 
     //</editor-fold>
-    //<editor-fold desc="End">
+    //<editor-fold desc="Print">
 
     /** Print the queue. */
-    protected print(): void {
+    protected getPrintArgs(): any[] {
         this.printer.start(this.groupDepth);
-
         this.queue.forEach((item) => {
             switch (item.type) {
                 case LogQueueItemType.Message: return this.printer.addMessage(item.value);
@@ -132,39 +144,7 @@ export class Logger {
                 case LogQueueItemType.Background: return this.printer.addBackgroundColor(item.value);
             }
         });
-        const args = this.printer.finish();
-
-        switch (this.currentType) {
-            case LogType.Group: return console.group(...args);
-            case LogType.GroupCollapsed: return console.groupCollapsed(...args);
-            case LogType.Log: return console.log(...args);
-            case LogType.Info: return console.info(...args);
-            case LogType.Error: return console.error(...args);
-            case LogType.Warning: return console.warn(...args);
-        }
-    }
-
-    /** Print the queue. */
-    end(cancel = false): this {
-        if (!cancel) {
-            if (this.enabled) {
-                this.print();
-            }
-            if (this.currentType === LogType.Group) {
-                this.groupDepth++;
-            }
-        }
-        this.currentType = LogType.None;
-        this.queue = [];
-        return this;
-    }
-
-    /** Close the group. */
-    groupEnd(): this { // TODO close for web
-        if (this.groupDepth > 0) {
-            this.groupDepth--;
-        }
-        return this;
+        return this.printer.finish();
     }
 
     //</editor-fold>
