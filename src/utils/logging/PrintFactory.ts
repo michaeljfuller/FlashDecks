@@ -109,11 +109,14 @@ export class PrintFactory extends PrintFactoryBase {
                         // If this is the first argument, it can be styled, so set as a single string
                         if (!currentStyle.foreground && !currentStyle.background) { // If no style, use defaults
                             if (item.defaultForeground || item.defaultBackground) {
-                                cssArgs.push(colorsToCss(item.defaultForeground, item.defaultBackground));
                                 hasNewStyle = true; // Flag that a new style was added
                             }
                         }
-                        if (hasNewStyle) currentString += '%c'; // Style was just added, so needs style token
+                        // Apply style
+                        if (hasNewStyle) {
+                            cssArgs.push(colorsToCss(currentStyle.foreground, currentStyle.background));
+                            currentString += '%c';
+                        }
                         currentString += item.value;
                     } else {
                         // If not first arg, cannot be styled, so no need to build up string
@@ -131,7 +134,6 @@ export class PrintFactory extends PrintFactoryBase {
                 case QueueItemType.Style:
                     if (result.length === 0) { // If the first argument hasn't been added yet, it can be styled
                         Object.assign(currentStyle, item); // Update currentStyle
-                        cssArgs.push(colorsToCss(currentStyle.foreground, currentStyle.background)); // Push CSS
                         hasNewStyle = true; // Flag that a new style was added
                     }
                     break;
@@ -144,7 +146,6 @@ export class PrintFactory extends PrintFactoryBase {
 
         this.clear();
         return result;
-        // console.log("%cHello "+"%cWorld", "color:red", "color:blue", {foo:1}, "cannot be styled" );
     }
 }
 
