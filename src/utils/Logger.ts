@@ -1,9 +1,7 @@
-import {LogColorName} from './logColors';
-import {PrintFactory} from "./PrintFactory";
+import {LogColor} from './logging/logColors';
+import {PrintFactory} from "./logging/PrintFactory";
 
 //<editor-fold desc="Types">
-
-export type LogColor = LogColorName|null;
 
 export enum LogType {
     None,
@@ -36,6 +34,16 @@ export interface LogQueueItemBackground {
 
 //</editor-fold>
 
+/**
+ * A multi-platform logger that can color output.
+ * @example
+ *  logger.log                  // Flag as "setting up group" and return self
+ *      .color('Red')           // Set color & return self
+ *      .append('Something:')   // Append text & return self
+ *      .blue                   // Set color & return self
+ *      .write(data)            // Append text, print data, remove "setting up group" flag, increment indent & return self
+ *      .resetColor();          // Reset color & return self
+ */
 export class Logger {
     protected currentType: LogType = LogType.None;
     protected collapsed = false;
@@ -211,14 +219,3 @@ export class Logger {
     //</editor-fold>
 }
 export default new Logger();
-
-
-/*
-
-logger.group() // Flag as "setting up group" and return self
-    .color('Red') // Set color & return self
-    .append('Something:') // Append text & return self
-    .blue  // Set color & return self
-    .write(data) // Append text, print data, remove "setting up group" flag, increment indent & return self
-    .resetColor(); // Reset color & return self
- */

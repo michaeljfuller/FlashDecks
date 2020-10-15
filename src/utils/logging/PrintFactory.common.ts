@@ -1,4 +1,4 @@
-import {LogColor} from "./Logger";
+import {LogColor} from "./logColors";
 
 export abstract class PrintFactoryBase {
     constructor() {

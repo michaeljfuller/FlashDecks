@@ -18,3 +18,4 @@ export interface ILogColors {
     BrightWhite: string;
 }
 export type LogColorName = keyof ILogColors;
+export type LogColor = LogColorName|null;

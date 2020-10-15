@@ -1,6 +1,5 @@
 import {PrintFactoryBase} from "./PrintFactory.common";
-import {LogColor} from "./Logger";
-import {ILogColors} from "./logColors";
+import {ILogColors, LogColor} from "./logColors";
 
 export class PrintFactory extends PrintFactoryBase {
     protected result: any[] = [];
