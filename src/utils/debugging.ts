@@ -76,7 +76,7 @@ export function logFunction<Func extends GenericFunction = GenericFunction, Scop
  */
 export function logGetter(options?: LogGetterOptions) {
     const {
-        styleOutput = isPlatformWeb,
+        styleOutput = true,
         color = defaultMethodColor,
         parentColor = defaultClassColor,
         backgroundColor = defaultBackgroundColor,
@@ -130,7 +130,7 @@ function wrapAndLogFunction<Func extends GenericFunction = GenericFunction>(
         extras,
         group = true,
         collapsed = false,
-        styleOutput = isPlatformWeb,
+        styleOutput = true,
         color = defaultMethodColor,
         parentColor = defaultClassColor,
         backgroundColor = defaultBackgroundColor,
@@ -171,7 +171,7 @@ function wrapAndLogFunction<Func extends GenericFunction = GenericFunction>(
 
             // Log: Extras
             if (logArgs) {
-                logger.color(infoColor).add('Args').info(
+                logger.color(infoColor).add('Args: ').info(
                     mapToObject(
                         args,
                         (value, key, index) => ({
@@ -183,16 +183,16 @@ function wrapAndLogFunction<Func extends GenericFunction = GenericFunction>(
                 );
             }
             if (logTarget) {
-                logger.color(infoColor).info('Target', this);
+                logger.color(infoColor).info('Target: ', this);
             }
             if (extras) {
                 Object.keys(extras).forEach(extraKey => {
                     const extraCallback = extras[extraKey];
                     if (extraCallback) {
                         try {
-                            logger.color(infoColor).info(extraKey, extraCallback(target, args));
+                            logger.color(infoColor).info(extraKey+': ', extraCallback(target, args));
                         } catch (e) {
-                            logger.color(infoColor).error(extraKey, e);
+                            logger.color(infoColor).error(extraKey+': ', e);
                         }
                     }
                 })
@@ -203,7 +203,7 @@ function wrapAndLogFunction<Func extends GenericFunction = GenericFunction>(
                 const result = func.apply(this, args); // Run original
                 if (logResult) {
                     runLogTargetAndFunction();
-                    logger.color(infoColor).info(' Result', result);
+                    logger.color(infoColor).info(' Result: ', result);
                 }
                 return result;
             } catch (e) {
