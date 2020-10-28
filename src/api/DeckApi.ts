@@ -23,7 +23,7 @@ export class DeckApi {
             graphqlOperation(getDeck, variables)
         ) as GraphQueryResponse<GetDeckQuery>;
 
-        promise.then(data => console.log('DeckApi.getById', id, data));
+        // promise.then(data => console.log('DeckApi.getById', id, data));
 
         return new ApiRequest(
             promise.then( response => {
@@ -41,7 +41,7 @@ export class DeckApi {
             graphqlOperation(listDecks, variables)
         ) as GraphQueryResponse<ListDecksQuery>;
 
-        promise.then(data => console.log('DeckApi.getList', variables, data));
+        // promise.then(data => console.log('DeckApi.getList', variables, data));
 
         return new ApiRequest(
             promise.then(
@@ -57,7 +57,7 @@ export class DeckApi {
             graphqlOperation(getDecksByOwner, variables)
         ) as GraphQueryResponse<GetDecksByOwnerQuery>;
 
-        promise.then(data => console.log('DeckApi.getForUser', variables, data));
+        // promise.then(data => console.log('DeckApi.getForUser', variables, data));
 
         return new ApiRequest(
             promise.then(
