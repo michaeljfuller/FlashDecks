@@ -68,4 +68,4 @@ export class AuthApi {
 
 }
 
-export default AuthApi;
+export default new AuthApi;

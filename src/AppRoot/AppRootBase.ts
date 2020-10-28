@@ -2,7 +2,7 @@ import React from "react";
 import LoggedInUserStore from '../store/loggedInUser/LoggedInUserStore';
 import {CognitoUserModel, UserModel} from "../models";
 import userApi from "../api/UserApi";
-import AuthApi from "../api/AuthApi";
+import auth from "../api/AuthApi";
 import ToastStore from "../store/toast/ToastStore";
 import {getErrorText} from "../utils/string";
 
@@ -17,15 +17,13 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
         user: undefined,
         cognitoUser: undefined,
     };
-    auth: AuthApi = new AuthApi;
     toast = new ToastStore(this);
 
     async componentDidMount() {
-        this.auth = new AuthApi;
-        this.auth.onSignIn.add(() => this.fetchUserData());
-        this.auth.onSignOut.add(() => this.clearUser());
-        this.auth.onSignInFailed.add(message => this.onErrorMessage(message || 'Failed to sign in.'));
-        this.auth.onConfigured.add(message => this.onErrorMessage('Auth module already configured.', message));
+        auth.onSignIn.add(() => this.fetchUserData());
+        auth.onSignOut.add(() => this.clearUser());
+        auth.onSignInFailed.add(message => this.onErrorMessage(message || 'Failed to sign in.'));
+        auth.onConfigured.add(message => this.onErrorMessage('Auth module already configured.', message));
         await this.fetchUserData();
     }
 
@@ -52,7 +50,7 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
 
         // Get user from Cognito.
         try {
-            cognitoUser = await this.auth.getUser();
+            cognitoUser = await auth.getUser();
         } catch (e) {
             this.onErrorMessage('Unable to sign in.', getErrorText(e));
         }

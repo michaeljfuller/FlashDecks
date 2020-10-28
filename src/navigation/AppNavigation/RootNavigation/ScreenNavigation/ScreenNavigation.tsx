@@ -11,7 +11,7 @@ import {
 import {toggleDrawer} from "../../appNavigationRef";
 
 import {toastStore} from "../../../../store/toast/ToastStore";
-import {AuthApi} from "../../../../api/AuthApi";
+import auth from "../../../../api/AuthApi";
 
 import AppBanner from "../../../../components/banner/AppBanner";
 import InfoBanner from "../../../../components/banner/InfoBanner";
@@ -20,7 +20,6 @@ import appRouteScreens from "../../../../screens/appRouteScreens";
 import AppRoutesTree from "../../../../screens/AppRouteTree";
 
 const DrawerNavigator = createExtendableDrawerNavigator();
-const auth = new AuthApi;
 
 export interface ScreenNavigationParams {
     title?: string;
