@@ -39,6 +39,12 @@ export function removeItem<Type>(array: readonly Type[], index: number): Type[] 
     ];
 }
 
+export function removeFirst<Type>(array: readonly Type[], value: any): Type[] {
+    const index = array.indexOf(value);
+    if (index < 0) return [...array];
+    return removeItem(array, index);
+}
+
 /** Filter for items that match all the filter values. */
 export function simpleFilter<
     Item,

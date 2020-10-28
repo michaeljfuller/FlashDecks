@@ -2,7 +2,7 @@ import {isPlatformWeb} from '../platform';
 import {mapToObject} from "./object";
 import {Logger, LogColor} from "./Logger"
 
-export {compare} from "./debugging/compare"
+export {compare, readableCompare} from "./debugging/compare"
 
 // Log CSS styles
 const defaultBackgroundColor: LogColor = isPlatformWeb ? null: null;

@@ -21,6 +21,10 @@ export function getErrorName(e: Error|string|unknown, defaultTitle = 'Error'): s
     return (e instanceof Error && e.name) || defaultTitle;
 }
 
+export function capitalise(string: string): string {
+    return string.substr(0, 1).toUpperCase() + string.substr(1);
+}
+
 // /** Split a string in two, at the given index. */
 // export function divideString(str: string, index: number): [string, string] {
 //     return [str.slice(0, index), str.slice(index)];

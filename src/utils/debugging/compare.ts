@@ -75,3 +75,20 @@ export function compare<Type extends Record<any, any>>(first: Type, second: Type
     if (!same) result.differences = diff;
     return result;
 }
+
+/**
+ * Compare two objects and return an explanation of their differences, in a more human-friendly format.
+ */
+export function readableCompare<Type extends Record<any, any>>(first: Type, second: Type, firstName = 'first', secondName = 'second') {
+    return flattenComparison(
+        compare(first, second, firstName, secondName)
+    );
+}
+function flattenComparison(comparison: ObjectComparison) {
+    if (!comparison.differences) return comparison.message;
+
+    return mapToObject(comparison.differences, (diff: ObjectDifferenceValue) => {
+        if (typeof diff === "string") return { value: diff };
+        return { value: diff.values || diff.message };
+    });
+}

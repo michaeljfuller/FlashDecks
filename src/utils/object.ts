@@ -42,7 +42,7 @@ export type MapToObjectCallback<
     key: keyof Target,
     index: number
 ) => {
-    value: ValuesOut;
+    value?: ValuesOut;
     key?: KeysOut;
     skip?: boolean;
 };
@@ -50,4 +50,10 @@ export type MapToObjectCallback<
 /** A safe way of calling hasOwnProperty, now objects can have a different prototype via Object.create(). */
 export function hasProperty(obj: Record<string, any>, key: string): boolean {
     return Object.prototype.hasOwnProperty.call(obj, key);
+}
+
+export function isObject(obj: any, includeNull=true, includeUndefined=false): boolean {
+    if (!includeNull && obj === null) return false;
+    if (includeUndefined && obj === undefined) return true;
+    return typeof obj === "object";
 }

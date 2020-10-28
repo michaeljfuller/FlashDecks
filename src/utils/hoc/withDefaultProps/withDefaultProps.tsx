@@ -5,7 +5,7 @@ import {withDefaults} from "../../object";
  * Create a component that wraps another. The wrapper will forward on props, while providing defaults.
  * @example const MyThing = withDefaultProps(Something, { foo: 'bar' }, null, 'MyThing');
  */
-export function withDefaultProps(
+export function withDefaultProps<T>(
     WrappedComponent: any,
     defaultProps: any,
     overrideProps: any = {},
