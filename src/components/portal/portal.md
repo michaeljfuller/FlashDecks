@@ -3,16 +3,16 @@ Portals have the job of taking the content of a ***PortalEntrance*** and renderi
 
 ## Components
 ### PortalNetwork
-A required top-level React Context Component which holds the ***PortalNetworkManager*** to manage state.
+A required top-level React Context Component which holds the ***PortalNetworkManager*** to link Portal entrances and exits.
 
 ### PortalNetworkManager
-A manager that links ***PortalEntrance***s to a ***PortalExit*** by a common ***networkId*** in the ***PortalNetwork***.
+A manager that links ***PortalEntrance***s to a ***PortalExit*** by a common ***portalId*** in the ***PortalNetwork***.
 
 ### PortalEntrance
-A component whose contents will get sent to the ***PortalExit*** that has the same ***networkId*** ***PortalNetwork***.
+A component whose contents will get sent to the ***PortalExit*** that has the same ***portalId*** ***PortalNetwork***.
 
 ### PortalExit
-A component which renders the contents of ***PortalEntrance***s with the same ***networkId*** ***PortalNetwork***.
+A component which renders the contents of ***PortalEntrance***s with the same ***portalId*** ***PortalNetwork***.
 
 ### PortalWatcher
 A utility class which sends ***PortalNetworkManager*** data to the child function.
@@ -21,7 +21,7 @@ A utility class which sends ***PortalNetworkManager*** data to the child functio
 ```tsx
 <PortalNetwork>
     <View>
-        <PortalEntrance networkId="example">
+        <PortalEntrance portalId="example">
             <Text>Hello World</Text>
         </PortalEntrance>
     </View>
@@ -29,7 +29,7 @@ A utility class which sends ***PortalNetworkManager*** data to the child functio
         <PortalWatcher>{
             (data) => <Text>There are {data.entrances.length} entrance(s).</Text>
         }</PortalWatcher>
-        <PortalExit networkId="example" />
+        <PortalExit portalId="example" />
     </View>
 </PortalNetwork>
 ```

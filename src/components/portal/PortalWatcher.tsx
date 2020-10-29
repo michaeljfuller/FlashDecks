@@ -1,16 +1,17 @@
-import React, {Component, ConsumerProps} from "react";
+import React, {ConsumerProps} from "react";
 import {PortalNetworkManager} from "./PortalNetwork/PortalNetworkManager";
 import {PortalNetworkContext} from "./PortalNetwork/PortalNetworkContext";
 import {Subscription} from "rxjs";
-import {PortalExitProps} from "./PortalExit";
+import {PortalExit, PortalExitProps} from "./PortalExit";
+import {PortalEntrance} from "./PortalEntrance";
 
 export interface PortalWatcherData {
-    exit: HTMLDivElement|null;
-    entrances: Component[];
+    exit: PortalExit|null;
+    entrances: PortalEntrance[];
 }
 
 export interface PortalWatcherProps extends ConsumerProps<PortalWatcherData> {
-    networkId?: string;
+    portalId: string;
 }
 
 export interface PortalWatcherState {
@@ -38,7 +39,7 @@ export class PortalWatcher extends React.Component<PortalWatcherProps, PortalWat
     onLinkChange: Subscription|null = null;
 
     componentDidMount() {
-        this.watch(this.props.networkId);
+        this.watch(this.props.portalId);
     }
 
     componentWillUnmount() {
@@ -46,16 +47,16 @@ export class PortalWatcher extends React.Component<PortalWatcherProps, PortalWat
     }
 
     componentDidUpdate(prevProps: Readonly<PortalExitProps>/*, prevState: Readonly<any>, snapshot?: any*/) {
-        if (prevProps.networkId !== this.props.networkId) {
-            this.watch(this.props.networkId);
+        if (prevProps.portalId !== this.props.portalId) {
+            this.watch(this.props.portalId);
         }
     }
 
-    watch(networkId: string|undefined) {
+    watch(portalId: string) {
         this.unwatch();
-        this.onLinkChange = this.manager.subscribeToLinkChanges((data) => {
+        this.onLinkChange = this.manager.subscribeToLinkChanges(portalId, (data) => {
             this.setState({ data });
-        }, networkId);
+        });
     }
 
     unwatch() {

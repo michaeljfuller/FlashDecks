@@ -1,10 +1,11 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import {View, ViewStyle} from "react-native";
 import {PortalNetworkContext, PortalNetworkManager} from "./PortalNetwork";
 
 export interface PortalEntranceProps {
-    networkId?: string;
-    render?: boolean;
+    /** The ID linking this PortalEntrance to a PortalExit. */
+    portalId: string;
+    style?: ViewStyle;
 }
 
 /**
@@ -18,39 +19,32 @@ export class PortalEntrance extends React.Component<PortalEntranceProps, any> {
         return this.context;
     }
 
-    componentDidMount() {
-        this.registerPortal();
-    }
+    /** The element to be picked up by a PortalExit. */
+    element: React.ReactElement|null = null;
 
+    componentDidMount() {
+        this.registerWithManager();
+    }
     componentWillUnmount() {
-        this.unregisterPortal();
+        this.unregisterWithManager();
     }
 
     componentDidUpdate(prevProps: Readonly<PortalEntranceProps>/*, prevState: Readonly<any>, snapshot?: any*/) {
-        const didRender = prevProps.render === undefined ? true : prevProps.render;
-        const willRender = this.props.render === undefined ? true : this.props.render;
-        if (!didRender && willRender) this.registerPortal();
-        if (didRender && !willRender) this.unregisterPortal();
+        // Change ID and/or force refresh on the PortalExit.
+        this.unregisterWithManager(prevProps.portalId);
+        this.registerWithManager();
     }
 
-    private registerPortal() {
-        this.manager.addEntrance(this, this.props.networkId);
+    registerWithManager(portalId = this.props.portalId) {
+        this.manager.addEntrance(portalId, this);
     }
-
-    private unregisterPortal() {
-        this.manager.removeEntrance(this, this.props.networkId);
+    unregisterWithManager(portalId = this.props.portalId) {
+        this.manager.removeEntrance(portalId, this);
     }
 
     render() {
-        const id = this.props.networkId;
-        const container = this.manager.getExit(id);
-        if (container) {
-            return ReactDOM.createPortal(
-                this.props.children,
-                container,
-            );
-        }
-        console.warn(`Cannot render PortalEntrance because its PortalNetwork has no PortalExit with portalId ${id ? `"${id}"` : '[default]'}.`)
+        // Update the element to be picked up by the PortalExit, and return nothing to be rendered here.
+        this.element = <View style={this.props.style}>{this.props.children}</View>;
         return null;
     }
 

@@ -1,13 +1,15 @@
 import React from "react";
+import {View, ViewStyle} from "react-native";
 import {PortalNetworkContext} from "./PortalNetwork/PortalNetworkContext";
 import {PortalNetworkManager} from "./PortalNetwork/PortalNetworkManager";
 
 export interface PortalExitProps {
-    networkId?: string;
+    portalId: string;
+    style?: ViewStyle;
 }
 
 /***
- * A component which renders the contents of PortalEntrances with the same networkId PortalNetwork.
+ * A component which renders the contents of PortalEntrances with the same portalId in the PortalNetwork.
  */
 export class PortalExit extends React.Component<PortalExitProps> {
 
@@ -17,33 +19,46 @@ export class PortalExit extends React.Component<PortalExitProps> {
         return this.context;
     }
 
-    private containerRef = React.createRef<HTMLDivElement>();
+    /** The entrance this is linked to */
+    get entrance() {
+        return this.manager.getEntrances(this.props.portalId)[0] || null;
+    }
+
+    /** The subscription to link changes. */
+    linkChangeSubscription?: ReturnType<PortalNetworkManager['subscribeToLinkChanges']>;
 
     componentDidMount() {
-        this.registerWithManager(this.props.networkId);
+        this.registerWithManager(this.props.portalId);
     }
 
     componentWillUnmount() {
-        this.deregisterWithManager(this.props.networkId);
+        this.unregisterWithManager(this.props.portalId);
     }
 
     componentDidUpdate(prevProps: Readonly<PortalExitProps>/*, prevState: Readonly<any>, snapshot?: any*/) {
-        if (prevProps.networkId !== this.props.networkId) {
-            this.deregisterWithManager(prevProps.networkId);
-            this.registerWithManager(this.props.networkId);
+        if (prevProps.portalId !== this.props.portalId) {
+            this.unregisterWithManager(prevProps.portalId);
+            this.registerWithManager(this.props.portalId);
         }
     }
 
-    registerWithManager(networkId: string|undefined) {
-        this.manager.addExit(this.containerRef.current, networkId);
+    registerWithManager(portalId: string) {
+        this.manager.addExit(portalId, this);
+        this.linkChangeSubscription = this.manager.subscribeToLinkChanges(this.props.portalId, () => {
+            this.forceUpdate(); // If the link changes, force a rerender.
+        });
     }
 
-    deregisterWithManager(networkId: string|undefined) {
-        this.manager.removeExit(this.containerRef.current, networkId);
+    unregisterWithManager(portalId: string) {
+        this.manager.removeExit(portalId, this);
+        this.linkChangeSubscription?.unsubscribe();
+        this.linkChangeSubscription = undefined;
     }
 
     render() {
-        return <div ref={this.containerRef}/>;
+        return <View style={this.props.style}>
+            {this.entrance?.element || null}
+        </View>;
     }
 
 }
