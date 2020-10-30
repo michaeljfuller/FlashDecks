@@ -1,7 +1,8 @@
 import {createStore, combineReducers} from 'redux';
 import {reducerMap} from './store_manifest';
+import {isProduction} from "../env";
 
-const useReduxDevTools = true;
+const useReduxDevTools = !isProduction;
 
 // Create Store
 const rootReducer = combineReducers(reducerMap);
