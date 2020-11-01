@@ -80,10 +80,16 @@ export class TempScreen extends ImmutablePureComponent<
     renderPortal() {
         return <MemoRow>
             <Button title="Inc Portal Value" square onClick={() => this.setStateTo(draft => draft.portalValue++)} style={{flex:1}} />
-            <PortalEntrance portalId="tempPortal" style={{ backgroundColor: 'yellow', padding: 2 }}>
-                <Text>Portal Value: {this.state.portalValue}</Text>
-            </PortalEntrance>
-            <PortalExit portalId="tempPortal" style={{ backgroundColor: 'lightgreen',  borderWidth: 1, flex: 1 }} />
+            <View style={{ borderWidth: 1, borderColor: 'red', backgroundColor: 'pink', padding: 2 }}>
+                <Text>Portal Entrance</Text>
+                <PortalEntrance portalId="tempPortal" style={{ backgroundColor: 'yellow', padding: 2 }}>
+                    <Text style={{color: 'red'}}>Portal Value: {this.state.portalValue}</Text>
+                </PortalEntrance>
+            </View>
+            <View style={{ borderWidth: 2, borderColor: 'green', backgroundColor: 'lightgreen' }}>
+                <Text>Portal Exit</Text>
+                <PortalExit portalId="tempPortal" style={{ borderWidth: 1, padding: 2, margin: 2 }} />
+            </View>
         </MemoRow>;
     }
 

@@ -7,7 +7,6 @@ import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import AppNavigation from "../navigation/AppNavigation/AppNavigation";
 import store from '../store/store';
 import RootToast from "./RootToast/RootToast";
-import {PortalNetwork} from "../components/portal/PortalNetwork";
 import {logAppInfo} from "./logAppInfo";
 
 logAppInfo();
@@ -17,9 +16,7 @@ export class AppRoot extends AppRootBase {
     render() {
         return <ErrorBoundary>
             <ReduxProvider store={store}>
-                <PortalNetwork>
-                    {this.renderAuth() || this.renderApp()}
-                </PortalNetwork>
+                {this.renderAuth() || this.renderApp()}
             </ReduxProvider>
         </ErrorBoundary>;
     }

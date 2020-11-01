@@ -3,6 +3,7 @@ import {DecksState, decks_reducer} from "./decks/decks_reducer";
 import {CardsState, cards_reducer} from "./cards/cards_reducer";
 import {ToastState, toast_reducer} from "./toast/toast_reducer";
 import {NavigationState, navigation_reducer} from "./navigation/navigation_reducer";
+import {PortalState, portal_reducer} from "./portals/portal_reducer";
 
 // Store Type Definition.
 export interface StoreState {
@@ -11,6 +12,7 @@ export interface StoreState {
     cards: CardsState;
     toast: ToastState;
     navigation: NavigationState;
+    portal: PortalState;
 }
 export type StateName = keyof StoreState;
 
@@ -22,4 +24,5 @@ export const reducerMap: ReducerMap = {
     cards: cards_reducer,
     toast: toast_reducer,
     navigation: navigation_reducer,
+    portal: portal_reducer,
 };

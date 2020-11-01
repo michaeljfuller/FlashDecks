@@ -1,11 +1,22 @@
 import React from "react";
-import {View, ViewStyle} from "react-native";
-import {PortalNetworkContext, PortalNetworkManager} from "./PortalNetwork";
+import {View, ViewProps} from "react-native";
+import portalStore from "../../store/portals/PortalStore";
 
-export interface PortalEntranceProps {
+export interface PortalEntranceProps extends ViewProps {
     /** The ID linking this PortalEntrance to a PortalExit. */
     portalId: string;
-    style?: ViewStyle;
+}
+
+export interface PortalEntranceCallback {
+    (): React.ReactElement;
+    symbol: symbol; // Symbol used to match equality inside Redux, since it uses Proxies.
+}
+
+/** Attaches symbol to the callback. */
+function createCallback(portalId: string, callback: () => React.ReactElement): PortalEntranceCallback {
+    const result = callback as PortalEntranceCallback;
+    result.symbol = Symbol(portalId);
+    return result;
 }
 
 /**
@@ -13,14 +24,15 @@ export interface PortalEntranceProps {
  */
 export class PortalEntrance extends React.Component<PortalEntranceProps, any> {
 
-    // Bind ModalManager
-    static contextType = PortalNetworkContext;
-    get manager(): PortalNetworkManager {
-        return this.context;
-    }
-
     /** The element to be picked up by a PortalExit. */
-    element: React.ReactElement|null = null;
+    getElement?: PortalEntranceCallback;
+    previousGetElement?: PortalEntranceCallback;
+
+    get viewProps(): ViewProps {
+        const {...viewProps} = this.props;
+        delete viewProps.portalId;
+        return viewProps;
+    }
 
     componentDidMount() {
         this.registerWithManager();
@@ -31,20 +43,32 @@ export class PortalEntrance extends React.Component<PortalEntranceProps, any> {
 
     componentDidUpdate(prevProps: Readonly<PortalEntranceProps>/*, prevState: Readonly<any>, snapshot?: any*/) {
         // Change ID and/or force refresh on the PortalExit.
-        this.unregisterWithManager(prevProps.portalId);
+        this.unregisterWithManager(prevProps.portalId, this.previousGetElement);
         this.registerWithManager();
+        this.previousGetElement = undefined;
     }
 
-    registerWithManager(portalId = this.props.portalId) {
-        this.manager.addEntrance(portalId, this);
-    }
-    unregisterWithManager(portalId = this.props.portalId) {
-        this.manager.removeEntrance(portalId, this);
+    registerWithManager(
+        portalId = this.props.portalId,
+        callback: PortalEntranceCallback|undefined = this.getElement
+    ) {
+        if (callback) portalStore.addEntrance(portalId, callback);
     }
 
+    unregisterWithManager(
+        portalId = this.props.portalId,
+        callback: PortalEntranceCallback|undefined = this.getElement
+    ) {
+        if (callback) portalStore.removeEntrance(portalId, callback);
+    }
+
+    /** Update the element to be picked up by the PortalExit, and return nothing to be rendered. */
     render() {
-        // Update the element to be picked up by the PortalExit, and return nothing to be rendered here.
-        this.element = <View style={this.props.style}>{this.props.children}</View>;
+        this.previousGetElement = this.getElement;
+        this.getElement = createCallback(
+            this.props.portalId,
+            () => <View {...this.viewProps}>{this.props.children}</View>
+        );
         return null;
     }
 

@@ -1,64 +1,39 @@
 import React from "react";
-import {View, ViewStyle} from "react-native";
-import {PortalNetworkContext} from "./PortalNetwork/PortalNetworkContext";
-import {PortalNetworkManager} from "./PortalNetwork/PortalNetworkManager";
+import {View, ViewProps} from "react-native";
+import {PortalExitStoreProps, reduxConnector} from "./PortalExit_redux";
 
-export interface PortalExitProps {
+type ViewWithStore = PortalExitStoreProps & ViewProps;
+export interface PortalExitProps extends ViewWithStore {
     portalId: string;
-    style?: ViewStyle;
 }
 
 /***
  * A component which renders the contents of PortalEntrances with the same portalId in the PortalNetwork.
  */
-export class PortalExit extends React.Component<PortalExitProps> {
-
-    // Bind ModalManager
-    static contextType = PortalNetworkContext;
-    get manager(): PortalNetworkManager {
-        return this.context;
-    }
+export class PortalExitComponent extends React.Component<PortalExitProps> {
 
     /** The entrance this is linked to */
     get entrance() {
-        return this.manager.getEntrances(this.props.portalId)[0] || null;
+        const entrances = this.props.portals[this.props.portalId];
+        const entrance = (entrances && entrances[0]) || null;
+        return (entrance && entrance()) || null;
     }
 
-    /** The subscription to link changes. */
-    linkChangeSubscription?: ReturnType<PortalNetworkManager['subscribeToLinkChanges']>;
-
-    componentDidMount() {
-        this.registerWithManager(this.props.portalId);
+    get viewProps(): ViewProps {
+        const {...viewProps} = this.props;
+        delete viewProps.portals;
+        delete viewProps.portalId;
+        return viewProps;
     }
 
-    componentWillUnmount() {
-        this.unregisterWithManager(this.props.portalId);
-    }
-
-    componentDidUpdate(prevProps: Readonly<PortalExitProps>/*, prevState: Readonly<any>, snapshot?: any*/) {
-        if (prevProps.portalId !== this.props.portalId) {
-            this.unregisterWithManager(prevProps.portalId);
-            this.registerWithManager(this.props.portalId);
-        }
-    }
-
-    registerWithManager(portalId: string) {
-        this.manager.addExit(portalId, this);
-        this.linkChangeSubscription = this.manager.subscribeToLinkChanges(this.props.portalId, () => {
-            this.forceUpdate(); // If the link changes, force a rerender.
-        });
-    }
-
-    unregisterWithManager(portalId: string) {
-        this.manager.removeExit(portalId, this);
-        this.linkChangeSubscription?.unsubscribe();
-        this.linkChangeSubscription = undefined;
-    }
+    // TODO Update only if entrance with same portalId has changed.
+    // shouldComponentUpdate(nextProps: Readonly<PortalEntranceProps>, nextState: Readonly<any>, nextContext: any): boolean {}
 
     render() {
-        return <View style={this.props.style}>
-            {this.entrance?.element || null}
+        return <View {...this.viewProps}>
+            {this.entrance}
         </View>;
     }
 
 }
+export const PortalExit = reduxConnector(PortalExitComponent as React.ComponentType<PortalExitProps>);
