@@ -10,7 +10,7 @@ export interface PortalExitProps extends ViewWithStore {
 /***
  * A component which renders the contents of PortalEntrances with the same portalId in the PortalNetwork.
  */
-export class PortalExitComponent extends React.Component<PortalExitProps> {
+export class PortalExitComponent extends React.PureComponent<PortalExitProps> {
 
     /** The entrance this is linked to */
     get entrance() {
@@ -31,7 +31,7 @@ export class PortalExitComponent extends React.Component<PortalExitProps> {
 
     render() {
         return <View {...this.viewProps}>
-            {this.entrance}
+            {this.entrance || this.props.children || null}
         </View>;
     }
 
