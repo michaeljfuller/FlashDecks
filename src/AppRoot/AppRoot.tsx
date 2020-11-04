@@ -8,6 +8,7 @@ import AppNavigation from "../navigation/AppNavigation/AppNavigation";
 import store from '../store/store';
 import RootToast from "./RootToast/RootToast";
 import {logAppInfo} from "./logAppInfo";
+import {isProduction} from "../env";
 
 logAppInfo();
 
@@ -24,6 +25,18 @@ export class AppRoot extends AppRootBase {
     renderAuth() {
         if (!this.state.cognitoUser) {
             return <View style={styles.centerContents}>
+
+                {isProduction ? null : <View>
+                    <View style={{flexDirection:"row"}}>
+                        <Text style={{fontWeight:"bold", width: 80}}>Test User: </Text>
+                        <Text>test_user</Text>
+                    </View>
+                    <View style={{flexDirection:"row"}}>
+                        <Text style={{fontWeight:"bold", width: 80}}>Password: </Text>
+                        <Text>password</Text>
+                    </View>
+                </View>}
+
                 <AppAuthenticator />
             </View>;
         }
