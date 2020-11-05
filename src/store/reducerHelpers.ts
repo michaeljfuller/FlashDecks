@@ -30,3 +30,19 @@ export function createReducer<State extends {}, Action=IAction>(
         initialState
     );
 }
+
+export type SignedStoreObject<T> = T & { storeSymbol: symbol };
+
+/** Add a unique symbol that can be compared inside our Redux store using compareSignedObjectForStore(), since it uses Immer Proxies. */
+export function signObjectForStore<T>(obj: T, description: Parameters<typeof Symbol>[0]): SignedStoreObject<T> {
+    const result = obj as SignedStoreObject<T>;
+    if (result) {
+        result.storeSymbol = Symbol(description);
+    }
+    return result;
+}
+
+/** Compare objects by their symbol, added by signObjectForStore() */
+export function compareSignedObjectForStore<T>(a: SignedStoreObject<T>, b: SignedStoreObject<T>): boolean {
+    return a?.storeSymbol === b?.storeSymbol;
+}

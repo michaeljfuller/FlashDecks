@@ -1,28 +1,26 @@
-import React from "react";
+import React, {PropsWithChildren} from "react";
 import {View, ViewProps} from "react-native";
 import portalStore from "../../store/portals/PortalStore";
+import {PortalEntranceStoreProps, reduxConnector} from "./PortalEntrance_redux";
+import {SignedStoreObject, signObjectForStore} from "../../store/reducerHelpers";
 
-export interface PortalEntranceProps extends ViewProps {
+type ViewWithStore = PortalEntranceStoreProps & PropsWithChildren<ViewProps>;
+export interface PortalEntranceProps extends ViewWithStore {
     /** The ID linking this PortalEntrance to a PortalExit. */
     portalId: string;
+    onOpen?: () => void;
+    onClose?: () => void;
 }
 
-export interface PortalEntranceCallback {
-    (): React.ReactElement;
-    symbol: symbol; // Symbol used to match equality inside Redux, since it uses Proxies.
-}
-
-/** Attaches symbol to the callback. */
-function createCallback(portalId: string, callback: () => React.ReactElement): PortalEntranceCallback {
-    const result = callback as PortalEntranceCallback;
-    result.symbol = Symbol(portalId);
-    return result;
-}
+/** A callback that creates a PortalEntrance. */
+export type PortalEntranceCallback = SignedStoreObject<
+    () => React.ReactElement
+>;
 
 /**
  * A component whose contents will get sent to the PortalExit that has the same networkId PortalNetwork.
  */
-export class PortalEntrance extends React.Component<PortalEntranceProps, any> {
+export class UnconnectedPortalEntrance extends React.Component<PortalEntranceProps, any> {
 
     /** The element to be picked up by a PortalExit. */
     getElement?: PortalEntranceCallback;
@@ -32,6 +30,10 @@ export class PortalEntrance extends React.Component<PortalEntranceProps, any> {
         const {...viewProps} = this.props;
         delete viewProps.portalId;
         return viewProps;
+    }
+
+    get portalExitCount() {
+        return this.props.portalExitCounts[this.props.portalId] || 0;
     }
 
     componentDidMount() {
@@ -46,13 +48,26 @@ export class PortalEntrance extends React.Component<PortalEntranceProps, any> {
         this.unregisterWithManager(prevProps.portalId, this.previousGetElement);
         this.registerWithManager();
         this.previousGetElement = undefined;
+
+        // Open/close, depending on portal count.
+        const previousExitCount = prevProps.portalExitCounts[prevProps.portalId] || 0;
+        if (this.portalExitCount !== previousExitCount) {
+            this.portalExitCount > 0 ? this.onOpen() : this.onClose();
+        }
     }
 
-    registerWithManager(
-        portalId = this.props.portalId,
-        callback: PortalEntranceCallback|undefined = this.getElement
-    ) {
-        if (callback) portalStore.addEntrance(portalId, callback);
+    onOpen() {
+        this.props.onOpen && this.props.onOpen();
+    }
+    onClose() {
+        this.props.onClose && this.props.onClose();
+    }
+
+    registerWithManager() {
+        if (this.getElement) {
+            portalStore.addEntrance(this.props.portalId, this.getElement);
+            this.portalExitCount && this.onOpen();
+        }
     }
 
     unregisterWithManager(
@@ -65,11 +80,14 @@ export class PortalEntrance extends React.Component<PortalEntranceProps, any> {
     /** Update the element to be picked up by the PortalExit, and return nothing to be rendered. */
     render() {
         this.previousGetElement = this.getElement;
-        this.getElement = createCallback(
-            this.props.portalId,
-            () => <View {...this.viewProps}>{this.props.children}</View>
+        this.getElement = signObjectForStore(
+            () => <View {...this.viewProps}>{this.props.children}</View>,
+            this.props.portalId
         );
         return null;
     }
 
 }
+export const PortalEntrance = reduxConnector(UnconnectedPortalEntrance as React.ComponentType<PortalEntranceProps>);
+export type PortalEntrance = typeof PortalEntrance;
+export default PortalEntrance;

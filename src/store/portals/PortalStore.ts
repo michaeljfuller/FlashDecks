@@ -1,11 +1,11 @@
 import AStoreHelper from "../AStoreHelper";
 import {ActionType} from "../store";
 import {PortalState} from "./portal_reducer";
-import {PortalEntranceAdd, PortalEntranceCallback, PortalEntranceRemove} from "./portal_actions";
+import {PortalEntranceCallback, PortalEntranceAdd, PortalEntranceRemove, PortalExitAdd, PortalExitRemove} from "./portal_actions";
 
 /**
  * The PortalStore stores callbacks that create a PortalEntrance.
- * PortalEntrances are stored against a `portalId`, that a PortalExit with a matching `portalId` can grab the first element of.
+ * PortalEntrances are stored against a `portalId`, that a PortalExit with a matching `portalId` can grab.
  */
 export class PortalStore extends AStoreHelper<PortalState> {
     constructor() {
@@ -27,6 +27,23 @@ export class PortalStore extends AStoreHelper<PortalState> {
     /** Get PortalEntranceCallbacks stored against a `portalId`. */
     getEntrances(portalId: string): PortalEntranceCallback[] {
         return this.state.entrances[portalId] || [];
+    }
+
+    /** Increment count for the `portalId`. */
+    addExit(portalId: string): void {
+        const action: PortalExitAdd = { type: ActionType.PORTAL_EXIT_ADD, portalId };
+        this.store.dispatch(action);
+    }
+
+    /** Decrement count for the `portalId`. */
+    removeExit(portalId: string): void {
+        const action: PortalExitRemove = { type: ActionType.PORTAL_EXIT_REMOVE, portalId };
+        this.store.dispatch(action);
+    }
+
+    /** Get the number of registered exits for portalId. */
+    getExitCount(portalId: string): number {
+        return this.state.exitCount[portalId] || 0;
     }
 
 }

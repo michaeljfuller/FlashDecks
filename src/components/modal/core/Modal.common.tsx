@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const modalPortalNetworkId = "_MODALS_";
+export const modalPortalId = "_MODALS_";
 
 export interface ModalProps {
     /** If the Modal is open */

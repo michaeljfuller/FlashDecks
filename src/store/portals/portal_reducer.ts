@@ -1,9 +1,16 @@
 import {ActionType} from '../store_actions';
-import {createReducer, Draft} from "../reducerHelpers";
-import {PortalEntranceAdd, PortalEntranceCallback, PortalEntranceRemove} from './portal_actions';
+import {compareSignedObjectForStore, createReducer, Draft} from "../reducerHelpers";
+import {
+    PortalEntranceCallback,
+    PortalEntranceAdd,
+    PortalEntranceRemove,
+    PortalExitAdd,
+    PortalExitRemove,
+} from './portal_actions';
 
 export interface PortalState {
     entrances: Record<string, PortalEntranceCallback[]>;
+    exitCount: Record<string, number>;
 }
 
 export const portal_reducer = createReducer<PortalState>(
@@ -11,9 +18,12 @@ export const portal_reducer = createReducer<PortalState>(
         switch (action.type) {
             case ActionType.PORTAL_ENTRANCE_ADD: return addEntrance(draft, action as PortalEntranceAdd);
             case ActionType.PORTAL_ENTRANCE_REMOVE: return removeEntrance(draft, action as PortalEntranceRemove);
+            case ActionType.PORTAL_EXIT_ADD: return addExit(draft, action as PortalExitAdd);
+            case ActionType.PORTAL_EXIT_REMOVE: return removeExit(draft, action as PortalExitRemove);
         }
     }, {
-        entrances: {}
+        entrances: {},
+        exitCount: {},
     }
 );
 
@@ -38,7 +48,21 @@ function removeEntrance(draft: Draft<PortalState>, action: PortalEntranceRemove)
     }
 }
 
+/** Increment count for the `portalId`. */
+function addExit(draft: Draft<PortalState>, action: PortalExitAdd) {
+    const portalId = action.portalId;
+    const exits = draft.exitCount[portalId] || 0;
+    draft.exitCount[portalId] = exits + 1;
+}
+
+/** Decrement count for the `portalId`. */
+function removeExit(draft: Draft<PortalState>, action: PortalExitRemove) {
+    const portalId = action.portalId;
+    const exits = draft.exitCount[portalId] || 0;
+    draft.exitCount[portalId] = Math.max(0, exits - 1);
+}
+
 /** Equality doesn't work, since reducer uses Proxies. Instead, compare symbols of proxy and passed entrance. */
 function indexOfEntranceProxy(entrance: PortalEntranceCallback, proxies: PortalEntranceCallback[]): number {
-    return proxies.findIndex(proxy => proxy.symbol === entrance.symbol);
+    return proxies.findIndex(proxy => compareSignedObjectForStore(proxy, entrance));
 }

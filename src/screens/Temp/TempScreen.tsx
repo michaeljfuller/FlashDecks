@@ -42,7 +42,7 @@ export class TempScreen extends ImmutablePureComponent<
     readonly state = {
         contextValue1: 1,
         contextValue2: 2,
-        portalValue: 1,
+        portalValue: 0,
         showDebugModal: false,
         showAlertModal: false,
     } as TempScreenState;
@@ -67,7 +67,7 @@ export class TempScreen extends ImmutablePureComponent<
                 {/*{this.renderMisc()}*/}
                 {/*{this.renderButtons()}*/}
                 {/*{this.renderContexts()}*/}
-                {/*{this.renderModals()}*/}
+                {this.renderModals()}
 
                 {/*{repeat(30, index => {*/}
                 {/*    return <Text key={index} style={{ fontSize: 50, textAlign: 'center', color: '#79F' }}>{index+1}</Text>*/}
@@ -78,17 +78,23 @@ export class TempScreen extends ImmutablePureComponent<
     }
 
     renderPortal() {
+        const entrance = <PortalEntrance portalId="tempPortal" style={{ backgroundColor: 'yellow', padding: 2 }}>
+            <Text style={{color: 'red'}}>Portal Value: {this.state.portalValue}</Text>
+        </PortalEntrance>;
+
         return <MemoRow>
             <Button title="Inc Portal Value" square onClick={() => this.setStateTo(draft => draft.portalValue++)} style={{flex:1}} />
             <View style={{ borderWidth: 1, borderColor: 'red', backgroundColor: 'pink', padding: 2 }}>
                 <Text>Portal Entrance</Text>
-                <PortalEntrance portalId="tempPortal" style={{ backgroundColor: 'yellow', padding: 2 }}>
-                    <Text style={{color: 'red'}}>Portal Value: {this.state.portalValue}</Text>
-                </PortalEntrance>
+                <View style={{ borderWidth: 1, flex: 1 }}>
+                    {this.state.portalValue ? entrance : null}
+                </View>
             </View>
             <View style={{ borderWidth: 2, borderColor: 'green', backgroundColor: 'lightgreen' }}>
                 <Text>Portal Exit</Text>
-                <PortalExit portalId="tempPortal" style={{ borderWidth: 1, padding: 2, margin: 2 }} />
+                <PortalExit portalId="tempPortal" style={{ borderWidth: 1, padding: 2, margin: 2 }}>
+                    <Text>No Content</Text>
+                </PortalExit>
             </View>
         </MemoRow>;
     }
@@ -143,38 +149,38 @@ export class TempScreen extends ImmutablePureComponent<
     //     </View>;
     // }
     //
-    // renderModals() {
-    //     return <View style={{
-    //         marginTop: 2,
-    //         borderWidth: 1,
-    //     }}>
-    //
-    //         <TextButton title={'showDebugModal ' + this.state.showDebugModal} onClick={() => this.setStateTo(draft => draft.showDebugModal = !draft.showDebugModal)} />
-    //         <DebugModal
-    //             open={this.state.showDebugModal}
-    //             onClose={() => this.setStateTo({ showDebugModal: false })}
-    //             title="Test Modal"
-    //             data={repeat(75, i => 48 + i).map(code => ({ code, character: String.fromCharCode(code) }))}
-    //         >
-    //             <Text>Character Codes</Text>
-    //         </DebugModal>
-    //
-    //         <TextButton title={'showAlertModal ' + this.state.showAlertModal} onClick={() => this.setStateTo(draft => draft.showAlertModal = !draft.showAlertModal)} />
-    //         <AlertModal
-    //             open={this.state.showAlertModal}
-    //             onClose={() => this.setStateTo({ showAlertModal: false })}
-    //             title="Alert"
-    //             message="Message"
-    //         >
-    //             <Text>AlertModal Contents</Text>
-    //             <View style={{ borderWidth: 1, paddingHorizontal: 1 }}>
-    //                 <TextInput multiline />
-    //             </View>
-    //             <TextButton title={'showDebugModal ' + this.state.showDebugModal} onClick={() => this.setStateTo(draft => draft.showDebugModal = !draft.showDebugModal)} />
-    //         </AlertModal>
-    //
-    //     </View>;
-    // }
+    renderModals() {
+        return <View style={{
+            marginTop: 2,
+            borderWidth: 1,
+        }}>
+
+            <TextButton title={'showDebugModal ' + this.state.showDebugModal} onClick={() => this.setStateTo(draft => draft.showDebugModal = !draft.showDebugModal)} />
+            <DebugModal
+                open={this.state.showDebugModal}
+                onClose={() => this.setStateTo({ showDebugModal: false })}
+                title="Test Modal"
+                data={repeat(75, i => 48 + i).map(code => ({ code, character: String.fromCharCode(code) }))}
+            >
+                <Text>Character Codes</Text>
+            </DebugModal>
+
+            <TextButton title={'showAlertModal ' + this.state.showAlertModal} onClick={() => this.setStateTo(draft => draft.showAlertModal = !draft.showAlertModal)} />
+            <AlertModal
+                open={this.state.showAlertModal}
+                onClose={() => this.setStateTo({ showAlertModal: false })}
+                title="Alert"
+                message="Message"
+            >
+                <Text>AlertModal Contents</Text>
+                <View style={{ borderWidth: 1, paddingHorizontal: 1 }}>
+                    <TextInput multiline />
+                </View>
+                <TextButton title={'showDebugModal ' + this.state.showDebugModal} onClick={() => this.setStateTo(draft => draft.showDebugModal = !draft.showDebugModal)} />
+            </AlertModal>
+
+        </View>;
+    }
     //
     // renderMisc() {
     //     const {navBlocked} = this.props;

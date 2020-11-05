@@ -1,8 +1,9 @@
-import React from "react";
+import React, {PropsWithChildren} from "react";
 import {View, ViewProps} from "react-native";
+import portalStore from "../../store/portals/PortalStore";
 import {PortalExitStoreProps, reduxConnector} from "./PortalExit_redux";
 
-type ViewWithStore = PortalExitStoreProps & ViewProps;
+type ViewWithStore = PortalExitStoreProps & PropsWithChildren<ViewProps>;
 export interface PortalExitProps extends ViewWithStore {
     portalId: string;
 }
@@ -10,12 +11,12 @@ export interface PortalExitProps extends ViewWithStore {
 /***
  * A component which renders the contents of PortalEntrances with the same portalId in the PortalNetwork.
  */
-export class PortalExitComponent extends React.PureComponent<PortalExitProps> {
+export class UnconnectedPortalExit extends React.PureComponent<PortalExitProps> {
 
     /** The entrance this is linked to */
     get entrance() {
         const entrances = this.props.portals[this.props.portalId];
-        const entrance = (entrances && entrances[0]) || null;
+        const entrance = (entrances && entrances[entrances.length-1]) || null;
         return (entrance && entrance()) || null;
     }
 
@@ -24,6 +25,26 @@ export class PortalExitComponent extends React.PureComponent<PortalExitProps> {
         delete viewProps.portals;
         delete viewProps.portalId;
         return viewProps;
+    }
+
+    componentDidMount() {
+        this.registerWithManager();
+    }
+    componentWillUnmount() {
+        this.unregisterWithManager();
+    }
+    componentDidUpdate(prevProps: Readonly<PortalExitProps>/*, prevState: Readonly<any>, snapshot?: any*/) {
+        if (prevProps.portalId !== this.props.portalId) {
+            this.unregisterWithManager(prevProps.portalId);
+            this.registerWithManager();
+        }
+    }
+
+    registerWithManager() {
+        portalStore.addExit(this.props.portalId);
+    }
+    unregisterWithManager(portalId = this.props.portalId) {
+        portalStore.removeExit(portalId);
     }
 
     // TODO Update only if entrance with same portalId has changed.
@@ -36,4 +57,6 @@ export class PortalExitComponent extends React.PureComponent<PortalExitProps> {
     }
 
 }
-export const PortalExit = reduxConnector(PortalExitComponent as React.ComponentType<PortalExitProps>);
+export const PortalExit = reduxConnector(UnconnectedPortalExit as React.ComponentType<PortalExitProps>);
+export type PortalExit = typeof PortalExit;
+export default PortalExit;

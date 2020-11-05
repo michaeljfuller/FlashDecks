@@ -14,3 +14,13 @@ export interface PortalEntranceRemove extends IAction {
     portalId: string;
     entrance: PortalEntranceCallback;
 }
+
+export interface PortalExitAdd extends IAction {
+    type: ActionType.PORTAL_EXIT_ADD;
+    portalId: string;
+}
+
+export interface PortalExitRemove extends IAction {
+    type: ActionType.PORTAL_EXIT_REMOVE;
+    portalId: string;
+}
