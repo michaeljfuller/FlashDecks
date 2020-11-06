@@ -16,9 +16,9 @@ import ApiRequest from "../../../api/util/ApiRequest";
 import {removeItem} from "../../../utils/array";
 import PromptModal from "../../../components/modal/PromptModal/PromptModal";
 import {DeckInfo, DeckInfoModal} from "../../../components/deck/DeckInfoModal/DeckInfoModal";
+import {CardInfo, CardInfoModal} from "../../../components/card/CardInfo/CardInfoModal";
 import {appTree} from "../../../routes";
 import {goBack} from "../../../navigation/navigationHelpers";
-import {CardInfoModal} from "../../../components/card/CardInfo/CardInfoModal";
 
 export interface DeckEditScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -135,7 +135,8 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         );
     }
 
-    onAddCard = (card = new CardModel) => {
+    onAddCard = (info: CardInfo) => {
+        const card = CardModel.create(info);
         const updated = this.deck.update(draft => {
             draft.cards.push(castDraft(card));
         });
