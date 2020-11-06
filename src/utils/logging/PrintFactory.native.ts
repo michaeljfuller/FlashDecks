@@ -1,6 +1,8 @@
 import {PrintFactoryBase} from "./PrintFactory.common";
 import {ILogColors, LogColor} from "./logColors";
 
+const INDENT_SIZE = 2;
+
 export class PrintFactory extends PrintFactoryBase {
     protected result: any[] = [];
     protected groupDepth = 0;
@@ -16,7 +18,7 @@ export class PrintFactory extends PrintFactoryBase {
     }
 
     private get indent(): string {
-        return '  '.repeat(this.groupDepth);
+        return ' '.repeat(this.groupDepth * INDENT_SIZE);
     }
 
     start(groupDepth: number): void {
@@ -70,7 +72,12 @@ export class PrintFactory extends PrintFactoryBase {
         }
 
         if (this.currentString) this.result.push(this.currentString);
-        this.result.push(value); // TODO add indent
+        this.result.push(
+            JSON.stringify(value, null, INDENT_SIZE).replace(
+                new RegExp('\\n', 'g'),
+                '\n'+this.indent
+            )
+        );
         this.currentString = applyNewColor ? ConsoleCode.Reset : '';
     }
 
