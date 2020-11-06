@@ -41,10 +41,11 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
         return Boolean(this.info.title);
     }
 
-    componentDidUpdate(prevProps: Readonly<EditCardModalProps>/*, prevState: Readonly<EditCardModalState>, snapshot?: {}*/) {
+    componentDidUpdate(prevProps: Readonly<EditCardModalProps>, prevState: Readonly<EditCardModalState>, snapshot?: {}) {
         if (CardModel.different(prevProps.card, this.props.card)) {
             this.setStateTo({ modifiedCard: undefined });
         }
+        super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, snapshot);
     }
     componentWillUnmount() {
         this.toast.removeByRef();

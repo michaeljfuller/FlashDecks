@@ -17,7 +17,22 @@ The Modal's contents are passed into a **PortalEntrance**, which then get displa
 When the `open` property is changed, `navigateToModal`/`navigateFromModal` trigger a navigation action on the `RootNavigation` component, which will either show the `ModalsScreen` or the standard `ScreenNavigation` component (where normal pages are displayed).
 
 ### Extending Modal
-When extending the modal, do not modify `render()`. Your view should instead be returned by `renderContents`.
+When extending the modal, do not modify `render()`. Your view should instead be returned by `renderContents`.  
+If overriding a lifecycle method (i.e. `componentDidMount/componentWillUnmount/componentDidUpdate`), ensure the parent method is still called.
+```tsx
+export class MyModal extends Modal<MyModalProps, MyModalState> {
+    componentDidUpdate(prevProps: Readonly<MyModalProps>, prevState: Readonly<MyModalState>, snapshot?: {}) {
+        // <something here>
+        super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, snapshot);
+    }
+    renderModal() {
+        return <View>
+            <Text>Something</Text>
+            <Button text="Close" onClick={() => this.close()} />
+        </View>;
+    }
+}
+```
 
 ## Implemented Modals
 ### AlertModal
