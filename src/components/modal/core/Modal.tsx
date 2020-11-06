@@ -2,25 +2,23 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import MaterialModal from "@material-ui/core/Modal";
 import DialogContent from "@material-ui/core/DialogContent";
-import {ModalProps} from "./Modal.common";
-import ImmutableComponent from "../../ImmutableComponent";
+import {ModalProps, ModalBase} from "./Modal.common";
 
 export * from "./Modal.common";
 
 export abstract class Modal<
     Props extends ModalProps = ModalProps,
     State = any
-> extends ImmutableComponent<
-    Props, State
-> {
-    state = {} as State;
+> extends ModalBase<Props, State> {
+
+    onClose = () => this.close();
 
     render() { // TODO onOpen?
         return <MaterialModal
-            open={this.props.open}
-            onClose={this.props.onClose}
+            open={this.isOpen}
+            onClose={this.onClose}
         >
-            { this.props.open ? this.renderContent() : <View /> }
+            { this.isOpen ? this.renderContent() : <View /> }
         </MaterialModal>;
     }
 
@@ -33,8 +31,6 @@ export abstract class Modal<
             </View>
         </DialogContent>;
     }
-
-    abstract renderModal(): React.ReactElement;
 
 }
 export default Modal;

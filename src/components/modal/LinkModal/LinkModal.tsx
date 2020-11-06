@@ -21,7 +21,7 @@ export class LinkModal extends Modal<LinkModalProps> {
             const supported = await Linking.canOpenURL(this.props.url);
             if (supported) {
                 await Linking.openURL(this.props.url);
-                this.manager.close();
+                this.close();
             } else {
                 Alert.alert(`Unsupported URL: ${this.props.url}`);
             }

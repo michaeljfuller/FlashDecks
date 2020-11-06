@@ -1,6 +1,5 @@
 import React from 'react';
-import {modalPortalId, ModalProps} from "./Modal.common";
-import ImmutableComponent from "../../ImmutableComponent";
+import {ModalBase, modalPortalId, ModalProps} from "./Modal.common";
 import {PortalEntrance} from "../../portal/PortalEntrance";
 import {navigateToModal, navigateFromModal} from "../../../navigation/AppNavigation/RootNavigation/actions";
 
@@ -13,42 +12,34 @@ export * from "./Modal.common";
 export abstract class Modal<
     Props extends ModalProps = ModalProps,
     State = any
-> extends ImmutableComponent<Props, State> {
-    state = {} as State;
+> extends ModalBase<Props, State> {
 
     componentDidMount() {
-        if (this.props.open) {
-            this.onOpen();
+        if (this.isOpen) {
+            this.open();
         }
     }
 
     componentWillUnmount() {
-        if (this.props.open) {
-            this.onClose();
+        if (this.isOpen) {
+            this.close();
         }
     }
 
-    onOpen = () => {
+    open() {
         navigateToModal();
-        this.props.onOpen && this.props.onOpen();
+        super.open();
     }
-    onClose = () => {
+    close() {
         navigateFromModal();
-        this.props.onClose && this.props.onClose();
+        super.close();
     }
 
-    componentDidUpdate(prevProps: Readonly<Props>/*, prevState: Readonly<State>, snapshot?: {}*/) {
-        if (prevProps.open !== this.props.open) {
-            if (this.props.open) {
-                this.onOpen();
-            } else {
-                this.onClose();
-            }
-        }
-    }
+    onOpen = () => this.open();
+    onClose = () => this.close();
 
     render() {
-        if (!this.props.open) return null;
+        if (this.isClosed) return null;
         return <PortalEntrance portalId={modalPortalId} onOpen={this.onOpen} onClose={this.onClose}>
             {this.renderModal()}
         </PortalEntrance>;
