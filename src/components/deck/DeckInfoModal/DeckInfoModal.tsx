@@ -55,10 +55,12 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
         if (DeckModel.different(prevProps.deck, this.props.deck)) {
             this.setStateTo({ modifiedInfo: undefined });
         }
+        super.componentDidUpdate(prevProps);
     }
     componentWillUnmount() {
         this.toast.removeByRef();
         this.saveRequest?.drop();
+        super.componentWillUnmount();
     }
 
     save() {
