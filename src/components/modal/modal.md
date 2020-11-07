@@ -23,7 +23,7 @@ If overriding a lifecycle method (i.e. `componentDidMount/componentWillUnmount/c
 export class MyModal extends Modal<MyModalProps, MyModalState> {
     componentDidUpdate(prevProps: Readonly<MyModalProps>, prevState: Readonly<MyModalState>, snapshot?: {}) {
         // <something here>
-        super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, snapshot);
+        super.componentDidUpdate(prevProps, prevState, snapshot);
     }
     renderModal() {
         return <View>

@@ -28,6 +28,10 @@ export abstract class ModalBase<
         return !this.props.open;
     }
 
+    // Ensure defined, to make consistent between Web/Native builds.
+    componentDidMount() {}
+    componentWillUnmount() {}
+
     componentDidUpdate(prevProps: Readonly<Props>/*, prevState: Readonly<State>, snapshot?: {}*/) {
         if (prevProps.open !== this.props.open) { // If changed
             this.isOpen ? this.open() : this.close(); // Trigger callbacks
