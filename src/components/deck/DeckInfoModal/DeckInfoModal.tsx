@@ -66,6 +66,7 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
     save() {
         const deck = this.props.deck;
         const info = this.state.modifiedInfo;
+        const title = info?.title || deck.title;
 
         if (info) {
             // TODO Disable, Save, Toast, Success=Close / Error=Enable.
@@ -76,9 +77,9 @@ export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState>
             request.wait(false).then(response => {
 
                 if (response.error) {
-                    this.toast.addError(response.error, `Failed to save ${deck.title}`, {ref: 'DeckInfoModal.save'});
+                    this.toast.addError(response.error, `Failed to save "${title}".`, {ref: 'DeckInfoModal.save'});
                 } else {
-                    this.toast.add({ type: "success", text: `Saved ${deck.title}`, duration: 3000 });
+                    this.toast.add({ type: "success", text: `Saved "${title}".`, duration: 3000 });
                 }
 
                 if (!response.dropped) {
