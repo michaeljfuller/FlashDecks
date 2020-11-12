@@ -18,6 +18,7 @@ import {ToastQueueItem} from "../../store/toast/toast_actions";
 import navigationStore from "../../store/navigation/NavigationStore";
 import {PortalEntrance} from "../../components/portal/PortalEntrance";
 import {PortalExit} from "../../components/portal/PortalExit";
+import {logComponent} from "../../utils/debugging";
 
 export enum TestIds {
     User='TempScreen_User',
@@ -35,6 +36,10 @@ export type TempScreenState = Readonly<{
     showAlertModal: boolean;
 }>;
 
+@logComponent({
+    logDidMount: {group: false},
+    logDidUpdate: {collapsed: true}
+})
 export class TempScreen extends ImmutablePureComponent<
     TempScreenProps & TempScreenStoreProps,
     TempScreenState

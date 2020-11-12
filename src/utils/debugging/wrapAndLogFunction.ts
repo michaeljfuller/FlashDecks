@@ -15,6 +15,7 @@ import {getLogRef} from "./logRef";
 //<editor-fold desc="Types">
 
 export interface WrapAndLogFunctionOptions<Parent = any, Func extends GenericFunction = GenericFunction> {
+    enabled?: boolean;
     logArgs?: boolean;              // 'Args: [...]'
     logTarget?: boolean;            // 'Target: MyClass {...}'
     logResult?: boolean;            // 'Result: undefined'
@@ -46,6 +47,7 @@ export function wrapAndLogFunction<Func extends GenericFunction = GenericFunctio
     options?: WrapAndLogFunctionOptions,
 ): Func {
     const {
+        enabled = true,
         logArgs = false,
         logTarget = false,
         logResult = false,
@@ -62,6 +64,7 @@ export function wrapAndLogFunction<Func extends GenericFunction = GenericFunctio
         infoColor = defaultInfoColor,
     } = options || {};
 
+    if (!enabled) return func;
     const paramNames = getParamNames(func);
 
     return giveFunctionName(

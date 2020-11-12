@@ -1,9 +1,11 @@
+import React from "react";
 import {Logger, LogColor} from "./Logger"
 import logger from "./Logger"
 import {wrapAndLogFunction, WrapAndLogFunctionOptions} from "./debugging/wrapAndLogFunction";
 import {defaultMethodColor, defaultClassColor, defaultBackgroundColor, defaultPunctuationColor} from "./debugging/debuggingOptions";
 import {getLogRef} from "./debugging/logRef";
 import {GenericFunction} from "./function";
+import {GenericClass, renameClass} from "./class";
 
 export {compare, readableCompare} from "./debugging/compare";
 export {Logger, logger};
@@ -104,4 +106,51 @@ interface LogGetterOptions {
     backgroundColor?: LogColor;     // Log color for the background
     punctuationColor?: LogColor;    // Log color for the punctuation
     argumentColor?: LogColor;       // Log color for the arguments
+}
+
+type Component = React.ComponentClass<any>|React.PureComponent<any>;
+
+/** Log Component lifecycle events. */
+export function logComponent(options?: LogComponentOptions) {
+    const {
+        logDidMount = true,
+        logDidUpdate = true,
+        logWillUnmount = true,
+    } = options || {};
+
+    return function (component: GenericClass<Component>) {
+        class LoggedClass extends (component as any) {
+            //<editor-fold desc="componentDidMount">
+
+            @logMethod(typeof logDidMount === 'boolean' ? { enabled: logDidMount } : logDidMount)
+            componentDidMount() {
+                super.componentDidMount && super.componentDidMount();
+            }
+
+            //</editor-fold>
+            //<editor-fold desc="componentDidUpdate">
+
+            @logMethod(typeof logDidUpdate === 'boolean' ? { enabled: logDidUpdate, logArgs: true } : logDidUpdate)
+            componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<any>, snapshot?: any) {
+                super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, snapshot);
+            }
+
+            //</editor-fold>
+            //<editor-fold desc="componentWillUnmount">
+
+            @logMethod(typeof logWillUnmount === 'boolean' ? { enabled: logWillUnmount, logArgs: true } : logWillUnmount)
+            componentWillUnmount() {
+                super.componentWillUnmount && super.componentWillUnmount();
+            }
+
+            //</editor-fold>
+        }
+
+        return renameClass(component.name, LoggedClass) as any;
+    }
+}
+interface LogComponentOptions {
+    logDidMount?: boolean|WrapAndLogFunctionOptions;
+    logDidUpdate?: boolean|WrapAndLogFunctionOptions;
+    logWillUnmount?: boolean|WrapAndLogFunctionOptions;
 }
