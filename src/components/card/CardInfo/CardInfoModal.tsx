@@ -41,11 +41,11 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
         return Boolean(this.info.title);
     }
 
-    componentDidUpdate(prevProps: Readonly<EditCardModalProps>, prevState: Readonly<EditCardModalState>, snapshot?: {}) {
+    componentDidUpdate(prevProps: Readonly<EditCardModalProps>/*, prevState: Readonly<EditCardModalState>, snapshot?: {}*/) {
         if (CardModel.different(prevProps.card, this.props.card)) {
             this.setStateTo({ modifiedCard: undefined });
         }
-        super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, snapshot);
+        super.componentDidUpdate(prevProps);
     }
     componentWillUnmount() {
         this.toast.removeByRef();
@@ -57,7 +57,7 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
     }
     close() {
         this.setStateTo({ modifiedCard: null });
-        this.props.onClose && this.props.onClose();
+        super.close();
     }
 
     onPressOK = () => {
@@ -97,7 +97,7 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
     renderEditModal() {
         return <ModalContainer>
 
-            <ModalHeader title={'Edit Card'} />
+            <ModalHeader title={this.props.card ? 'Edit Card' : 'Create Card'} />
 
             <ModalBody>
                 <View style={styles.row}>

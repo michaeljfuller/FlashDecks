@@ -11,10 +11,7 @@ export function navigateToModal(props?: ModalsScreenProps) {
 
 /** Navigate back to the "screens" screen. */
 export function navigateFromModal() {
-    const nav = appNavigationRef.current;
-    if (nav) {
-        nav.canGoBack() ? nav.goBack() : nav.navigate(SCREENS_ROUTE);
-    }
+    appNavigationRef.current?.navigate(SCREENS_ROUTE);
 }
 
 // export function onNavigateToModal(callback: () => void) {
