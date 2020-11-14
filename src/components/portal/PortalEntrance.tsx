@@ -3,6 +3,7 @@ import {View, ViewProps} from "react-native";
 import portalStore from "../../store/portals/PortalStore";
 import {PortalEntranceStoreProps, reduxConnector} from "./PortalEntrance_redux";
 import {SignedStoreObject, signObjectForStore} from "../../store/reducerHelpers";
+import {giveFunctionName} from "../../utils/function";
 
 type ViewWithStore = PortalEntranceStoreProps & PropsWithChildren<ViewProps>;
 export interface PortalEntranceProps extends ViewWithStore {
@@ -10,6 +11,7 @@ export interface PortalEntranceProps extends ViewWithStore {
     portalId: string;
     onOpen?: () => void;
     onClose?: () => void;
+    name?: string;
 }
 
 /** A callback that creates a PortalEntrance. */
@@ -81,7 +83,10 @@ export class UnconnectedPortalEntrance extends React.Component<PortalEntrancePro
     render() {
         this.previousGetElement = this.getElement;
         this.getElement = signObjectForStore(
-            () => <View {...this.viewProps}>{this.props.children}</View>,
+            giveFunctionName(
+                (this.props.name || '') + 'PortalCallback',
+                () => <View {...this.viewProps}>{this.props.children}</View>
+            ),
             this.props.portalId
         );
         return null;
