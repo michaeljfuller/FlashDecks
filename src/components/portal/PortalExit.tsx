@@ -6,6 +6,8 @@ import {PortalExitStoreProps, reduxConnector} from "./PortalExit_redux";
 type ViewWithStore = PortalExitStoreProps & PropsWithChildren<ViewProps>;
 export interface PortalExitProps extends ViewWithStore {
     portalId: string;
+    onEmpty?: () => void;
+    onFilled?: () => void;
 }
 
 /***
@@ -37,6 +39,14 @@ export class UnconnectedPortalExit extends React.PureComponent<PortalExitProps> 
         if (prevProps.portalId !== this.props.portalId) {
             this.unregisterWithManager(prevProps.portalId);
             this.registerWithManager();
+        }
+        const previousCount = prevProps.portals[prevProps.portalId]?.length || 0;
+        const currentCount = this.props.portals[this.props.portalId]?.length || 0;
+        if (previousCount && !currentCount) {
+            this.props.onEmpty && this.props.onEmpty();
+        }
+        if (!previousCount && currentCount) {
+            this.props.onFilled && this.props.onFilled();
         }
     }
 
