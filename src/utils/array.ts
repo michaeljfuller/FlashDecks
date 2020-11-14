@@ -74,3 +74,13 @@ export function filterExists<T>(array?: T[]|null): NonNullable<T>[] {
     }
     return [];
 }
+
+/** Return a copy of the array, with the passed item between each element. */
+export function interlace<T, I>(array: T[], item: I): Array<T|I> {
+    return array.reduce(
+        (result, current) => {
+            result.length ? result.push(item, current) : result.push(current);
+            return result;
+        }, [] as Array<T|I>
+    );
+}

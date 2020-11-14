@@ -1,5 +1,6 @@
 import {LogColor} from './logging/logColors';
 import {PrintFactory} from "./logging/PrintFactory";
+import {interlace} from "./array";
 
 export {LogColor} from './logging/logColors';
 
@@ -48,7 +49,7 @@ export class Logger {
     /** Output group */
     group(...items: any[]): void {
         if (this.enabled) {
-            this.add(...items);
+            this.addSpaced(...items);
             console.group(...this.getPrintArgs());
             this.groupDepth++;
         }
@@ -58,7 +59,7 @@ export class Logger {
     /** Output collapsed group */
     groupCollapsed(...items: any[]): void {
         if (this.enabled) {
-            this.add(...items);
+            this.addSpaced(...items);
             console.groupCollapsed(...this.getPrintArgs());
             this.groupDepth++;
         }
@@ -68,7 +69,7 @@ export class Logger {
     /** Output log */
     log(...items: any[]): void {
         if (this.enabled) {
-            this.add(...items);
+            this.addSpaced(...items);
             console.log(...this.getPrintArgs());
         }
         this.clear();
@@ -77,7 +78,7 @@ export class Logger {
     /** Output info */
     info(...items: any[]): void {
         if (this.enabled) {
-            this.add(...items);
+            this.addSpaced(...items);
             console.log(...this.getPrintArgs());
         }
         this.clear();
@@ -86,7 +87,7 @@ export class Logger {
     /** Output void */
     error(...items: any[]): void {
         if (this.enabled) {
-            this.add(...items);
+            this.addSpaced(...items);
             console.log(...this.getPrintArgs());
         }
         this.clear();
@@ -95,7 +96,7 @@ export class Logger {
     /** Output warning */
     warning(...items: any[]): void {
         if (this.enabled) {
-            this.add(...items);
+            this.addSpaced(...items);
             console.log(...this.getPrintArgs());
         }
         this.clear();
@@ -129,6 +130,11 @@ export class Logger {
     add(...items: any[]): this {
         items.forEach(value => this.queue.push({ type: LogQueueItemType.Message, value }));
         return this;
+    }
+
+    /** Queue items to be printed, with spaces between them. */
+    addSpaced(...items: any[]): this {
+        return this.add(...interlace(items, ' '));
     }
 
     /** Queue a line break to be printed. */
