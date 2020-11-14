@@ -18,7 +18,7 @@ export class UnconnectedPortalExit extends React.PureComponent<PortalExitProps> 
     /** The entrance this is linked to */
     get entrance() {
         const entrances = this.props.portals[this.props.portalId];
-        const entrance = (entrances && entrances[entrances.length-1]) || null;
+        const entrance = (entrances && entrances[0]) || null;
         return (entrance && entrance()) || null;
     }
 

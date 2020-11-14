@@ -1,7 +1,7 @@
 import React from 'react';
 import {ModalBase, modalPortalId, ModalProps} from "./Modal.common";
 import {PortalEntrance} from "../../portal/PortalEntrance";
-import {navigateToModal, navigateFromModal} from "../../../navigation/AppNavigation/RootNavigation/actions";
+import {navigateToModal} from "../../../navigation/AppNavigation/RootNavigation/actions";
 
 export * from "./Modal.common";
 
@@ -30,17 +30,18 @@ export abstract class Modal<
         navigateToModal();
         super.open();
     }
-    close() {
-        navigateFromModal();
-        super.close();
-    }
 
     onOpen = () => this.open();
     onClose = () => this.close();
 
     render() {
         if (this.isClosed) return null;
-        return <PortalEntrance portalId={modalPortalId} onOpen={this.onOpen} onClose={this.onClose}>
+        return <PortalEntrance
+            portalId={modalPortalId}
+            name={this.constructor.name}
+            onOpen={this.onOpen}
+            onClose={this.onClose}
+        >
             {this.renderModal()}
         </PortalEntrance>;
     }
