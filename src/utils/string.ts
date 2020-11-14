@@ -25,6 +25,21 @@ export function capitalise(string: string): string {
     return string.substr(0, 1).toUpperCase() + string.substr(1);
 }
 
+type StringifyParam = Parameters<JSON['stringify']>;
+/** Return the result of JSON.stringify, or defaultValue if it fails (e.g. due to cyclical references). */
+export function safeJsonStringify<T>(
+    value: StringifyParam[0],
+    defaultValue: T,
+    replacer?: StringifyParam[1],
+    space?: StringifyParam[2]
+): string|T {
+    try {
+        return JSON.stringify(value, replacer, space);
+    } catch (e) {
+        return defaultValue;
+    }
+}
+
 // /** Split a string in two, at the given index. */
 // export function divideString(str: string, index: number): [string, string] {
 //     return [str.slice(0, index), str.slice(index)];

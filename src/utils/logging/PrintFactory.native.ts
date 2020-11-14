@@ -1,5 +1,6 @@
 import {PrintFactoryBase} from "./PrintFactory.common";
 import {ILogColors, LogColor} from "./logColors";
+import {safeJsonStringify} from "../string";
 
 const INDENT_SIZE = 2;
 
@@ -72,12 +73,11 @@ export class PrintFactory extends PrintFactoryBase {
         }
 
         if (this.currentString) this.result.push(this.currentString);
-        this.result.push(
-            JSON.stringify(value, null, INDENT_SIZE).replace(
-                new RegExp('\\n', 'g'),
-                '\n'+this.indent
-            )
+        const json = safeJsonStringify(value, undefined, null, INDENT_SIZE)?.replace(
+            new RegExp('\\n', 'g'),
+            '\n'+this.indent
         );
+        this.result.push(json || value);
         this.currentString = applyNewColor ? ConsoleCode.Reset : '';
     }
 
