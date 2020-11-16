@@ -3,7 +3,7 @@ import {View, ViewProps} from "react-native";
 import portalStore from "../../store/portals/PortalStore";
 import {PortalEntranceStoreProps, reduxConnector} from "./PortalEntrance_redux";
 import {SignedStoreObject, signObjectForStore} from "../../store/reducerHelpers";
-import {giveFunctionName} from "../../utils/function";
+import {instanceId} from "../../utils/instanceId";
 
 type ViewWithStore = PortalEntranceStoreProps & PropsWithChildren<ViewProps>;
 export interface PortalEntranceProps extends ViewWithStore {
@@ -14,10 +14,15 @@ export interface PortalEntranceProps extends ViewWithStore {
     name?: string;
 }
 
-/** A callback that creates a PortalEntrance. */
-export type PortalEntranceCallback = SignedStoreObject<
-    () => React.ReactElement
->;
+/** A callback that creates the PortalEntrance's contents. */
+export type PortalEntranceCallback = () => React.ReactElement;
+
+/** The packet sent through the portal. */
+export type PortalEntrancePacket = SignedStoreObject<{
+    name: string;
+    create: PortalEntranceCallback;
+    close: UnconnectedPortalEntrance['onClose'];
+}>
 
 /**
  * A component whose contents will get sent to the PortalExit that has the same networkId PortalNetwork.
@@ -25,8 +30,8 @@ export type PortalEntranceCallback = SignedStoreObject<
 export class UnconnectedPortalEntrance extends React.Component<PortalEntranceProps, any> {
 
     /** The element to be picked up by a PortalExit. */
-    getElement?: PortalEntranceCallback;
-    previousGetElement?: PortalEntranceCallback;
+    packet?: PortalEntrancePacket;
+    previousPacket?: PortalEntrancePacket;
 
     get viewProps(): ViewProps {
         const {...viewProps} = this.props;
@@ -47,9 +52,9 @@ export class UnconnectedPortalEntrance extends React.Component<PortalEntrancePro
 
     componentDidUpdate(prevProps: Readonly<PortalEntranceProps>/*, prevState: Readonly<any>, snapshot?: any*/) {
         // Change ID and/or force refresh on the PortalExit.
-        this.unregisterWithManager(prevProps.portalId, this.previousGetElement);
+        this.unregisterWithManager(prevProps.portalId, this.previousPacket);
         this.registerWithManager();
-        this.previousGetElement = undefined;
+        this.previousPacket = undefined;
 
         // Open/close, depending on portal count.
         const previousExitCount = prevProps.portalExitCounts[prevProps.portalId] || 0;
@@ -66,27 +71,28 @@ export class UnconnectedPortalEntrance extends React.Component<PortalEntrancePro
     }
 
     registerWithManager() {
-        if (this.getElement) {
-            portalStore.addEntrance(this.props.portalId, this.getElement);
+        if (this.packet) {
+            portalStore.addEntrance(this.props.portalId, this.packet);
             this.portalExitCount && this.onOpen();
         }
     }
 
     unregisterWithManager(
         portalId = this.props.portalId,
-        callback: PortalEntranceCallback|undefined = this.getElement
+        packet: PortalEntrancePacket|undefined = this.packet
     ) {
-        if (callback) portalStore.removeEntrance(portalId, callback);
+        if (packet) portalStore.removeEntrance(portalId, packet);
     }
 
     /** Update the element to be picked up by the PortalExit, and return nothing to be rendered. */
     render() {
-        this.previousGetElement = this.getElement;
-        this.getElement = signObjectForStore(
-            giveFunctionName(
-                (this.props.name || '') + 'PortalCallback',
-                () => <View {...this.viewProps}>{this.props.children}</View>
-            ),
+        this.previousPacket = this.packet;
+        this.packet = signObjectForStore(
+            {
+                name: instanceId((this.props.name || '') + 'Portal'),
+                create: () => <View {...this.viewProps}>{this.props.children}</View>,
+                close: this.onClose.bind(this)
+            },
             this.props.portalId
         );
         return null;

@@ -1,7 +1,7 @@
 import AStoreHelper from "../AStoreHelper";
 import {ActionType} from "../store";
 import {PortalState} from "./portal_reducer";
-import {PortalEntranceCallback, PortalEntranceAdd, PortalEntranceRemove, PortalExitAdd, PortalExitRemove} from "./portal_actions";
+import {PortalEntrancePacket, PortalEntranceAdd, PortalEntranceRemove, PortalExitAdd, PortalExitRemove} from "./portal_actions";
 
 /**
  * The PortalStore stores callbacks that create a PortalEntrance.
@@ -13,19 +13,19 @@ export class PortalStore extends AStoreHelper<PortalState> {
     }
 
     /** Add PortalEntranceCallback to array with the same `portalId`. */
-    addEntrance(portalId: string, entrance: PortalEntranceCallback): void {
+    addEntrance(portalId: string, entrance: PortalEntrancePacket): void {
         const action: PortalEntranceAdd = { type: ActionType.PORTAL_ENTRANCE_ADD, portalId, entrance };
         this.store.dispatch(action);
     }
 
     /** Remove PortalEntranceCallback to array with the same `portalId`. */
-    removeEntrance(portalId: string, entrance: PortalEntranceCallback): void {
+    removeEntrance(portalId: string, entrance: PortalEntrancePacket): void {
         const action: PortalEntranceRemove = { type: ActionType.PORTAL_ENTRANCE_REMOVE, portalId, entrance };
         this.store.dispatch(action);
     }
 
     /** Get PortalEntranceCallbacks stored against a `portalId`. */
-    getEntrances(portalId: string): PortalEntranceCallback[] {
+    getEntrances(portalId: string): PortalEntrancePacket[] {
         return this.state.entrances[portalId] || [];
     }
 

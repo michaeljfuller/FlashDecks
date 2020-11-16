@@ -1,6 +1,8 @@
 import React, {PropsWithChildren} from "react";
 import {View, ViewProps} from "react-native";
+import {renameClass} from "../../utils/class";
 import portalStore from "../../store/portals/PortalStore";
+import {PortalEntrancePacket} from "./PortalEntrance";
 import {PortalExitStoreProps, reduxConnector} from "./PortalExit_redux";
 
 type ViewWithStore = PortalExitStoreProps & PropsWithChildren<ViewProps>;
@@ -13,13 +15,12 @@ export interface PortalExitProps extends ViewWithStore {
 /***
  * A component which renders the contents of PortalEntrances with the same portalId in the PortalNetwork.
  */
+@renameClass('PortalExit')
 export class UnconnectedPortalExit extends React.PureComponent<PortalExitProps> {
 
-    /** The entrance this is linked to */
-    get entrance() {
-        const entrances = this.props.portals[this.props.portalId];
-        const entrance = (entrances && entrances[0]) || null;
-        return (entrance && entrance()) || null;
+    /** The entrances this is linked to */
+    get entrances(): PortalEntrancePacket[] {
+        return this.props.portals[this.props.portalId] || [];
     }
 
     get viewProps(): ViewProps {
@@ -40,8 +41,10 @@ export class UnconnectedPortalExit extends React.PureComponent<PortalExitProps> 
             this.unregisterWithManager(prevProps.portalId);
             this.registerWithManager();
         }
+
         const previousCount = prevProps.portals[prevProps.portalId]?.length || 0;
         const currentCount = this.props.portals[this.props.portalId]?.length || 0;
+
         if (previousCount && !currentCount) {
             this.props.onEmpty && this.props.onEmpty();
         }
@@ -62,7 +65,12 @@ export class UnconnectedPortalExit extends React.PureComponent<PortalExitProps> 
 
     render() {
         return <View {...this.viewProps}>
-            {this.entrance || this.props.children || null}
+            {this.entrances.map((entrance, index) => {
+                // Keep all entrances alive, but only show the top.
+                return <View key={entrance.name} style={{ display: index === 0 ? undefined : 'none' }}>
+                    {entrance.create()}
+                </View>;
+            })}
         </View>;
     }
 

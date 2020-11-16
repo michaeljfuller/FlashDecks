@@ -1,7 +1,7 @@
 import {ActionType} from '../store_actions';
 import {compareSignedObjectForStore, createReducer, Draft} from "../reducerHelpers";
 import {
-    PortalEntranceCallback,
+    PortalEntrancePacket,
     PortalEntranceAdd,
     PortalEntranceRemove,
     PortalExitAdd,
@@ -9,7 +9,7 @@ import {
 } from './portal_actions';
 
 export interface PortalState {
-    entrances: Record<string, PortalEntranceCallback[]>;
+    entrances: Record<string, PortalEntrancePacket[]>;
     exitCount: Record<string, number>;
 }
 
@@ -63,6 +63,6 @@ function removeExit(draft: Draft<PortalState>, action: PortalExitRemove) {
 }
 
 /** Equality doesn't work, since reducer uses Proxies. Instead, compare symbols of proxy and passed entrance. */
-function indexOfEntranceProxy(entrance: PortalEntranceCallback, proxies: PortalEntranceCallback[]): number {
+function indexOfEntranceProxy(entrance: PortalEntrancePacket, proxies: PortalEntrancePacket[]): number {
     return proxies.findIndex(proxy => compareSignedObjectForStore(proxy, entrance));
 }
