@@ -1,11 +1,10 @@
 import {produce} from "immer";
 import immutable from "./immutable";
 import {ModelUpdateCallback, ModelUpdateObject, ModelUpdateUnion} from "./Model.types";
+import {instanceId} from "../../utils/instanceId";
 
 type DefaultModelUpdateExcludes = 'isDirty'|'transientKey';
 export type ModelUpdate<TargetModel, UpdateExcludes extends string = ''> = ModelUpdateUnion<TargetModel, UpdateExcludes|DefaultModelUpdateExcludes>;
-
-let nextModelNumber = 1;
 
 /**
  * The base Model class built for "Immer.js" to make it immutable.
@@ -19,7 +18,7 @@ export abstract class Model<
     readonly isDirty: boolean = false;
 
     /** Unique key to identify a model, such as for React render lists. */
-    readonly transientKey = 'model:' + nextModelNumber++;
+    readonly transientKey = instanceId(this.constructor.name);
 
     /**
      * Create an immutable copy with changes specified by passed function/object.
