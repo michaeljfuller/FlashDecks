@@ -63,6 +63,7 @@ export default class CardView extends CardViewBase {
                 editable={this.props.editable}
                 open={this.state.showCreateCardModal}
                 onChange={this.onCreateCard}
+                onClose={this.hideCreateCardModal}
             />
 
         </View>;
