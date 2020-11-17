@@ -55,7 +55,7 @@ export default class CardView extends CardViewBase {
                 totalSides={this.sides.length}
                 style={styles.footer}
                 textStyle={styles.footerText}
-                onAddSide={this.props.editable ? this.addSideToEnd : undefined}
+                onAddSide={this.props.editable ? this.onAddSideToEnd : undefined}
                 onRemoveSide={this.props.editable ? this.showDeleteSidePrompt : undefined}
             />
 
