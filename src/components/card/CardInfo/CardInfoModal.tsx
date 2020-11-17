@@ -4,7 +4,6 @@ import {CardModel} from "../../../models";
 import ToastStore from "../../../store/toast/ToastStore";
 import {ModalBody, ModalContainer, ModalFooter, ModalHeader} from "../../modal/parts";
 import {StyleSheet, Text, TextInput, View} from "react-native";
-import {castDraft} from "immer";
 import Button from "../../button/Button";
 
 export type EditCardModalProps = {
@@ -14,20 +13,16 @@ export type EditCardModalProps = {
     onCancel?: () => void;
 } & ModalProps;
 
-export interface EditCardModalState {
-    modifiedCard?: CardModel;
-}
-
 export interface CardInfo {
     title: CardModel['title'];
 }
 
-export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState> {
-    state = {} as EditCardModalState;
+export class CardInfoModal extends Modal<EditCardModalProps> {
     toast = new ToastStore(this);
+    modifiedCard?: CardModel;
 
     get card() {
-        return this.state.modifiedCard || this.props.card || new CardModel;
+        return this.modifiedCard || this.props.card || new CardModel;
     }
     get info(): CardInfo {
         return {
@@ -69,9 +64,7 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
     }
 
     onChangeTitle = (title: string) => {
-        this.setStateTo(draft => {
-            draft.modifiedCard = castDraft( this.card.update({ title }) );
-        });
+        this.modifiedCard = this.card.update({ title });
     }
 
     renderModal() {
@@ -107,7 +100,7 @@ export class CardInfoModal extends Modal<EditCardModalProps, EditCardModalState>
                         focusable
                         autoFocus
                         style={styles.titleInput}
-                        value={this.card.title}
+                        defaultValue={this.card.title}
                         onChangeText={this.onChangeTitle}
                     />
                 </View>
