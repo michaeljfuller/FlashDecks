@@ -2,7 +2,13 @@ import React from "react";
 import {Logger, LogColor} from "./Logger"
 import logger from "./Logger"
 import {wrapAndLogFunction, WrapAndLogFunctionOptions} from "./debugging/wrapAndLogFunction";
-import {defaultMethodColor, defaultClassColor, defaultBackgroundColor, defaultPunctuationColor} from "./debugging/debuggingOptions";
+import {
+    defaultBackgroundColor,
+    defaultPunctuationColor,
+    classColor,
+    instanceColor,
+    methodColor
+} from "./debugging/debuggingOptions";
 import {getLogRef} from "./debugging/logRef";
 import {GenericFunction} from "./function";
 import {GenericClass, renameClass} from "./class";
@@ -69,8 +75,6 @@ export function logFunction<Func extends GenericFunction = GenericFunction, Scop
 export function logGetter(options?: LogGetterOptions) {
     const {
         styleOutput = true,
-        color = defaultMethodColor,
-        parentColor = defaultClassColor,
         backgroundColor = defaultBackgroundColor,
         punctuationColor = defaultPunctuationColor,
     } = options || {};
@@ -83,15 +87,21 @@ export function logGetter(options?: LogGetterOptions) {
         if (getter) {
             descriptor.get = function () {
                 const {type: className, id} = getLogRef(this);
+                const {
+                    color = methodColor(propertyName),
+                    parentColor = classColor(className),
+                } = options || {}
+
                 const instanceRef = '{' + id + '}';
                 const result = getter.apply(this);
 
                 const logger = new Logger(styleOutput);
                 logger.background(backgroundColor);
-                logger.color(parentColor).add(className + instanceRef);
+                logger.color(parentColor).add(className);
+                logger.color(instanceColor(id)).add(instanceRef);
                 logger.color(punctuationColor).add('.');
                 logger.color(color).add(propertyName);
-                logger.info({result});
+                logger.resetColors().add(' = ').info(result);
 
                 return result;
             }
@@ -116,34 +126,35 @@ export function logComponent(options?: LogComponentOptions) {
         logDidMount = true,
         logDidUpdate = true,
         logWillUnmount = true,
+        logRender = true,
     } = options || {};
 
     return function (component: GenericClass<Component>) {
-        class LoggedClass extends (component as any) {
-            //<editor-fold desc="componentDidMount">
+        const {
+            color = classColor(component.name)
+        } = options || {};
 
-            @logMethod(typeof logDidMount === 'boolean' ? { enabled: logDidMount } : logDidMount)
+        class LoggedClass extends (component as any) {
+
+            @logMethod(typeof logDidMount === 'boolean' ? { enabled: logDidMount, parentColor: color } : logDidMount)
             componentDidMount() {
                 super.componentDidMount && super.componentDidMount();
             }
 
-            //</editor-fold>
-            //<editor-fold desc="componentDidUpdate">
-
-            @logMethod(typeof logDidUpdate === 'boolean' ? { enabled: logDidUpdate, logArgs: true } : logDidUpdate)
+            @logMethod(typeof logDidUpdate === 'boolean' ? { enabled: logDidUpdate, parentColor: color } : logDidUpdate)
             componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<any>, snapshot?: any) {
                 super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, snapshot);
             }
 
-            //</editor-fold>
-            //<editor-fold desc="componentWillUnmount">
-
-            @logMethod(typeof logWillUnmount === 'boolean' ? { enabled: logWillUnmount, logArgs: true } : logWillUnmount)
+            @logMethod(typeof logWillUnmount === 'boolean' ? { enabled: logWillUnmount, parentColor: color } : logWillUnmount)
             componentWillUnmount() {
                 super.componentWillUnmount && super.componentWillUnmount();
             }
 
-            //</editor-fold>
+            @logMethod(typeof logRender === 'boolean' ? { enabled: logRender, parentColor: color } : logRender)
+            render() {
+                return super.render();
+            }
         }
 
         return renameClass(component.name, LoggedClass) as any;
@@ -153,4 +164,6 @@ interface LogComponentOptions {
     logDidMount?: boolean|WrapAndLogFunctionOptions;
     logDidUpdate?: boolean|WrapAndLogFunctionOptions;
     logWillUnmount?: boolean|WrapAndLogFunctionOptions;
+    logRender?: boolean|WrapAndLogFunctionOptions;
+    color?: LogColor;
 }

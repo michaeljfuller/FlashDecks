@@ -4,10 +4,11 @@ import {getType} from "../type";
 import {
     defaultArgumentColor,
     defaultBackgroundColor,
-    defaultClassColor,
     defaultInfoColor,
-    defaultMethodColor,
-    defaultPunctuationColor
+    defaultPunctuationColor,
+    classColor,
+    instanceColor,
+    methodColor
 } from "./debuggingOptions";
 import {GenericFunction, getParamNames, giveFunctionName} from "../function";
 import {getLogRef} from "./logRef";
@@ -56,8 +57,7 @@ export function wrapAndLogFunction<Func extends GenericFunction = GenericFunctio
         group = true,
         collapsed = false,
         styleOutput = true,
-        color = defaultMethodColor,
-        parentColor = defaultClassColor,
+        color = methodColor(functionName),
         backgroundColor = defaultBackgroundColor,
         punctuationColor = defaultPunctuationColor,
         argumentColor = defaultArgumentColor,
@@ -71,6 +71,10 @@ export function wrapAndLogFunction<Func extends GenericFunction = GenericFunctio
         functionName+'_$LogWrapper',
         function (this: any, ...args: any[]) {
             const target = scope || this;
+            const {type, id} = getLogRef(target);
+            const {
+                parentColor = classColor(type),
+            } = options || {};
 
             const logger = new Logger(styleOutput);
             logger.background(backgroundColor);
@@ -80,8 +84,8 @@ export function wrapAndLogFunction<Func extends GenericFunction = GenericFunctio
             // Group string: Class/Scope + Function name
             const runLogTargetAndFunction = () => {
                 if (target) {
-                    const {type, id} = getLogRef(target);
-                    logger.color(parentColor).add(type + '{' + id + '}');
+                    logger.color(parentColor).add(type);
+                    logger.color(instanceColor(id)).add('{' + id + '}');
                     logger.color(punctuationColor).add('.');
                 }
                 logger.color(color).add(functionName);
