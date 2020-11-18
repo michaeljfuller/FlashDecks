@@ -1,6 +1,8 @@
 import {LogColor} from './logging/logColors';
 import {PrintFactory} from "./logging/PrintFactory";
 import {interlace} from "./array";
+import {isPlatformWeb} from "../platform";
+import {getStack} from "./function";
 
 export {LogColor} from './logging/logColors';
 
@@ -145,6 +147,17 @@ export class Logger {
     /** Queue a space to be printed. */
     get space(): this {
         return this.add(' ');
+    }
+
+    /** Queue the call stack to be printed */
+    get stack(): this {
+        const list = getStack();
+        list.shift(); // Remove self
+        if (list.length) {
+            const indent = '> ';
+            return this.add(indent + list.join('\n'+indent));
+        }
+        return this;
     }
 
     //</editor-fold>
