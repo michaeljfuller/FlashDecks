@@ -12,6 +12,16 @@ export function repeat<Type>(
     return result;
 }
 
+/** Get a random index from the array. */
+export function randomIndex(array: any[]): number {
+    return Math.floor(Math.random() * array.length);
+}
+
+/** Get a random element from the array. */
+export function randomElement<T>(array: T[]): T {
+    return array[randomIndex(array)];
+}
+
 /** Return a new array with an item at the given index, moving the previous occupant to the right. */
 export function insertItem<Type>(array: readonly Type[], index: number, item: Type): Type[] {
     if (index < 0) index = array.length + index; // -1 = Last index in passed array
@@ -39,10 +49,16 @@ export function removeItem<Type>(array: readonly Type[], index: number): Type[] 
     ];
 }
 
-export function removeFirst<Type>(array: readonly Type[], value: any): Type[] {
-    const index = array.indexOf(value);
-    if (index < 0) return [...array];
-    return removeItem(array, index);
+/** Remove the first element(s) with the passed value(s). */
+export function removeFirst<Type>(array: readonly Type[], ...values: any[]): Type[] {
+    let result = [...array];
+    values.forEach(value => {
+        const index = array.indexOf(value);
+        if (index >= 0) {
+            result = removeItem(array, index);
+        }
+    });
+    return result;
 }
 
 /** Filter for items that match all the filter values. */

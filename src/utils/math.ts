@@ -1,4 +1,3 @@
-import {cardAspectRatio} from "../components/card-carousel/CardCarousel.common";
 
 /** Round a number to the given number of significant digits. */
 export function roundTo(value: number, digits?: number): number {
