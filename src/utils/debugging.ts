@@ -121,37 +121,51 @@ interface LogGetterOptions {
 type Component = React.ComponentClass<any>|React.PureComponent<any>;
 
 /** Log Component lifecycle events. */
-export function logComponent(options?: LogComponentOptions) {
+export function logComponent<T extends Component>(options?: LogComponentOptions<T>) {
     const {
+        ref,
         logDidMount = true,
         logDidUpdate = true,
         logWillUnmount = true,
         logRender = true,
     } = options || {};
 
-    return function (component: GenericClass<Component>) {
+    return function (component: GenericClass<T>) {
         const {
             color = classColor(component.name)
         } = options || {};
+        const baseMethodOptions: WrapAndLogFunctionOptions = { ref, parentColor: color };
 
         class LoggedClass extends (component as any) {
 
-            @logMethod(typeof logDidMount === 'boolean' ? { enabled: logDidMount, parentColor: color } : logDidMount)
+            @logMethod<any>(Object.assign(
+                baseMethodOptions,
+                typeof logDidMount === 'boolean' ? { enabled: logDidMount } : logDidMount
+            ))
             componentDidMount() {
                 super.componentDidMount && super.componentDidMount();
             }
 
-            @logMethod(typeof logDidUpdate === 'boolean' ? { enabled: logDidUpdate, parentColor: color } : logDidUpdate)
+            @logMethod<any>(Object.assign(
+                baseMethodOptions,
+                typeof logDidUpdate === 'boolean' ? { enabled: logDidUpdate } : logDidUpdate
+            ))
             componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<any>, snapshot?: any) {
                 super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, snapshot);
             }
 
-            @logMethod(typeof logWillUnmount === 'boolean' ? { enabled: logWillUnmount, parentColor: color } : logWillUnmount)
+            @logMethod<any>(Object.assign(
+                baseMethodOptions,
+                typeof logWillUnmount === 'boolean' ? { enabled: logWillUnmount } : logWillUnmount
+            ))
             componentWillUnmount() {
                 super.componentWillUnmount && super.componentWillUnmount();
             }
 
-            @logMethod(typeof logRender === 'boolean' ? { enabled: logRender, parentColor: color } : logRender)
+            @logMethod<any>(Object.assign(
+                baseMethodOptions,
+                typeof logRender === 'boolean' ? { enabled: logRender } : logRender
+            ))
             render() {
                 return super.render();
             }
@@ -160,10 +174,11 @@ export function logComponent(options?: LogComponentOptions) {
         return renameClass(component.name, LoggedClass) as any;
     }
 }
-interface LogComponentOptions {
-    logDidMount?: boolean|WrapAndLogFunctionOptions;
-    logDidUpdate?: boolean|WrapAndLogFunctionOptions;
-    logWillUnmount?: boolean|WrapAndLogFunctionOptions;
-    logRender?: boolean|WrapAndLogFunctionOptions;
+interface LogComponentOptions<C extends Component> {
+    ref?: (scope: C) => string;
+    logDidMount?: boolean|WrapAndLogFunctionOptions<C>;
+    logDidUpdate?: boolean|WrapAndLogFunctionOptions<C>;
+    logWillUnmount?: boolean|WrapAndLogFunctionOptions<C>;
+    logRender?: boolean|WrapAndLogFunctionOptions<C>;
     color?: LogColor;
 }

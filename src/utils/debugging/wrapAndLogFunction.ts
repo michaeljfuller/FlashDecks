@@ -17,10 +17,11 @@ import {getLogRef} from "./logRef";
 
 export interface WrapAndLogFunctionOptions<Parent = any, Func extends GenericFunction = GenericFunction> {
     enabled?: boolean;
+    ref?: RefCallback<Parent>;      // Callback to add identifiable reference to output (e.g. name/ID)
     logArgs?: boolean;              // 'Args: [...]'
     logTarget?: boolean;            // 'Target: MyClass {...}'
     logResult?: boolean;            // 'Result: undefined'
-    before?: LogBeforeMap<Parent, Func>;   // Print out extra info, based on the key and output of the callback
+    before?: LogBeforeMap<Parent, Func>; // Print out extra info, based on the key and output of the callback
     after?: LogAfterMap<Parent, Func>;   // Print out extra info, based on the key and output of the callback
     group?: boolean;                // If a log group should be created
     collapsed?: boolean;            // If the log group should be collapsed
@@ -33,6 +34,7 @@ export interface WrapAndLogFunctionOptions<Parent = any, Func extends GenericFun
     infoColor?: LogColor;           // Log color for extra details
 }
 
+type RefCallback<T> = (scope: T) => string;
 type LogBeforeMap<Type = any, Func extends GenericFunction = GenericFunction> = Record<string, LogBeforeCallback<Type, Func>>;
 type LogAfterMap<Type = any, Func extends GenericFunction = GenericFunction> = Record<string, LogAfterCallback<Type, Func>>;
 type LogBeforeCallback<Type = any, Func extends GenericFunction = GenericFunction> = (scope: Type, args: Parameters<Func>) => any;
@@ -49,6 +51,7 @@ export function wrapAndLogFunction<Func extends GenericFunction = GenericFunctio
 ): Func {
     const {
         enabled = true,
+        ref,
         logArgs = false,
         logTarget = false,
         logResult = false,
@@ -86,6 +89,7 @@ export function wrapAndLogFunction<Func extends GenericFunction = GenericFunctio
                 if (target) {
                     logger.color(parentColor).add(type);
                     logger.color(instanceColor(id)).add('{' + id + '}');
+                    if (ref) logger.color(instanceColor(id)).add('{' + ref(target) + '}');
                     logger.color(punctuationColor).add('.');
                 }
                 logger.color(color).add(functionName);
@@ -122,7 +126,7 @@ export function wrapAndLogFunction<Func extends GenericFunction = GenericFunctio
             //<editor-fold desc="Log Extras & Target">
 
             if (logTarget) {
-                logger.color(infoColor).info('Target: ', this);
+                logger.color(infoColor).info('Target:', this);
             }
 
             //</editor-fold>
@@ -134,9 +138,9 @@ export function wrapAndLogFunction<Func extends GenericFunction = GenericFunctio
                     const beforeCallback = before[key];
                     if (beforeCallback) {
                         try {
-                            logger.color(infoColor).info(key+': ', beforeCallback(target, args));
+                            logger.color(infoColor).info(key+':', beforeCallback(target, args));
                         } catch (e) {
-                            logger.color(infoColor).error(key+': ', e);
+                            logger.color(infoColor).error(key+':', e);
                         }
                     }
                 });
@@ -151,7 +155,7 @@ export function wrapAndLogFunction<Func extends GenericFunction = GenericFunctio
                 const result = func.apply(this, args); // Run original
                 if (logResult) {
                     runLogTargetAndFunction();
-                    logger.color(infoColor).info(' Result: ', result);
+                    logger.color(infoColor).info(' Result:', result);
                 }
 
                 //</editor-fold>
@@ -163,9 +167,9 @@ export function wrapAndLogFunction<Func extends GenericFunction = GenericFunctio
                         const afterCallback = after[key];
                         if (afterCallback) {
                             try {
-                                logger.color(infoColor).info(key+': ', afterCallback(target, args, result));
+                                logger.color(infoColor).info(key+':', afterCallback(target, args, result));
                             } catch (e) {
-                                logger.color(infoColor).error(key+': ', e);
+                                logger.color(infoColor).error(key+':', e);
                             }
                         }
                     });
