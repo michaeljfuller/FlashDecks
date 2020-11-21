@@ -1,10 +1,9 @@
 import React from "react";
-import Modal, {ModalProps} from "../../modal/core/Modal";
+import Modal, {ModalProps, extractModalProps} from "../../modal/core/Modal";
 import {CardModel} from "../../../models";
 import ToastStore from "../../../store/toast/ToastStore";
-import {ModalBody, ModalContainer, ModalFooter, ModalHeader} from "../../modal/parts";
-import {StyleSheet, Text, TextInput, View} from "react-native";
-import Button from "../../button/Button";
+import {CardInfoModalEdit} from "./parts/CardInfoModalEdit";
+import {CardInfoModalView} from "./parts/CardInfoModalView";
 
 export type EditCardModalProps = {
     card?: CardModel;
@@ -17,7 +16,7 @@ export interface CardInfo {
     title: CardModel['title'];
 }
 
-export class CardInfoModal extends Modal<EditCardModalProps> {
+export class CardInfoModal extends React.PureComponent<EditCardModalProps> {
     toast = new ToastStore(this);
     modifiedCard?: CardModel;
 
@@ -29,35 +28,26 @@ export class CardInfoModal extends Modal<EditCardModalProps> {
             title: this.card.title,
         };
     }
-    get changed(): boolean {
-        return this.info.title !== this.props.card?.title;
-    }
-    get valid(): boolean {
-        return Boolean(this.info.title);
-    }
 
-    componentDidUpdate(prevProps: Readonly<EditCardModalProps>/*, prevState: Readonly<EditCardModalState>, snapshot?: {}*/) {
+    componentDidUpdate(prevProps: Readonly<EditCardModalProps>/*, prevState: Readonly<any>, snapshot?: {}*/) {
         if (CardModel.different(prevProps.card, this.props.card)) {
-            this.setStateTo({ modifiedCard: undefined });
+            this.modifiedCard = undefined;
         }
-        super.componentDidUpdate(prevProps);
     }
     componentWillUnmount() {
         this.toast.removeByRef();
     }
 
-    apply() {
-        this.props.onChange && this.props.onChange(this.info);
+    apply(info: CardInfo) {
+        this.props.onChange && this.props.onChange(info);
         this.close();
     }
     close() {
-        this.setStateTo({ modifiedCard: null });
-        super.close();
+        this.modifiedCard = undefined;
+        this.props.onClose();
     }
 
-    onPressOK = () => {
-        this.apply();
-    }
+    onPressOK = (info: CardInfo) => this.apply(info);
     onPressCancel = () => {
         this.props.onCancel && this.props.onCancel();
         this.close();
@@ -67,88 +57,19 @@ export class CardInfoModal extends Modal<EditCardModalProps> {
         this.modifiedCard = this.card.update({ title });
     }
 
-    renderModal() {
-        return this.props.editable ? this.renderEditModal() : this.renderInfoModal();
-    }
-
-    renderInfoModal() {
-        return <ModalContainer>
-
-            <ModalHeader title={this.card.nameOrPlaceholder()} />
-
-            {/*<ModalBody>*/}
-            {/*    <Text>Tags: TODO</Text>*/}
-            {/*</ModalBody>*/}
-
-            <ModalFooter style={styles.footer}>
-                <Button title="Close" onClick={this.props.onClose} square />
-            </ModalFooter>
-
-        </ModalContainer>;
-    }
-
-    renderEditModal() {
-        return <ModalContainer>
-
-            <ModalHeader title={this.props.card ? 'Edit Card' : 'Create Card'} />
-
-            <ModalBody>
-                <View style={styles.row}>
-                    <Text style={styles.titleLabel}>Title:</Text>
-                    <TextInput
-                        editable
-                        focusable
-                        autoFocus
-                        style={styles.titleInput}
-                        defaultValue={this.card.title}
-                        onChangeText={this.onChangeTitle}
-                    />
-                </View>
-            </ModalBody>
-
-            <ModalFooter style={styles.footer}>
-                <Button
-                    title="OK"
-                    style={styles.footerItem}
-                    onClick={this.onPressOK}
-                    disabled={!this.changed && this.valid}
-                    square
+    render() {
+        return <Modal {...extractModalProps(this.props)}>
+            {
+                this.props.editable
+                ? <CardInfoModalEdit
+                    title={this.props.card ? 'Edit Card' : 'Create Card'}
+                    card={this.card}
+                    onPressOK={this.onPressOK}
+                    onPressCancel={this.onPressCancel}
                 />
-                <Button
-                    title="Cancel"
-                    style={styles.footerItem}
-                    onClick={this.onPressCancel}
-                    square
-                />
-            </ModalFooter>
-
-        </ModalContainer>;
+                : <CardInfoModalView card={this.card} onClose={this.props.onClose} />
+            }
+        </Modal>;
     }
 
 }
-
-const titleInputHeight = 25;
-const styles = StyleSheet.create({
-    row: {
-        flexDirection: "row",
-        marginBottom: 2,
-    },
-    titleLabel: {
-        lineHeight: titleInputHeight,
-    },
-    titleInput: {
-        padding: 2,
-        marginLeft: 5,
-        flex: 1,
-        height: titleInputHeight,
-        borderWidth: 1,
-    },
-
-    footer: {
-        flexDirection: "row",
-        width: "100%",
-    },
-    footerItem: {
-        flex: 1,
-    },
-});
