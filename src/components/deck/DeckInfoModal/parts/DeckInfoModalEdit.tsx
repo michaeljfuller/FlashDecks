@@ -38,7 +38,7 @@ export class DeckInfoModalEdit extends React.PureComponent<DeckInfoEditModalBody
     }
 
     componentDidUpdate(prevProps: Readonly<DeckInfoEditModalBodyProps>/*, prevState: Readonly<DeckInfoModalEditState>, snapshot?: any*/) {
-        if (prevProps.deck !== this.props.deck) {
+        if (DeckModel.different(prevProps.deck, this.props.deck)) {
             this.setState({ info: undefined }); // If deck changed, reset info.
         }
     }
