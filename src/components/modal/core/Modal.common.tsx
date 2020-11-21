@@ -1,5 +1,5 @@
 import React from 'react';
-import ImmutableComponent from "../../ImmutableComponent";
+import {ViewStyle} from "react-native";
 
 export const modalPortalId = "_MODALS_";
 
@@ -10,13 +10,17 @@ export interface ModalProps {
     onOpen?: () => void;
     /** Callback when the Modal is closed */
     onClose: () => void;
+    /** Style contents */
+    style?: ViewStyle;
 }
 
-export abstract class ModalBase<
-    Props extends ModalProps = ModalProps,
-    State = any
-> extends ImmutableComponent<Props, State>   {
-    state = {} as State;
+/** Pull only ModalProps members from an object that may have others. */
+export function extractModalProps(props: ModalProps): ModalProps {
+    const {open, onOpen, onClose, style} = props;
+    return {open, onOpen, onClose, style};
+}
+
+export abstract class ModalBase extends React.PureComponent<ModalProps> {
 
     /** True if the modal is open. */
     get isOpen() {
@@ -32,12 +36,6 @@ export abstract class ModalBase<
     componentDidMount() {}
     componentWillUnmount() {}
 
-    componentDidUpdate(prevProps: Readonly<Props>/*, prevState: Readonly<State>, snapshot?: {}*/) {
-        if (prevProps.open !== this.props.open) { // If changed
-            this.isOpen ? this.open() : this.close(); // Trigger callbacks
-        }
-    }
-
     /** Call the onOpen callback which, if set, should open the modal by setting the `open` property to true. */
     open() {
         this.props.onOpen && this.props.onOpen();
@@ -47,6 +45,4 @@ export abstract class ModalBase<
     close() {
         this.props.onClose();
     }
-
-    abstract renderModal(): React.ReactElement;
 }

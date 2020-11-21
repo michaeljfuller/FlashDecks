@@ -16,20 +16,24 @@ For native builds, it uses a react-navigation screen. This approach was chosen b
 The Modal's contents are passed into a **PortalEntrance**, which then get displayed in the **PortalExit** in a **ModalsScreen**.  
 When the `open` property is changed, `navigateToModal`/`navigateFromModal` trigger a navigation action on the `RootNavigation` component, which will either show the `ModalsScreen` or the standard `ScreenNavigation` component (where normal pages are displayed).
 
-### Extending Modal
-When extending the modal, do not modify `render()`. Your view should instead be returned by `renderContents`.  
-If overriding a lifecycle method (i.e. `componentDidMount/componentWillUnmount/componentDidUpdate`), ensure the parent method is still called.
+## Implementing New Modals
+To create a new modal type, it should wrap the base `Modal` component, passing it the required `ModalProps`.
+
+### Example
 ```tsx
-export class MyModal extends Modal<MyModalProps, MyModalState> {
-    componentDidUpdate(prevProps: Readonly<MyModalProps>, prevState: Readonly<MyModalState>, snapshot?: {}) {
-        // <something here>
-        super.componentDidUpdate(prevProps, prevState, snapshot);
-    }
-    renderModal() {
-        return <View>
-            <Text>Something</Text>
-            <Button text="Close" onClick={() => this.close()} />
-        </View>;
+export type MyModalProps = {
+    title: string;
+} & ModalProps;
+
+export class MyModal extends React.PureComponent<PromptModalProps> {
+    render() {
+        return <Modal {...extractModalProps(this.props)}>
+            <ModalHeader title={this.props.title} />
+            <ModalBody>{children}</ModalBody>
+            <ModalFooter>
+                <Button title="Close" onClick={this.props.onClose} />
+            </ModalFooter>
+        </Modal>;
     }
 }
 ```
