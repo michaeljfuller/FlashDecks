@@ -27,9 +27,10 @@ export abstract class Model<
      * Modifying the Draft will make the corresponding changes to the output.
      */
     update(
-        input: ModelUpdate<this, ModelUpdateExcludes>,
+        input: ModelUpdate<this, ModelUpdateExcludes>|undefined|null,
         isDirty = true
     ): this {
+        if (!input) return this;
         if (typeof input === 'function') {
             return this.updateFromCallback(input, isDirty);
         }

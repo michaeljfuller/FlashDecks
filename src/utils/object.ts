@@ -1,7 +1,7 @@
 /** Use the given partial, but fill in any missing with the given defaults. */
 import {repeat} from "./array";
 
-export function withDefaults<T>(partial: Partial<T>, defaults: T, overrides?: Partial<T>): T {
+export function withDefaults<T>(partial: Partial<T>|null|undefined, defaults: T, overrides?: Partial<T>): T {
     return Object.assign({}, defaults, partial, overrides);
 }
 
