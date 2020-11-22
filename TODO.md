@@ -20,10 +20,7 @@ https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html
 * Add Existing Card
 * Card Management Screen
 * Deck Tag editing.
-* Edit Card details.
+* Fix sign-in warnings
 
 # Client API
 * Load from API
-* Save to API
-* Create Deck + Card
-
