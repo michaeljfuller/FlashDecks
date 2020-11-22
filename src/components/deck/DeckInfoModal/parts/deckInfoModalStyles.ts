@@ -20,6 +20,7 @@ export const styles = StyleSheet.create({
         padding: 2,
         margin: 2,
         borderWidth: 1,
+        textAlignVertical: "top",
     },
     footer: {
         flexDirection: "row",
