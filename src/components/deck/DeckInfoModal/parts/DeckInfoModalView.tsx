@@ -23,7 +23,7 @@ export const DeckInfoModalView = React.memo(function DeckInfoModalView(props: De
         </ModalBody>
 
         <ModalFooter style={styles.footer}>
-            <Button title="Close" onClick={props.onClose} square />
+            <Button title="Close" style={styles.footerItem} square onClick={props.onClose} />
         </ModalFooter>
 
     </React.Fragment>
