@@ -99,8 +99,8 @@ export default class CardView extends CardViewBase {
                 onPressDone={this.state.modifiedCard ? this.onClickDoneEditSide : undefined}
                 onPressCancel={this.onClickCancelEditSide}
                 onPressEdit={this.onClickEditSide}
-                onPressAddBefore={this.addSideBefore}
-                onPressAddAfter={this.addSideAfter}
+                onPressAddBefore={this.onAddSideBefore}
+                onPressAddAfter={this.onAddSideAfter}
                 onPressDelete={this.showDeleteSidePrompt}
             />
             <CardInfoModal
