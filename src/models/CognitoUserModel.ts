@@ -1,4 +1,4 @@
-import Model from "./core/Model";
+import Model, {ModelUpdate} from "./core/Model";
 
 export interface ApiCognitoUser {
     username: string;
@@ -19,8 +19,12 @@ export class CognitoUserModel extends Model implements
     readonly email_verified: boolean = false;
     readonly sub: string = '';
 
+    static create(input: ModelUpdate<CognitoUserModel>) {
+        return (new CognitoUserModel).update(input, false);
+    }
+
     static fromApi(obj: ApiCognitoUser) {
-        return (new CognitoUserModel).update({
+        return CognitoUserModel.create({
             username: obj.username,
             email: obj.attributes.email,
             email_verified: obj.attributes.email_verified,

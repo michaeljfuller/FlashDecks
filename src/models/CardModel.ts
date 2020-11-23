@@ -1,30 +1,38 @@
-import Model from "./core/Model";
-import {ApiList} from "../api/util/ApiTypes";
-import {ApiUser, UserModel} from "./UserModel";
+import {isEqual} from "underscore";
+import Model, {ModelUpdate} from "./core/Model";
 import {ApiCardSide, CardSideModel} from "./CardSideModel";
+import {ApiDeck} from "./DeckModel";
 
-export interface ApiCard {
-    id: string;
-    name: string;
-    ownerId: string;
-    owner: ApiUser;
-    sides?: ApiList<ApiCardSide>;
-}
+export type ApiCardList = NonNullable<ApiDeck['cards']>;
+export type ApiCard = ApiCardList[0];
 
-export class CardModel extends Model implements Omit<ApiCard, 'owner'|'sides'> {
-    readonly id: string = '';
-    readonly name: string = '';
-    readonly ownerId: string = '';
-    readonly owner?: UserModel;
+export class CardModel extends Model implements Omit<ApiCard, '__typename'|'owner'|'sides'|'deck'> {
+
+    readonly title: string = '';
     readonly sides: readonly CardSideModel[] = [];
 
+    static create(input: ModelUpdate<CardModel>) {
+        return (new CardModel).update(input, false);
+    }
+
+    nameOrPlaceholder(placeholder = "Untitled") {
+        return this.title || placeholder;
+    }
+
+    static same(first: CardModel|null|undefined, second: CardModel|null|undefined): boolean {
+        if (!first !== !second) return false; // If only one is truthy, not the same.
+        return isEqual(first, second);
+    }
+    static different(first: CardModel|null|undefined, second: CardModel|null|undefined): boolean {
+        return !CardModel.same(first, second);
+    }
+
     static fromApi(obj: ApiCard) {
-        return (new CardModel()).update({
-            id: obj.id,
-            ownerId: obj.ownerId,
-            owner: UserModel.fromApi(obj.owner),
-            name: obj.name,
-            sides: obj.sides?.items?.map(CardSideModel.fromApi) || [],
+        return CardModel.create({
+            title: obj.title,
+            sides: obj.sides?.map(
+                (side: ApiCardSide) => CardSideModel.fromApi(side as ApiCardSide)
+            ) || [],
         });
     }
 }

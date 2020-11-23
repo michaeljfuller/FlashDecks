@@ -2,8 +2,8 @@ import React from "react";
 import {Text, View, StyleSheet} from "react-native";
 
 import Button from "../../button/Button";
-import Modal, {ModalProps} from "../../modal/core/Modal";
-import {ModalContainer, ModalHeader, ModalBody} from "../../modal/parts";
+import Modal, {ModalProps, extractModalProps} from "../../modal/core/Modal";
+import {ModalHeader, ModalBody} from "../../modal/parts";
 import {ModalFooter} from "../../modal/parts";
 import {CardContentModel, CardContentType, cardContentTypes} from "../../../models";
 import {CardContentForm} from "./CardContentForm";
@@ -20,7 +20,7 @@ export type AddContentModalProps = {
 /**
  * A simple modal with "OK and "Cancel" buttons.
  */
-export class ModifyContentModal extends Modal<AddContentModalProps> {
+export class ModifyContentModal extends React.PureComponent<AddContentModalProps> {
 
     onPressOk = () => {
         const close = this.props.onOk() !== false;
@@ -42,49 +42,34 @@ export class ModifyContentModal extends Modal<AddContentModalProps> {
         );
     }
 
-    renderModal() {
-        return <ModalContainer>
+    render(): JSX.Element {
+        return <Modal {...extractModalProps(this.props)}>
             <ModalHeader title={this.props.title || "Modify Content"} />
+
             <ModalBody style={styles.body}>
-                {this.renderTypeButtons()}
-                {this.renderForm()}
+                <View style={styles.typeButtonRow}>{ // Type Buttons
+                    cardContentTypes.map(
+                        contentType => <Button
+                            key={contentType}
+                            title={contentType}
+                            onClick={() => this.setType(contentType)}
+                            disabled={this.props.content.type === contentType}
+                            style={styles.typeButton}
+                        />
+                    )
+                }</View>
+                {   // Form
+                    this.props.content.validType
+                    ? <CardContentForm content={this.props.content} onChange={this.onChange} preview />
+                    : <Text>Please select a content type.</Text>
+                }
             </ModalBody>
-            {this.renderFooter()}
-        </ModalContainer>;
-    }
 
-    renderTypeButtons() {
-        return <View style={styles.typeButtonRow}>{
-            cardContentTypes.map(
-                contentType => this.renderContentTypeButton(contentType)
-            )
-        }</View>;
-    }
-
-    renderForm() {
-        const {content} = this.props;
-        if (content.validType) {
-            return <CardContentForm content={content} onChange={this.onChange} preview />;
-        } else {
-            return <Text>Please select a content type.</Text>;
-        }
-    }
-
-    renderContentTypeButton(contentType: CardContentType) {
-        return <Button
-            key={contentType}
-            title={contentType}
-            onClick={() => this.setType(contentType)}
-            disabled={this.props.content.type === contentType}
-            style={styles.typeButton}
-        />;
-    }
-
-    renderFooter() {
-        return <ModalFooter style={styles.footer}>
-            <Button title="OK" style={styles.footerItem} onClick={this.onPressOk} square disabled={!this.props.content.valid} />
-            <Button title="Cancel" style={styles.footerItem} onClick={this.onPressCancel} square />
-        </ModalFooter>;
+            <ModalFooter style={styles.footer}>
+                <Button title="OK"     style={styles.footerItem} onClick={this.onPressOk}     square disabled={!this.props.content.valid} />
+                <Button title="Cancel" style={styles.footerItem} onClick={this.onPressCancel} square />
+            </ModalFooter>
+        </Modal>;
     }
 
 }
@@ -110,4 +95,4 @@ const styles = StyleSheet.create({
     footerItem: {
         flex: 1
     },
-})
+});

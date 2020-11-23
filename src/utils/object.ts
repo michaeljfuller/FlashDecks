@@ -1,5 +1,7 @@
 /** Use the given partial, but fill in any missing with the given defaults. */
-export function withDefaults<T>(partial: Partial<T>, defaults: T, overrides?: Partial<T>): T {
+import {repeat} from "./array";
+
+export function withDefaults<T>(partial: Partial<T>|null|undefined, defaults: T, overrides?: Partial<T>): T {
     return Object.assign({}, defaults, partial, overrides);
 }
 
@@ -17,11 +19,13 @@ export function mapToObject<
     type Result = Record<KeysOut, ValuesOut>;
 
     const result: Partial<Result> = {};
-    const keys = Object.keys(obj) as Key[];
+    const keys = Array.isArray(obj)
+        ? repeat(obj.length, index => index as Key)
+        : Object.keys(obj) as Key[];
 
-    keys.forEach(originalKey => {
+    keys.forEach((originalKey, index) => {
         const originalValue: ValuesIn = obj[originalKey] as any;
-        const {value, key, skip} = callback(originalValue, originalKey);
+        const {value, key, skip} = callback(originalValue, originalKey, index);
         const keyOut: KeysOut = (key || originalKey) as any;
         if (!skip) result[keyOut] = value;
     });
@@ -35,9 +39,10 @@ export type MapToObjectCallback<
     ValuesIn=any
 > = (
     value: ValuesIn,
-    key?: keyof Target
+    key: keyof Target,
+    index: number
 ) => {
-    value: ValuesOut;
+    value?: ValuesOut;
     key?: KeysOut;
     skip?: boolean;
 };
@@ -45,4 +50,10 @@ export type MapToObjectCallback<
 /** A safe way of calling hasOwnProperty, now objects can have a different prototype via Object.create(). */
 export function hasProperty(obj: Record<string, any>, key: string): boolean {
     return Object.prototype.hasOwnProperty.call(obj, key);
+}
+
+export function isObject(obj: any, includeNull=true, includeUndefined=false): boolean {
+    if (!includeNull && obj === null) return false;
+    if (includeUndefined && obj === undefined) return true;
+    return typeof obj === "object";
 }

@@ -12,6 +12,7 @@ export function DeckRouteContainer() {
         <Screen name={DeckRoutes.List} component={DeckListScreen} />
         <Screen name={DeckRoutes.View} component={DeckViewScreen} />
         <Screen name={DeckRoutes.Edit} component={DeckEditScreen} />
+        <Screen name={DeckRoutes.New} component={DeckEditScreen} />
     </Navigator>;
 }
 export default DeckRouteContainer;

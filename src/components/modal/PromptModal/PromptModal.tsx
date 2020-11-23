@@ -1,8 +1,8 @@
 import React from "react";
 import {Text, View, ViewStyle, StyleSheet} from "react-native";
 import Button from "../../button/Button";
-import Modal, {ModalProps} from "../core/Modal";
-import {ModalContainer, ModalHeader, ModalBody, ModalFooter} from "../parts";
+import Modal, {ModalProps, extractModalProps} from "../core/Modal";
+import {ModalHeader, ModalBody, ModalFooter} from "../parts";
 
 export type PromptModalProps = {
     /** A title to add to the modal. */
@@ -19,7 +19,7 @@ export type PromptModalProps = {
 /**
  * A simple modal with "OK and "Cancel" buttons.
  */
-export class PromptModal extends Modal<PromptModalProps> {
+export class PromptModal extends React.PureComponent<PromptModalProps> {
 
     onPressOk = () => {
         const close = this.props.onOk() !== false;
@@ -35,10 +35,10 @@ export class PromptModal extends Modal<PromptModalProps> {
         }
     };
 
-    renderModal() {
-        const {title, message, children, style, enabledOk=true} = this.props;
+    render() {
+        const {title, message, children, enabledOk=true} = this.props;
 
-        return <ModalContainer style={style}>
+        return <Modal {...extractModalProps(this.props)}>
 
             <ModalHeader title={title || 'Alert'} />
 
@@ -52,7 +52,7 @@ export class PromptModal extends Modal<PromptModalProps> {
                 <Button title="Cancel" style={styles.footerButton} onClick={this.onPressCancel} square />
             </ModalFooter>
 
-        </ModalContainer>;
+        </Modal>;
     }
 }
 export default PromptModal;

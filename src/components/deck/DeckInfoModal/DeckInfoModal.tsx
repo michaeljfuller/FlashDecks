@@ -1,152 +1,98 @@
 import React from "react";
-import {Text, TextInput, View, StyleSheet} from "react-native";
-import Button from "../../button/Button";
-import Modal, {ModalProps} from "../../modal/core/Modal";
-import {ModalContainer, ModalHeader, ModalFooter, ModalBody} from "../../modal/parts";
+import ImmutableComponent from "../../ImmutableComponent";
+import Modal, {ModalProps, extractModalProps} from "../../modal/core/Modal";
 import {DeckModel} from "../../../models";
-import {DeckInfoModelTags} from "./DeckInfoModalTags";
-import {castDraft} from "immer";
+import deckApi from "../../../api/DeckApi";
+import ToastStore from "../../../store/toast/ToastStore";
+import ApiRequest from "../../../api/util/ApiRequest";
+import {DeckInfoModalEdit} from "./parts/DeckInfoModalEdit";
+import {DeckInfoModalView} from "./parts/DeckInfoModalView";
 
 export type DeckInfoModalProps = {
     deck: DeckModel;
     editable?: boolean;
-    onChange?: (deck: DeckModel) => void;
+    onChange?: (info: DeckInfo) => void;
+    onCancel?: () => void;
 } & ModalProps;
 
+export interface DeckInfo {
+    title: DeckModel['title'];
+    description: DeckModel['description'];
+    tags: DeckModel['tags'];
+}
+
 export interface DeckInfoModalState {
-    modifiedDeck?: DeckModel;
+    saving: boolean;
 }
 
 /**
  * A simple modal with a close button.
  */
-export class DeckInfoModal extends Modal<DeckInfoModalProps, DeckInfoModalState> {
-    state = {} as DeckInfoModalState;
+export class DeckInfoModal extends ImmutableComponent<DeckInfoModalProps, DeckInfoModalState> {
+    state = { saving: false } as DeckInfoModalState;
 
-    get deck(): DeckModel {
-        return this.state.modifiedDeck || this.props.deck;
+    toast = new ToastStore(this);
+    saveRequest?: ApiRequest<DeckModel>;
+
+    componentWillUnmount() {
+        this.toast.removeByRef();
+        this.saveRequest?.drop();
     }
 
-    componentDidUpdate(prevProps: Readonly<DeckInfoModalProps>/*, prevState: Readonly<DeckInfoModalState>, snapshot?: any*/) {
-        if (prevProps.deck.id !== prevProps.deck.id) {
-            this.setStateTo({ modifiedDeck: undefined });
+    save(info: DeckInfo) {
+        if (info) {
+            const deck = this.props.deck;
+
+            this.setStateTo({ saving: true });
+            this.toast.add({ text: `Saving "${info.title}"...`, canDismiss: false });
+
+            const request = deck.id ? deckApi.update({...info, id: deck.id}) : deckApi.create(info);
+            request.wait(false).then(response => {
+                this.toast.removeByRef();
+
+                if (response.error) {
+                    this.toast.addError(response.error, `Failed to save "${info.title}".`, {ref: 'DeckInfoModal.save'});
+                } else {
+                    this.toast.add({ type: "success", text: `Saved "${info.title}".`, duration: 3000 });
+                }
+
+                if (!response.dropped) {
+                    this.setStateTo({ saving: false });
+                    if (!response.error) {
+                        this.props.onChange && this.props.onChange(info);
+                        this.props.onClose && this.props.onClose();
+                    }
+                }
+
+            });
+        } else {
+            this.toast.add({ type: "warning", text: "No changes to save.", duration: 3000 });
         }
     }
 
-    onPressOk = () => {
-        if (this.props.onChange && this.state.modifiedDeck) {
-            this.props.onChange(this.state.modifiedDeck);
-        }
-        if (this.props.onClose) {
-            this.props.onClose();
-        }
+    onPressSave = (info: DeckInfo) => this.save(info);
+    onPressCancel = () => {
+        this.props.onCancel && this.props.onCancel();
+        this.props.onClose && this.props.onClose();
     }
 
-    onChangeName = (name: string) => {
-        this.setStateTo(draft => {
-            draft.modifiedDeck = castDraft( this.deck.update({ name }) );
-        });
-    }
-
-    onChangeDescription = (description: string) => {
-        this.setStateTo(draft => {
-            draft.modifiedDeck = castDraft( this.deck.update({ description }) );
-        });
-    }
-
-    onChangeTags = (tags: string[]) => {
-        this.setStateTo(draft => {
-            draft.modifiedDeck = castDraft( this.deck.update({ tags }) );
-        });
-    }
-
-    renderModal() {
-        return this.props.editable ? this.renderEditModal() : this.renderInfoModal();
-    }
-
-    renderInfoModal() {
-        return <ModalContainer>
-
-            <ModalHeader title={this.deck.name} user={this.deck.owner} />
-
-            <ModalBody>
-                <DeckInfoModelTags tags={this.deck.tags} />
-                <Text>{this.deck.description}</Text>
-            </ModalBody>
-
-            <ModalFooter>
-                <Button title="Close" onClick={this.props.onClose} square />
-            </ModalFooter>
-
-        </ModalContainer>;
-    }
-
-    renderEditModal() {
-        const numberOfDescriptionLines = Math.max(12, (this.deck.description || '').split('\n').length);
-
-        return <ModalContainer>
-
-            <ModalHeader title={this.deck.name} user={this.deck.owner} />
-
-            <ModalBody>
-                <View style={styles.titleInputRow}>
-                    <Text style={styles.titleLabel}>Title:</Text>
-                    <TextInput
-                        editable
-                        style={styles.titleInput}
-                        value={this.deck.name}
-                        onChangeText={this.onChangeName}
-                    />
-                </View>
-                <DeckInfoModelTags editable tags={this.deck.tags} onChange={this.onChangeTags} />
-                <TextInput
-                    editable
-                    multiline
-                    focusable
-                    autoFocus
-                    numberOfLines={numberOfDescriptionLines}
-                    style={styles.descriptionInput}
-                    value={this.deck.description}
-                    onChangeText={this.onChangeDescription}
+    render() {
+        const currentDeck = this.props.deck;
+        return <Modal {...extractModalProps(this.props)}>
+            {
+                this.props.editable
+                ? <DeckInfoModalEdit
+                    deck={currentDeck}
+                    disabled={this.state.saving}
+                    onPressSave={this.onPressSave}
+                    onPressCancel={this.onPressCancel}
                 />
-            </ModalBody>
-
-            <ModalFooter style={styles.footer}>
-                <Button title="OK" style={styles.footerItem} onClick={this.onPressOk} square disabled={!this.state.modifiedDeck} />
-                <Button title="Cancel" style={styles.footerItem} onClick={this.props.onClose} square />
-            </ModalFooter>
-
-        </ModalContainer>;
+                : <DeckInfoModalView
+                    deck={currentDeck}
+                    onClose={this.props.onClose}
+                />
+            }
+        </Modal>;
     }
 
 }
-
-const titleInputHeight = 25;
-const styles = StyleSheet.create({
-    titleInputRow: {
-        flexDirection: "row",
-        marginBottom: 2,
-    },
-    titleLabel: {
-        lineHeight: titleInputHeight,
-    },
-    titleInput: {
-        padding: 2,
-        marginLeft: 5,
-        flex: 1,
-        height: titleInputHeight,
-        borderWidth: 1,
-    },
-    descriptionInput: {
-        padding: 2,
-        margin: 2,
-        borderWidth: 1,
-    },
-    footer: {
-        flexDirection: "row",
-        width: "100%",
-    },
-    footerItem: {
-        flex: 1,
-    },
-})

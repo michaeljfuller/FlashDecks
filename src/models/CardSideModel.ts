@@ -1,18 +1,22 @@
-import {ApiCardContent, CardContentModel} from "./CardContentModel";
-import Model from "./core/Model";
-import {ApiList} from "../api/util/ApiTypes";
+import {CardContentModel} from "./CardContentModel";
+import Model, {ModelUpdate} from "./core/Model";
 import {insertItem} from "../utils/array";
+import {ApiCard} from "./CardModel";
 
-export interface ApiCardSide {
-    content?: ApiList<ApiCardContent>;
-}
+export type ApiCardSide = NonNullable<ApiCard['sides']>[0];
 
 export class CardSideModel extends Model {
-    readonly content = [] as readonly CardContentModel[];
+    readonly content: CardContentModel[] = [];
+
+    static create(input: ModelUpdate<CardSideModel>) {
+        return (new CardSideModel).update(input, false);
+    }
 
     static fromApi(obj: ApiCardSide) {
-        return (new CardSideModel).update(draft => {
-            draft.content = obj.content?.items?.map(CardContentModel.fromApi) || [];
+        return CardSideModel.create(draft => {
+            draft.content = obj.content?.map(
+                item => CardContentModel.fromApi(item)
+            ) || [];
         });
     }
 

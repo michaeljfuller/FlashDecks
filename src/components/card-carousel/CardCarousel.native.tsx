@@ -1,14 +1,13 @@
 import React from 'react';
 import {View, StyleSheet, Text, FlatList, LayoutChangeEvent, ViewStyle} from 'react-native';
-import ImmutablePureComponent from "../ImmutablePureComponent";
 import CardView from "../card/CardView";
 import {preloadCards} from "../../utils/media/card";
-import {CardCarouselProps, resizeCard} from "./CardCarousel.common";
+import {CardCarouselBase, CardCarouselBaseState, resizeCard} from "./CardCarousel.common";
 import {CardModel} from "../../models";
-import {replaceItem} from "../../utils/array";
+import IconButton, {IconType} from "../button/IconButton";
 export * from "./CardCarousel.common";
 
-export interface CardCarouselState {
+export interface CardCarouselState extends CardCarouselBaseState {
     width: number;
     cardWidth: number;
     cardHeight: number;
@@ -18,17 +17,28 @@ let cachedWidth = 0;
 let cachedCardWidth = 0;
 let cachedCardHeight = 0;
 
-export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, CardCarouselState>{
+export class CardCarousel extends CardCarouselBase<CardCarouselState>{
     state = {
         width: cachedWidth,
         cardWidth: cachedCardWidth,
         cardHeight: cachedCardHeight,
+        showCreateCardModal: false,
     } as Readonly<CardCarouselState>;
+
+    get index() { return this._index; }
+    set index(num: number) {
+        if (num !== this._index) {
+            this._index = num;
+            this.props.onScrollCards && this.props.onScrollCards(num);
+        }
+    }
+    private _index = -1;
 
     flatList = React.createRef<FlatList>();
 
     componentDidMount() {
         preloadCards(this.props.cards || []);
+        this.index = 0;
     }
 
     onLayout = (event: LayoutChangeEvent) => {
@@ -41,21 +51,12 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
         });
     }
 
-    onUpdateCard = (card: CardModel, index: number) => {
-        console.log('CardCarousel', card, index);
-        this.props.onCardsChange && this.props.onCardsChange(
-            replaceItem(this.props.cards || [], index, card)
-        );
-    }
-
     render() {
         const {cards, style} = this.props;
         const {width, cardWidth, cardHeight} = this.state;
 
         if (!cards?.length) {
-            return <View style={[styles.root, style]}>
-                <Text>No cards found.</Text>
-            </View>;
+            return this.renderNoCards();
         }
 
         const cardStyle = {
@@ -69,13 +70,15 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
             <FlatList<CardModel>
                 ref={this.flatList}
                 data={cards}
-                renderItem={({item}) => {
-                    return <View key={item.id} style={styles.cardContainer}>
+                keyExtractor={item => item.transientKey}
+                renderItem={({item, index}) => {
+                    this.index = index;
+                    return <View style={styles.cardContainer}>
                         <CardView
                             item={item}
                             style={[styles.cardView, cardStyle]}
                             editable={this.props.editable}
-                            onUpdate={this.onUpdateCard}
+                            onUpdate={this.onSetCard}
                         />
                     </View>;
                 }}
@@ -86,6 +89,20 @@ export class CardCarousel extends ImmutablePureComponent<CardCarouselProps, Card
             />
         </View>;
     }
+
+    renderNoCards() {
+        const {style, editable} = this.props;
+
+        return <React.Fragment>
+            <View style={[styles.root, styles.rootWithoutCards, style]}>{
+                editable
+                    ? <IconButton icon={IconType.Add} text="Add Card" onClick={this.onShowCreateCardModal} />
+                    : <Text>No cards found.</Text>
+            }</View>
+            {this.renderCreateCardModal()}
+        </React.Fragment>;
+    }
+
 }
 export default CardCarousel;
 
@@ -95,6 +112,11 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         width: "100%",
         paddingBottom: 5,
+    },
+    rootWithoutCards: {
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
     },
     cardContainer: {
         flex: 1,

@@ -1,7 +1,7 @@
 import AStoreHelper from "../AStoreHelper";
 import {ActionType, ToastAdd, ToastShift, ToastQueueItem, ToastRemoveByRef} from "../store";
 import {ToastState} from "./toast_reducer";
-import {getErrorText} from "../../utils/string";
+import {getErrorText, getErrorName} from "../../utils/string";
 
 /**
  * Facade for adding toast to the store queue.
@@ -23,15 +23,28 @@ export class ToastStore extends AStoreHelper<ToastState> {
         this.store.dispatch(action);
     }
 
-    /** Add error item to the queue */
-    addError(error: Error|string|unknown, title: string, overrides?: Partial<ToastQueueItem>): void {
-        const text = getErrorText(error);
+    /**
+     * Add error item to the queue.
+     * Pass in a custom `options.ref` string for this toast to not be removed when this store instance is cleared up.
+     */
+    addError(error: Error|string|unknown, title?: string, options?: AddErrorOptions, overrides?: Partial<ToastQueueItem>): void {
+        const {
+            printDetails = typeof error === 'string',
+            log = true,
+        } = options || {};
+        if (log) {
+            console.error(`"${title || 'Error'}" -`, error);
+        }
+        const text = printDetails ? getErrorText(error) : '';
+        title = title || getErrorName(error);
+
         this.add(
             Object.assign({
                 title: text ? title : undefined,
                 text: text || title,
                 type: "error",
-            } as ToastQueueItem, overrides)
+                ref: options?.ref,
+            } as ToastQueueItem,  overrides)
         );
     }
 
@@ -51,3 +64,9 @@ export class ToastStore extends AStoreHelper<ToastState> {
 }
 export default ToastStore;
 export const toastStore = new ToastStore;
+
+interface AddErrorOptions {
+    printDetails?: boolean;
+    log?: boolean;
+    ref?: ToastQueueItem['ref'];
+}

@@ -34,7 +34,7 @@ export const DeckListItem = React.memo(function DeckListItem(props: DeckListItem
         <View style={{ backgroundColor: headerColor, flexDirection: 'row', height: 40 }}>
 
             <UICardItem button bordered onPress={handleClick} style={{ backgroundColor: headerColor, flexGrow: 1 }}>
-                <Text style={{ color: headerTextColor }}>{deck.name}</Text>
+                <Text style={{ color: headerTextColor }}>{deck.title}</Text>
             </UICardItem>
 
             <UICardItem style={{ backgroundColor: headerColor }}>
@@ -54,10 +54,7 @@ export const DeckListItem = React.memo(function DeckListItem(props: DeckListItem
 
         {/* Body */}
         <UICardItem button bordered onPress={handleClick}>
-            <Text>{deck.description + repeat(
-                parseInt(deck.id.split('-').pop() || '')-1 || 0, // Get repeat count based on `deck.id`
-                i => `${!i&&'\n'}Test sentence number #${i+1} for testing varying paragraph lengths across all decks.`
-            ).join(' ')}</Text>
+            <Text>{deck.descriptionOrPlaceholder}</Text>
         </UICardItem>
 
         {/* Footer */}

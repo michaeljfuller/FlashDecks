@@ -6,14 +6,14 @@ import {withStyles} from "@material-ui/core/styles";
 
 import {IconType} from "../../../icon/Icon.common";
 import IconButton from "../../../button/IconButton";
-import {DeckModel} from "../../../../models";
+import {DeckListItemModel} from "../../../../models";
 
 export interface DeckListActionsMenuProps {
-    deck?: DeckModel;
+    deck?: DeckListItemModel;
     anchor?: Element;
     onClose: () => void;
-    onEdit: (deck: DeckModel) => void;
-    onDelete: (deck: DeckModel) => void;
+    onEdit: (deck: DeckListItemModel) => void;
+    onDelete: (deck: DeckListItemModel) => void;
 }
 
 /**

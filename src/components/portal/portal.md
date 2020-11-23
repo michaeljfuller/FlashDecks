@@ -1,35 +1,40 @@
 # Portals
-Portals have the job of taking the content of a ***PortalEntrance*** and rendering it inside of a ***PortalExit***.
+Portals have the job of taking the content of a ***PortalEntrance*** and rendering it inside of a ***PortalExit***.  
+It does this by PortalEntrances sending a callback to the Redux Store which will recreate the contents of the ***PortalEntrance***.
 
 ## Components
-### PortalNetwork
-A required top-level React Context Component which holds the ***PortalNetworkManager*** to manage state.
-
-### PortalNetworkManager
-A manager that links ***PortalEntrance***s to a ***PortalExit*** by a common ***networkId*** in the ***PortalNetwork***.
-
 ### PortalEntrance
-A component whose contents will get sent to the ***PortalExit*** that has the same ***networkId*** ***PortalNetwork***.
+A component whose contents will get sent to a ***PortalExit*** with the same ***portalId***.  
+If a `style` property is passed, it is assigned to the View that wraps the contents.
 
 ### PortalExit
-A component which renders the contents of ***PortalEntrance***s with the same ***networkId*** ***PortalNetwork***.
-
-### PortalWatcher
-A utility class which sends ***PortalNetworkManager*** data to the child function.
+A component which renders the contents of ***PortalEntrance***s with the same ***portalId***.  
+It is a View, so it can be passed things like the `style` property.  
+The children of the PortalExit are rendered if there is no linked PortalEntrance.
 
 ## Example
 ```tsx
-<PortalNetwork>
-    <View>
-        <PortalEntrance networkId="example">
-            <Text>Hello World</Text>
-        </PortalEntrance>
-    </View>
-    <View>
-        <PortalWatcher>{
-            (data) => <Text>There are {data.entrances.length} entrance(s).</Text>
-        }</PortalWatcher>
-        <PortalExit networkId="example" />
-    </View>
-</PortalNetwork>
+<View name="EntranceParent">
+    <PortalEntrance portalId="example">
+        <Text>Hello World</Text>
+    </PortalEntrance>
+</View>
+<View name="ExitParent">
+    <PortalExit portalId="example">
+        <Text>No linked PortalEntrance</Text>
+    </PortalExit>
+</View>
+```
+Result:
+```html
+<div name="EntranceParent">
+    <!-- PortalEntrance not rendered -->
+</div>
+<div name="ExitParent">
+    <div> <!-- PortalExit -->
+        <div> <!-- PortalEntrance -->
+            <div>Hello World</div> <!-- Contents -->
+        </div>
+    </div>
+</div>
 ```

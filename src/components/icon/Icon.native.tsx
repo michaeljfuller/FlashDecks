@@ -19,6 +19,7 @@ const nameMap = {
     [IconType.Done]: "md-checkmark",
     [IconType.Resize]: "md-resize",
     [IconType.Add]: "md-add",
+    [IconType.Remove]: "md-remove",
 } as Record<IconType, string>;
 
 /**

@@ -1,85 +1,126 @@
 import {API, graphqlOperation} from "aws-amplify";
-import {getDeck, listDecks, searchDecks} from "../graphql/queries";
-import {createDeck, updateDeck} from "../graphql/mutations";
-import {ApiDeck, DeckModel, UserModel} from "../models";
+import {getDeck, getDecksByOwner, listDecks} from "../graphql/queries";
+import {createDeck, updateDeck, deleteDeck} from "../graphql/mutations";
+import {
+    CreateDeckInput, CreateDeckMutation, CreateDeckMutationVariables,
+    UpdateDeckInput, UpdateDeckMutation, UpdateDeckMutationVariables,
+    GetDeckQuery, GetDeckQueryVariables,
+    GetDecksByOwnerQuery, GetDecksByOwnerQueryVariables,
+    ListDecksQuery, ListDecksQueryVariables,
+    DeleteDeckInput, DeleteDeckMutation, DeleteDeckMutationVariables,
+} from "../API";
+import {DeckListItemModel, DeckModel} from "../models";
 import decksStore from "../store/decks/DecksStore";
 import ApiRequest from "./util/ApiRequest";
-import {GraphQueryResponse, ApiList} from "./util/ApiTypes";
-import {delayedResponse} from "./util/mock-helpers";
+import {GraphQueryResponse} from "./util/ApiTypes";
+import {filterExists} from "../utils/array";
 
 export class DeckApi {
 
-    getById(id: DeckModel['id']): ApiRequest<DeckModel|undefined> {
+    getById(id: GetDeckQueryVariables['id']): ApiRequest<DeckModel> {
+        const variables = { id } as GetDeckQueryVariables;
         const promise = API.graphql(
-            graphqlOperation(getDeck, { id })
-        ) as GraphQueryResponse<{getDeck: ApiDeck}>;
+            graphqlOperation(getDeck, variables)
+        ) as GraphQueryResponse<GetDeckQuery>;
 
-        return new ApiRequest(promise.then(
-            response => parseApiDeck(response?.data?.getDeck)
-        ));
+        // promise.then(data => console.log('DeckApi.getById', id, data));
+
+        return new ApiRequest(
+            promise.then( response => {
+                const apiModel = response.data?.getDeck;
+                const deck = apiModel ? DeckModel.createFromApi(apiModel) : undefined;
+                if (deck) decksStore.add(deck);
+                return deck;
+            }),
+            variables
+        );
     }
 
-    getList(): ApiRequest<DeckModel[]> {
+    getList(variables?: ListDecksQueryVariables): ApiRequest<DeckListItemModel[]> {
         const promise = API.graphql(
-            graphqlOperation(listDecks)
-        ) as GraphQueryResponse<{listDecks: ApiList<ApiDeck>}>;
+            graphqlOperation(listDecks, variables)
+        ) as GraphQueryResponse<ListDecksQuery>;
 
-        return new ApiRequest(promise.then(
-            response => parseApiDeckList(response?.data?.listDecks?.items)
-        ));
+        // promise.then(data => console.log('DeckApi.getList', variables, data));
+
+        return new ApiRequest(
+            promise.then(
+                response => filterExists(response.data?.listDecks?.items || []).map(DeckListItemModel.createFromApi)
+            ),
+            variables
+        );
     }
 
-    // TODO Replace 'listDecks' with 'searchDecks' when ElasticSearch is re-added or replaced.
-    getForUser(ownerId: UserModel['id']): ApiRequest<DeckModel[]> {
-        const promise = API.graphql(graphqlOperation(listDecks, {
-            filter: {
-                ownerId: { eq: ownerId }
-            }
-        })) as GraphQueryResponse<{listDecks: ApiList<ApiDeck>}>;
+    getForUser(ownerId: string, options: Omit<GetDecksByOwnerQueryVariables, 'ownerId'>): ApiRequest<DeckListItemModel[]> {
+        const variables: GetDecksByOwnerQueryVariables = { ownerId, ...options};
+        const promise = API.graphql(
+            graphqlOperation(getDecksByOwner, variables)
+        ) as GraphQueryResponse<GetDecksByOwnerQuery>;
 
-        return new ApiRequest(promise.then(
-            response => parseApiDeckList(response?.data?.listDecks?.items)
-        ));
-    }
+        // promise.then(data => console.log('DeckApi.getForUser', variables, data));
 
-    // TODO + deck.toApiObject()
-    create(deck: DeckModel): ApiRequest<DeckModel> {
-        return delayedResponse(() => {
-            const result = deck.update({ id: 'TODO-'+deck.name });
-            decksStore.add(result);
-            return result;
-        });
-    }
-    update(deck: DeckModel): ApiRequest<DeckModel> {
-        return delayedResponse(() => {
-            const result = deck.update({ name: 'TODO Update: '+deck.name });
-            decksStore.add(result);
-            return result;
-        });
+        return new ApiRequest(
+            promise.then(
+                response => filterExists(response.data?.getDecksByOwner?.items || []).map(DeckListItemModel.createFromApi)
+            ),
+            variables
+        );
     }
 
-    push(deck: DeckModel): ApiRequest<DeckModel> {
-        return deck.id ? this.update(deck) : this.create(deck);
+    create(input: CreateDeckInput): ApiRequest<DeckModel> {
+        const variables = { input } as CreateDeckMutationVariables;
+
+        const promise = API.graphql(
+            graphqlOperation(createDeck, variables)
+        ) as GraphQueryResponse<CreateDeckMutation>;
+
+        return new ApiRequest(
+            promise.then(response => {
+                // deck.update({ id: response.data?.createDeck?.id })
+                const apiDeck = response.data?.createDeck;
+                return apiDeck ? DeckModel.createFromApi(apiDeck) : undefined;
+            }),
+            variables
+        );
     }
+
+    /**
+     * TODO Delete removed cards. Same for future `DeckApi.remove()`.
+     * TODO `DeckModel.source: ApiDeck` to find removed cards.
+     */
+    update(input: UpdateDeckInput): ApiRequest<DeckModel> {
+        const variables = { input } as UpdateDeckMutationVariables;
+
+        const promise = API.graphql(
+            graphqlOperation(updateDeck, variables)
+        ) as GraphQueryResponse<UpdateDeckMutation>;
+
+        return new ApiRequest(
+            promise.then( response => {
+                const apiDeck = response.data?.updateDeck;
+                return apiDeck ? DeckModel.createFromApi(apiDeck) : undefined;
+            } ),
+            variables
+        );
+    }
+
+    remove(id: DeleteDeckInput['id']): ApiRequest<DeckModel> {
+        const variables = { input: { id } } as DeleteDeckMutationVariables;
+
+        const promise = API.graphql(
+            graphqlOperation(deleteDeck, variables)
+        ) as GraphQueryResponse<DeleteDeckMutation>;
+
+        return new ApiRequest(
+            promise.then(response => {
+                const apiDeck = response.data?.deleteDeck;
+                return apiDeck ? DeckModel.createFromApi(apiDeck) : undefined;
+            }),
+            variables
+        );
+    }
+
 }
 
 export const deckApi = new DeckApi;
 export default deckApi;
-
-function parseApiDeck(deck: ApiDeck|undefined): DeckModel|undefined {
-    if (deck) {
-        const result = DeckModel.fromApi(deck);
-        decksStore.add(result);
-        return result;
-    }
-    return undefined;
-}
-
-function parseApiDeckList(decks: ApiDeck[]|undefined): DeckModel[] {
-    console.log('parseApiDecks', decks);
-    return (decks || []).map(
-        parseApiDeck
-    ).filter(
-        value => value !== undefined
-    ) as DeckModel[];
-}

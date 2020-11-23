@@ -1,0 +1,13 @@
+# @model      - https://docs.amplify.aws/cli/graphql-transformer/directives#model
+# @connection - https://docs.amplify.aws/cli/graphql-transformer/directives#connection
+# @auth       - https://docs.amplify.aws/cli/graphql-transformer/directives#auth
+# @searchable - https://docs.amplify.aws/cli/graphql-transformer/directives#searchable
+# @function   - https://docs.amplify.aws/cli/graphql-transformer/directives#function
+
+# Custom Queries
+type Query {
+    "Get a user by ID, or the logged in user if ID isn't specified."
+    getUser(id: ID): User
+}
+# type Mutation {}
+# type Subscription {}

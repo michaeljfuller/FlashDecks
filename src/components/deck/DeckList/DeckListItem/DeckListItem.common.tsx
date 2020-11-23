@@ -1,13 +1,13 @@
 import React from "react";
-import {DeckModel} from "../../../../models";
+import {DeckListItemModel} from "../../../../models";
 
 export interface DeckListItemProps {
     /** The deck to be represented. */
-    deck: DeckModel;
+    deck: DeckListItemModel;
     /** If the actions button should be shown. */
     showActions?: boolean;
     /** Callback for when the Deck is clicked. */
-    onClick?: (deck: DeckModel, event?: React.MouseEvent) => void;
+    onClick?: (deck: DeckListItemModel, event?: React.MouseEvent) => void;
     /** Callback for when the actions button is clicked. */
-    onActions?: (deck: DeckModel, event?: React.MouseEvent) => void;
+    onActions?: (deck: DeckListItemModel, event?: React.MouseEvent) => void;
 }

@@ -1,9 +1,8 @@
 import React from "react";
-import {Text, View, StyleSheet} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import DeckScreenHeaderBase from "./DeckScreenHeader.common";
 import Avatar from "../../../components/avatar/Avatar";
 import IconButton, {IconType} from "../../../components/button/IconButton";
-import {DeckInfoModal} from "../../../components/deck/DeckInfoModal/DeckInfoModal";
 
 const avatarSize = 35;
 
@@ -21,21 +20,15 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
             </View>
 
             <View style={styles.titleView}>
-                <Text style={styles.titleText}>{this.props.title || this.props.item.name}</Text>
-                <IconButton style={styles.infoButton} flat icon={IconType.Info} onClick={this.openInfoModal} />
+                <Text style={styles.titleText}>{this.props.title || this.props.item.title}</Text>
+                <IconButton style={styles.infoButton} flat icon={IconType.Info} onClick={this.props.onOpenInfoModal} />
             </View>
 
             <View style={styles.cardCountView}>
+                {this.props.editable ? <IconButton icon={IconType.Add} style={styles.cardCountButton} onClick={this.props.onAddCard} /> : undefined}
+                {this.props.editable ? <IconButton icon={IconType.Remove} style={styles.cardCountButton} onClick={this.props.onRemoveCard} /> : undefined}
                 <Text style={styles.cardCount}>{this.cardCount} {this.cardCount !== 1 ? 'cards' : 'card'}</Text>
             </View>
-
-            <DeckInfoModal
-                deck={this.props.item}
-                open={this.state.showInfo}
-                editable={this.props.editable}
-                onChange={this.props.onChange}
-                onClose={this.closeInfoModal}
-            />
 
         </View>;
     }
@@ -62,6 +55,8 @@ const styles = StyleSheet.create({
         minHeight: avatarSize,
         flex: 1,
         overflow: "hidden",
+        flexDirection: "row",
+        justifyContent: "flex-end",
     },
     titleText: {
         lineHeight: avatarSize,
@@ -73,6 +68,9 @@ const styles = StyleSheet.create({
     },
     cardCount: {
         lineHeight: avatarSize,
-        textAlign: "right",
+    },
+    cardCountButton: {
+        paddingTop: (avatarSize-24)/2,
+        paddingRight: 5,
     },
 });

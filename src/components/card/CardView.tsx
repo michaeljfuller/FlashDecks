@@ -1,122 +1,133 @@
 import React from "react";
-import {ScrollView, Text, View, StyleSheet, ViewStyle} from "react-native";
-import {withStyles} from "@material-ui/core/styles";
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
+import {ScrollView, View} from "react-native";
 
 import globalStyles from "../../styles/globalStyleSheet";
-import {Color} from "../../styles/Color";
 import CardSide from "./CardSide/CardSide";
 import CardViewBase from "./CardView.common";
 import CardSideActions from "./CardSide/CardSideActions";
-
-const edgeRadius = 15;
-const sideCountHeight = edgeRadius-2;
-const headerHeight = 35;
-const footerHeight = edgeRadius;
-const borderWidth = 1;
-const marginBottom = 5;
+import PromptModal from "../modal/PromptModal/PromptModal";
+import {
+    borderWidth,
+    footerHeight,
+    headerHeight,
+    marginBottom,
+    StyledCard,
+    StyledCardHeader,
+    styles
+} from "./CardView_styles";
+import {CardInfo, CardInfoModal} from "./CardInfo/CardInfoModal";
+import IconButton, {IconType} from "../button/IconButton";
+import {CardModel} from "../../models";
+import CardFooter from "./CardFooter/CardFooter";
 
 export default class CardView extends CardViewBase {
+
+    onClickEditSide = () => this.startEditing();
+    onClickCancelEditSide = () => this.stopEditing();
+    onClickDoneEditSide = () => {
+        this.updateCard();
+        this.stopEditing();
+    }
+    onEditCard = (info: CardInfo) => {
+        console.log('CardView.onEditCard', info);
+        this.updateCard(this.card.update(info));
+    }
+
+    onCreateCard = (info: CardInfo) => this.updateCard(CardModel.create(info));
+    onAddSideBefore = () => this.addSideBefore();
+    onAddSideAfter = () => this.addSideAfter();
+    onAddSideToEnd = () => this.addSideToEnd();
 
     render() {
         const totalHeight = this.state.viewLayout.height;
         const bodyHeight = Math.max(0, totalHeight - (headerHeight + footerHeight + marginBottom + borderWidth * 2));
-        const footerText = this.sides.length > 1 ? `${this.state.sideIndex+1}/${this.sides.length}` : '';
 
         return <View style={this.props.style} onLayout={this.onLayout}>
             <StyledCard variant="elevation" raised={true} elevation={5}>
 
                 <View style={styles.inner}>
 
-                    <View>
-                        <StyledCardHeader title={this.card?.name || "Unknown"}/>
+                    <View style={styles.headerRow}>
+                        <View>
+                            <StyledCardHeader title={this.card?.nameOrPlaceholder()}/>
+                            {this.props.editable ? this.renderHeaderEdit() : null}
+                        </View>
                         {this.hasActions ? this.renderHeaderActions() : null}
                     </View>
 
                     <ScrollView style={styles.scrollView} contentContainerStyle={styles.body}>
-                        <CardSide
-                            side={this.currentSide}
-                            onPress={this.onPress}
-                            onModifications={this.onSideChange}
-                            height={bodyHeight}
-                            editing={this.state.editing}
-                            style={[styles.side, this.canPress ? globalStyles.pointer : null]}
-                        />
+                        { this.renderCardSide(bodyHeight, this.state.editing, this.canPress) }
                     </ScrollView>
 
                 </View>
-                <View style={styles.footer}>
-                    <Text style={styles.footerText}>{footerText}</Text>
-                </View>
+
+                <CardFooter
+                    sideNumber={this.state.sideIndex+1}
+                    totalSides={this.sides.length}
+                    style={styles.footer}
+                    textStyle={styles.footerText}
+                    onAddSide={this.props.editable ? this.onAddSideToEnd : undefined}
+                    onRemoveSide={this.props.editable ? this.showDeleteSidePrompt : undefined}
+                />
 
             </StyledCard>
         </View>;
+    }
+
+    renderHeaderEdit() {
+        return <React.Fragment>
+            <IconButton
+                icon={IconType.Edit}
+                onClick={this.showEditCardModal}
+                style={styles.renameButton}
+                color="Black"
+            />
+            <CardInfoModal
+                editable
+                card={this.card}
+                open={this.state.showEditCardModal}
+                onClose={this.hideEditCardModal}
+                onChange={this.onEditCard}
+            />
+        </React.Fragment>;
     }
 
     renderHeaderActions() {
         return <View style={styles.headerActions}>
             <CardSideActions
                 editing={this.state.editing || false}
-                onPressDone={this.state.modifiedCard ? this.onClickDone : undefined}
-                onPressCancel={this.onClickCancel}
-                onPressEdit={this.onClickEdit}
-                onPressAddBefore={this.onAddBefore}
-                onPressAddAfter={this.onAddAfter}
-                onPressDelete={this.onDelete}
+                onPressDone={this.state.modifiedCard ? this.onClickDoneEditSide : undefined}
+                onPressCancel={this.onClickCancelEditSide}
+                onPressEdit={this.onClickEditSide}
+                onPressAddBefore={this.addSideBefore}
+                onPressAddAfter={this.addSideAfter}
+                onPressDelete={this.showDeleteSidePrompt}
             />
+            <CardInfoModal
+                editable={this.props.editable}
+                open={this.state.showCreateCardModal}
+                onChange={this.onCreateCard}
+                onClose={this.hideCreateCardModal}
+            />
+            <PromptModal
+                open={this.state.showDeleteSidePrompt}
+                onClose={this.hideDeleteSidePrompt}
+                onOk={this.onDeleteSide}
+                title="Are you sure you want to delete this side?"
+            >
+                { this.renderCardSide() }
+            </PromptModal>
         </View>;
     }
+
+    renderCardSide(height = 0, editing = false, canPress = false) {
+        return <CardSide
+            side={this.currentSide}
+            onPress={canPress ? this.onPress : undefined}
+            onModifications={this.onSideChange}
+            height={height}
+            editing={editing}
+            style={[styles.side, canPress ? globalStyles.pointer : null]}
+        />;
+    }
 }
-
-const StyledCard = withStyles({
-    root: {
-        flex: 1,
-        flexDirection: "column",
-        padding: 0,
-        paddingBottom: footerHeight,
-        borderRadius: edgeRadius,
-        marginBottom,
-        backgroundColor: Color.OffWhite,
-    }
-})(Card) as typeof Card;
-
-const StyledCardHeader = withStyles({
-    root: {
-        padding: 0,
-        textAlign: 'center',
-        minHeight: headerHeight,
-    }
-})(CardHeader) as typeof CardHeader;
-
-const styles = StyleSheet.create({
-    inner: {
-        flexDirection: "column",
-        height: '100%',
-    },
-    headerActions: {
-        flexDirection: "row",
-        position: "absolute",
-        right: 0,
-        top: 0,
-    },
-    scrollView: {
-        borderColor: Color.Grey,
-        borderTopWidth: borderWidth,
-        borderBottomWidth: borderWidth,
-        backgroundColor: Color.White,
-    },
-    body: {
-        flex: 1,
-        userSelect: "none",
-    } as ViewStyle & { userSelect: string },
-    side: {
-        height: "100%",
-    },
-    footer: {},
-    footerText: {
-        marginHorizontal: "auto",
-        lineHeight: sideCountHeight,
-        fontSize: sideCountHeight,
-    },
-});

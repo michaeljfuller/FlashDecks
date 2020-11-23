@@ -2,8 +2,8 @@ import {StyleSheet, Text, View} from "react-native";
 import React from "react";
 import Button from "../../button/Button";
 import {Color} from "../../../styles/Color";
-import Modal, {ModalProps} from "../core/Modal";
-import {ModalContainer, ModalHeader, ModalBody, ModalFooter} from "../parts";
+import Modal, {ModalProps, extractModalProps} from "../core/Modal";
+import {ModalHeader, ModalBody, ModalFooter} from "../parts";
 
 export type DebugModalProps = {
     /** A title to add to the modal. */
@@ -17,8 +17,9 @@ export type DebugModalProps = {
 /**
  * A modal that displays the passed `data` as a JSON string.
  */
-export class DebugModal extends Modal<DebugModalProps> {
-    renderModal() {
+export class DebugModal extends React.PureComponent<DebugModalProps> {
+
+    render() {
         const {title, message, data, children, onClose} = this.props;
 
         let dataElement;
@@ -35,8 +36,7 @@ export class DebugModal extends Modal<DebugModalProps> {
             }
         }
 
-        return <ModalContainer>
-
+        return <Modal {...extractModalProps(this.props)}>
             <ModalHeader title={title || 'Debug'} />
 
             <ModalBody>
@@ -48,9 +48,9 @@ export class DebugModal extends Modal<DebugModalProps> {
             <ModalFooter>
                 <Button title="Close" onClick={onClose} square />
             </ModalFooter>
-
-        </ModalContainer>;
+        </Modal>;
     }
+
 }
 
 export const styles = StyleSheet.create({

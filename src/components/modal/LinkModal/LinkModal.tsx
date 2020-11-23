@@ -1,8 +1,8 @@
 import React from "react";
 import {Alert, Linking, Text, View, StyleSheet} from "react-native";
 import Button from "../../button/Button";
-import Modal, {ModalProps} from "../core/Modal";
-import {ModalContainer, ModalHeader, ModalBody, ModalFooter} from "../parts";
+import Modal, {ModalProps, extractModalProps} from "../core/Modal";
+import {ModalHeader, ModalBody, ModalFooter} from "../parts";
 import {Color} from "../../../styles/Color";
 import {isPlatformWeb} from "../../../platform";
 
@@ -13,7 +13,7 @@ export type LinkModalProps = {
 /**
  * Prompt the user to follow a link.
  */
-export class LinkModal extends Modal<LinkModalProps> {
+export class LinkModal extends React.PureComponent<LinkModalProps> {
     goToUrl = async () => {
         if (isPlatformWeb) {
             window.open(this.props.url, '_blank');
@@ -21,16 +21,17 @@ export class LinkModal extends Modal<LinkModalProps> {
             const supported = await Linking.canOpenURL(this.props.url);
             if (supported) {
                 await Linking.openURL(this.props.url);
-                this.manager.close();
+                this.props.onClose();
             } else {
                 Alert.alert(`Unsupported URL: ${this.props.url}`);
             }
         }
     }
-    renderModal() {
+
+    render() {
         const {url, children, onClose} = this.props;
 
-        return <ModalContainer>
+        return <Modal {...extractModalProps(this.props)}>
 
             <ModalHeader title="Open Link" />
 
@@ -49,7 +50,7 @@ export class LinkModal extends Modal<LinkModalProps> {
                 <Button title="Cancel" style={styles.footerButton} onClick={onClose} square />
             </ModalFooter>
 
-        </ModalContainer>;
+        </Modal>;
     }
 }
 

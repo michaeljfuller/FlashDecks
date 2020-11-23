@@ -15,6 +15,8 @@ export {NavigationRoute} from "react-navigation";
 /** Get a Route with state, as found in the NavigationState's Route chain. */
 export type StatefulRoute = NavigationRouteState['routes'][0];
 
+export type RouteNameOrOptions = Parameters<Navigation['navigate']>[0];
+
 /**
  * The actions on the Root navigator (Drawer).
  */

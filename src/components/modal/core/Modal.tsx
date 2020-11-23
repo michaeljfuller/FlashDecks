@@ -2,39 +2,36 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import MaterialModal from "@material-ui/core/Modal";
 import DialogContent from "@material-ui/core/DialogContent";
-import {ModalProps} from "./Modal.common";
-import ImmutableComponent from "../../ImmutableComponent";
+import {ModalBase} from "./Modal.common";
 
 export * from "./Modal.common";
 
-export abstract class Modal<
-    Props extends ModalProps = ModalProps,
-    State = any
-> extends ImmutableComponent<
-    Props, State
-> {
-    state = {} as State;
+export class Modal extends ModalBase {
 
-    render() { // TODO onOpen?
-        return <MaterialModal
-            open={this.props.open}
-            onClose={this.props.onClose}
-        >
-            <DialogContent>
-                <View style={styles.modalParent}>
-                    <View style={styles.modalWrapper}>
-                        {this.renderModal()}
+    onClose = () => this.close();
+
+    render() {
+        return <MaterialModal open={this.isOpen} onClose={this.onClose}>
+            {
+                this.isClosed
+                ? <View />
+                : <DialogContent>
+                    <View style={styles.modalParent}>
+                        <View style={styles.modalWrapper}>
+                            <View style={[styles.modalContents, this.props.style]}>
+                                {this.props.children}
+                            </View>
+                        </View>
                     </View>
-                </View>
-            </DialogContent>
+                </DialogContent>
+            }
         </MaterialModal>;
     }
-
-    abstract renderModal(): React.ReactElement;
 
 }
 export default Modal;
 
+const shadowRadius = 4;
 const styles = StyleSheet.create({
     modalParent: {
         // Span top left of screen to bottom right
@@ -49,5 +46,22 @@ const styles = StyleSheet.create({
         margin: 'auto', // Horizontal center its child
         minWidth: 10,
         minHeight: 10,
+    },
+    modalContents: {
+        // Size
+        maxHeight: '100vh',
+        maxWidth: '100vw',
+        minWidth: '30vw',
+        minHeight: '30vh',
+
+        // Border
+        borderRadius: 8,
+        overflow: "hidden",
+
+        // Shadow
+        shadowRadius,
+        shadowOpacity: 0.3,
+        elevation: shadowRadius * 2,
+        shadowOffset: { width: 0, height: shadowRadius }
     },
 });

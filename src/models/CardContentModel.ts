@@ -1,25 +1,24 @@
-import Model from "./core/Model";
+import Model, {ModelUpdate} from "./core/Model";
+import {ApiCardSide} from "./CardSideModel";
 
-export type CardContentType = 'Text' | 'Image' | 'Video' | 'Link'|undefined;
-export const cardContentTypes: readonly Exclude<CardContentType, undefined>[] = ["Text", "Image", "Video", "Link"];
-
-export interface ApiCardContent {
-    // A unique ID for the content.
-    id: string;
-    // The type of content.
-    type: CardContentType;
-    // The content's value.
-    value: string;
+type _ApiCardContent = NonNullable<ApiCardSide["content"]>[0];
+export interface ApiCardContent extends _ApiCardContent { // TODO Add `size` to API.
     // Fraction of the CardSide height. Total is able to exceed 1.00.
     // If set, content scales to fit size, otherwise no scaling is applied.
     size?: number;
 }
 
-export class CardContentModel extends Model implements ApiCardContent {
-    readonly id: string = '';
+export type CardContentType = 'Text' | 'Image' | 'Video' | 'Link'|undefined;
+export const cardContentTypes: readonly Exclude<CardContentType, undefined>[] = ["Text", "Image", "Video", "Link"];
+
+export class CardContentModel extends Model implements Omit<ApiCardContent, '__typename'|'type'> {
     readonly type: CardContentType = undefined;
     readonly value: string = '';
     readonly size: number = 0;
+
+    static create(input: ModelUpdate<CardContentModel>) {
+        return (new CardContentModel).update(input, false);
+    }
 
     get valid(): boolean {
         return this.validType && this.validValue;
@@ -34,6 +33,10 @@ export class CardContentModel extends Model implements ApiCardContent {
     }
 
     static fromApi(obj: ApiCardContent) {
-        return (new CardContentModel).update(obj);
+        return CardContentModel.create({
+            size: obj.size,
+            value: obj.value,
+            type: obj.type as any,
+        });
     }
 }

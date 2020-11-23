@@ -6,13 +6,13 @@ import GridListTile from '@material-ui/core/GridListTile';
 
 import DeckListItem, {listItemMaxWidth} from "./DeckListItem/DeckListItem";
 import DeckListBase from "./DeckList.common";
-import {DeckModel} from "../../../models";
+import {DeckListItemModel} from "../../../models";
 import {DeckListActionsMenu} from "./DeckListActionsMenu/DeckListActionsMenu";
 import {castDraft} from "immer";
 
 export interface DeckListState {
     /** The deck passed to the actions menu. */
-    actionsDeck?: DeckModel;
+    actionsDeck?: DeckListItemModel;
     /** Where to attach the actions menu. */
     actionsAnchor?: Element;
     /** Number of columns in the list. */
@@ -30,7 +30,7 @@ export default class DeckList extends DeckListBase<DeckListState> {
         window.removeEventListener('scroll', this.handleScroll);
     }
 
-    handleActions = (deck: DeckModel, event?: React.MouseEvent) => {
+    handleActions = (deck: DeckListItemModel, event?: React.MouseEvent) => {
         const actionsAnchor = event?.nativeEvent.target as Element;
         this.setStateTo(draft => {
             draft.actionsDeck = castDraft(deck);
@@ -46,9 +46,9 @@ export default class DeckList extends DeckListBase<DeckListState> {
         this.setStateTo({ columns: Math.ceil(event.nativeEvent.layout.width / listItemMaxWidth) });
     };
 
-    handleClick = (deck: DeckModel) => this.gotToDeck(deck);
-    handleEdit = (deck: DeckModel) => this.editDeck(deck);
-    handleDelete = (deck: DeckModel) => this.deleteDeck(deck);
+    handleClick = (deck: DeckListItemModel) => this.gotToDeck(deck);
+    handleEdit = (deck: DeckListItemModel) => this.editDeck(deck);
+    handleDelete = (deck: DeckListItemModel) => this.deleteDeck(deck);
 
     render() {
         return <View onLayout={this.onLayout}>

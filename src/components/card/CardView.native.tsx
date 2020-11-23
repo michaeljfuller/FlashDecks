@@ -1,28 +1,44 @@
 import React from "react";
-import {Text, View, ScrollView, StyleSheet} from "react-native";
-import {Color} from "../../styles/Color";
+import {Text, View, ScrollView} from "react-native";
 import CardSide from "./CardSide/CardSide";
 import {CardViewBase} from "./CardView.common";
 import CardSideActions from "./CardSide/CardSideActions";
-
-const edgeRadius = 15;
-const sideCountPadding = 2;
-const sideCountHeight = edgeRadius - sideCountPadding;
-const titleHeight = 20;
-const headerHeight = edgeRadius + titleHeight;
-const footerHeight = edgeRadius;
-const borderWidth = 1;
+import PromptModal from "../modal/PromptModal/PromptModal";
+import {styles, headerHeight, borderWidth, footerHeight} from "./CardView.native_styles";
+import {CardInfo, CardInfoModal} from "./CardInfo/CardInfoModal";
+import {CardModel} from "../../models";
+import CardFooter from "./CardFooter/CardFooter";
+import IconButton, {IconType} from "../button/IconButton";
 
 export default class CardView extends CardViewBase {
+
+    onClickEdit = () => this.startEditing();
+    onClickCancel = () => this.stopEditing();
+    onClickDone = () => {
+        this.updateCard();
+        this.stopEditing();
+    }
+    onEditCard = (info: CardInfo) => {
+        console.log('CardView.onEditCard', info);
+        this.updateCard(this.card.update(info));
+    }
+
+    onCreateCard = (info: CardInfo) => this.updateCard(CardModel.create(info));
+    onAddSideBefore = () => this.addSideBefore();
+    onAddSideAfter = () => this.addSideAfter();
+    onAddSideToEnd = () => this.addSideToEnd();
+
     render() {
         const totalHeight = this.state.viewLayout.height;
         const bodyHeight = Math.max(0, totalHeight - (headerHeight + footerHeight + borderWidth * 2));
-        const footerText = this.sides.length > 1 ? `${this.state.sideIndex+1}/${this.sides.length}` : '';
 
         return <View style={[styles.root, this.props.style]} onLayout={this.onLayout}>
 
             <View style={styles.headerRow}>
-                <Text style={styles.title}>{this.card?.name || "Unknown"}</Text>
+                <View>
+                    <Text style={styles.title}>{this.card?.nameOrPlaceholder()}</Text>
+                    {this.props.editable ? this.renderHeaderEdit() : null}
+                </View>
                 {this.hasActions ? this.renderHeaderActions() : null}
             </View>
 
@@ -31,19 +47,44 @@ export default class CardView extends CardViewBase {
                 contentContainerStyle={[styles.body, { minHeight: bodyHeight || undefined }]}
                 persistentScrollbar={true}
             >
-                <CardSide
-                    side={this.currentSide}
-                    onPress={this.onPress}
-                    onModifications={this.onSideChange}
-                    height={bodyHeight}
-                    editing={this.state.editing}
-                    style={{ minHeight: bodyHeight || undefined }}
-                />
+                { this.renderCardSide(bodyHeight, this.state.editing, true) }
             </ScrollView>
-            <View style={styles.footer}>
-                <Text style={styles.footerText}>{footerText}</Text>
-            </View>
+
+            <CardFooter
+                sideNumber={this.state.sideIndex+1}
+                totalSides={this.sides.length}
+                style={styles.footer}
+                textStyle={styles.footerText}
+                onAddSide={this.props.editable ? this.onAddSideToEnd : undefined}
+                onRemoveSide={this.props.editable ? this.showDeleteSidePrompt : undefined}
+            />
+
+            <CardInfoModal
+                editable={this.props.editable}
+                open={this.state.showCreateCardModal}
+                onChange={this.onCreateCard}
+                onClose={this.hideCreateCardModal}
+            />
+
         </View>;
+    }
+
+    renderHeaderEdit() {
+        return <React.Fragment>
+            <IconButton
+                icon={IconType.Edit}
+                onClick={this.showEditCardModal}
+                style={styles.renameButton}
+                color="Black"
+            />
+            <CardInfoModal
+                editable
+                card={this.card}
+                open={this.state.showEditCardModal}
+                onClose={this.hideEditCardModal}
+                onChange={this.onEditCard}
+            />
+        </React.Fragment>;
     }
 
     renderHeaderActions() {
@@ -53,57 +94,29 @@ export default class CardView extends CardViewBase {
                 onPressDone={this.state.modifiedCard ? this.onClickDone : undefined}
                 onPressCancel={this.onClickCancel}
                 onPressEdit={this.onClickEdit}
-                onPressAddBefore={this.onAddBefore}
-                onPressAddAfter={this.onAddAfter}
-                onPressDelete={this.onDelete}
+                onPressAddBefore={this.onAddSideBefore}
+                onPressAddAfter={this.addSideAfter}
+                onPressDelete={this.showDeleteSidePrompt}
             />
+            <PromptModal
+                open={this.state.showDeleteSidePrompt}
+                onClose={this.hideDeleteSidePrompt}
+                onOk={this.onDeleteSide}
+                title="Are you sure you want to delete this side?"
+            >
+                { this.renderCardSide() }
+            </PromptModal>
         </View>;
     }
-}
 
-const borderColor = Color.Grey;
-const styles = StyleSheet.create({
-    root: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: Color.OffWhite,
-        borderRadius: edgeRadius,
-    },
-    headerRow: {},
-    headerActions: {
-        flexDirection: "row",
-        position: "absolute",
-        right: 0,
-    //  top: 0,
-    },
-    headerActionIconButtons: {
-        top: 5,
-    },
-    title: {
-        textAlign: "center",
-        fontWeight: "bold",
-        fontSize: titleHeight,
-        lineHeight: headerHeight,
-        borderBottomWidth: borderWidth,
-        borderColor,
-    },
-    scrollView: {
-        backgroundColor: Color.White,
-        flex: 1,
-        flexDirection: "column",
-        marginHorizontal: 1,
-    },
-    body: {
-    },
-    footer: {
-        height: footerHeight,
-        borderTopWidth: borderWidth,
-        borderColor,
-    },
-    footerText: {
-        textAlign: "center",
-        paddingVertical: sideCountPadding,
-        lineHeight: sideCountHeight,
-        fontSize: sideCountHeight,
-    },
-});
+    renderCardSide(height = 0, editing = false, canPress = false) {
+        return <CardSide
+            side={this.currentSide}
+            onPress={canPress ? this.onPress : undefined}
+            onModifications={this.onSideChange}
+            height={height}
+            editing={editing}
+            style={{ minHeight: height || undefined }}
+        />;
+    }
+}

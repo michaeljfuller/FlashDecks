@@ -1,25 +1,29 @@
 import React from "react";
 import ImmutablePureComponent from "../../ImmutablePureComponent";
 import {CardModel, DeckModel} from "../../../models";
+import {CardCarouselScrollCards} from "../../card-carousel/CardCarousel.common";
 
 export interface DeckViewProps {
     item: DeckModel;
     editable?: boolean;
-    onChange?: DeckViewItemChange;
+    onSetCard?: DeckViewSetCard;
+    onScrollCards?: DeckViewScrollCards;
 }
-export type DeckViewItemChange = (item: DeckModel) => void;
+
+export type DeckViewSetCard = (card: CardModel, index: number) => void;
+export type DeckViewScrollCards = CardCarouselScrollCards;
 
 export default class DeckViewBase<State = {}> extends ImmutablePureComponent<DeckViewProps, State>{
-    get cardCount() {
-        return this.props.item.cards?.length || 0;
+
+    get deck(): DeckModel {
+        return this.props.item;
+    }
+    get cards(): CardModel[] {
+        return this.deck.cards || [];
     }
 
-    onCardsChange = (cards: CardModel[]) => {
-        console.group('DeckViewBase.onCardsChange');
-        console.log(cards);
-        this.props.onChange && this.props.onChange(
-            this.props.item.update({ cards })
-        );
-        console.groupEnd();
+    onSetCard = (card: CardModel, index = 0) => {
+        this.props.onSetCard && this.props.onSetCard(card, index);
     }
+
 }

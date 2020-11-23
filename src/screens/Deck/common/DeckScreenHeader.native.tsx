@@ -3,7 +3,6 @@ import {Text, View, StyleSheet} from "react-native";
 import DeckScreenHeaderBase from "./DeckScreenHeader.common";
 import Avatar from "../../../components/avatar/Avatar";
 import IconButton, {IconType} from "../../../components/button/IconButton";
-import {DeckInfoModal} from "../../../components/deck/DeckInfoModal/DeckInfoModal";
 
 const avatarSize = 24;
 
@@ -13,29 +12,27 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
 
             <View style={styles.row}>
                 <View style={styles.titleView}>
-                    <Text style={styles.titleText}>{this.props.title || this.props.item.name}</Text>
+                    <Text style={styles.titleText}>{this.props.title || this.props.item.title}</Text>
                 </View>
-                <IconButton style={styles.infoButton} flat icon={IconType.Info} onClick={this.openInfoModal} />
+                <IconButton style={styles.infoButton} flat icon={IconType.Info} onClick={this.props.onOpenInfoModal} />
             </View>
 
             <View style={styles.row}>
-                <Avatar
-                    user={this.props.item.owner}
-                    labelPlacement="right"
-                    size={avatarSize}
-                    style={styles.avatar}
-                    labelStyle={styles.avatarLabel}
-                />
-                <Text style={styles.cardCount}>{this.cardCount} {this.cardCount !== 1 ? 'cards' : 'card'}</Text>
+                <View style={styles.rowLeft}>
+                    <Avatar
+                        user={this.props.item.owner}
+                        labelPlacement="right"
+                        size={avatarSize}
+                        style={styles.avatar}
+                        labelStyle={styles.avatarLabel}
+                    />
+                </View>
+                <View style={styles.rowRight}>
+                    {this.props.editable ? <IconButton icon={IconType.Add} style={styles.cardCountButton} onClick={this.props.onAddCard} /> : undefined}
+                    {this.props.editable ? <IconButton icon={IconType.Remove} style={styles.cardCountButton} onClick={this.props.onRemoveCard} /> : undefined}
+                    <Text style={styles.cardCount}>{this.cardCount} {this.cardCount !== 1 ? 'cards' : 'card'}</Text>
+                </View>
             </View>
-
-            <DeckInfoModal
-                deck={this.props.item}
-                open={this.state.showInfo}
-                editable={this.props.editable}
-                onChange={this.props.onChange}
-                onClose={this.closeInfoModal}
-            />
 
         </View>;
     }
@@ -50,6 +47,14 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignSelf: "center",
         position: "relative",
+    },
+    rowLeft: {
+        flexGrow: 1,
+    },
+    rowRight: {
+        flexGrow: 1,
+        flexDirection: "row",
+        justifyContent: "flex-end",
     },
     titleView: {
         flex: 1,
@@ -73,8 +78,11 @@ const styles = StyleSheet.create({
         color: "black"
     },
     cardCount: {
-        flex: 1,
         lineHeight: avatarSize,
         textAlign: "right",
+    },
+    cardCountButton: {
+        paddingTop: (avatarSize-24)/2,
+        paddingRight: 5,
     },
 });

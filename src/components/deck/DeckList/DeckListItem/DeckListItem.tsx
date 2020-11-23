@@ -67,20 +67,14 @@ export function DeckListItem(props: DeckListItemProps) {
             className={classes.header}
             avatar={<Avatar user={owner} />}
             action={actionsButton}
-            title={deck.name}
+            title={deck.title}
             subheader={owner?.displayName || ''}
         />
             <CardCardActionArea onClick={handleOnClick} disabled={!onClick} >
                 <Fadeout maxHeight={listItemActionMaxHeight} fadeColor={contentBackgroundColor}>
                     <CardContent className={classes.content}>
                         <Typography variant="body1" component="p">
-                            {deck.description}
-                        </Typography>
-                        <Typography variant="body1" component="p">
-                            {repeat(
-                                parseInt(deck.id.split('-').pop() || '')-1 || 0,
-                                i => `Test sentence number #${i+1} for testing varying paragraph lengths across all decks.`
-                            ).join(' ')}
+                            {deck.descriptionOrPlaceholder}
                         </Typography>
                     </CardContent>
                 </Fadeout>
