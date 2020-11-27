@@ -26,7 +26,7 @@ export class AppRoot extends AppRootBase {
         if (!this.state.cognitoUser) {
             return <View style={styles.centerContents}>
 
-                {isProduction ? null : <View>
+                {isProduction ? null : <View style={styles.testDetails}>
                     <View style={{flexDirection:"row"}}>
                         <Text style={{fontWeight:"bold", width: 80}}>Test User: </Text>
                         <Text>test_user</Text>
@@ -63,5 +63,8 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    testDetails: {
+        marginTop: 20
     },
 });
