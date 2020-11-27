@@ -1,5 +1,5 @@
 import React from "react";
-import {ViewStyle} from "react-native";
+import {StyleProp, ViewStyle} from "react-native";
 import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
 
 export interface TextButtonProps {
@@ -8,7 +8,7 @@ export interface TextButtonProps {
     title?: string;
     color?: GetUIColorThemeInput;
     invertColor?: boolean;
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle>;
     width?: number;
     height?: number;
 }

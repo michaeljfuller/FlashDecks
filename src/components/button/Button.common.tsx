@@ -1,5 +1,5 @@
 import React from "React";
-import {ViewStyle} from "react-native";
+import {StyleProp, ViewStyle} from "react-native";
 import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
 
 export interface ButtonProps {
@@ -7,7 +7,7 @@ export interface ButtonProps {
     disabled?: boolean;
     title?: string;
     flat?: boolean;
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle>;
     color?: GetUIColorThemeInput;
     square?: boolean;
     invertColor?: boolean;

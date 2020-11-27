@@ -1,5 +1,5 @@
 import React from "react";
-import {ViewStyle} from "react-native";
+import {StyleProp, ViewStyle} from "react-native";
 import {IconType} from '../icon/Icon';
 import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
 export {IconType} from '../icon/Icon';
@@ -11,7 +11,7 @@ export interface IconButtonProps {
     disabled?: boolean;
     transparent?: boolean;
     flat?: boolean;
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle>;
     color?: GetUIColorThemeInput;
     invertColor?: boolean;
     width?: number;

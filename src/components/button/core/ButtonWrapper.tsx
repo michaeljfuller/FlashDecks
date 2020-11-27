@@ -1,8 +1,8 @@
 import React, {PropsWithChildren} from 'react';
-import {TouchableWithoutFeedback, View, ViewStyle} from "react-native";
+import {StyleProp, TouchableWithoutFeedback, View, ViewStyle} from "react-native";
 
 interface ButtonWrapperProps {
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle>;
 }
 
 /**

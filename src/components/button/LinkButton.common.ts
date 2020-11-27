@@ -1,4 +1,4 @@
-import {ViewStyle} from "react-native";
+import {StyleProp, ViewStyle} from "react-native";
 import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
 
 export interface LinkButtonProps {
@@ -6,7 +6,7 @@ export interface LinkButtonProps {
     url?: string;
     disabled?: boolean;
     flat?: boolean;
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle>;
     width?: number;
     height?: number;
     color?: GetUIColorThemeInput;
