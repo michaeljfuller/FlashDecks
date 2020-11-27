@@ -127,6 +127,7 @@ export default class CardView extends CardViewBase {
             onModifications={this.onSideChange}
             height={height}
             editing={editing}
+            editable={this.props.editable}
             style={[styles.side, canPress ? globalStyles.pointer : null]}
         />;
     }

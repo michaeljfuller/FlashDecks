@@ -13,6 +13,7 @@ export interface CardSideProps {
     style?: ViewStyle|Array<ViewStyle|null|undefined>;
     height: number;
     editing?: boolean;
+    editable?: boolean;
     onPress?: () => void;
     onModifications?: (side: CardSideModel|null) => void;
 }
@@ -196,9 +197,11 @@ export class CardSide extends ImmutablePureComponent<CardSideProps, CardSideStat
 
     private renderNoContent() {
         if (this.currentContent.length > 0) return null;
+        const {editing, editable} = this.props;
         return <React.Fragment>
             <Text style={styles.emptySideText}>This side is empty.</Text>
-            {this.props.editing && <Button title="Add Content" onClick={this.onContentAdd} />}
+            {editable ? <Text style={styles.emptySideText}>Press the top right button to edit.</Text> : null}
+            {editing ? <Button title="Add Content" onClick={this.onContentAdd} /> : null}
         </React.Fragment>;
     }
 
