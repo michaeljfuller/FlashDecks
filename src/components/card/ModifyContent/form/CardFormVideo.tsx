@@ -35,6 +35,8 @@ export const CardFormVideo = React.memo(function CardFormVideo(props: CardFormVi
         <View style={styles.preview}>
             {preview && content.validValue && <CardMediaVideo content={content} height={previewHeight} />}
         </View>
+        <Text style={{fontWeight:'bold'}}>Example:</Text>
+        <Text selectable>https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4</Text>
     </View>;
 
 });
