@@ -200,8 +200,16 @@ export class CardSide extends ImmutablePureComponent<CardSideProps, CardSideStat
         const {editing, editable} = this.props;
         return <React.Fragment>
             <Text style={styles.emptySideText}>This side is empty.</Text>
-            {editable ? <Text style={styles.emptySideText}>Press the top right button to edit.</Text> : null}
-            {editing ? <Button title="Add Content" onClick={this.onContentAdd} /> : null}
+            {
+                editable && !editing
+                ? <Text style={styles.emptySideText}>Press the top right button to edit.</Text>
+                : <Text style={styles.emptySideText}>Once you are done, press the check button to apply changes.</Text>
+            }
+            {
+                editing
+                ? <Button title="Add Content" onClick={this.onContentAdd} />
+                : null
+            }
         </React.Fragment>;
     }
 
