@@ -19,6 +19,8 @@ import navigationStore from "../../store/navigation/NavigationStore";
 import {PortalEntrance} from "../../components/portal/PortalEntrance";
 import {PortalExit} from "../../components/portal/PortalExit";
 import {logComponent} from "../../utils/debugging";
+import {ImagePicker} from "../../components/media-picker/ImagePicker";
+import {VideoPicker} from "../../components/media-picker/VideoPicker";
 
 export enum TestIds {
     User='TempScreen_User',
@@ -68,15 +70,36 @@ export class TempScreen extends ImmutablePureComponent<
                     <Text testID={TestIds.Env}>Environment: &quot;{envName}&quot;</Text>
                 </View>
 
-                {this.renderPortal()}
+                <View>
+                    <VideoPicker
+                        label="Video Picker"
+                        onChange={data => console.log('VideoPicker >', data.width, data.height)}
+                        preview previewStyle={{
+                            backgroundColor: 'pink',
+                        }}
+                        style={{ flex: 1, height: 200, marginBottom: 10 }}
+                    />
+                    <ImagePicker
+                        label="Image Picker"
+                        onChange={data => console.log('ImagePicker >', data)}
+                        preview previewStyle={{
+                            backgroundColor: 'pink',
+                        }}
+                        style={{ flex: 1, height: 200, marginBottom: 10 }}
+                    />
+                </View>
+
+                {/*{this.renderPortal()}*/}
                 {/*{this.renderMisc()}*/}
                 {/*{this.renderButtons()}*/}
                 {/*{this.renderContexts()}*/}
-                {this.renderModals()}
+                {/*{this.renderModals()}*/}
 
                 {/*{repeat(30, index => {*/}
                 {/*    return <Text key={index} style={{ fontSize: 50, textAlign: 'center', color: '#79F' }}>{index+1}</Text>*/}
                 {/*})}*/}
+
+                <View style={{ borderTopWidth: 1, borderStyle: "dashed", borderColor: 'purple', height: 10 }} />
 
             </ScreenContainer>
         );
@@ -252,6 +275,7 @@ function Row(props: PropsWithChildren<{
     marginHorizontal?: number;
     marginVertical?: number;
     borderWidth?: number;
+    column?: boolean;
 }>) {
     const {
         borderColor = 'black',
@@ -259,6 +283,7 @@ function Row(props: PropsWithChildren<{
         marginVertical = 2,
         borderWidth = 1,
         backgroundColor = 'white',
+        column,
     } = props;
     return <View style={{
         marginHorizontal,
@@ -267,7 +292,7 @@ function Row(props: PropsWithChildren<{
         borderWidth,
         backgroundColor,
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: column ? 'column' : 'row'
     }}>{props.children}</View>
 }
 const MemoRow = React.memo(Row);
