@@ -88,6 +88,7 @@ export class VideoPicker extends React.PureComponent<VideoPickerProps, VideoPick
 export const styles = StyleSheet.create({
     root: {
         width: '100%',
+        height: 200,
     },
     error: {
         backgroundColor: 'red',
@@ -96,9 +97,10 @@ export const styles = StyleSheet.create({
     },
     previewView: {
         flex: 1,
-        flexGrow:1,
         marginTop: 3,
-        justifyContent: "center",
-        flexDirection: "row",
+        borderWidth: 1,
+        borderColor: 'grey',
+        backgroundColor: 'white',
+        flexDirection: 'row',
     },
 });

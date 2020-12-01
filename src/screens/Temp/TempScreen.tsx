@@ -1,5 +1,5 @@
 import React, {PropsWithChildren} from "react";
-import {Text, TextInput, View, StyleSheet} from "react-native";
+import {Text, TextInput, View, StyleSheet, ViewStyle} from "react-native";
 import ImmutablePureComponent from "../../components/ImmutablePureComponent";
 import ScreenContainer from "../ScreenContainer";
 import {NavigationScreenProps} from "../../navigation/navigation_types";
@@ -70,22 +70,17 @@ export class TempScreen extends ImmutablePureComponent<
                     <Text testID={TestIds.Env}>Environment: &quot;{envName}&quot;</Text>
                 </View>
 
-                <View>
+                <View style={{ borderWidth: 1, padding: 2 }}>
                     <VideoPicker
                         label="Video Picker"
-                        onChange={data => console.log('VideoPicker >', data.width, data.height)}
-                        preview previewStyle={{
-                            backgroundColor: 'pink',
-                        }}
-                        style={{ flex: 1, height: 200, marginBottom: 10 }}
+                        onChange={data => console.log('VideoPicker >', data)}
+                        preview
                     />
+                    <HR style={{marginVertical: 2}} />
                     <ImagePicker
                         label="Image Picker"
                         onChange={data => console.log('ImagePicker >', data)}
-                        preview previewStyle={{
-                            backgroundColor: 'pink',
-                        }}
-                        style={{ flex: 1, height: 200, marginBottom: 10 }}
+                        preview
                     />
                 </View>
 
@@ -98,8 +93,6 @@ export class TempScreen extends ImmutablePureComponent<
                 {/*{repeat(30, index => {*/}
                 {/*    return <Text key={index} style={{ fontSize: 50, textAlign: 'center', color: '#79F' }}>{index+1}</Text>*/}
                 {/*})}*/}
-
-                <View style={{ borderTopWidth: 1, borderStyle: "dashed", borderColor: 'purple', height: 10 }} />
 
             </ScreenContainer>
         );
@@ -269,6 +262,10 @@ export class TempScreen extends ImmutablePureComponent<
 
 }
 
+function HR(props: {style?: ViewStyle}) {
+    return <View style={[styles.hr, props.style]} />;
+}
+
 function Row(props: PropsWithChildren<{
     borderColor?: string;
     backgroundColor?: string;
@@ -306,4 +303,8 @@ const styles = StyleSheet.create({
         flex: 1,
         minWidth: 120,
     },
+    hr: {
+        backgroundColor: "purple",
+        height: 1,
+    }
 });

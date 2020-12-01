@@ -64,11 +64,9 @@ export class ImagePicker extends React.PureComponent<ImagePickerProps, ImagePick
             <Button title={label} onClick={this.onPressPick} square style={buttonStyle} />
             {
                 preview
-                ? <Image
-                    source={{ uri: this.state.image?.uri }}
-                    style={[styles.previewImage, previewStyle]}
-                    resizeMode="contain"
-                />
+                ? <View style={[styles.previewView, previewStyle]}>
+                    <Image source={{ uri: this.state.image?.uri }} style={styles.previewImage} resizeMode="contain" />
+                </View>
                 : null
             }
         </View>;
@@ -78,10 +76,18 @@ export class ImagePicker extends React.PureComponent<ImagePickerProps, ImagePick
 export const styles = StyleSheet.create({
     root: {
         width: '100%',
+        height: 200,
+    },
+    previewView: {
+        flex: 1,
+        marginTop: 3,
+        borderWidth: 1,
+        borderColor: 'grey',
+        backgroundColor: 'white',
+        width: '100%',
     },
     previewImage: {
-        marginTop: 3,
         width: '100%',
-        flex: 1,
-    },
+        height: '100%',
+    }
 });
