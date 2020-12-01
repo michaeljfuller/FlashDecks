@@ -22,5 +22,6 @@ const styles = StyleSheet.create({
         color: Color.White,
         backgroundColor: Color.Red,
         textAlign: "center",
+        padding: 4
     },
 });

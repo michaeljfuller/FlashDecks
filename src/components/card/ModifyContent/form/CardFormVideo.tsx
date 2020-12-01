@@ -10,8 +10,6 @@ interface CardFormVideoProps {
     preview?: boolean;
 }
 
-const previewHeight = 200;
-
 export const CardFormVideo = React.memo(function CardFormVideo(props: CardFormVideoProps) {
     const { content, onChange, preview } = props;
 
@@ -33,7 +31,7 @@ export const CardFormVideo = React.memo(function CardFormVideo(props: CardFormVi
             />
         </View>
         <View style={styles.preview}>
-            {preview && content.validValue && <CardMediaVideo content={content} height={previewHeight} />}
+            {preview && content.validValue && <CardMediaVideo content={content} />}
         </View>
         <Text style={{fontWeight:'bold'}}>Example:</Text>
         <Text selectable>https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4</Text>
@@ -56,7 +54,7 @@ const styles = StyleSheet.create({
     },
     preview: {
         marginTop: 5,
-        height: previewHeight,
+        height: 200,
         overflow: "hidden",
         justifyContent: "center",
         flexDirection: "column",
