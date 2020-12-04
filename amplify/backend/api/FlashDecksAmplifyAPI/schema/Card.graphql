@@ -1,7 +1,6 @@
 # The flash card.
 # Can have multiple "sides" to display different "content".
 type Card {
-#   id: ID! # TODO: Auto-generate?
     title: String!
     sides: [CardSide!]
 }
@@ -16,6 +15,7 @@ type CardSide {
 type CardSideContent {
     type: CardSideContentType!
     value: String!
+    file: S3Object
 }
 enum CardSideContentType { Text, Image, Video, Link }
 
@@ -30,4 +30,5 @@ input CardSideInput {
 input CardSideContentInput {
     type: CardSideContentType!
     value: String!
+    file: S3ObjectInput
 }
