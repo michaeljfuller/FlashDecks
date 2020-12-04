@@ -1,4 +1,5 @@
 import Model, {ModelUpdate} from "./core/Model";
+import {fileFromImageData} from "../utils/file";
 import {ApiCardSide} from "./CardSideModel";
 
 type _ApiCardContent = NonNullable<ApiCardSide["content"]>[0];
@@ -8,13 +9,15 @@ export interface ApiCardContent extends _ApiCardContent { // TODO Add `size` to 
     size?: number;
 }
 
-export type CardContentType = 'Text' | 'Image' | 'Video' | 'Link'|undefined;
+export type CardContentType = 'Text' | 'Image' | 'Video' | 'Link' | undefined;
 export const cardContentTypes: readonly Exclude<CardContentType, undefined>[] = ["Text", "Image", "Video", "Link"];
+export enum CardContentFormat { String, ImageData }
 
 export class CardContentModel extends Model implements Omit<ApiCardContent, '__typename'|'type'> {
     readonly type: CardContentType = undefined;
     readonly value: string = '';
     readonly size: number = 0;
+    readonly format: CardContentFormat = CardContentFormat.String;
 
     static create(input: ModelUpdate<CardContentModel>) {
         return (new CardContentModel).update(input, false);
@@ -38,5 +41,13 @@ export class CardContentModel extends Model implements Omit<ApiCardContent, '__t
             value: obj.value,
             type: obj.type as any,
         });
+    }
+
+    asFile(): Blob|undefined {
+        if (this.value) {
+            switch (this.format) {
+                case CardContentFormat.ImageData: return fileFromImageData(this.value);
+            }
+        }
     }
 }

@@ -1,9 +1,9 @@
 import React, {useCallback} from "react";
-import {View, Text, TextInput, StyleSheet} from "react-native";
-import {CardContentModel} from "../../../../models";
+import {StyleSheet, Text, TextInput, View} from "react-native";
+import {CardContentModel, CardContentFormat} from "../../../../models";
 import {Color} from "../../../../styles/Color";
 import {CardMediaImage} from "../../CardContent/media/CardMediaImage";
-import {ImagePicker} from "../../../media-picker/ImagePicker";
+import {ImagePicker, ImagePickerData} from "../../../media-picker/ImagePicker";
 
 interface CardFormImageProps {
     content: CardContentModel;
@@ -17,7 +17,17 @@ export const CardFormImage = React.memo(function CardFormImage(props: CardFormIm
     const { content, onChange, preview } = props;
 
     const onChangeText = useCallback(
-        (value: string) => onChange(content.update({value})),
+        (value: string) => onChange(content.update({
+            value,
+            format: CardContentFormat.String
+        })),
+        [onChange, content]
+    );
+    const onChangeLocal = useCallback(
+        (data: ImagePickerData) => onChange(content.update({
+            value: data.dataUri,
+            format: CardContentFormat.ImageData
+        })),
         [onChange, content]
     );
 
@@ -41,7 +51,7 @@ export const CardFormImage = React.memo(function CardFormImage(props: CardFormIm
             <Text selectable>https://file-examples-com.github.io/uploads/2020/03/file_example_SVG_20kB.svg</Text>
         </View>
         <View style={styles.inputRow}>
-            <ImagePicker label="Pick image from device" />
+            <ImagePicker label="Pick image from device" onChange={onChangeLocal} />
         </View>
         <View style={styles.preview}>
             {preview && content.validValue && <View style={styles.image}>

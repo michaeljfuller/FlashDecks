@@ -1,9 +1,14 @@
 import React from 'react';
 import {Image, ImageStyle, StyleSheet, View, ViewStyle} from 'react-native';
 import * as ExpoImagePicker from 'expo-image-picker';
-import {ImageInfo} from "expo-image-picker/src/ImagePicker.types";
 import ToastStore from "../../store/toast/ToastStore";
 import Button from "../button/Button";
+
+export interface ImagePickerData {
+    width?: number;
+    height?: number;
+    dataUri?: string;
+}
 
 export interface ImagePickerProps {
     label?: string;
@@ -14,12 +19,7 @@ export interface ImagePickerProps {
     onChange: (data: ImagePickerData) => void;
 }
 export interface ImagePickerState {
-    image?: ImageInfo;
-}
-export interface ImagePickerData {
-    uri: string;
-    width?: number;
-    height?: number;
+    image?: ImagePickerData;
 }
 
 /**
@@ -39,10 +39,29 @@ export class ImagePicker extends React.PureComponent<ImagePickerProps, ImagePick
     async pick() {
         const image = await ExpoImagePicker.launchImageLibraryAsync({
             mediaTypes: ExpoImagePicker.MediaTypeOptions.Images,
+            base64: true,
         });
         if (!image.cancelled) {
-            this.setState({image});
-            this.props.onChange && this.props.onChange(image);
+            let dataUri = '';
+            if (image.base64) { // If has base64 (native build) construct dataUri.
+                let type = image.uri?.split('.').pop()?.toLowerCase();
+                switch(type) {
+                    case 'jpg': type = 'jpeg'; break;
+                    default: type = 'jpeg'; break;
+                }
+                dataUri = `data:image/${type};base64,${image.base64}`;
+            } else if (image.uri.startsWith('data:image/')) { // Otherwise (web build), uri is a dataUri
+                dataUri = image.uri;
+            }
+
+            // Create ImagePickerData
+            const data: ImagePickerData = {
+                width: image.width,
+                height: image.height,
+                dataUri
+            };
+            this.setState({image: data});
+            this.props.onChange && this.props.onChange(data);
         }
     }
 
@@ -65,7 +84,11 @@ export class ImagePicker extends React.PureComponent<ImagePickerProps, ImagePick
             {
                 preview
                 ? <View style={[styles.previewView, previewStyle]}>
-                    <Image source={{ uri: this.state.image?.uri }} style={styles.previewImage} resizeMode="contain" />
+                    <Image
+                        source={{ uri: this.state.image?.dataUri }}
+                        style={styles.previewImage}
+                        resizeMode="contain"
+                    />
                 </View>
                 : null
             }
