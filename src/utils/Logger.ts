@@ -3,6 +3,7 @@ import {PrintFactory} from "./logging/PrintFactory";
 import {interlace} from "./array";
 import {isPlatformWeb} from "../platform";
 import {getStack} from "./function";
+import {getLogRef} from "./debugging/logRef";
 
 export {LogColor} from './logging/logColors';
 
@@ -137,6 +138,12 @@ export class Logger {
     /** Queue items to be printed, with spaces between them. */
     addSpaced(...items: any[]): this {
         return this.add(...interlace(items, ' '));
+    }
+
+    /** Queue string containing the target's reference. */
+    addLogRef(target: object, prepend = '', append = ''): this {
+        const {type, id} = getLogRef(target);
+        return this.add(prepend + type + '#' + id + append);
     }
 
     /** Queue a line break to be printed. */
