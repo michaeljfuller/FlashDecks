@@ -7,13 +7,13 @@ import {
     GetDecksByOwnerQuery, GetDecksByOwnerQueryVariables,
     ListDecksQuery, ListDecksQueryVariables,
     DeleteDeckInput, DeleteDeckMutation, DeleteDeckMutationVariables,
-} from "../API";
+} from "../graphql/API";
 
 export {
     getDeck, listDecks, getDecksByOwner,
     createDeck, updateDeck, deleteDeck,
 }
-export * from "../API";
+export * from "../graphql/API";
 
 // Type of query strings
 export type GetDeckQueryString = typeof getDeck;
