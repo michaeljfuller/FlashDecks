@@ -4,6 +4,7 @@ import {LogSetterOptions, wrapAndLogSetter} from "../wrapAndLogSetter";
 import {GenericClass} from "../../class";
 
 export interface LogClassOptions<T> {
+    enabled?: boolean;
     methods?: Partial<Record<keyof T, WrapAndLogFunctionOptions>>|false;
     getters?: Partial<Record<keyof T, LogGetterOptions>>|false;
     setters?: Partial<Record<keyof T, LogSetterOptions>>|false;
@@ -13,6 +14,7 @@ export interface LogClassOptions<T> {
 /** Class decorator to log all method calls. */
 export function logClass<T>(options: LogClassOptions<T> = {}) {
     const {
+        enabled = true,
         methods: methodOptions = {} as NonNullable<LogClassOptions<T>['methods']>,
         getters: getterOptions = {} as NonNullable<LogClassOptions<T>['getters']>,
         setters: setterOptions = {} as NonNullable<LogClassOptions<T>['setters']>,
@@ -20,6 +22,8 @@ export function logClass<T>(options: LogClassOptions<T> = {}) {
     } = options;
 
     return function (targetClass: GenericClass) {
+        if (!enabled) return;
+
         const members: ClassMember[] = extractMembers(targetClass.prototype, false);
         if (includeStatic) members.push(...extractMembers(targetClass, true));
 

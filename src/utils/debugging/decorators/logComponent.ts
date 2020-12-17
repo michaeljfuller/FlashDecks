@@ -8,6 +8,7 @@ import {logMethod} from "./logMethod";
 type Component = React.ComponentClass<any>|React.PureComponent<any>;
 
 export interface LogComponentOptions<C extends Component> {
+    enabled?: boolean;
     ref?: (scope: C) => string;
     logDidMount?: boolean|WrapAndLogFunctionOptions<C>;
     logDidUpdate?: boolean|WrapAndLogFunctionOptions<C>;
@@ -19,6 +20,7 @@ export interface LogComponentOptions<C extends Component> {
 /** Log Component lifecycle events. */
 export function logComponent<T extends Component>(options?: LogComponentOptions<T>) {
     const {
+        enabled = true,
         ref,
         logDidMount = true,
         logDidUpdate = true,
@@ -27,6 +29,8 @@ export function logComponent<T extends Component>(options?: LogComponentOptions<
     } = options || {};
 
     return function (component: GenericClass<T>) {
+        if (!enabled) return;
+
         const {
             color = classColor(component.name)
         } = options || {};
