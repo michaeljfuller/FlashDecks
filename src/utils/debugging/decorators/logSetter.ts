@@ -1,7 +1,7 @@
-import {LogSetterOptions, wrapAndLogSetter} from "../wrapAndLogSetter";
+import {LogSetterOptions as Options, wrapAndLogSetter} from "../wrapAndLogSetter";
 import {getType} from "../../type";
 
-export {LogSetterOptions};
+export type LogSetterOptions = Options;
 
 /**
  * When the tagged method is run, log to the console and group everything run under it.

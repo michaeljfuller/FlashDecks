@@ -1,7 +1,7 @@
-import {LogGetterOptions, wrapAndLogGetter} from "../wrapAndLogGetter";
+import {LogGetterOptions as Options, wrapAndLogGetter} from "../wrapAndLogGetter";
 import {getType} from "../../type";
 
-export {LogGetterOptions} from "../wrapAndLogGetter";
+export type LogGetterOptions = Options;
 
 /**
  * When the tagged method is run, log to the console and group everything run under it.
