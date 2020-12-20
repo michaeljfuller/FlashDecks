@@ -77,6 +77,10 @@ export class DeckApi {
         );
     }
 
+    push(deck: DeckModel): ApiRequest<DeckModel, DeckModel> {
+        return deck.id ? this.update(deck) : this.create(deck);
+    }
+
     remove(id: DeleteDeckInput['id']): ApiRequest<DeckModel, DeleteDeckMutationVariables> {
         const variables = { input: { id } } as DeleteDeckMutationVariables;
 

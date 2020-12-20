@@ -10,6 +10,7 @@ import Button from "../../../components/button/Button";
 import DeckScreenHeader from "../common/DeckScreenHeader";
 import {CardModel, DeckModel} from "../../../models";
 import deckApi from "../../../api/DeckApi";
+import mediaApi from "../../../api/MediaApi";
 import ToastStore, {toastStore} from "../../../store/toast/ToastStore";
 import navigationStore from "../../../store/navigation/NavigationStore";
 import ApiRequest from "../../../api/util/ApiRequest";
@@ -47,6 +48,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     toast = new ToastStore(this);
     getDeckRequest?: ApiRequest<DeckModel>;
     saveDeckRequest?: ApiRequest<DeckModel>;
+    mediaUploadRequest?: ApiRequest<string>;
     cardIndex = 0;
 
     get deck() {
@@ -69,6 +71,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         this.blockNavigation(false);
         this.getDeckRequest && this.getDeckRequest.drop();
         this.saveDeckRequest && this.saveDeckRequest.drop();
+        this.mediaUploadRequest && this.mediaUploadRequest.drop();
     }
 
     blockNavigation(value = true) {
@@ -169,15 +172,12 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     onHideCreateCardModal = () => this.setStateTo({ showCreateCardModal: false });
 
     onSavePressed = async () => {
-        const modifiedDeck = this.state.modifiedDeck;
+        let modifiedDeck = this.state.modifiedDeck;
 
         if (modifiedDeck) {
             this.setStateTo({ saving: true });
-            if (modifiedDeck.id) {
-                this.saveDeckRequest = deckApi.update(modifiedDeck);
-            } else {
-                this.saveDeckRequest = deckApi.create(modifiedDeck);
-            }
+            modifiedDeck = await this.uploadContent(modifiedDeck);
+            this.saveDeckRequest = deckApi.push(modifiedDeck);
 
             await this.saveDeckRequest.wait(false);
             const deck = this.saveDeckRequest.payload;
@@ -195,7 +195,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
                 this.toast.addError(error, `Failed to save ${modifiedDeck.title}`, { log: false, ref: toastRef });
                 console.error("Error saving deck", { error,  request: this.saveDeckRequest });
             } else {
-                console.log('DeckEditScreen.onSavePressed', { input, response: this.saveDeckRequest, deck });
+                console.log('DeckEditScreen.onSavePressed', { response: this.saveDeckRequest, deck });
                 this.toast.add({ type: "success", text: `Saved: "${modifiedDeck.title}"`, duration: 2000, ref: toastRef });
             }
 
@@ -204,6 +204,34 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         } else {
             this.toast.add({type: "warning", text: `No changes to save.`});
         }
+    }
+
+    async uploadContent(deck: DeckModel): Promise<DeckModel> {
+        const observable = mediaApi.uploadFromDeck(deck);
+        observable.subscribe(data => {
+            console.log('uploadContent', data);
+            toastStore.removeByRef();
+            toastStore.add({
+                title: 'Media Upload',
+                text: `Uploading ${data.currentIndex+1}/${data.list.length}.`,
+            });
+            this.mediaUploadRequest = data.request;
+            this.setStateTo(draft => {
+                draft.modifiedDeck = castDraft(data.deck);
+            });
+            deck = data.deck;
+        });
+        await observable.toPromise().then(
+            (data) => {
+                delete this.mediaUploadRequest;
+                if (data?.list?.length) {
+                    toastStore.removeByRef();
+                    toastStore.add({title: 'Media Upload', text: 'Complete', type: "success", duration: 1000})
+                }
+            },
+            err => toastStore.addError(err, 'Media Upload')
+        );
+        return deck;
     }
 
     render() {
