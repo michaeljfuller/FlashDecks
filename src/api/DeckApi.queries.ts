@@ -43,7 +43,7 @@ export type VariablesFromQueryString<T extends AnyQueryOrMutationString> =
     never;
 
 // Generic that gets Query payload the passed type.
-export type QueryFromQueryString<T extends AnyQueryOrMutationString> =
+export type ResponseFromQueryString<T extends AnyQueryOrMutationString> =
     T extends CreateDeckMutationString   ? CreateDeckMutation :
     T extends UpdateDeckMutationString   ? UpdateDeckMutation :
     T extends GetDeckQueryString         ? GetDeckQuery :

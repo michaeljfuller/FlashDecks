@@ -173,24 +173,10 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
 
         if (modifiedDeck) {
             this.setStateTo({ saving: true });
-            const input = {
-                title: modifiedDeck.title,
-                description: modifiedDeck.description,
-                tags: modifiedDeck.tags,
-                cards: modifiedDeck.cards.map(card => ({
-                    title: card.title,
-                    sides: card.sides.map(side => ({
-                        content: side.content.map(content => ({
-                            value: content.value,
-                            type: content.type as any,
-                        }))
-                    }))
-                }))
-            };
             if (modifiedDeck.id) {
-                this.saveDeckRequest = deckApi.update({ id: modifiedDeck.id, ...input });
+                this.saveDeckRequest = deckApi.update(modifiedDeck);
             } else {
-                this.saveDeckRequest = deckApi.create(input);
+                this.saveDeckRequest = deckApi.create(modifiedDeck);
             }
 
             await this.saveDeckRequest.wait(false);
