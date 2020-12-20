@@ -39,32 +39,30 @@ export class DeckInfoModal extends ImmutableComponent<DeckInfoModalProps, DeckIn
         this.saveRequest?.drop();
     }
 
-    save(info: DeckInfo) {
+    async save(info: DeckInfo) {
         if (info) {
             const deck = this.props.deck;
 
             this.setStateTo({ saving: true });
             this.toast.add({ text: `Saving "${info.title}"...`, canDismiss: false });
 
-            const request = deck.id ? deckApi.update({...info, id: deck.id}) : deckApi.create(info);
-            request.wait(false).then(response => {
-                this.toast.removeByRef();
+            const request = deck.id ? deckApi.update({ input: {...info, id: deck.id}}) : deckApi.create({ input: info });
+            const response = await request.wait(false);
+            this.toast.removeByRef();
 
-                if (response.error) {
-                    this.toast.addError(response.error, `Failed to save "${info.title}".`, {ref: 'DeckInfoModal.save'});
-                } else {
-                    this.toast.add({ type: "success", text: `Saved "${info.title}".`, duration: 3000 });
+            if (response.error) {
+                this.toast.addError(response.error, `Failed to save "${info.title}".`, {ref: 'DeckInfoModal.save'});
+            } else {
+                this.toast.add({ type: "success", text: `Saved "${info.title}".`, duration: 3000 });
+            }
+
+            if (!response.dropped) {
+                this.setStateTo({ saving: false });
+                if (!response.error) {
+                    this.props.onChange && this.props.onChange(info);
+                    this.props.onClose && this.props.onClose();
                 }
-
-                if (!response.dropped) {
-                    this.setStateTo({ saving: false });
-                    if (!response.error) {
-                        this.props.onChange && this.props.onChange(info);
-                        this.props.onClose && this.props.onClose();
-                    }
-                }
-
-            });
+            }
         } else {
             this.toast.add({ type: "warning", text: "No changes to save.", duration: 3000 });
         }
