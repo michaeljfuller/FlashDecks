@@ -9,6 +9,10 @@ export type AlertModalProps = {
     title?: string;
     /** The message to add to the modal. */
     message?: string;
+    /** If there should be a close button. */
+    closeButton?: boolean;
+    /** Text on the close button. */
+    closeButtonText?: string;
 } & ModalProps;
 export type AlertModalPropsWithChildren = PropsWithChildren<AlertModalProps>;
 
@@ -16,7 +20,14 @@ export type AlertModalPropsWithChildren = PropsWithChildren<AlertModalProps>;
  * A simple modal with a close button.
  */
 export const AlertModal = React.memo<AlertModalPropsWithChildren>(function AlertModal(props: AlertModalPropsWithChildren) {
-    const {title, message, onClose, children} = props;
+    const {
+        title,
+        message,
+        onClose,
+        children,
+        closeButton=true,
+        closeButtonText="Close",
+    } = props;
     return <Modal {...extractModalProps(props)}>
         <ModalHeader title={title || 'Alert'} />
 
@@ -25,8 +36,6 @@ export const AlertModal = React.memo<AlertModalPropsWithChildren>(function Alert
             {children && <View>{children}</View>}
         </ModalBody>
 
-        <ModalFooter>
-            <Button title="Close" onClick={onClose} square />
-        </ModalFooter>
+        {closeButton ? <ModalFooter><Button title={closeButtonText} onClick={onClose} square /></ModalFooter> : null}
     </Modal>;
 });
