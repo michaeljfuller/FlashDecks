@@ -1,5 +1,5 @@
 import React, {PropsWithChildren} from "react";
-import {Text, View} from "react-native";
+import {Text, View, ViewStyle} from "react-native";
 import Button from "../../button/Button";
 import Modal, {ModalProps, extractModalProps} from "../core/Modal";
 import {ModalHeader, ModalBody, ModalFooter} from "../parts";
@@ -13,6 +13,8 @@ export type AlertModalProps = {
     closeButton?: boolean;
     /** Text on the close button. */
     closeButtonText?: string;
+
+    bodyStyle?: ViewStyle;
 } & ModalProps;
 export type AlertModalPropsWithChildren = PropsWithChildren<AlertModalProps>;
 
@@ -25,13 +27,14 @@ export const AlertModal = React.memo<AlertModalPropsWithChildren>(function Alert
         message,
         onClose,
         children,
+        bodyStyle,
         closeButton=true,
         closeButtonText="Close",
     } = props;
     return <Modal {...extractModalProps(props)}>
         <ModalHeader title={title || 'Alert'} />
 
-        <ModalBody>
+        <ModalBody style={bodyStyle}>
             {message && <Text>{message}</Text>}
             {children && <View>{children}</View>}
         </ModalBody>
