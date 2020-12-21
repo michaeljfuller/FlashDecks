@@ -6,7 +6,10 @@ import PropTypes from "prop-types";
 /** Any component type. */
 export type ComponentUnion<Props extends {} = any> = (
     ComponentType<Props> | ExoticComponent<Props>
-) & { propTypes?: PropTypesMap<Props> }; // Add propTypes missing from ExoticComponent
+) & {
+    propTypes?: PropTypesMap<Props>;
+    displayName?: string;
+}; // Add propTypes missing from ExoticComponent
 
 //</editor-fold>
 //<editor-fold desc="PropTypes">
