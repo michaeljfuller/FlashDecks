@@ -19,8 +19,8 @@ import navigationStore from "../../store/navigation/NavigationStore";
 import {PortalEntrance} from "../../components/portal/PortalEntrance";
 import {PortalExit} from "../../components/portal/PortalExit";
 import {logComponent} from "../../utils/debugging";
-import {ImagePicker} from "../../components/media-picker/ImagePicker";
-import {VideoPicker} from "../../components/media-picker/VideoPicker";
+import TempScreenMediaPickers from "./sub/TempScreenMediaPickers";
+import TempScreenProgress from "./sub/TempScreenProgress";
 
 export enum TestIds {
     User='TempScreen_User',
@@ -70,19 +70,8 @@ export class TempScreen extends ImmutablePureComponent<
                     <Text testID={TestIds.Env}>Environment: &quot;{envName}&quot;</Text>
                 </View>
 
-                <View style={{ borderWidth: 1, padding: 2 }}>
-                    <VideoPicker
-                        label="Video Picker"
-                        onChange={data => console.log('VideoPicker >', data)}
-                        preview
-                    />
-                    <HR style={{marginVertical: 2}} />
-                    <ImagePicker
-                        label="Image Picker"
-                        onChange={data => console.log('ImagePicker >', data)}
-                        preview
-                    />
-                </View>
+                <TempScreenProgress />
+                {/*<TempScreenMediaPickers />*/}
 
                 {/*{this.renderPortal()}*/}
                 {/*{this.renderMisc()}*/}
@@ -262,10 +251,6 @@ export class TempScreen extends ImmutablePureComponent<
 
 }
 
-function HR(props: {style?: ViewStyle}) {
-    return <View style={[styles.hr, props.style]} />;
-}
-
 function Row(props: PropsWithChildren<{
     borderColor?: string;
     backgroundColor?: string;
@@ -302,9 +287,5 @@ const styles = StyleSheet.create({
     rowButton: {
         flex: 1,
         minWidth: 120,
-    },
-    hr: {
-        backgroundColor: "purple",
-        height: 1,
     }
 });
