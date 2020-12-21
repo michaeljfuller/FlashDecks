@@ -1,11 +1,11 @@
 import React from "react";
-import {View} from "react-native";
 import HR from "../../../components/ui/HR";
 import {VideoPicker} from "../../../components/media-picker/VideoPicker";
 import {ImagePicker} from "../../../components/media-picker/ImagePicker";
+import TempScreenSubsection from "../ui/TempScreenSubsection";
 
 export function TempScreenMediaPickers() {
-    return <View style={{ borderWidth: 1, padding: 2 }}>
+    return <TempScreenSubsection title="Media Pickers">
         <VideoPicker
             label="Video Picker"
             onChange={data => console.log('VideoPicker >', data)}
@@ -19,6 +19,6 @@ export function TempScreenMediaPickers() {
             onChange={data => console.log('ImagePicker >', data)}
             preview
         />
-    </View>;
+    </TempScreenSubsection>;
 }
 export default TempScreenMediaPickers;

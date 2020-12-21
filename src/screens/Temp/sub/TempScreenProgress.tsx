@@ -2,6 +2,7 @@ import React from "react";
 import {View} from "react-native";
 import ProgressBar from "../../../components/progress/ProgressBar";
 import ProgressCircle from "../../../components/progress/ProgressCircle";
+import TempScreenSubsection from "../ui/TempScreenSubsection";
 
 export function TempScreenProgress() {
     const [progress, setProgress] = React.useState(10);
@@ -13,7 +14,7 @@ export function TempScreenProgress() {
         return () => clearInterval(timer);
     }, []);
 
-    return <View style={{ borderWidth: 1, padding: 2 }}>
+    return <TempScreenSubsection title="Progress">
         <View style={{ flexDirection: "row", marginBottom: 2 }}>
             <ProgressCircle radius={50} />
             <ProgressCircle value={progress} maxValue={100} color={"Red"} style={{ opacity: 0.5, position: "absolute", left: 5, top: 5 }} />
@@ -23,6 +24,6 @@ export function TempScreenProgress() {
         <ProgressBar value={0.05} color="Red"    />
         <ProgressBar value={0.00} color="Grey"   />
         <ProgressBar style={{paddingVertical:2}} />
-    </View>;
+    </TempScreenSubsection>;
 }
 export default TempScreenProgress;
