@@ -24,6 +24,7 @@ function RawTempScreenRow(props: React.PropsWithChildren<{
         borderWidth,
         backgroundColor,
         display: 'flex',
+        flexWrap: "wrap",
         flexDirection: column ? 'column' : 'row'
     }}>{props.children}</View>
 }

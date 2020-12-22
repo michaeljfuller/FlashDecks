@@ -15,6 +15,7 @@ import TempScreenContext from "./sub/TempScreenContext";
 import TempScreenModals from "./sub/TempScreenModals";
 import TempScreenToggle from "./ui/TempScreenToggle";
 import TempScreenMisc from "./sub/TempScreenMisc";
+import Row from "../../components/layout/Row";
 
 export enum TestIds {
     User='TempScreen_User',
@@ -41,7 +42,7 @@ export class TempScreen extends ImmutablePureComponent<
     TempScreenState
 > {
     readonly state = {
-        showProgress: true,
+        showButtons: true,
     } as TempScreenState;
 
     toggleProgress = () => this.setStateTo({showProgress: !this.state.showProgress});
@@ -62,7 +63,7 @@ export class TempScreen extends ImmutablePureComponent<
                     <Text testID={TestIds.Env}>Environment: &quot;{envName}&quot;</Text>
                 </View>
 
-                <View style={{flexDirection: "row", height: 50}}>
+                <Row wrap>
                     <TempScreenToggle title="Progress" onClick={this.toggleProgress}     value={this.state.showProgress} />
                     <TempScreenToggle title="Media"    onClick={this.toggleMediaPickers} value={this.state.showMediaPickers} />
                     <TempScreenToggle title="Portals"  onClick={this.togglePortals}      value={this.state.showPortals} />
@@ -70,7 +71,7 @@ export class TempScreen extends ImmutablePureComponent<
                     <TempScreenToggle title="Context"  onClick={this.toggleContext}      value={this.state.showContext} />
                     <TempScreenToggle title="Modals"   onClick={this.toggleModals}       value={this.state.showModals} />
                     <TempScreenToggle title="Misc"     onClick={this.toggleMisc}         value={this.state.showMisc} />
-                </View>
+                </Row>
 
                 {this.state.showProgress ? <TempScreenProgress /> : null}
                 {this.state.showMediaPickers ? <TempScreenMediaPickers /> : null}
