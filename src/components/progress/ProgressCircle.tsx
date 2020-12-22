@@ -13,11 +13,12 @@ export interface ProgressCircleProps extends CommonProgressProps {
 }
 
 export const ProgressCircle: ComponentUnion<ProgressCircleProps> = React.memo(function ProgressCircle(props: ProgressCircleProps) {
-    const {radius=40, thickness=4} = props;
+    const {radius=40, thickness=4, visible=true} = props;
     const determinate = getDeterminate(props);
     const fraction = getProgressFraction(props);
     const color = getColor(props);
 
+    if (!visible) return null;
     return <View style={props.style}>
         <IndicatorCircle
             visible

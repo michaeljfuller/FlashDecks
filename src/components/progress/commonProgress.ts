@@ -4,12 +4,14 @@ import {Color, ColorKey} from "../../styles/Color";
 
 export interface CommonProgressProps {
     determinate?: boolean;
+    visible?: boolean;
     value?: number; // Range 0-maxValue
     maxValue?: number;
     color?: ColorKey;
 }
 export const CommonProgressPropTypes: PropTypesMap<CommonProgressProps> = {
     determinate: PropTypes.bool,
+    visible: PropTypes.bool,
     value: PropTypes.number,
     maxValue: PropTypes.number,
     color: PropTypes.string,

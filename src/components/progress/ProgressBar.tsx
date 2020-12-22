@@ -11,10 +11,12 @@ export interface ProgressBarProps extends CommonProgressProps {
 }
 
 export const ProgressBar: ComponentUnion<ProgressBarProps> = React.memo(function ProgressBar(props: ProgressBarProps) {
+    const {visible=true} = props;
     const determinate = getDeterminate(props);
     const fraction = getProgressFraction(props);
     const color = getColor(props);
 
+    if (!visible) return null;
     return <View style={props.style}>
         <IndicatorBar
             visible
