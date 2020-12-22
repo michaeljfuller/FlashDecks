@@ -1,7 +1,10 @@
 import React from "react";
-import {StyleProp, ViewStyle} from "react-native";
+import {ViewStyle} from "react-native";
 import {IconType} from '../icon/Icon';
 import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
+import ButtonWrapper from "./core/ButtonWrapper";
+import {numberOrDefault} from "../../utils/math";
+
 export {IconType} from '../icon/Icon';
 
 export interface IconButtonProps {
@@ -11,12 +14,15 @@ export interface IconButtonProps {
     disabled?: boolean;
     transparent?: boolean;
     flat?: boolean;
-    style?: StyleProp<ViewStyle>;
+    style?: ViewStyle|ViewStyle[];
     color?: GetUIColorThemeInput;
     invertColor?: boolean;
     width?: number;
     height?: number;
     margin?: number;
+    grow?: boolean|number;
+    shrink?: boolean|number;
+    size?: number;
 }
 
 const noop = () => {};
@@ -34,9 +40,30 @@ export function iconButtonPropsWithDefaults(props: IconButtonProps): Required<Ic
         width = Number.NaN,
         height = Number.NaN,
         margin = Number.NaN,
+        grow = false,
+        shrink = false,
+        size = Number.NaN,
     } = props;
     return {
-        onClick, icon, style, text, transparent, flat, color, invertColor, width, height, margin,
+        onClick, icon, style, text, transparent, flat, color, invertColor, width, height, margin, grow, shrink, size,
         disabled: disabled || !props.onClick,
     };
 }
+
+//<editor-fold desc="ButtonWrapper">
+
+type StandardButtonWrapperProps = React.PropsWithChildren<{
+    buttonProps: IconButtonProps;
+}>;
+
+export const IconButtonWrapper = React.memo<StandardButtonWrapperProps>(function IconButtonWrapper(props: StandardButtonWrapperProps) {
+    const {style, width, height, grow, shrink, size} = props.buttonProps;
+    return <ButtonWrapper
+        style={[style, { width, height }]}
+        grow={grow}
+        shrink={shrink}
+        size={numberOrDefault(size, undefined)}
+    >{props.children}</ButtonWrapper>;
+});
+
+//</editor-fold>

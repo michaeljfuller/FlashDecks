@@ -1,31 +1,29 @@
 import React from 'react';
 
-import ButtonWrapper from "./core/ButtonWrapper";
-import {ButtonProps, buttonPropsWithDefaults} from './Button.common';
+import {ButtonProps, buttonPropsWithDefaults, StandardButtonWrapper} from './Button.common';
 import {getStyledButtonBase} from "./material-ui/StyledButtonBase";
 import {getUIColorTheme} from "../../styles/UIColorTheme";
-import {numberOrDefault} from "../../utils/math";
+
 export * from './Button.common';
 
 /**
  * A bridge to a Material-UI Button
  */
 export const Button = React.memo(function Button(props: ButtonProps) {
-    const { onClick, disabled, title, flat, style, color, square, invertColor, width, height } = buttonPropsWithDefaults(props);
+    const allProps = buttonPropsWithDefaults(props);
+    const {onClick, disabled, title, flat, color, square, invertColor} = allProps;
+
     const theme = getUIColorTheme(color, invertColor);
     const StyledButton = getStyledButtonBase(theme, square);
-    return <ButtonWrapper style={style}>
+
+    return <StandardButtonWrapper buttonProps={allProps}>
         <StyledButton
             variant="contained"
             onClick={onClick}
             disabled={disabled}
             disableElevation={flat}
-            style={{
-                width: numberOrDefault(width, undefined),
-                height: numberOrDefault(height, undefined),
-            }}
         >{title}</StyledButton>
-    </ButtonWrapper>;
+    </StandardButtonWrapper>;
 });
 export default Button;
 

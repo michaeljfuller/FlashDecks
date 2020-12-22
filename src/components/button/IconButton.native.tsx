@@ -1,9 +1,8 @@
 import React from 'react';
 import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} from 'native-base';
 
-import ButtonWrapper from "./core/ButtonWrapper";
 import {Icon, IconStyles} from '../icon/Icon';
-import {IconButtonProps, iconButtonPropsWithDefaults} from './IconButton.common';
+import {IconButtonProps, iconButtonPropsWithDefaults, IconButtonWrapper} from './IconButton.common';
 import {getUIColorTheme} from "../../styles/UIColorTheme";
 import {numberOrDefault} from "../../utils/math";
 
@@ -11,9 +10,10 @@ export * from './IconButton.common';
 
 export const IconButton = React.memo(function IconButton(props: IconButtonProps) {
     const allProps = iconButtonPropsWithDefaults(props);
-    const { onClick, text, disabled, icon, style, transparent } = allProps;
+    const {onClick, text, disabled, icon, transparent} = allProps;
+    const {width, height} = getButtonSize(allProps);
 
-    return <ButtonWrapper style={style}>
+    return <IconButtonWrapper buttonProps={{...allProps, width, height}}>
         <NativeBaseButton
             onPress={onClick}
             disabled={disabled}
@@ -24,38 +24,48 @@ export const IconButton = React.memo(function IconButton(props: IconButtonProps)
             <Icon type={icon} style={getIconStyle(allProps)} />
             {text ? <NativeBaseText style={getTextStyle(allProps)}>{text}</NativeBaseText> : undefined}
         </NativeBaseButton>
-    </ButtonWrapper>;
+    </IconButtonWrapper>;
 });
 export default IconButton;
 
-function getButtonStyle(
-    {width, height, color, invertColor, margin, text, transparent, flat}: Required<IconButtonProps>
-): RnViewStyleProp {
+//<editor-fold desc="Styles">
+
+function getButtonSize(
+    {width, height, text}: Required<IconButtonProps>,
+    defaultSize=24
+): { width?: number; height?: number; round: boolean } {
     const round = !text;
+    return {
+        width:  round ? (width || height || defaultSize) : (width || height || undefined),
+        height: round ? (height || width || defaultSize) : (height || width || undefined),
+        round
+    };
+}
+
+function getButtonStyle(props: Required<IconButtonProps>): RnViewStyleProp {
+    const {color, invertColor, margin, transparent, flat} = props;
+    const {width, height, round} = getButtonSize(props);
     const theme = getUIColorTheme(color, invertColor);
+
     if (round) {
-        const defaultSize = 24;
-        const btnWidth = width || height || defaultSize;
-        const btnHeight = height || width || defaultSize;
         return {
-            width: btnWidth,
-            height: btnHeight,
+            width, height,
             margin: numberOrDefault(margin, undefined),
             backgroundColor: transparent ? undefined : theme.primary.base,
-            borderRadius: Math.min(btnWidth, btnHeight),
+            borderRadius: Math.min(width||0, height||0),
             justifyContent: 'center',
             shadowOpacity: flat ? 0 : undefined,
         };
     } else {
         return {
-            width: width || height || undefined,
-            height: height || width || undefined,
+            width, height,
             paddingHorizontal: 5,
             backgroundColor: transparent ? undefined : theme.primary.base,
             shadowOpacity: flat ? 0 : undefined,
         };
     }
 }
+
 function getIconStyle(
     {color, invertColor, transparent, disabled}: Required<IconButtonProps>
 ): IconStyles {
@@ -66,6 +76,7 @@ function getIconStyle(
         return { color: disabled ? theme.secondary.disabled : theme.secondary.base };
     }
 }
+
 function getTextStyle(
     {color, invertColor, transparent, disabled}: Required<IconButtonProps>
 ): IconStyles {
@@ -76,3 +87,5 @@ function getTextStyle(
         return { color: disabled ? theme.secondary.disabled : theme.secondary.base };
     }
 }
+
+//</editor-fold>

@@ -3,6 +3,7 @@ import React, {useCallback, useState} from 'react';
 import {LinkButtonProps, linkButtonPropsWithDefaults} from './LinkButton.common';
 import Button from './Button';
 import {LinkModal} from "../modal/LinkModal/LinkModal";
+
 export * from './LinkButton.common';
 
 /**
@@ -10,7 +11,9 @@ export * from './LinkButton.common';
  */
 export const LinkButton = React.memo(function LinkButton(props: LinkButtonProps) {
     const [modalOpen, setModalOpen] = useState(false);
-    const { title, url, disabled, color, invertColor, square, flat, style, width, height } = linkButtonPropsWithDefaults(props);
+    const {
+        title, url, disabled, color, invertColor, square, flat, style, width, height, grow, shrink, size,
+    } = linkButtonPropsWithDefaults(props);
 
     const openModal = useCallback(() => setModalOpen(true), []);
     const closeModal = useCallback(() => setModalOpen(false), []);
@@ -27,6 +30,9 @@ export const LinkButton = React.memo(function LinkButton(props: LinkButtonProps)
             invertColor={invertColor}
             flat={flat}
             square={square}
+            grow={grow}
+            shrink={shrink}
+            size={size}
         />
         <LinkModal url={url} open={modalOpen} onClose={closeModal} />
     </React.Fragment>;
