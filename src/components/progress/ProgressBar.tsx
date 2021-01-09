@@ -1,34 +1,31 @@
 import React from "react";
 import {View, ViewStyle} from "react-native";
-import PropTypes from "prop-types";
 // @ts-ignore https://www.npmjs.com/package/react-native-material-indicators#progress-bar
 import {ProgressBar as IndicatorBar} from "react-native-material-indicators";
-import {CommonProgressProps, CommonProgressPropTypes, getDeterminate, getProgressFraction, getColor} from "./commonProgress";
-import {ComponentUnion} from "../../utils/component";
+import {ProgressBase, CommonProgressProps} from "./commonProgress";
+import {Color, ColorKey} from "../../styles/Color";
 
 export interface ProgressBarProps extends CommonProgressProps {
     style?: ViewStyle;
+    color?: ColorKey;
 }
 
-export const ProgressBar: ComponentUnion<ProgressBarProps> = React.memo(function ProgressBar(props: ProgressBarProps) {
-    const {visible=true} = props;
-    const determinate = getDeterminate(props);
-    const fraction = getProgressFraction(props);
-    const color = getColor(props);
+export class ProgressBar extends ProgressBase<ProgressBarProps> {
+    render() {
+        const {color="Blue", visible=true} = this.props;
 
-    if (!visible) return null;
-    return <View style={props.style}>
-        <IndicatorBar
-            key={determinate?'determinate':'indeterminate' /*Create new instance if changes to reset animation*/}
-            visible
-            determinate={determinate}
-            value={fraction * 100}
-            color={color}
-        />
-    </View>;
-});
-ProgressBar.propTypes = {
-    ...CommonProgressPropTypes,
-    style: PropTypes.object,
-};
+        if (!visible) return null;
+
+        return <View style={this.props.style}>
+            <IndicatorBar
+                key={'ProgressBar_'+this.state.iteration /*Create new instance if changes to reset animation*/}
+                visible
+                determinate={this.getDeterminate()}
+                value={this.getProgressFraction() * 100}
+                color={Color[color]}
+            />
+        </View>;
+    }
+}
+
 export default ProgressBar;
