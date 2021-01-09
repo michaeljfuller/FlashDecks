@@ -21,6 +21,7 @@ export const ProgressCircle: ComponentUnion<ProgressCircleProps> = React.memo(fu
     if (!visible) return null;
     return <View style={props.style}>
         <IndicatorCircle
+            key={determinate?'determinate':'indeterminate' /*Create new instance if changes to reset animation*/}
             visible
             determinate={determinate}
             value={fraction*100}

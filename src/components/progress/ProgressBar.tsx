@@ -19,6 +19,7 @@ export const ProgressBar: ComponentUnion<ProgressBarProps> = React.memo(function
     if (!visible) return null;
     return <View style={props.style}>
         <IndicatorBar
+            key={determinate?'determinate':'indeterminate' /*Create new instance if changes to reset animation*/}
             visible
             determinate={determinate}
             value={fraction * 100}
