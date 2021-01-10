@@ -2,19 +2,34 @@ import React from "react";
 import {ScrollView, StyleSheet, View, ViewStyle} from "react-native";
 
 export type RowProps = React.PropsWithChildren<{
-    wrap?: boolean;
+    /** Horizontally center contents */
     center?: boolean;
+    /** Space out the contents */
     space?: boolean;
+    /** Contents can overflow */
     overflow?: boolean;
+    /** Can wrap contents to the next line */
+    wrap?: boolean;
+    /** Can be vertically scrolled */
     scroll?: boolean;
+    /** Outer style */
     style?: ViewStyle|ViewStyle[];
 }>;
 
-/** A simple row. */
+/**
+ * A row that can be horizontally centered and/or scrolled.
+ */
 export const Row = React.memo<RowProps>(function Row(props: RowProps) {
-    const {style, wrap, center, space, overflow, scroll} = props;
-    const viewStyles: ViewStyle[] = [styles.base];
+    const {
+        style,
+        wrap=false,
+        center=false,
+        space=false,
+        overflow=false,
+        scroll=false,
+    } = props;
 
+    const viewStyles: ViewStyle[] = [styles.base];
     if (wrap) viewStyles.push(styles.wrap);
     if (overflow) viewStyles.push(styles.overflow);
 
