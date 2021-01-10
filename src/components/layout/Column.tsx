@@ -1,5 +1,5 @@
 import React from "react";
-import {ScrollView, StyleSheet, View, ViewStyle} from "react-native";
+import {ScrollView, StyleSheet, Text, View, ViewStyle} from "react-native";
 
 export type ColumnProps = React.PropsWithChildren<{
     /** Vertically center contents */
@@ -30,33 +30,39 @@ export const Column = React.memo<ColumnProps>(function Column(props: ColumnProps
     } = props;
 
     const parentStyles: ViewStyle[] = [styles.parent];
-    const childStyles: ViewStyle[] = [];
-
-    if (center) childStyles.push(space ? styles.centerSpaced : styles.center);
-    else if (space) childStyles.push(styles.spaced);
+    const childStyles: ViewStyle[] = [styles.child];
 
     if (overflow) parentStyles.push(styles.overflow);
     if (innerStyle) Array.isArray(innerStyle) ? childStyles.push(...innerStyle) : childStyles.push(innerStyle);
 
-    const content = <View style={childStyles}>
-        {props.children}
-    </View>;
+
+    if (center) childStyles.push(space ? styles.centerSpaced : styles.center);
+    else if (space) childStyles.push(styles.spaced);
 
     if (scroll) {
-        return <ScrollView style={style} contentContainerStyle={parentStyles}>
-            {content}
+
+        parentStyles.push(styles.scroll);
+
+        return <ScrollView style={style} contentContainerStyle={parentStyles} nestedScrollEnabled>
+            <View style={childStyles}>
+                {props.children}
+            </View>
         </ScrollView>;
     }
 
     if (style) Array.isArray(style) ? parentStyles.push(...style) : parentStyles.push(style);
     return <View style={parentStyles}>
-        {content}
+        <View style={childStyles}>
+            {props.children}
+        </View>
     </View>;
 });
 export default Column;
 
 const styles = StyleSheet.create({
     parent: { overflow: "hidden" },
+    child: { flex: 1 },
+    scroll: { flexGrow: 1 },
     center: { justifyContent: "center" },
     centerSpaced: { justifyContent: "space-around" },
     spaced: { justifyContent: "space-between" },
