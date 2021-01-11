@@ -1,5 +1,5 @@
 import React from "react";
-import {ScrollView, StyleSheet, Text, View, ViewStyle} from "react-native";
+import {ScrollView, StyleSheet, View, ViewStyle} from "react-native";
 
 export type ColumnProps = React.PropsWithChildren<{
     /** Vertically center contents */
@@ -10,6 +10,8 @@ export type ColumnProps = React.PropsWithChildren<{
     overflow?: boolean;
     /** Can be vertically scrolled */
     scroll?: boolean;
+    /** Set style flex:1 */
+    flex?: boolean;
     /** Outer style */
     style?: ViewStyle|ViewStyle[];
     /** Inner style */
@@ -27,6 +29,7 @@ export const Column = React.memo<ColumnProps>(function Column(props: ColumnProps
         space=false,
         overflow=false,
         scroll=false,
+        flex=false,
     } = props;
 
     const parentStyles: ViewStyle[] = [styles.parent];
@@ -34,7 +37,7 @@ export const Column = React.memo<ColumnProps>(function Column(props: ColumnProps
 
     if (overflow) parentStyles.push(styles.overflow);
     if (innerStyle) Array.isArray(innerStyle) ? childStyles.push(...innerStyle) : childStyles.push(innerStyle);
-
+    if (flex) parentStyles.push(styles.flex);
 
     if (center) childStyles.push(space ? styles.centerSpaced : styles.center);
     else if (space) childStyles.push(styles.spaced);
@@ -67,4 +70,5 @@ const styles = StyleSheet.create({
     centerSpaced: { justifyContent: "space-around" },
     spaced: { justifyContent: "space-between" },
     overflow: { overflow: "visible" },
+    flex: { flex: 1 },
 });
