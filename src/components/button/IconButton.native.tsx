@@ -1,4 +1,5 @@
 import React from 'react';
+import {StyleSheet, View} from 'react-native';
 import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} from 'native-base';
 
 import {Icon, IconStyles} from '../icon/Icon';
@@ -19,9 +20,8 @@ export const IconButton = React.memo(function IconButton(props: IconButtonProps)
             disabled={disabled}
             style={getButtonStyle(allProps)}
             transparent={transparent}
-            iconLeft
         >
-            <Icon type={icon} style={getIconStyle(allProps)} />
+            <View style={text ? styles.iconPadLeft : null}><Icon type={icon} style={getIconStyle(allProps)} /></View>
             {text ? <NativeBaseText style={getTextStyle(allProps)}>{text}</NativeBaseText> : undefined}
         </NativeBaseButton>
     </IconButtonWrapper>;
@@ -33,37 +33,26 @@ export default IconButton;
 function getButtonSize(
     {width, height, text}: Required<IconButtonProps>,
     defaultSize=24
-): { width?: number; height?: number; round: boolean } {
-    const round = !text;
+): { width?: number; height?: number } {
     return {
-        width:  round ? (width || height || defaultSize) : (width || height || undefined),
-        height: round ? (height || width || defaultSize) : (height || width || undefined),
-        round
+        width:  text ? (width || height || undefined) : (width || height || defaultSize),
+        height: text ? (height || width || undefined) : (height || width || defaultSize),
     };
 }
 
 function getButtonStyle(props: Required<IconButtonProps>): RnViewStyleProp {
-    const {color, invertColor, margin, transparent, flat} = props;
-    const {width, height, round} = getButtonSize(props);
+    const {color, invertColor, margin, transparent, flat, text} = props;
+    const {width, height} = getButtonSize(props);
     const theme = getUIColorTheme(color, invertColor);
 
-    if (round) {
-        return {
-            width, height,
-            margin: numberOrDefault(margin, undefined),
-            backgroundColor: transparent ? undefined : theme.primary.base,
-            borderRadius: Math.min(width||0, height||0),
-            justifyContent: 'center',
-            shadowOpacity: flat ? 0 : undefined,
-        };
-    } else {
-        return {
-            width, height,
-            paddingHorizontal: 5,
-            backgroundColor: transparent ? undefined : theme.primary.base,
-            shadowOpacity: flat ? 0 : undefined,
-        };
-    }
+    return {
+        width, height,
+        margin: numberOrDefault(margin, undefined),
+        backgroundColor: transparent ? undefined : theme.primary.base,
+        borderRadius: text ? 1000 : Math.min(width||0, height||0),
+        justifyContent: 'center',
+        shadowOpacity: flat ? 0 : undefined,
+    };
 }
 
 function getIconStyle(
@@ -87,5 +76,11 @@ function getTextStyle(
         return { color: disabled ? theme.secondary.disabled : theme.secondary.base };
     }
 }
+
+const styles = StyleSheet.create({
+    iconPadLeft: {
+        paddingLeft: 12,
+    }
+})
 
 //</editor-fold>
