@@ -16,7 +16,7 @@ export function getStyledIconButtonBase(theme: UIColorTheme, transparent = false
     if (transparent) {
         return hasText ? styleMaterialTextButton(theme) : StandardIconButton;
     }
-    return hasText ? styleMaterialContainedButton(theme, flat) : styleMaterialContainedRoundButton(theme, flat);
+    return hasText ? styleMaterialContainedButton(theme, false, flat) : styleMaterialContainedRoundButton(theme, flat);
 }
 
 /** Get a Text Button component for a given variation. */
@@ -54,7 +54,7 @@ function styleMaterialContainedButton(theme: UIColorTheme, square: boolean, flat
                 backgroundColor: theme.primary.base,
                 height: '100%',
                 width: '100%',
-                borderRadius: square ? 0 : 4,
+                borderRadius: square ? 0 : 1000,
                 color: theme.secondary.base,
                 minWidth: 0,
                 '&:hover': {

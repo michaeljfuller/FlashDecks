@@ -3,11 +3,18 @@ import {ViewStyle} from "react-native";
 import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
 import ButtonWrapper from "./core/ButtonWrapper";
 import {numberOrDefault} from "../../utils/math";
+import {IconType} from "../icon/Icon.common";
+
+export {
+    IconType
+};
 
 export interface ButtonProps {
     onClick?: (event?: React.MouseEvent) => void;
     disabled?: boolean;
     title?: string;
+    icon?: IconType;
+    iconPosition?: "left"|"right";
     flat?: boolean;
     style?: ViewStyle|ViewStyle[];
     color?: GetUIColorThemeInput;
@@ -15,8 +22,6 @@ export interface ButtonProps {
     invertColor?: boolean;
     width?: number;
     height?: number;
-    grow?: boolean|number;
-    shrink?: boolean|number;
     size?: number;
 }
 
@@ -26,6 +31,8 @@ export function buttonPropsWithDefaults(props: ButtonProps): Required<ButtonProp
         onClick = noop,
         disabled = false,
         title = '',
+        icon = undefined,
+        iconPosition = "left",
         flat = false,
         style = {},
         color = DefaultTheme.primary.key,
@@ -33,12 +40,10 @@ export function buttonPropsWithDefaults(props: ButtonProps): Required<ButtonProp
         invertColor = false,
         width = Number.NaN,
         height = Number.NaN,
-        grow = false,
-        shrink = false,
         size = Number.NaN,
     } = props;
     return {
-        onClick, title, flat, style, color, square, invertColor, width, height, grow, shrink, size,
+        onClick, title, icon, iconPosition, flat, style, color, square, invertColor, width, height, size,
         disabled: disabled || !props.onClick,
     };
 }
@@ -52,7 +57,7 @@ type StandardButtonWrapperProps = React.PropsWithChildren<{
 export const StandardButtonWrapper = React.memo<StandardButtonWrapperProps>(function StandardButtonWrapper(
     props: StandardButtonWrapperProps
 ) {
-    const {style, width, height, grow, shrink, size} = props.buttonProps;
+    const {style, width, height, size} = props.buttonProps;
     return <ButtonWrapper
         style={[
             style, {
@@ -60,8 +65,6 @@ export const StandardButtonWrapper = React.memo<StandardButtonWrapperProps>(func
                 height: numberOrDefault(height, undefined),
             }
         ]}
-        grow={grow}
-        shrink={shrink}
         size={numberOrDefault(size, undefined)}
     >{props.children}</ButtonWrapper>
 });

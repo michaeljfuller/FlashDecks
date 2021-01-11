@@ -20,8 +20,6 @@ export interface IconButtonProps {
     width?: number;
     height?: number;
     margin?: number;
-    grow?: boolean|number;
-    shrink?: boolean|number;
     size?: number;
 }
 
@@ -40,12 +38,10 @@ export function iconButtonPropsWithDefaults(props: IconButtonProps): Required<Ic
         width = Number.NaN,
         height = Number.NaN,
         margin = Number.NaN,
-        grow = false,
-        shrink = false,
         size = Number.NaN,
     } = props;
     return {
-        onClick, icon, style, text, transparent, flat, color, invertColor, width, height, margin, grow, shrink, size,
+        onClick, icon, style, text, transparent, flat, color, invertColor, width, height, margin, size,
         disabled: disabled || !props.onClick,
     };
 }
@@ -57,11 +53,9 @@ type StandardButtonWrapperProps = React.PropsWithChildren<{
 }>;
 
 export const IconButtonWrapper = React.memo<StandardButtonWrapperProps>(function IconButtonWrapper(props: StandardButtonWrapperProps) {
-    const {style, width, height, grow, shrink, size} = props.buttonProps;
+    const {style, width, height, size} = props.buttonProps;
     return <ButtonWrapper
         style={[style, { width, height }]}
-        grow={grow}
-        shrink={shrink}
         size={numberOrDefault(size, undefined)}
     >{props.children}</ButtonWrapper>;
 });
