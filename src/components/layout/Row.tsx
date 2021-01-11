@@ -41,6 +41,7 @@ export const Row = React.memo<RowProps>(function Row(props: RowProps) {
     else if (space) viewStyles.push(styles.spaced);
 
     if (scroll) {
+        viewStyles.push(styles.scrollContent);
         return <ScrollView horizontal style={style} contentContainerStyle={viewStyles}>
             {props.children}
         </ScrollView>;
@@ -59,6 +60,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         overflow: "hidden",
     },
+    scrollContent: { overflow: "visible" },
     center: { justifyContent: "center" },
     centerSpaced: { justifyContent: "space-around" },
     spaced: { justifyContent: "space-between" },

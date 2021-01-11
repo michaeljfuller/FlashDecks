@@ -43,9 +43,7 @@ export const Column = React.memo<ColumnProps>(function Column(props: ColumnProps
     else if (space) childStyles.push(styles.spaced);
 
     if (scroll) {
-
-        parentStyles.push(styles.scroll);
-
+        parentStyles.push(styles.scrollContent);
         return <ScrollView style={style} contentContainerStyle={parentStyles} nestedScrollEnabled>
             <View style={childStyles}>
                 {props.children}
@@ -65,7 +63,7 @@ export default Column;
 const styles = StyleSheet.create({
     parent: { overflow: "hidden" },
     child: { flex: 1 },
-    scroll: { flexGrow: 1 },
+    scrollContent: { flexGrow: 1, overflow: "visible" },
     center: { justifyContent: "center" },
     centerSpaced: { justifyContent: "space-around" },
     spaced: { justifyContent: "space-between" },
