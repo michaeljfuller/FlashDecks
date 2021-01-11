@@ -5,7 +5,7 @@ import ProgressCircle from "../../../components/progress/ProgressCircle";
 import TempScreenSubsection from "../ui/TempScreenSubsection";
 import Row from "../../../components/layout/Row";
 import Column from "../../../components/layout/Column";
-import Button from "../../../components/button/Button";
+import Button, {IconType} from "../../../components/button/Button";
 
 export function TempScreenProgress() {
     const [autoProgress, setAutoProgress] = React.useState(10);
@@ -67,12 +67,12 @@ export function TempScreenProgress() {
             <Row center flex>
                 <ProgressCircle value={progress} maxValue={progressMax} />
             </Row>
-            <Column center style={{width: 200}}>
+            <Column>
                 <Row center>
-                    <Button square width={20} title="-" onClick={decProgress} disabled={!autoMode && manualProgress !== undefined && manualProgress <= progressMin} />
-                    <Button square width={20} title="+" onClick={incProgress} disabled={!autoMode && manualProgress !== undefined && manualProgress >= progressMax}  />
-                    <Button square width={20} title="∞" onClick={setIndeterminate} disabled={!autoMode && manualProgress === undefined} />
-                    <Button square width={20} title="⧗" onClick={setAutomatic} disabled={autoMode} />
+                    <Button icon={IconType.Remove} square width={40} onClick={decProgress}      disabled={!autoMode && manualProgress !== undefined && manualProgress <= progressMin} />
+                    <Button icon={IconType.Add}    square width={40} onClick={incProgress}      disabled={!autoMode && manualProgress !== undefined && manualProgress >= progressMax}  />
+                    <Button title="∞"              square width={40} onClick={setIndeterminate} disabled={!autoMode && manualProgress === undefined} />
+                    <Button title="⧗"              square width={40} onClick={setAutomatic}     disabled={autoMode} />
                 </Row>
             </Column>
         </Row>

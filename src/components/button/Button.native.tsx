@@ -5,6 +5,7 @@ import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} fro
 import {ButtonProps, buttonPropsWithDefaults, StandardButtonWrapper} from './Button.common';
 import {Color, getUIColorTheme} from "../../styles/UIColorTheme";
 import Icon, {IconStyles} from "../icon/Icon";
+import Row from "../layout/Row";
 
 export * from './Button.common';
 
@@ -19,13 +20,20 @@ export const Button = React.memo<ButtonProps>(function Button(props: ButtonProps
             style={[styles.background, getBackgroundStyle(allProps)]}
             rounded={!square}
         >
-            {icon && iconPosition === "left" ? <View style={[styles.iconPadLeft, !title && styles.iconPadRight]}>
+            {/* Icon left of text */ icon && title && iconPosition === "left" ? <View style={styles.iconLeft}>
                 <Icon type={icon} style={getIconStyle(allProps)} />
             </View> : null}
+
             {title ? <NativeBaseText style={getTextStyle(allProps)} uppercase={false}>{title}</NativeBaseText> : null}
-            {icon && iconPosition === "right" ? <View style={[!title && styles.iconPadLeft, styles.iconPadRight]}>
+
+            {/* Icon right of text */ icon && title && iconPosition === "right" ? <View style={styles.iconRight}>
                 <Icon type={icon} style={getIconStyle(allProps)} />
             </View> : null}
+
+            {/* Icon centered without text */ icon && !title ? <Row center flex style={styles.iconCenter}>
+                <Icon type={icon} style={getIconStyle(allProps)} />
+            </Row> : null}
+
         </NativeBaseButton>
     </StandardButtonWrapper>;
 });
@@ -65,8 +73,9 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         shadowOffset: { height: 3, width: 3 },
     },
-    iconPadLeft:  { paddingLeft:  15 },
-    iconPadRight: { paddingRight: 15 },
+    iconLeft:  { paddingLeft: 12 },
+    iconRight: { paddingRight: 12 },
+    iconCenter: { paddingHorizontal: 12 }
 });
 
 //</editor-fold>
