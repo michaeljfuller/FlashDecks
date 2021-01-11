@@ -42,13 +42,13 @@ export class TempScreen extends ImmutablePureComponent<
     TempScreenState
 > {
     readonly state = {
-        // showProgress: true,
+        showProgress: true,
         // showMediaPickers: true,
         // showPortals: true,
         // showButtons: true,
         // showContext: true,
         // showModals: true,
-        showMisc: true,
+        // showMisc: true,
     } as TempScreenState;
 
     toggleProgress = () => this.setStateTo({showProgress: !this.state.showProgress});
