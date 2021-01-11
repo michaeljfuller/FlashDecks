@@ -12,6 +12,8 @@ export type RowProps = React.PropsWithChildren<{
     wrap?: boolean;
     /** Can be vertically scrolled */
     scroll?: boolean;
+    /** Set style flex:1 */
+    flex?: boolean;
     /** Outer style */
     style?: ViewStyle|ViewStyle[];
 }>;
@@ -27,11 +29,13 @@ export const Row = React.memo<RowProps>(function Row(props: RowProps) {
         space=false,
         overflow=false,
         scroll=false,
+        flex=false,
     } = props;
 
     const viewStyles: ViewStyle[] = [styles.base];
     if (wrap) viewStyles.push(styles.wrap);
     if (overflow) viewStyles.push(styles.overflow);
+    if (flex) viewStyles.push(styles.flex);
 
     if (center) viewStyles.push(space ? styles.centerSpaced : styles.center);
     else if (space) viewStyles.push(styles.spaced);
@@ -60,4 +64,5 @@ const styles = StyleSheet.create({
     spaced: { justifyContent: "space-between" },
     wrap: { flexWrap: "wrap" },
     overflow: { overflow: "visible" },
+    flex: { flex: 1 },
 });
