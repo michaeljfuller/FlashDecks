@@ -57,6 +57,8 @@ function styleMaterialContainedButton(theme: UIColorTheme, square: boolean, flat
                 borderRadius: square ? 0 : 1000,
                 color: theme.secondary.base,
                 minWidth: 0,
+                paddingLeft: 6,
+                paddingRight: 6,
                 '&:hover': {
                     backgroundColor: theme.primary.hover,
                     color: theme.secondary.hover,
