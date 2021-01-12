@@ -16,6 +16,8 @@ export type RowProps = React.PropsWithChildren<{
     flex?: boolean;
     /** Outer style */
     style?: ViewStyle|ViewStyle[];
+    /** Inner style if scroll=true */
+    innerStyle?: ViewStyle|ViewStyle[];
 }>;
 
 /**
@@ -24,6 +26,7 @@ export type RowProps = React.PropsWithChildren<{
 export const Row = React.memo<RowProps>(function Row(props: RowProps) {
     const {
         style,
+        innerStyle,
         wrap=false,
         center=false,
         space=false,
@@ -42,7 +45,8 @@ export const Row = React.memo<RowProps>(function Row(props: RowProps) {
 
     if (scroll) {
         viewStyles.push(styles.scrollContent);
-        return <ScrollView horizontal style={style} contentContainerStyle={viewStyles}>
+        if (innerStyle) Array.isArray(innerStyle) ? viewStyles.push(...innerStyle) : viewStyles.push(innerStyle);
+        return <ScrollView horizontal style={[style]} contentContainerStyle={viewStyles}>
             {props.children}
         </ScrollView>;
     }
@@ -56,11 +60,11 @@ export const Row = React.memo<RowProps>(function Row(props: RowProps) {
 export default Row;
 
 const styles = StyleSheet.create({
-    base: {
-        flexDirection: "row",
-        overflow: "hidden",
+    base: { flexDirection: "row" },
+    scrollContent: {
+        overflow: "visible",
+        paddingVertical: 4 ,
     },
-    scrollContent: { overflow: "visible" },
     center: { justifyContent: "center" },
     centerSpaced: { justifyContent: "space-around" },
     spaced: { justifyContent: "space-between" },
