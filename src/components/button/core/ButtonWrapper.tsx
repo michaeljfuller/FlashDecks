@@ -3,7 +3,6 @@ import {StyleProp, TouchableWithoutFeedback, View, ViewStyle, StyleSheet} from "
 
 export interface ButtonWrapperProps {
     style?: StyleProp<ViewStyle>;
-    size?: number;
 }
 
 /**
@@ -11,11 +10,7 @@ export interface ButtonWrapperProps {
  */
 export function ButtonWrapper(props: PropsWithChildren<ButtonWrapperProps>) {
     return <TouchableWithoutFeedback>
-        <View style={[
-            styles.view,
-            props.size ? {flexBasis: props.size} : null,
-            props.style
-        ]}>
+        <View style={[ styles.view, props.style ]}>
             {props.children}
         </View>
     </TouchableWithoutFeedback>;

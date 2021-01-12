@@ -23,7 +23,6 @@ export interface ButtonProps {
     invertColor?: boolean;
     width?: number;
     height?: number;
-    size?: number;
 }
 
 const noop = () => {};
@@ -42,10 +41,9 @@ export function buttonPropsWithDefaults(props: ButtonProps): Required<ButtonProp
         invertColor = false,
         width = Number.NaN,
         height = Number.NaN,
-        size = Number.NaN,
     } = props;
     return {
-        onClick, title, icon, iconPosition, flat, transparent, style, color, square, invertColor, width, height, size,
+        onClick, title, icon, iconPosition, flat, transparent, style, color, square, invertColor, width, height,
         disabled: disabled || !props.onClick,
     };
 }
@@ -59,7 +57,7 @@ type StandardButtonWrapperProps = React.PropsWithChildren<{
 export const StandardButtonWrapper = React.memo<StandardButtonWrapperProps>(function StandardButtonWrapper(
     props: StandardButtonWrapperProps
 ) {
-    const {style, width, height, size} = props.buttonProps;
+    const {style, width, height} = props.buttonProps;
     return <ButtonWrapper
         style={[
             style, {
@@ -67,7 +65,6 @@ export const StandardButtonWrapper = React.memo<StandardButtonWrapperProps>(func
                 height: numberOrDefault(height, undefined),
             }
         ]}
-        size={numberOrDefault(size, undefined)}
     >{props.children}</ButtonWrapper>
 });
 
