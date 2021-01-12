@@ -1,5 +1,5 @@
 import React from "react";
-import {ScrollView, StyleSheet, View, ViewStyle} from "react-native";
+import {ScrollView, StyleProp, StyleSheet, View, ViewStyle} from "react-native";
 
 export type RowProps = React.PropsWithChildren<{
     /** Horizontally center contents */
@@ -15,9 +15,9 @@ export type RowProps = React.PropsWithChildren<{
     /** Set style flex:1 */
     flex?: boolean;
     /** Outer style */
-    style?: ViewStyle|ViewStyle[];
+    style?: StyleProp<ViewStyle>;
     /** Inner style if scroll=true */
-    innerStyle?: ViewStyle|ViewStyle[];
+    innerStyle?: StyleProp<ViewStyle>;
 }>;
 
 /**
@@ -35,7 +35,7 @@ export const Row = React.memo<RowProps>(function Row(props: RowProps) {
         flex=false,
     } = props;
 
-    const viewStyles: ViewStyle[] = [styles.base];
+    const viewStyles: StyleProp<ViewStyle> = [styles.base];
     if (wrap) viewStyles.push(styles.wrap);
     if (overflow) viewStyles.push(styles.overflow);
     if (flex) viewStyles.push(styles.flex);

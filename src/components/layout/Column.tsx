@@ -1,5 +1,5 @@
 import React from "react";
-import {ScrollView, StyleSheet, View, ViewStyle} from "react-native";
+import {ScrollView, StyleProp, StyleSheet, View, ViewStyle} from "react-native";
 
 export type ColumnProps = React.PropsWithChildren<{
     /** Vertically center contents */
@@ -13,9 +13,9 @@ export type ColumnProps = React.PropsWithChildren<{
     /** Set style flex:1 */
     flex?: boolean;
     /** Outer style */
-    style?: ViewStyle|ViewStyle[];
+    style?: StyleProp<ViewStyle>;
     /** Inner style */
-    innerStyle?: ViewStyle|ViewStyle[];
+    innerStyle?: StyleProp<ViewStyle>;
 }>;
 
 /**
@@ -32,8 +32,8 @@ export const Column = React.memo<ColumnProps>(function Column(props: ColumnProps
         flex=false,
     } = props;
 
-    const parentStyles: ViewStyle[] = [styles.parent];
-    const childStyles: ViewStyle[] = [styles.child];
+    const parentStyles: StyleProp<ViewStyle> = [styles.parent];
+    const childStyles: StyleProp<ViewStyle> = [styles.child];
 
     if (overflow) parentStyles.push(styles.overflow);
     if (innerStyle) Array.isArray(innerStyle) ? childStyles.push(...innerStyle) : childStyles.push(innerStyle);
