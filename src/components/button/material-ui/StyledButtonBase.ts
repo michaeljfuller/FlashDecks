@@ -7,8 +7,10 @@ import {UIColorTheme} from "../../../styles/UIColorTheme";
 import withDefaultProps from "../../../utils/hoc/withDefaultProps/withDefaultProps";
 
 /** Get a Button component for a given variation. */
-export function getStyledButtonBase(theme: UIColorTheme, square: boolean, flat: boolean, transparent: boolean, hasText: boolean): ExtendButtonBase<any> {
-    return styleMaterialContainedButton(theme, square, flat, transparent, hasText);
+export function getStyledButtonBase(
+    theme: UIColorTheme, square: boolean, flat: boolean, transparent: boolean, hasText: boolean, icon?: "left"|"right"|null
+): ExtendButtonBase<any> {
+    return styleMaterialContainedButton(theme, square, flat, transparent, hasText, icon);
 }
 
 /** Get an Icon Button component for a given variation. */
@@ -41,7 +43,7 @@ const StandardIconButton = withStyles({
 
 /** Create a styled Button based on a color theme. */
 function styleMaterialContainedButton(
-    theme: UIColorTheme, square: boolean, flat = false, transparent = false, hasText=true
+    theme: UIColorTheme, square: boolean, flat = false, transparent = false, hasText=true, icon?: "left"|"right"|null
 ): typeof MaterialButton {
     const key = [
         theme.ref,
@@ -49,6 +51,7 @@ function styleMaterialContainedButton(
         flat ? 'flat' : 'raised',
         transparent ? 'transparent' : 'opaque',
         hasText ? 'text' : 'no-text',
+        icon ? `icon-${icon}` : 'no-icon'
     ].join('/');
 
     const textColor = transparent ? theme.primary : theme.secondary;
@@ -65,8 +68,10 @@ function styleMaterialContainedButton(
                 borderRadius: square ? 0 : 1000,
                 color: textColor.base,
                 minWidth: 0,
-                paddingLeft: hasText ? undefined : 6,
-                paddingRight: hasText ? undefined : 6,
+                paddingLeft:  !square && hasText && icon !== "left"  ? 14 : 6,
+                paddingRight: !square && hasText && icon !== "right" ? 14 : 6,
+                paddingTop: 6,
+                paddingBottom: 6,
                 '&:hover': {
                     backgroundColor: backgroundColor?.hover || "unset",
                     color: textColor.hover,

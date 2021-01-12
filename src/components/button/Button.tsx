@@ -1,4 +1,5 @@
 import React from 'react';
+import {StyleSheet, View} from 'react-native';
 
 import {ButtonProps, buttonPropsWithDefaults, StandardButtonWrapper} from './Button.common';
 import {getStyledButtonBase} from "./material-ui/StyledButtonBase";
@@ -15,7 +16,14 @@ export const Button = React.memo(function Button(props: ButtonProps) {
     const {onClick, disabled, title, icon, iconPosition, flat, transparent, color, square, invertColor} = allProps;
 
     const theme = getUIColorTheme(color, invertColor);
-    const StyledButton = getStyledButtonBase(theme, square, flat || disabled, transparent, title.length>0);
+    const StyledButton = getStyledButtonBase(
+        theme,
+        square,
+        flat || disabled,
+        transparent,
+        title.length>0,
+        icon ? iconPosition : undefined
+    );
 
     return <StandardButtonWrapper buttonProps={allProps}>
         <StyledButton
@@ -24,11 +32,29 @@ export const Button = React.memo(function Button(props: ButtonProps) {
             disabled={disabled}
             disableElevation={flat}
         >
-            {icon && iconPosition !== "right" ? <Icon type={icon} flat={flat || !transparent} /> : null}
+            {/* Icon left of text */
+                icon && title && iconPosition !== "right" ?
+                <View style={styles.iconLeft}><Icon type={icon} flat={flat || !transparent} /></View> : null
+            }
+
             {title}
-            {icon && iconPosition === "right" ? <Icon type={icon} flat={flat || !transparent} /> : null}
+
+            {/* Icon right of text */
+                icon && title && iconPosition === "right" ?
+                <View style={styles.iconRight}><Icon type={icon} flat={flat || !transparent} /></View> : null
+            }
+
+            {/* Icon centered without text */
+                icon && !title ?
+                <Icon type={icon} flat={flat || !transparent} /> : null
+            }
+
         </StyledButton>
     </StandardButtonWrapper>;
 });
 export default Button;
 
+const styles = StyleSheet.create({
+    iconLeft: { paddingRight: 2 },
+    iconRight: { paddingLeft: 2 },
+});

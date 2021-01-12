@@ -13,7 +13,6 @@ export const Button = React.memo<ButtonProps>(function Button(props: ButtonProps
     const allProps = buttonPropsWithDefaults(props);
     const {onClick, disabled, title, icon, iconPosition, square, flat, transparent} = allProps;
 
-    const iconShadow = transparent && !flat ? styles.iconShadow : null;
     const iconElement = icon ? <Icon type={icon} flat={flat || !transparent} style={getIconStyle(allProps)} /> : null;
 
     return <StandardButtonWrapper buttonProps={allProps}>
@@ -26,19 +25,19 @@ export const Button = React.memo<ButtonProps>(function Button(props: ButtonProps
         >
             {/* Icon left of text */
                 icon && title && iconPosition === "left" ?
-                <View style={[iconShadow, styles.iconLeft]}>{iconElement}</View> : null
+                <View style={styles.iconLeft}>{iconElement}</View> : null
             }
 
             {title ? <NativeBaseText style={getTextStyle(allProps)} uppercase={false}>{title}</NativeBaseText> : null}
 
             {/* Icon right of text */
                 icon && title && iconPosition === "right" ?
-                <View style={[iconShadow, styles.iconRight]}>{iconElement}</View> : null
+                <View style={styles.iconRight}>{iconElement}</View> : null
             }
 
             {/* Icon centered without text */
                 icon && !title ?
-                <Row center flex style={[iconShadow, styles.iconCenter]}>{iconElement}</Row> : null
+                <Row center flex style={styles.iconCenter}>{iconElement}</Row> : null
             }
 
         </NativeBaseButton>
@@ -61,12 +60,15 @@ function getBackgroundStyle(
 }
 
 function getTextStyle(
-    {color, invertColor, flat, transparent}: Required<ButtonProps>
+    {color, invertColor, flat, transparent, icon, iconPosition}: Required<ButtonProps>
 ): TextStyle[] {
     const theme = getUIColorTheme(color, invertColor);
     const colorSet = transparent ? theme.primary : theme.secondary;
+
     const results: TextStyle[] = [{ color: colorSet.base }];
     if (transparent && !flat) results.push(styles.textShadow);
+    if (icon) results.push(iconPosition === "right" ? styles.textWithIconRight : styles.textWithIconLeft);
+
     return results;
 }
 
@@ -101,8 +103,8 @@ const styles = StyleSheet.create({
         textShadowRadius: 2,
         textShadowColor: 'rgba(0,0,0,0.2)'
     },
-    iconShadow: {
-    },
+    textWithIconLeft: { paddingLeft: 6 },
+    textWithIconRight: { paddingRight: 6 },
     iconLeft:   { paddingLeft: 12 },
     iconRight:  { paddingRight: 12 },
     iconCenter: { paddingHorizontal: 12 },
