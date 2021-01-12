@@ -99,7 +99,10 @@ const styles = StyleSheet.create({
         // Android: https://reactnative.dev/docs/view-style-props#elevation
         elevation: 3,
     },
-    backgroundSquare: { borderRadius: 0 },
+    backgroundSquare: {
+        borderRadius: 0,
+        justifyContent: "center",
+    },
     textShadow: {
         textShadowOffset: { width: 1, height: 2 },
         textShadowRadius: 2,
