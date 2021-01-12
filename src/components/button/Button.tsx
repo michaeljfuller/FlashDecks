@@ -12,11 +12,10 @@ export * from './Button.common';
  */
 export const Button = React.memo(function Button(props: ButtonProps) {
     const allProps = buttonPropsWithDefaults(props);
-    const {onClick, disabled, title, icon, iconPosition, flat, color, square, invertColor} = allProps;
+    const {onClick, disabled, title, icon, iconPosition, flat, transparent, color, square, invertColor} = allProps;
 
     const theme = getUIColorTheme(color, invertColor);
-    const StyledButton = getStyledButtonBase(theme, square);
-    const iconComponent = icon ? <Icon type={icon} /> : null;
+    const StyledButton = getStyledButtonBase(theme, square, flat || disabled, transparent, title.length>0);
 
     return <StandardButtonWrapper buttonProps={allProps}>
         <StyledButton
@@ -25,9 +24,9 @@ export const Button = React.memo(function Button(props: ButtonProps) {
             disabled={disabled}
             disableElevation={flat}
         >
-            {iconPosition === "left"  ? iconComponent : null}
+            {icon && iconPosition !== "right" ? <Icon type={icon} flat={flat || !transparent} /> : null}
             {title}
-            {iconPosition === "right" ? iconComponent : null}
+            {icon && iconPosition === "right" ? <Icon type={icon} flat={flat || !transparent} /> : null}
         </StyledButton>
     </StandardButtonWrapper>;
 });

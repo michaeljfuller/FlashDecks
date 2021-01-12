@@ -3,7 +3,7 @@ import {StyleSheet, TextStyle, View} from "react-native";
 import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} from 'native-base';
 
 import {ButtonProps, buttonPropsWithDefaults, StandardButtonWrapper} from './Button.common';
-import {Color, getUIColorTheme} from "../../styles/UIColorTheme";
+import {getUIColorTheme} from "../../styles/UIColorTheme";
 import Icon, {IconStyles} from "../icon/Icon";
 import Row from "../layout/Row";
 
@@ -11,7 +11,10 @@ export * from './Button.common';
 
 export const Button = React.memo<ButtonProps>(function Button(props: ButtonProps) {
     const allProps = buttonPropsWithDefaults(props);
-    const {onClick, disabled, title, icon, iconPosition, square} = allProps;
+    const {onClick, disabled, title, icon, iconPosition, square, flat, transparent} = allProps;
+
+    const iconShadow = transparent && !flat ? styles.iconShadow : null;
+    const iconElement = icon ? <Icon type={icon} flat={flat || !transparent} style={getIconStyle(allProps)} /> : null;
 
     return <StandardButtonWrapper buttonProps={allProps}>
         <NativeBaseButton
@@ -19,20 +22,24 @@ export const Button = React.memo<ButtonProps>(function Button(props: ButtonProps
             disabled={disabled}
             style={[styles.background, getBackgroundStyle(allProps)]}
             rounded={!square}
+            transparent={transparent}
         >
-            {/* Icon left of text */ icon && title && iconPosition === "left" ? <View style={styles.iconLeft}>
-                <Icon type={icon} style={getIconStyle(allProps)} />
-            </View> : null}
+            {/* Icon left of text */
+                icon && title && iconPosition === "left" ?
+                <View style={[iconShadow, styles.iconLeft]}>{iconElement}</View> : null
+            }
 
             {title ? <NativeBaseText style={getTextStyle(allProps)} uppercase={false}>{title}</NativeBaseText> : null}
 
-            {/* Icon right of text */ icon && title && iconPosition === "right" ? <View style={styles.iconRight}>
-                <Icon type={icon} style={getIconStyle(allProps)} />
-            </View> : null}
+            {/* Icon right of text */
+                icon && title && iconPosition === "right" ?
+                <View style={[iconShadow, styles.iconRight]}>{iconElement}</View> : null
+            }
 
-            {/* Icon centered without text */ icon && !title ? <Row center flex style={styles.iconCenter}>
-                <Icon type={icon} style={getIconStyle(allProps)} />
-            </Row> : null}
+            {/* Icon centered without text */
+                icon && !title ?
+                <Row center flex style={[iconShadow, styles.iconCenter]}>{iconElement}</Row> : null
+            }
 
         </NativeBaseButton>
     </StandardButtonWrapper>;
@@ -42,40 +49,63 @@ export default Button;
 //<editor-fold desc="Styles">
 
 function getBackgroundStyle(
-    {color, invertColor, /*flat, */disabled}: Required<ButtonProps>
+    {color, invertColor, flat, transparent, disabled}: Required<ButtonProps>
 ): RnViewStyleProp {
-    const theme = getUIColorTheme(color, invertColor);
-    return {
-        backgroundColor: disabled ? theme.primary.disabled : theme.primary.base,
-
-        // TODO handle shadow/flat
-        shadowColor: Color.Black,
-        // shadowOpacity: 100,
-    };
+    const result: RnViewStyleProp = [];
+    if (!transparent) {
+        const theme = getUIColorTheme(color, invertColor);
+        result.push({ backgroundColor: disabled ? theme.primary.disabled : theme.primary.base });
+    }
+    if (!flat && !transparent) result.push(styles.backgroundShadow);
+    return result;
 }
 
 function getTextStyle(
-    {color, invertColor}: Required<ButtonProps>
-): TextStyle {
+    {color, invertColor, flat, transparent}: Required<ButtonProps>
+): TextStyle[] {
     const theme = getUIColorTheme(color, invertColor);
-    return { color: theme.secondary.base };
+    const colorSet = transparent ? theme.primary : theme.secondary;
+    const results: TextStyle[] = [{ color: colorSet.base }];
+    if (transparent && !flat) results.push(styles.textShadow);
+    return results;
 }
 
 function getIconStyle(
-    {color, invertColor}: Required<ButtonProps>
+    {color, invertColor, transparent}: Required<ButtonProps>
 ): IconStyles {
     const theme = getUIColorTheme(color, invertColor);
-    return { color: theme.secondary.base };
+    const colorSet = transparent ? theme.primary : theme.secondary;
+    return { color: colorSet.base };
 }
 
 const styles = StyleSheet.create({
     background: {
         flexGrow: 1,
         shadowOffset: { height: 3, width: 3 },
+        flex: 1, // Center the text
     },
-    iconLeft:  { paddingLeft: 12 },
-    iconRight: { paddingRight: 12 },
-    iconCenter: { paddingHorizontal: 12 }
+    backgroundShadow: { // https://ethercreative.github.io/react-native-shadow-generator/
+        // iOS: https://reactnative.dev/docs/shadow-props#reference
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+        // Android: https://reactnative.dev/docs/view-style-props#elevation
+        elevation: 3,
+    },
+    textShadow: {
+        textShadowOffset: { width: 1, height: 2 },
+        textShadowRadius: 2,
+        textShadowColor: 'rgba(0,0,0,0.2)'
+    },
+    iconShadow: {
+    },
+    iconLeft:   { paddingLeft: 12 },
+    iconRight:  { paddingRight: 12 },
+    iconCenter: { paddingHorizontal: 12 },
 });
 
 //</editor-fold>

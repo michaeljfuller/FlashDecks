@@ -1,29 +1,75 @@
 import React from "react";
-import {StyleSheet, Text, View} from "react-native";
+import {StyleSheet, Text} from "react-native";
 import {Button, IconType} from "../../../components/button/Button";
 import TextButton from "../../../components/button/TextButton";
 import IconButton from "../../../components/button/IconButton";
 import Row from "../../../components/layout/Row";
 import TempScreenSubsection from "../ui/TempScreenSubsection";
+import withDefaultProps from "../../../utils/hoc/withDefaultProps/withDefaultProps";
 
 export function TempScreenButtons() {
     const noop = React.useCallback(() => {}, []);
 
     return <TempScreenSubsection title="Buttons">
-        <Text>Button</Text>
-        <Row style={styles.row} scroll>
+
+        <Button title="Button" onClick={noop} style={{margin:2}} />
+
+        <Text>Standard Button</Text>
+        <ScrollRow>
             <Button onClick={noop} title="Standard" />
-            <Button onClick={noop} title="Square"       color="Green" square />
-            <Button onClick={noop} icon={IconType.Info} color="Orange" iconPosition="left"  title="Icon" />
-            <Button onClick={noop} icon={IconType.Info} color="Red"    iconPosition="right" title="Icon" />
-            <Button onClick={noop} icon={IconType.Info} color="Black"  iconPosition="right" />
-            <Button onClick={noop} title="Inverted" invertColor />
-            <Button onClick={noop} title="Flat" flat />
-            <Button onClick={noop} title="Disabled" disabled />
-        </Row>
+            <Button onClick={noop} title="Square"      square      color="Green" />
+            <Button onClick={noop} title="Square"      square      color="Orange" />
+            <Button onClick={noop} title="Square"      square      color="Red"    />
+            <Button onClick={noop} title="Square Flat" square flat color="Black"  />
+            <Button onClick={noop} title="Flat"        flat        color="Blue" />
+            <Button onClick={noop} title="Inverted"    invertColor color="White" />
+            <Button onClick={noop} title="Disabled"    disabled />
+        </ScrollRow>
+
+        <Text>Transparent button</Text>
+        <ScrollRow>
+            <Button onClick={noop} transparent title="Standard" />
+            <Button onClick={noop} transparent title="Square"      square      color="Green"  />
+            <Button onClick={noop} transparent title="Square Flat" square flat color="Orange" />
+            <Button onClick={noop} transparent title="Flat"        flat        color="Red"    />
+            <Button onClick={noop} transparent title="Inverted"    invertColor color="White"  />
+            <Button onClick={noop} transparent title="Disabled"    disabled />
+        </ScrollRow>
+
+        <Text>Button with icon</Text>
+        <ScrollRow>
+            <Button onClick={noop} icon={IconType.Info} title="Standard" />
+            <Button onClick={noop} icon={IconType.Info} title="Left"     color="Green"  iconPosition="left" />
+            <Button onClick={noop} icon={IconType.Info} title="Right"    color="Orange" iconPosition="right" />
+            <Button onClick={noop} icon={IconType.Info} title=""         color="Red" />
+            <Button onClick={noop} icon={IconType.Info} title="Square"   color="Black" square />
+            <Button onClick={noop} icon={IconType.Info} title=""         color="Grey"  square flat />
+            <Button onClick={noop} icon={IconType.Info} title="Flat"     color="Blue"  flat />
+            <Button onClick={noop} icon={IconType.Info} title="Inverted" color="White" invertColor />
+            <Button onClick={noop} icon={IconType.Info} title="Disabled" disabled />
+        </ScrollRow>
+
+        <Text>Transparent button with icon</Text>
+        <ScrollRow>
+            <Button onClick={noop} transparent icon={IconType.Info} title="Standard" />
+            <Button onClick={noop} transparent icon={IconType.Info} title="Left"   color="Green"  iconPosition="left" />
+            <Button onClick={noop} transparent icon={IconType.Info} title="Right"  color="Orange" iconPosition="right" />
+            <Button onClick={noop} transparent icon={IconType.Info} title=""       color="Red" />
+            <Button onClick={noop} transparent icon={IconType.Info} title="Square" color="Black" square />
+            <Button onClick={noop} transparent icon={IconType.Info} title=""       color="Grey"  square flat />
+            <Button onClick={noop} transparent icon={IconType.Info} title="Flat"   color="Blue"  flat />
+            <Button onClick={noop} transparent icon={IconType.Info} title="Inverted" color="White" invertColor />
+            <Button onClick={noop} transparent icon={IconType.Info} title="Disabled" disabled />
+        </ScrollRow>
+
+        <Text style={{
+            fontSize: 20,
+            margin: 20,
+            color: 'red',
+        }}>TODO: Replace other button types with Button using property overrides & omitting them.</Text>
 
         <Text>IconButton</Text>
-        <Row style={styles.row} scroll>
+        <ScrollRow>
             <Row style={styles.iconButtonWrapper}>
                 <IconButton onClick={noop} icon={IconType.Info} />
                 <IconButton onClick={noop} icon={IconType.Info} color="Green" />
@@ -47,25 +93,25 @@ export function TempScreenButtons() {
                 <IconButton onClick={noop} icon={IconType.Info} disabled />
                 <Text style={styles.iconLabel}>Disabled</Text>
             </Row>
-        </Row>
+        </ScrollRow>
 
         <Text>IconButton with text</Text>
-        <Row style={styles.row} scroll>
+        <ScrollRow>
             <IconButton onClick={noop} icon={IconType.Info} text="Text" />
             <IconButton onClick={noop} icon={IconType.Info} text="Inverted" invertColor color="Green" />
             <IconButton onClick={noop} icon={IconType.Info} text="Flat" flat color="Orange" />
             <IconButton onClick={noop} icon={IconType.Info} text="Transparent" transparent color="Red" />
             <IconButton onClick={noop} icon={IconType.Info} text="Disabled" disabled />
-        </Row>
+        </ScrollRow>
 
         <Text>TextButton</Text>
-        <Row style={styles.row} scroll>
+        <ScrollRow>
             <TextButton onClick={noop} title="Standard" />
             <TextButton onClick={noop} title="Red" color="Red" />
             <TextButton onClick={noop} title="Green" color="Green" />
             <TextButton onClick={noop} title="Inverted White" invertColor color="White" />
             <TextButton onClick={noop} title="Disabled" disabled />
-        </Row>
+        </ScrollRow>
 
     </TempScreenSubsection>;
 }
@@ -75,7 +121,6 @@ const styles = StyleSheet.create({
     row: {
         borderWidth: 1,
         borderColor: "grey",
-        padding: 3,
         marginHorizontal: 2,
         marginBottom: 10,
     },
@@ -86,4 +131,9 @@ const styles = StyleSheet.create({
     iconButtonWrapper: {
         marginRight: 5,
     }
+});
+
+const ScrollRow = withDefaultProps(Row, {
+    scroll: true,
+    style: styles.row,
 });

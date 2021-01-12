@@ -16,6 +16,7 @@ export interface ButtonProps {
     icon?: IconType;
     iconPosition?: "left"|"right";
     flat?: boolean;
+    transparent?: boolean;
     style?: ViewStyle|ViewStyle[];
     color?: GetUIColorThemeInput;
     square?: boolean;
@@ -34,6 +35,7 @@ export function buttonPropsWithDefaults(props: ButtonProps): Required<ButtonProp
         icon = undefined,
         iconPosition = "left",
         flat = false,
+        transparent = false,
         style = {},
         color = DefaultTheme.primary.key,
         square = false,
@@ -43,7 +45,7 @@ export function buttonPropsWithDefaults(props: ButtonProps): Required<ButtonProp
         size = Number.NaN,
     } = props;
     return {
-        onClick, title, icon, iconPosition, flat, style, color, square, invertColor, width, height, size,
+        onClick, title, icon, iconPosition, flat, transparent, style, color, square, invertColor, width, height, size,
         disabled: disabled || !props.onClick,
     };
 }

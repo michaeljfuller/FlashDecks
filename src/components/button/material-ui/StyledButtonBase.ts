@@ -7,8 +7,8 @@ import {UIColorTheme} from "../../../styles/UIColorTheme";
 import withDefaultProps from "../../../utils/hoc/withDefaultProps/withDefaultProps";
 
 /** Get a Button component for a given variation. */
-export function getStyledButtonBase(theme: UIColorTheme, square: boolean): ExtendButtonBase<any> {
-    return styleMaterialContainedButton(theme, square);
+export function getStyledButtonBase(theme: UIColorTheme, square: boolean, flat: boolean, transparent: boolean, hasText: boolean): ExtendButtonBase<any> {
+    return styleMaterialContainedButton(theme, square, flat, transparent, hasText);
 }
 
 /** Get an Icon Button component for a given variation. */
@@ -16,7 +16,7 @@ export function getStyledIconButtonBase(theme: UIColorTheme, transparent = false
     if (transparent) {
         return hasText ? styleMaterialTextButton(theme) : StandardIconButton;
     }
-    return hasText ? styleMaterialContainedButton(theme, false, flat) : styleMaterialContainedRoundButton(theme, flat);
+    return hasText ? styleMaterialContainedButton(theme, false, flat, transparent, hasText) : styleMaterialContainedRoundButton(theme, flat);
 }
 
 /** Get a Text Button component for a given variation. */
@@ -40,40 +40,52 @@ const StandardIconButton = withStyles({
 //<editor-fold desc="Contained Button Variations">
 
 /** Create a styled Button based on a color theme. */
-function styleMaterialContainedButton(theme: UIColorTheme, square: boolean, flat = false): typeof MaterialButton {
+function styleMaterialContainedButton(
+    theme: UIColorTheme, square: boolean, flat = false, transparent = false, hasText=true
+): typeof MaterialButton {
     const key = [
         theme.ref,
         square ? 'square' : 'round',
         flat ? 'flat' : 'raised',
+        transparent ? 'transparent' : 'opaque',
+        hasText ? 'text' : 'no-text',
     ].join('/');
+
+    const textColor = transparent ? theme.primary : theme.secondary;
+    const backgroundColor = transparent ? null : theme.primary;
+    const boxShadow = flat || transparent ? 'none' : undefined;
 
     if (!containedButtonCache[key]) {
         const styled = withStyles({
             root: {
                 justifyContent: 'flex-start',
-                backgroundColor: theme.primary.base,
+                backgroundColor: backgroundColor?.base || "unset",
                 height: '100%',
                 width: '100%',
                 borderRadius: square ? 0 : 1000,
-                color: theme.secondary.base,
+                color: textColor.base,
                 minWidth: 0,
-                paddingLeft: 6,
-                paddingRight: 6,
+                paddingLeft: hasText ? undefined : 6,
+                paddingRight: hasText ? undefined : 6,
                 '&:hover': {
-                    backgroundColor: theme.primary.hover,
-                    color: theme.secondary.hover,
+                    backgroundColor: backgroundColor?.hover || "unset",
+                    color: textColor.hover,
                 },
                 '&:disabled': {
-                    backgroundColor: theme.primary.disabled,
-                    color: theme.secondary.disabled,
+                    backgroundColor: backgroundColor?.disabled || "unset",
+                    color: textColor.disabled,
                 }
             },
             label: {
                 textTransform: 'none',
                 justifyContent: 'center',
+                textShadow: transparent && !flat ? '1px 1px 2px rgba(0,0,0,0.5)' : undefined,
             },
             contained: {
-                boxShadow: flat ? 'none' : undefined,
+                boxShadow,
+                '&:hover': { boxShadow },
+                '&:disabled': { boxShadow },
+                '&:focus': { boxShadow },
             }
         })(MaterialButton) as typeof MaterialButton;
         containedButtonCache[key] = withDefaultProps(styled, { variant: "contained" } as ButtonProps);
