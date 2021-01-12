@@ -1,42 +1,16 @@
-import {ViewStyle} from "react-native";
-import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
+import {buttonPropsWithDefaults, ButtonProps} from "./Button.common";
 
-export interface LinkButtonProps {
-    title?: string;
+export interface LinkButtonProps extends Omit<ButtonProps, 'onClick'> {
     url?: string;
-    disabled?: boolean;
-    flat?: boolean;
-    style?: ViewStyle|ViewStyle[];
-    width?: number;
-    height?: number;
-    color?: GetUIColorThemeInput;
-    invertColor?: boolean;
-    square?: boolean;
-    grow?: boolean|number;
-    shrink?: boolean|number;
-    size?: number;
 }
 
 export function linkButtonPropsWithDefaults(props: LinkButtonProps): Required<LinkButtonProps> {
     const hostname = getHostname(props.url);
-    const {
-        disabled = false,
-        title = hostname.replace(/^www\./, '') || 'Invalid Link',
-        flat = false,
-        style = {},
-        width = Number.NaN,
-        height = Number.NaN,
-        color = DefaultTheme.primary.key,
-        invertColor = false,
-        square = false,
-        grow = false,
-        shrink = false,
-        size = Number.NaN,
-        url = '',
-    } = props;
     return {
-        title, flat, style, color, invertColor, square, url, width, height, grow, shrink, size,
-        disabled: disabled || !hostname,
+        ...buttonPropsWithDefaults(props),
+        url: props.url || '',
+        title: props.title || hostname.replace(/^www\./, '') || 'Invalid Link',
+        disabled: props.disabled || !hostname,
     };
 }
 

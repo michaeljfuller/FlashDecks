@@ -6,6 +6,7 @@ import IconButton from "../../../components/button/IconButton";
 import Row from "../../../components/layout/Row";
 import TempScreenSubsection from "../ui/TempScreenSubsection";
 import withDefaultProps from "../../../utils/hoc/withDefaultProps/withDefaultProps";
+import LinkButton from "../../../components/button/LinkButton";
 
 export function TempScreenButtons() {
     const noop = React.useCallback(() => {}, []);
@@ -60,6 +61,17 @@ export function TempScreenButtons() {
             <Button onClick={noop} transparent icon={IconType.Info} title="Flat"   color="Blue"  flat />
             <Button onClick={noop} transparent icon={IconType.Info} title="Inverted" color="White" invertColor />
             <Button onClick={noop} transparent icon={IconType.Info} title="Disabled" disabled />
+        </ScrollRow>
+
+        <Text>LinkButton</Text>
+        <ScrollRow>
+            <LinkButton url="http://www.google.com" />
+            <LinkButton url="http://www.google.com" title="Icon"        color="Green"  icon={IconType.Info} />
+            <LinkButton url="http://www.google.com" title="Square"      color="Orange" square/>
+            <LinkButton url="http://www.google.com" title="Flat"        color="Red"    flat />
+            <LinkButton url="http://www.google.com" title="Inverted"    color="White"  invertColor />
+            <LinkButton url="http://www.google.com" title="Disabled"    disabled />
+            <LinkButton url="http://www.google.com" title="Transparent" color="Black"  transparent />
         </ScrollRow>
 
         <Text style={{
