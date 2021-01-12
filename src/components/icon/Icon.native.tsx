@@ -26,12 +26,27 @@ const nameMap = {
  * Show an icon by its `type`.
  */
 export const Icon: React.ComponentType<IconProps> = React.memo(function Icon(props: IconProps) {
-    const { style = {} } = props;
+    const {
+        style = {},
+        flat = true
+    } = props;
     const name = nameMap[props.type];
     if (name) {
         return React.createElement(NativeBaseIcon, {
             name,
-            style: {color: style.color, marginLeft: 0, marginRight: 0, padding: 0}
+            style: Object.assign({
+                color: style.color,
+                marginLeft: 0,
+                marginRight: 0,
+                padding: 0,
+            }, !flat ? {
+                textShadowOffset: { width: 1, height: 1 },
+                textShadowRadius: 3,
+                textShadowColor:  'rgba(0,0,0,0.2)',
+                // Adding border only method found to not crop shadow
+                borderWidth: 1,
+                borderColor: 'transparent',
+            } : undefined)
         } as NativeBase.Icon);
     }
     return null;
