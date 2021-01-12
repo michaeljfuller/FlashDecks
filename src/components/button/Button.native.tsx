@@ -48,7 +48,7 @@ export default Button;
 //<editor-fold desc="Styles">
 
 function getBackgroundStyle(
-    {color, invertColor, flat, transparent, disabled}: Required<ButtonProps>
+    {color, invertColor, square, flat, transparent, disabled}: Required<ButtonProps>
 ): RnViewStyleProp {
     const result: RnViewStyleProp = [];
     if (!transparent) {
@@ -56,6 +56,7 @@ function getBackgroundStyle(
         result.push({ backgroundColor: disabled ? theme.primary.disabled : theme.primary.base });
     }
     if (!flat && !transparent) result.push(styles.backgroundShadow);
+    if (square) result.push(styles.backgroundSquare);
     return result;
 }
 
@@ -98,6 +99,7 @@ const styles = StyleSheet.create({
         // Android: https://reactnative.dev/docs/view-style-props#elevation
         elevation: 3,
     },
+    backgroundSquare: { borderRadius: 0 },
     textShadow: {
         textShadowOffset: { width: 1, height: 2 },
         textShadowRadius: 2,
