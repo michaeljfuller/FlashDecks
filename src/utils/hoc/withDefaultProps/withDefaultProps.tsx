@@ -14,10 +14,10 @@ export function withDefaultProps<
     defaultProps?: Properties|null,
     overrideProps?: Partial<Properties>|null,
     displayName?: string
-) {
+): Component {
     const WrappedComponent = component as ComponentUnion<Properties>;
     const Wrapper = (props: any) => <WrappedComponent {...withDefaults<Properties>(props, defaultProps, overrideProps)} />;
     Wrapper.displayName = displayName || `withDefaultProps(${WrappedComponent.displayName})`;
-    return Wrapper;
+    return Wrapper as Component;
 }
 export default withDefaultProps;
