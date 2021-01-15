@@ -20,11 +20,6 @@ export const AppBanner = React.memo(reduxConnector(function AppBanner(props: App
         loggedInUser, onToggleSidebar, onSignOutClick, routerDetails
     } = props;
 
-    const signOutButton = loggedInUser && <IconButton
-        text="Sign Out" icon={IconType.Exit} onClick={onSignOutClick} transparent color="White"
-    />;
-    // TODO signInButton signUpButton when not auth blocking whole AppRoot
-
     const bannerHeight = 36;
     const bannerSizeStyle = { maxHeight: bannerHeight, minHeight: bannerHeight, lineHeight: bannerHeight };
 
@@ -44,7 +39,7 @@ export const AppBanner = React.memo(reduxConnector(function AppBanner(props: App
                         label={loggedInUser ? loggedInUser.displayName : 'guest'}
                         labelPlacement="right"
                     />
-                    {signOutButton}
+                    <IconButton text="Sign Out" icon={IconType.Exit} onClick={onSignOutClick} transparent color="White" />
 
                 </Toolbar>
             </AppBar>
