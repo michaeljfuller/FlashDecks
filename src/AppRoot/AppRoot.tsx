@@ -8,7 +8,8 @@ import AppNavigation from "../navigation/AppNavigation/AppNavigation";
 import store from '../store/store';
 import RootToast from "./RootToast/RootToast";
 import {logAppInfo} from "./logAppInfo";
-import {isProduction} from "../env";
+import ProgressCircle from "../components/progress/ProgressCircle";
+import Button from "../components/button/Button";
 
 logAppInfo();
 
@@ -17,35 +18,31 @@ export class AppRoot extends AppRootBase {
     render() {
         return <ErrorBoundary>
             <ReduxProvider store={store}>
-                {this.renderAuth() || this.renderApp()}
+                {this.renderStart() || this.renderAuth() || this.renderApp()}
             </ReduxProvider>
         </ErrorBoundary>;
     }
 
+    renderStart() {
+        if (this.state.started) return null;
+        return <View style={styles.centerContents}>
+            <Button width={150} height={50} title="Start" onClick={() => this.start()} />
+        </View>;
+    }
+
     renderAuth() {
-        if (!this.state.cognitoUser) {
+        if (this.state.user) return null;
+
+        if (!this.state.initialized) {
             return <View style={styles.centerContents}>
-
-                {isProduction ? null : <View style={styles.testDetails}>
-                    <View style={{flexDirection:"row"}}>
-                        <Text style={{fontWeight:"bold", width: 80}}>Test User: </Text>
-                        <Text>test_user</Text>
-                    </View>
-                    <View style={{flexDirection:"row"}}>
-                        <Text style={{fontWeight:"bold", width: 80}}>Password: </Text>
-                        <Text>password</Text>
-                    </View>
-                </View>}
-
-                <AppAuthenticator />
+                <Text>{this.state.cognitoUser ? 'Getting User Data' : 'Authenticating...'}</Text>
+                <ProgressCircle />
             </View>;
         }
-        if (!this.state.user) {
-            return <View style={styles.centerContents}>
-                <Text>Getting user data...</Text>
-            </View>;
-        }
-        return null;
+
+        return <View style={styles.centerContents}>
+            <AppAuthenticator />
+        </View>;
     }
 
     renderApp() {
@@ -63,8 +60,5 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-    },
-    testDetails: {
-        marginTop: 20
     },
 });

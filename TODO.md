@@ -38,6 +38,7 @@ Decks would only need a `file-key`, rather than an `S3Object`, since the bucket'
 * Download - 500: S3 Error.
 
 # Client
+* Finish AppAuthenticator.
 * Deck Tag editing.
 * Fix sign-in warnings.
   * Error message logging in with preceding space
