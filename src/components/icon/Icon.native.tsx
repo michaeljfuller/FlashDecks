@@ -1,7 +1,7 @@
 import React from 'react';
 import {Icon as NativeBaseIcon, NativeBase} from 'native-base';
 
-import {IconType, IconProps, IconPropTypes} from './Icon.common';
+import {IconType, IconProps, IconPropTypes, iconStandardSize} from './Icon.common';
 export * from './Icon.common';
 
 const nameMap = {
@@ -36,6 +36,8 @@ export const Icon: React.ComponentType<IconProps> = React.memo(function Icon(pro
             name,
             style: Object.assign({
                 color: style.color,
+                textAlign: "center",
+                minWidth: iconStandardSize,
                 marginLeft: 0,
                 marginRight: 0,
                 padding: 0,

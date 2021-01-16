@@ -33,3 +33,4 @@ export interface IconStyles {
     color?: string;
     padding?: number;
 }
+export const iconStandardSize = 24;
