@@ -1,10 +1,10 @@
 import React from 'react';
-import {StyleSheet, TextStyle, View} from "react-native";
+import {StyleSheet, TextStyle, View, ViewStyle} from "react-native";
 import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} from 'native-base';
 
 import {ButtonProps, buttonPropsWithDefaults, StandardButtonWrapper} from './Button.common';
 import {getUIColorTheme} from "../../styles/UIColorTheme";
-import Icon, {IconStyles} from "../icon/Icon";
+import Icon, {IconStyles, iconStandardSize} from "../icon/Icon";
 import Row from "../layout/Row";
 
 export * from './Button.common';
@@ -25,19 +25,19 @@ export const Button = React.memo<ButtonProps>(function Button(props: ButtonProps
         >
             {/* Icon left of text */
                 icon && title && iconPosition === "left" ?
-                <View style={styles.iconLeft}>{iconElement}</View> : null
+                <View style={getIconViewStyle(allProps)}>{iconElement}</View> : null
             }
 
             {title ? <NativeBaseText style={getTextStyle(allProps)} uppercase={false}>{title}</NativeBaseText> : null}
 
             {/* Icon right of text */
                 icon && title && iconPosition === "right" ?
-                <View style={styles.iconRight}>{iconElement}</View> : null
+                <View style={getIconViewStyle(allProps)}>{iconElement}</View> : null
             }
 
             {/* Icon centered without text */
                 icon && !title ?
-                <Row center flex style={styles.iconCenter}>{iconElement}</Row> : null
+                <Row center flex style={getIconViewStyle(allProps)}>{iconElement}</Row> : null
             }
 
         </NativeBaseButton>
@@ -48,7 +48,7 @@ export default Button;
 //<editor-fold desc="Styles">
 
 function getBackgroundStyle(
-    {color, invertColor, square, flat, transparent, disabled}: Required<ButtonProps>
+    {color, invertColor, square, flat, transparent, disabled, width, height}: Required<ButtonProps>
 ): RnViewStyleProp {
     const result: RnViewStyleProp = [];
     if (!transparent) {
@@ -57,6 +57,8 @@ function getBackgroundStyle(
     }
     if (!flat && !transparent) result.push(styles.backgroundShadow);
     if (square) result.push(styles.backgroundSquare);
+    if (width) result.push({ width });
+    if (height) result.push({ height });
     return result;
 }
 
@@ -73,6 +75,15 @@ function getTextStyle(
     return results;
 }
 
+function getIconViewStyle(
+    {title, iconPosition, width, height}: Required<ButtonProps>
+): ViewStyle {
+    const threshold = iconStandardSize + iconPadding*2;
+    if (height < threshold || width < threshold) return styles.iconSmall;
+    if (title) return iconPosition === "right" ? styles.iconRight : styles.iconLeft;
+    return styles.iconCenter;
+}
+
 function getIconStyle(
     {color, invertColor, transparent}: Required<ButtonProps>
 ): IconStyles {
@@ -80,6 +91,8 @@ function getIconStyle(
     const colorSet = transparent ? theme.primary : theme.secondary;
     return { color: colorSet.base };
 }
+
+const iconPadding = 10, textPadding = 6;
 
 const styles = StyleSheet.create({
     background: {
@@ -108,11 +121,12 @@ const styles = StyleSheet.create({
         textShadowRadius: 2,
         textShadowColor: 'rgba(0,0,0,0.2)'
     },
-    textWithIconLeft: { paddingLeft: 6 },
-    textWithIconRight: { paddingRight: 6 },
-    iconLeft:   { paddingLeft: 12 },
-    iconRight:  { paddingRight: 12 },
-    iconCenter: { paddingHorizontal: 12 },
+    textWithIconLeft: { paddingLeft: textPadding },
+    textWithIconRight: { paddingRight: textPadding },
+    iconLeft:   { paddingLeft: iconPadding },
+    iconRight:  { paddingRight: iconPadding },
+    iconCenter: { paddingHorizontal: iconPadding },
+    iconSmall:  { paddingHorizontal: 0 },
 });
 
 //</editor-fold>

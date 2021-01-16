@@ -1,5 +1,5 @@
 import React from "react";
-import {ViewStyle} from "react-native";
+import {StyleProp, ViewStyle} from "react-native";
 import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
 import ButtonWrapper from "./core/ButtonWrapper";
 import {numberOrDefault} from "../../utils/math";
@@ -17,7 +17,7 @@ export interface ButtonProps {
     iconPosition?: "left"|"right";
     flat?: boolean;
     transparent?: boolean;
-    style?: ViewStyle|ViewStyle[];
+    style?: StyleProp<ViewStyle>;
     color?: GetUIColorThemeInput;
     square?: boolean;
     invertColor?: boolean;

@@ -8,9 +8,9 @@ import withDefaultProps from "../../../utils/hoc/withDefaultProps/withDefaultPro
 
 /** Get a Button component for a given variation. */
 export function getStyledButtonBase(
-    theme: UIColorTheme, square: boolean, flat: boolean, transparent: boolean, hasText: boolean, icon?: "left"|"right"|null
+    theme: UIColorTheme, square: boolean, flat: boolean, transparent: boolean, hasText: boolean, icon?: "left"|"right"|null, edgeIcon?: boolean
 ): ExtendButtonBase<any> {
-    return styleMaterialContainedButton(theme, square, flat, transparent, hasText, icon);
+    return styleMaterialContainedButton(theme, square, flat, transparent, hasText, icon, edgeIcon);
 }
 
 /** Get an Icon Button component for a given variation. */
@@ -43,7 +43,7 @@ const StandardIconButton = withStyles({
 
 /** Create a styled Button based on a color theme. */
 function styleMaterialContainedButton(
-    theme: UIColorTheme, square: boolean, flat = false, transparent = false, hasText=true, icon?: "left"|"right"|null
+    theme: UIColorTheme, square: boolean, flat = false, transparent = false, hasText=true, icon?: "left"|"right"|null, edgeIcon?: boolean
 ): typeof MaterialButton {
     const key = [
         theme.ref,
@@ -51,12 +51,18 @@ function styleMaterialContainedButton(
         flat ? 'flat' : 'raised',
         transparent ? 'transparent' : 'opaque',
         hasText ? 'text' : 'no-text',
-        icon ? `icon-${icon}` : 'no-icon'
+        icon ? `icon-${icon}` : 'no-icon',
+        edgeIcon ? 'edge-icon' : 'center-icon'
     ].join('/');
 
     const textColor = transparent ? theme.primary : theme.secondary;
     const backgroundColor = transparent ? null : theme.primary;
     const boxShadow = flat || transparent ? 'none' : undefined;
+
+    let paddingLeft = 0, paddingRight = 0;
+    if (hasText) paddingLeft = paddingRight = square ? 6 : 10;
+    if (edgeIcon && icon === "left") paddingLeft = 0;
+    if (edgeIcon && icon === "right") paddingRight = 0;
 
     if (!containedButtonCache[key]) {
         const styled = withStyles({
@@ -68,8 +74,8 @@ function styleMaterialContainedButton(
                 borderRadius: square ? 0 : 1000,
                 color: textColor.base,
                 minWidth: 0,
-                paddingLeft:  !square && hasText && icon !== "left"  ? 14 : 6,
-                paddingRight: !square && hasText && icon !== "right" ? 14 : 6,
+                paddingLeft,
+                paddingRight,
                 paddingTop: 6,
                 paddingBottom: 6,
                 '&:hover': {

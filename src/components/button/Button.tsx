@@ -4,7 +4,7 @@ import {StyleSheet, View} from 'react-native';
 import {ButtonProps, buttonPropsWithDefaults, StandardButtonWrapper} from './Button.common';
 import {getStyledButtonBase} from "./material-ui/StyledButtonBase";
 import {getUIColorTheme} from "../../styles/UIColorTheme";
-import Icon from "../icon/Icon";
+import Icon, {iconStandardSize} from "../icon/Icon";
 
 export * from './Button.common';
 
@@ -13,16 +13,17 @@ export * from './Button.common';
  */
 export const Button = React.memo(function Button(props: ButtonProps) {
     const allProps = buttonPropsWithDefaults(props);
-    const {onClick, disabled, title, icon, iconPosition, flat, transparent, color, square, invertColor} = allProps;
-
+    const {onClick, disabled, title, icon, iconPosition, flat, transparent, color, square, invertColor, width, height} = allProps;
     const theme = getUIColorTheme(color, invertColor);
+    const iconThreshold = iconStandardSize + iconPadding*2;
     const StyledButton = getStyledButtonBase(
         theme,
         square,
         flat || disabled,
         transparent,
         title.length>0,
-        icon ? iconPosition : undefined
+        icon ? iconPosition : undefined,
+        width < iconThreshold || height < iconThreshold
     );
 
     return <StandardButtonWrapper buttonProps={allProps}>
@@ -54,7 +55,8 @@ export const Button = React.memo(function Button(props: ButtonProps) {
 });
 export default Button;
 
+const iconPadding = 2;
 const styles = StyleSheet.create({
-    iconLeft: { paddingRight: 2 },
-    iconRight: { paddingLeft: 2 },
+    iconLeft: { paddingRight: iconPadding },
+    iconRight: { paddingLeft: iconPadding },
 });
