@@ -13,7 +13,7 @@ export interface ButtonProps {
     onClick?: (event?: React.MouseEvent) => void;
     disabled?: boolean;
     title?: string;
-    icon?: IconType;
+    icon?: IconType|null;
     iconPosition?: "left"|"right";
     flat?: boolean;
     transparent?: boolean;
@@ -31,7 +31,7 @@ export function buttonPropsWithDefaults(props: ButtonProps): Required<ButtonProp
         onClick = noop,
         disabled = false,
         title = '',
-        icon = undefined,
+        icon = null,
         iconPosition = "left",
         flat = false,
         transparent = false,
@@ -58,14 +58,7 @@ export const StandardButtonWrapper = React.memo<StandardButtonWrapperProps>(func
     props: StandardButtonWrapperProps
 ) {
     const {style, width, height} = props.buttonProps;
-    return <ButtonWrapper
-        style={[
-            style, {
-                width: numberOrDefault(width, undefined),
-                height: numberOrDefault(height, undefined),
-            }
-        ]}
-    >{props.children}</ButtonWrapper>
+    return <ButtonWrapper style={style} width={width} height={height}>{props.children}</ButtonWrapper>
 });
 
 //</editor-fold>
