@@ -10,14 +10,20 @@ import {repeat} from "../../../utils/array";
 import TempScreenSubsection from "../ui/TempScreenSubsection";
 import Row from "../../../components/layout/Row";
 import Column from "../../../components/layout/Column";
+import {UpdateLogger} from "../../../components/debugging/UpdateLogger";
+import {Visibility} from "../../../components/layout/Visibility";
 
 interface TempScreenMiscProps {}
 interface TempScreenMiscState {
     navBlocked: boolean;
+    showUpdateLogger: boolean;
+    renderUpdateLogger: boolean;
 }
 export class TempScreenMisc extends React.PureComponent<TempScreenMiscProps, TempScreenMiscState> {
     state: TempScreenMiscState = {
         navBlocked: false,
+        showUpdateLogger: true,
+        renderUpdateLogger: true,
     };
     toastStore = new ToastStore(this);
 
@@ -56,10 +62,25 @@ export class TempScreenMisc extends React.PureComponent<TempScreenMiscProps, Tem
         });
     }
 
+    toggleShowUpdateLogger = () => this.setState({ showUpdateLogger: !this.state.showUpdateLogger });
+    toggleRenderUpdateLogger = () => this.setState({ renderUpdateLogger: !this.state.renderUpdateLogger });
+
     render() {
         const {navBlocked} = this.state;
         return <TempScreenSubsection title="Misc">
 
+            <Text>Visibility</Text>
+            <Row>
+                <Button flex square title={this.state.showUpdateLogger   ? 'Hide'   : 'Show'  } onClick={this.toggleShowUpdateLogger} />
+                <Button flex square title={this.state.renderUpdateLogger ? 'Remove' : 'Render'} onClick={this.toggleRenderUpdateLogger} />
+            </Row>
+            <Row center style={{height: 50, borderWidth:1, paddingTop: 2}}>
+                <Visibility visible={this.state.showUpdateLogger} render={this.state.renderUpdateLogger}>
+                    <UpdateLogger show label="Misc" style={{width: 150, left:-150/2}}
+                        logConstructor logDidMount logWillUnmount logShouldUpdate logDidUpdate logRender
+                    />
+                </Visibility>
+            </Row>
 
             <Text>Toast</Text>
             <Row wrap center>
