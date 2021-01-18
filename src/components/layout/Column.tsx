@@ -12,6 +12,10 @@ export type ColumnProps = React.PropsWithChildren<{
     scroll?: boolean;
     /** Set style flex:1 */
     flex?: boolean;
+    /** Reverse the order */
+    reverse?: boolean;
+    /** Align to the bottom */
+    bottom?: boolean;
     /** Outer style */
     style?: StyleProp<ViewStyle>;
     /** Inner style */
@@ -30,17 +34,21 @@ export const Column = React.memo<ColumnProps>(function Column(props: ColumnProps
         overflow=false,
         scroll=false,
         flex=false,
+        bottom=false,
+        reverse=false,
     } = props;
 
     const parentStyles: StyleProp<ViewStyle> = [styles.parent];
-    const childStyles: StyleProp<ViewStyle> = [styles.child];
-
-    if (overflow) parentStyles.push(styles.overflow);
-    if (innerStyle) Array.isArray(innerStyle) ? childStyles.push(...innerStyle) : childStyles.push(innerStyle);
     if (flex) parentStyles.push(styles.flex);
+    if (overflow) parentStyles.push(styles.overflow);
 
+    const childStyles: StyleProp<ViewStyle> = [styles.child];
     if (center) childStyles.push(space ? styles.centerSpaced : styles.center);
     else if (space) childStyles.push(styles.spaced);
+
+    if (bottom) childStyles.push(styles.bottom);
+    if (reverse) childStyles.push(styles.reverse);
+    if (innerStyle) Array.isArray(innerStyle) ? childStyles.push(...innerStyle) : childStyles.push(innerStyle);
 
     if (scroll) {
         parentStyles.push(styles.scrollContent);
@@ -64,9 +72,13 @@ const styles = StyleSheet.create({
     parent: { overflow: "hidden" },
     child: { flex: 1 },
     scrollContent: { flexGrow: 1, overflow: "visible" },
+
     center: { justifyContent: "center" },
     centerSpaced: { justifyContent: "space-around" },
     spaced: { justifyContent: "space-between" },
+    bottom: { justifyContent: "flex-end" },
+
     overflow: { overflow: "visible" },
+    reverse: { flexDirection: "column-reverse" },
     flex: { flex: 1 },
 });

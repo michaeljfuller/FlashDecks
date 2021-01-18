@@ -47,8 +47,8 @@ export class TempScreen extends ImmutablePureComponent<
         // showPortals: true,
         // showButtons: true,
         // showContext: true,
-        showModals: true,
-        // showMisc: true,
+        // showModals: true,
+        showMisc: true,
     } as TempScreenState;
 
     toggleProgress = () => this.setStateTo({showProgress: !this.state.showProgress});
@@ -62,7 +62,7 @@ export class TempScreen extends ImmutablePureComponent<
     render() {
         const {loggedInUser} = this.props;
         return (
-            <ScreenContainer style={{ paddingHorizontal: 10 }}>
+            <ScreenContainer style={{ paddingHorizontal: 10, paddingBottom: 10 }}>
                 <View>
                     <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{this.constructor.name}</Text>
                     <Text testID={TestIds.User}>User: {loggedInUser && loggedInUser.displayName || '?'}</Text>

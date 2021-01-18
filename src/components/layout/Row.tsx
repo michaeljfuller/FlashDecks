@@ -14,6 +14,10 @@ export type RowProps = React.PropsWithChildren<{
     scroll?: boolean;
     /** Set style flex:1 */
     flex?: boolean;
+    /** Reverse the order */
+    reverse?: boolean;
+    /** Align to the right */
+    right?: boolean;
     /** Outer style */
     style?: StyleProp<ViewStyle>;
     /** Inner style if scroll=true */
@@ -33,15 +37,20 @@ export const Row = React.memo<RowProps>(function Row(props: RowProps) {
         overflow=false,
         scroll=false,
         flex=false,
+        right=false,
+        reverse=false,
     } = props;
 
     const viewStyles: StyleProp<ViewStyle> = [styles.base];
-    if (wrap) viewStyles.push(styles.wrap);
-    if (overflow) viewStyles.push(styles.overflow);
-    if (flex) viewStyles.push(styles.flex);
 
     if (center) viewStyles.push(space ? styles.centerSpaced : styles.center);
     else if (space) viewStyles.push(styles.spaced);
+
+    if (wrap) viewStyles.push(styles.wrap);
+    if (overflow) viewStyles.push(styles.overflow);
+    if (flex) viewStyles.push(styles.flex);
+    if (right) viewStyles.push(styles.right);
+    if (reverse) viewStyles.push(styles.reverse);
 
     if (scroll) {
         viewStyles.push(styles.scrollContent);
@@ -65,10 +74,14 @@ const styles = StyleSheet.create({
         overflow: "visible",
         paddingVertical: 4 ,
     },
+
     center: { justifyContent: "center" },
     centerSpaced: { justifyContent: "space-around" },
     spaced: { justifyContent: "space-between" },
+    right: { justifyContent: "flex-end" },
+
     wrap: { flexWrap: "wrap" },
     overflow: { overflow: "visible" },
+    reverse: { flexDirection: "row-reverse" },
     flex: { flex: 1 },
 });

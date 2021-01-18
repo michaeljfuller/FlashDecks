@@ -12,6 +12,7 @@ import Row from "../../../components/layout/Row";
 import Column from "../../../components/layout/Column";
 import {UpdateLogger} from "../../../components/debugging/UpdateLogger";
 import {Visibility} from "../../../components/layout/Visibility";
+import HR from "../../../components/ui/HR";
 
 interface TempScreenMiscProps {}
 interface TempScreenMiscState {
@@ -128,7 +129,7 @@ export class TempScreenMisc extends React.PureComponent<TempScreenMiscProps, Tem
             <Text>Scrolling Row & Column</Text>
             <Row center>
                 <Row scroll style={{margin: 2, borderWidth: 1, maxWidth: '70%'}}>
-                    {repeat(50, index => <Text key={index} style={styles.rowScrollText}>{padNumber(index+1, 2)}</Text>)}
+                    {repeat(50, index => <Text key={index} style={styles.bigBlue}>{padNumber(index+1, 2)}</Text>)}
                 </Row>
             </Row>
             <Row style={{borderWidth: 1, borderBottomWidth: 0, marginHorizontal: 2, marginTop: 2}}>
@@ -151,6 +152,34 @@ export class TempScreenMisc extends React.PureComponent<TempScreenMiscProps, Tem
             </Row>
 
 
+            <Text>Row Right & Reverse</Text>
+            <Row>
+                <Row flex right style={{borderWidth: 1, marginHorizontal: 2}}>
+                    {repeat(3, index => <Text key={index} style={styles.bigBlue}>{index+1}</Text>)}
+                </Row>
+                <Row flex reverse style={{borderWidth: 1, marginHorizontal: 2}}>
+                    {repeat(3, index => <Text key={index} style={styles.bigBlue}>{index+1}</Text>)}
+                </Row>
+            </Row>
+
+
+            <Text>Column Bottom & Reverse</Text>
+            <Row style={{height: 80}}>
+                <Column flex bottom style={{borderWidth: 1, marginHorizontal: 2}}>
+                    {repeat(3, index => <Text key={index}>{index+1}</Text>)}
+                </Column>
+                <Column flex reverse style={{borderWidth: 1, marginHorizontal: 2}}>
+                    {repeat(3, index => <Text key={index}>{index+1}</Text>)}
+                </Column>
+                <Column flex bottom style={{borderWidth: 1, marginHorizontal: 2}} scroll>
+                    {repeat(10, index => <Text key={index}>{index+1}</Text>)}
+                </Column>
+                <Column flex reverse style={{borderWidth: 1, marginHorizontal: 2}} scroll>
+                    {repeat(10, index => <Text key={index}>{index+1}</Text>)}
+                </Column>
+            </Row>
+
+
         </TempScreenSubsection>;
     }
 }
@@ -164,10 +193,10 @@ const styles = StyleSheet.create({
     centerText: {
         textAlign: "center"
     },
-    rowScrollText: {
-        fontSize: 50,
+    bigBlue: {
+        fontSize: 40,
         textAlign: 'center',
         color: '#79F',
         marginHorizontal: 7,
-    }
+    },
 });
