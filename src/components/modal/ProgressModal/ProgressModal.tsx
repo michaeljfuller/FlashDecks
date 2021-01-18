@@ -17,7 +17,7 @@ export type ProgressModalProps = {
     /** The message to add to the modal. */
     footer?: string;
     /** If the spinner should appear, or number for deterministic progress. */
-    value?: boolean|number;
+    value: boolean|number;
     /** Defines the range of value, if it is a number. */
     maxValue?: number;
     /** If progress is represented by a bar or circle. */
@@ -45,14 +45,14 @@ export const ProgressModal = React.memo<ProgressModalPropsWithChildren>(function
         onClose,
         children,
         bodyStyle,
-        closeButton=true,
+        closeButton=false,
         closeButtonText="Close",
     } = props;
     return <Modal {...extractModalProps(props)}>
         <ModalHeader title={title || 'Progress'} />
 
         <ModalBody style={bodyStyle}>
-            {message && <Text>{message}</Text>}
+            {message && <Text style={styles.message}>{message}</Text>}
             {children && <View>{children}</View>}
 
             {type === 'circle' && <ProgressCircle
@@ -80,10 +80,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         marginVertical: 5,
     },
-    progressBar: {
-        marginVertical: 5,
-    },
-    footerText: {
-        textAlign: "center",
-    },
+    message: { textAlign: "center" },
+    progressBar: { marginVertical: 5 },
+    footerText: { textAlign: "center" },
 });
