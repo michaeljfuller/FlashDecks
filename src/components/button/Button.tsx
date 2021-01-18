@@ -1,10 +1,11 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 
-import {ButtonProps, buttonPropsWithDefaults, StandardButtonWrapper} from './Button.common';
+import {ButtonProps, buttonPropsWithDefaults} from './Button.common';
 import {getStyledButtonBase} from "./material-ui/StyledButtonBase";
 import {getUIColorTheme} from "../../styles/UIColorTheme";
 import Icon, {iconStandardSize} from "../icon/Icon";
+import ButtonWrapper from "./core/ButtonWrapper";
 
 export * from './Button.common';
 
@@ -13,7 +14,9 @@ export * from './Button.common';
  */
 export const Button = React.memo(function Button(props: ButtonProps) {
     const allProps = buttonPropsWithDefaults(props);
-    const {onClick, disabled, title, icon, iconPosition, flat, transparent, color, square, invertColor, width, height} = allProps;
+    const {
+        onClick, disabled, title, icon, iconPosition, flat, transparent, square, color, invertColor, style, width, height, flex
+    } = allProps;
     const theme = getUIColorTheme(color, invertColor);
     const iconThreshold = iconStandardSize + iconPadding*2;
     const StyledButton = getStyledButtonBase(
@@ -26,7 +29,7 @@ export const Button = React.memo(function Button(props: ButtonProps) {
         width < iconThreshold || height < iconThreshold
     );
 
-    return <StandardButtonWrapper buttonProps={allProps}>
+    return <ButtonWrapper style={style} width={width} height={height} flex={flex}>
         <StyledButton
             variant="contained"
             onClick={onClick}
@@ -51,7 +54,7 @@ export const Button = React.memo(function Button(props: ButtonProps) {
             }
 
         </StyledButton>
-    </StandardButtonWrapper>;
+    </ButtonWrapper>;
 });
 export default Button;
 

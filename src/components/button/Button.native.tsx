@@ -2,7 +2,8 @@ import React from 'react';
 import {StyleSheet, TextStyle, View, ViewStyle} from "react-native";
 import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} from 'native-base';
 
-import {ButtonProps, buttonPropsWithDefaults, StandardButtonWrapper} from './Button.common';
+import ButtonWrapper from "./core/ButtonWrapper";
+import {ButtonProps, buttonPropsWithDefaults} from './Button.common';
 import {getUIColorTheme} from "../../styles/UIColorTheme";
 import Icon, {IconStyles, iconStandardSize} from "../icon/Icon";
 import Row from "../layout/Row";
@@ -11,11 +12,13 @@ export * from './Button.common';
 
 export const Button = React.memo<ButtonProps>(function Button(props: ButtonProps) {
     const allProps = buttonPropsWithDefaults(props);
-    const {onClick, disabled, title, icon, iconPosition, square, flat, transparent} = allProps;
+    const {
+        onClick, disabled, title, icon, iconPosition, flat, transparent, square, style, width, height, flex
+    } = allProps;
 
     const iconElement = icon ? <Icon type={icon} flat={flat || !transparent} style={getIconStyle(allProps)} /> : null;
 
-    return <StandardButtonWrapper buttonProps={allProps}>
+    return <ButtonWrapper style={style} width={width} height={height} flex={flex}>
         <NativeBaseButton
             onPress={onClick}
             disabled={disabled}
@@ -41,7 +44,7 @@ export const Button = React.memo<ButtonProps>(function Button(props: ButtonProps
             }
 
         </NativeBaseButton>
-    </StandardButtonWrapper>;
+    </ButtonWrapper>;
 });
 export default Button;
 

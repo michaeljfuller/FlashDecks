@@ -1,8 +1,6 @@
 import React from "react";
 import {StyleProp, ViewStyle} from "react-native";
 import {DefaultTheme, GetUIColorThemeInput} from "../../styles/UIColorTheme";
-import ButtonWrapper from "./core/ButtonWrapper";
-import {numberOrDefault} from "../../utils/math";
 import {IconType} from "../icon/Icon.common";
 
 export {
@@ -23,6 +21,7 @@ export interface ButtonProps {
     invertColor?: boolean;
     width?: number;
     height?: number;
+    flex?: boolean|number;
 }
 
 const noop = () => {};
@@ -41,24 +40,10 @@ export function buttonPropsWithDefaults(props: ButtonProps): Required<ButtonProp
         invertColor = false,
         width = Number.NaN,
         height = Number.NaN,
+        flex = false,
     } = props;
     return {
-        onClick, title, icon, iconPosition, flat, transparent, style, color, square, invertColor, width, height,
+        onClick, title, icon, iconPosition, flat, transparent, style, color, square, invertColor, width, height, flex,
         disabled: disabled || !props.onClick,
     };
 }
-
-//<editor-fold desc="ButtonWrapper">
-
-type StandardButtonWrapperProps = React.PropsWithChildren<{
-    buttonProps: Required<ButtonProps>;
-}>;
-
-export const StandardButtonWrapper = React.memo<StandardButtonWrapperProps>(function StandardButtonWrapper(
-    props: StandardButtonWrapperProps
-) {
-    const {style, width, height} = props.buttonProps;
-    return <ButtonWrapper style={style} width={width} height={height}>{props.children}</ButtonWrapper>
-});
-
-//</editor-fold>

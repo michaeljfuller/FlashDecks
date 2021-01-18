@@ -4,6 +4,7 @@ import {numberOrDefault} from "../../../utils/math";
 
 export interface ButtonWrapperProps {
     style?: StyleProp<ViewStyle>;
+    flex?: boolean|number;
     width?: number;
     height?: number;
 }
@@ -13,13 +14,22 @@ export interface ButtonWrapperProps {
  */
 export function ButtonWrapper(props: PropsWithChildren<ButtonWrapperProps>) {
     const allStyles: StyleProp<ViewStyle> = [styles.view];
+
     if (props.style) {
         Array.isArray(props.style) ? allStyles.push(...props.style) : allStyles.push(props.style);
     }
+
+    if (typeof props.flex === "number" && !Number.isNaN(props.flex) && props.flex !== 1) {
+        allStyles.push({ flex: props.flex });
+    } else if (props.flex) {
+        allStyles.push(styles.flex);
+    }
+
     allStyles.push({
         width: numberOrDefault(props.width, undefined),
         height: numberOrDefault(props.height, undefined),
     });
+
     return <TouchableWithoutFeedback>
         <View style={allStyles}>
             {props.children}
@@ -31,5 +41,9 @@ export default ButtonWrapper;
 const styles = StyleSheet.create({
     view: {
         minWidth: 10,
+        flexDirection: "row",
+    },
+    flex: {
+        flex: 1,
     },
 });
