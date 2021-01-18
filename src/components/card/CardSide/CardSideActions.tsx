@@ -5,7 +5,8 @@ import Typography from "@material-ui/core/Typography";
 import {withStyles} from "@material-ui/core/styles";
 
 import {CardActionsProps} from "./CardSideActions.common";
-import IconButton, {IconType} from "../../button/IconButton";
+import Button, {IconType} from "../../button/Button";
+import IconButton from "../../button/IconButton";
 
 /** Action buttons for CardSide. */
 export const CardSideActions = React.memo(function CardSideActions(props: CardActionsProps) {
@@ -89,10 +90,10 @@ export function CardSideActionsMenu(props: CardSideActionsMenuProps) {
     >
         <View style={styles.column}>
             <Typography align="center">Card Side</Typography>
-            <IconButton text="Edit"       icon={IconType.Edit}   onClick={onPressEdit} />
-            <IconButton text="Add Before" icon={IconType.Add}    onClick={onPressAddBefore} style={styles.paddedButton} />
-            <IconButton text="Add After"  icon={IconType.Add}    onClick={onPressAddAfter}  style={styles.paddedButton} />
-            <IconButton text="Delete"     icon={IconType.Delete} onClick={onPressDelete}    style={styles.paddedButton} />
+            <Button title="Edit"       icon={IconType.Edit}   onClick={onPressEdit} />
+            <Button title="Add Before" icon={IconType.Add}    onClick={onPressAddBefore} style={styles.paddedButton} />
+            <Button title="Add After"  icon={IconType.Add}    onClick={onPressAddAfter}  style={styles.paddedButton} />
+            <Button title="Delete"     icon={IconType.Delete} onClick={onPressDelete}    style={styles.paddedButton} />
         </View>
     </StyledPopover>
 }

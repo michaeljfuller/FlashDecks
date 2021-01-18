@@ -6,7 +6,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Slide from '@material-ui/core/Slide';
-import {IconButton, IconType} from "../button/IconButton";
+import Button, {IconType} from "../button/Button";
+import IconButton from "../button/IconButton";
 import Avatar from "../avatar/Avatar";
 
 import AppBreadcrumbs from "./breadcrumbs/AppBreadcrumbs";
@@ -29,7 +30,7 @@ export const AppBanner = React.memo(reduxConnector(function AppBanner(props: App
             <AppBar style={bannerSizeStyle}>
                 <Toolbar style={bannerSizeStyle}>
 
-                    <IconButton icon={IconType.Menu} onClick={onToggleSidebar} transparent color="White" />
+                    <IconButton icon={IconType.Menu} onClick={onToggleSidebar} transparent square color="White" />
                     <View style={styles.breadcrumbs}>
                         <AppBreadcrumbs routerDetails={routerDetails} />
                     </View>
@@ -39,7 +40,7 @@ export const AppBanner = React.memo(reduxConnector(function AppBanner(props: App
                         label={loggedInUser ? loggedInUser.displayName : 'guest'}
                         labelPlacement="right"
                     />
-                    <IconButton text="Sign Out" icon={IconType.Exit} onClick={onSignOutClick} transparent color="White" />
+                    <Button title="Sign Out" icon={IconType.Exit} onClick={onSignOutClick} style={styles.signOut} transparent square color="White" />
 
                 </Toolbar>
             </AppBar>
@@ -55,5 +56,8 @@ function HideOnScroll(props: { window?: () => Window; children: React.ReactEleme
 const styles = StyleSheet.create({
     breadcrumbs: {
         flexGrow: 1,
+    },
+    signOut: {
+        marginLeft: 4,
     },
 });

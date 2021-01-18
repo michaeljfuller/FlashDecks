@@ -5,7 +5,7 @@ import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
 import ScreenContainer from "../../ScreenContainer";
 import {NavigationScreenProps} from "../../../navigation/navigation_types";
 import DeckList from "../../../components/deck/DeckList/DeckList";
-import IconButton, {IconType} from "../../../components/button/IconButton";
+import Button, {IconType} from "../../../components/button/Button";
 
 import {reduxConnector, DeckListScreenStoreProps} from "./DeckListScreen_redux";
 import DeckRoutes from "../DeckRoutes";
@@ -13,7 +13,6 @@ import {DeckListItemModel} from "../../../models";
 import deckApi from "../../../api/DeckApi";
 import {toastStore} from "../../../store/toast/ToastStore";
 import ApiRequest from "../../../api/util/ApiRequest";
-import {removeItem} from "../../../utils/array";
 
 export interface DeckListScreenProps extends NavigationScreenProps {}
 export interface DeckListScreenState {
@@ -90,7 +89,7 @@ export class DeckListScreen extends ImmutablePureComponent<
             <ScreenContainer>
                 <Text style={styles.title}>{this.constructor.name}</Text>
                 <View style={styles.actionsRow}>
-                    <IconButton icon={IconType.Add} text="New Deck" onClick={this.goToCreate} />
+                    <Button icon={IconType.Add} title="New Deck" onClick={this.goToCreate} />
                 </View>
                 <View style={styles.body}>{this.renderBody()}</View>
             </ScreenContainer>

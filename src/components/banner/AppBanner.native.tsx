@@ -8,7 +8,6 @@ import AppBreadcrumbs from "./breadcrumbs/AppBreadcrumbs";
 import Avatar from "../avatar/Avatar";
 import {UserModel} from "../../models";
 import Row from "../layout/Row";
-import Button from "../button/Button";
 import {AppBannerStoreProps} from "./AppBanner_redux";
 
 export {AppBannerProps} from "./AppBanner.common";
@@ -23,7 +22,7 @@ export const AppBanner = React.memo(function AppBanner(props: AppBannerProps & A
 
     return <Header androidStatusBarColor={backgroundColor} style={styles.header}>
         <Left style={styles.left}>
-            <IconButton icon={IconType.Menu} onClick={onToggleSidebar} transparent color="White" />
+            <IconButton icon={IconType.Menu} onClick={onToggleSidebar} transparent square color="White" />
         </Left>
         <AppBreadcrumbs routerDetails={routerDetails} />
         <Right>
@@ -47,7 +46,7 @@ function AppBannerUserDisplay(props: AppBannerUserDisplayProps) {
     />;
     return <Row>
         <Body style={styles.body}>{avatar}</Body>
-        <Button icon={IconType.Exit} onClick={onSignOutClick} transparent color="White" height={24} width={50} />
+        <IconButton icon={IconType.Exit} onClick={onSignOutClick} transparent color="White" />
     </Row>;
 }
 

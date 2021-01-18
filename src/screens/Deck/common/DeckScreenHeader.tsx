@@ -25,8 +25,8 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
             </View>
 
             <View style={styles.cardCountView}>
-                {this.props.editable ? <IconButton icon={IconType.Add} style={styles.cardCountButton} onClick={this.props.onAddCard} /> : undefined}
-                {this.props.editable ? <IconButton icon={IconType.Remove} style={styles.cardCountButton} onClick={this.props.onRemoveCard} /> : undefined}
+                {this.props.editable ? <IconButton icon={IconType.Add}    style={styles.cardCountButton} size={30} onClick={this.props.onAddCard}    /> : undefined}
+                {this.props.editable ? <IconButton icon={IconType.Remove} style={styles.cardCountButton} size={30} onClick={this.props.onRemoveCard} /> : undefined}
                 <Text style={styles.cardCount}>{this.cardCount} {this.cardCount !== 1 ? 'cards' : 'card'}</Text>
             </View>
 
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     infoButton: {
-        paddingLeft: 5,
+        marginLeft: 5,
     },
     cardCount: {
         lineHeight: avatarSize,

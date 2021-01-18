@@ -1,20 +1,11 @@
 import React from 'react';
+import Button, {ButtonProps} from "./Button";
 
-import {TextButtonProps, textButtonPropsWithDefaults, TextButtonWrapper} from './TextButton.common';
-import {getStyledTextButtonBase} from "./material-ui/StyledButtonBase";
-import {getUIColorTheme} from "../../styles/UIColorTheme";
+export interface TextButtonProps extends Omit<ButtonProps, 'text'|'icon'|'iconPosition'|'transparent'|'square'|'flat'|'invertColor'> {
 
-export * from './TextButton.common';
+}
 
 export const TextButton = React.memo(function TextButton(props: TextButtonProps) {
-    const allProps = textButtonPropsWithDefaults(props);
-    const {onClick, disabled, title, color, invertColor} = allProps;
-
-    const theme = getUIColorTheme(color, invertColor);
-    const StyledButton = getStyledTextButtonBase(theme);
-
-    return <TextButtonWrapper buttonProps={allProps}>
-        <StyledButton onClick={onClick} disabled={disabled}>{title}</StyledButton>
-    </TextButtonWrapper>;
+    return <Button{...props} transparent square flat  />;
 });
 export default TextButton;
