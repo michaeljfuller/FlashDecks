@@ -47,7 +47,7 @@ export class TempScreen extends ImmutablePureComponent<
         // showPortals: true,
         // showButtons: true,
         // showContext: true,
-        // showModals: true,
+        showModals: true,
         // showMisc: true,
     } as TempScreenState;
 
