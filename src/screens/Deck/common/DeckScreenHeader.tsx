@@ -1,62 +1,83 @@
 import React from "react";
-import {StyleSheet, Text, View} from "react-native";
+import {StyleSheet, Text} from "react-native";
 import DeckScreenHeaderBase from "./DeckScreenHeader.common";
 import Avatar from "../../../components/avatar/Avatar";
 import IconButton, {IconType} from "../../../components/button/IconButton";
+import Row from "../../../components/layout/Row";
+import Button from "../../../components/button/Button";
+import {Visibility} from "../../../components/layout/Visibility";
+import Column from "../../../components/layout/Column";
 
 const avatarSize = 35;
 
 export default class DeckScreenHeader extends DeckScreenHeaderBase {
     render() {
-        return <View style={styles.root}>
+        const {
+            editable,
+            saveText,
+            onAddCard,
+            onRemoveCard,
+            onSave,
+            onUndo,
+            onOpenInfoModal,
+            title,
+            item
+        } = this.props;
+        const {
+            cardCount,
+        } = this;
 
-            <View style={styles.avatarView}>
-                <Avatar
-                    user={this.props.item.owner}
-                    labelPlacement="right"
-                    size={avatarSize}
-                    labelStyle={styles.avatarLabel}
-                />
-            </View>
+        return <Column style={styles.root}>
 
-            <View style={styles.titleView}>
-                <Text style={styles.titleText}>{this.props.title || this.props.item.title}</Text>
-                <IconButton style={styles.infoButton} flat icon={IconType.Info} onClick={this.props.onOpenInfoModal} />
-            </View>
+            <Row center style={styles.titleRow}>
+                <Text style={styles.titleText}>{title || item.title}</Text>
+                <IconButton style={styles.infoButton} flat icon={IconType.Info} onClick={onOpenInfoModal} />
+            </Row>
 
-            <View style={styles.cardCountView}>
-                {this.props.editable ? <IconButton icon={IconType.Add} style={styles.cardCountButton} onClick={this.props.onAddCard} /> : undefined}
-                {this.props.editable ? <IconButton icon={IconType.Remove} style={styles.cardCountButton} onClick={this.props.onRemoveCard} /> : undefined}
-                <Text style={styles.cardCount}>{this.cardCount} {this.cardCount !== 1 ? 'cards' : 'card'}</Text>
-            </View>
+            <Row style={styles.actionsRow}>
+                <Row flex>
 
-        </View>;
+                    <Avatar
+                        user={item.owner}
+                        labelPlacement="right"
+                        size={avatarSize}
+                        labelStyle={styles.avatarLabel}
+                    />
+
+                </Row>
+                <Visibility render={!!saveText}>
+
+                    <Row>
+                        <Button title={saveText} onClick={onSave} square height={avatarSize} width={150} />
+                        <Button title="Undo"     onClick={onUndo} square height={avatarSize} style={styles.undoButton} />
+                    </Row>
+
+                </Visibility>
+                <Row flex right>
+
+                    {editable ? <IconButton icon={IconType.Add}    style={styles.cardCountButton} size={30} onClick={onAddCard}    /> : undefined}
+                    {editable ? <IconButton icon={IconType.Remove} style={styles.cardCountButton} size={30} onClick={onRemoveCard} /> : undefined}
+                    <Text style={styles.cardCount}>{cardCount} {cardCount !== 1 ? 'cards' : 'card'}</Text>
+
+                </Row>
+            </Row>
+
+        </Column>;
     }
 }
 
 const styles = StyleSheet.create({
     root: {
-        flexDirection: "row",
-        padding: 5,
+        padding: 2.
     },
-    avatarView: {
-        minHeight: avatarSize,
-        flex: 1,
+    titleRow: {
+        height: avatarSize
+    },
+    actionsRow: {
+        minHeight: avatarSize
     },
     avatarLabel: {
         color: 'black',
-    },
-    titleView: {
-        height: avatarSize,
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    cardCountView: {
-        minHeight: avatarSize,
-        flex: 1,
-        overflow: "hidden",
-        flexDirection: "row",
-        justifyContent: "flex-end",
     },
     titleText: {
         lineHeight: avatarSize,
@@ -64,7 +85,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     infoButton: {
-        paddingLeft: 5,
+        marginLeft: 5,
     },
     cardCount: {
         lineHeight: avatarSize,
@@ -72,5 +93,8 @@ const styles = StyleSheet.create({
     cardCountButton: {
         paddingTop: (avatarSize-24)/2,
         paddingRight: 5,
+    },
+    undoButton: {
+        marginLeft: 1,
     },
 });

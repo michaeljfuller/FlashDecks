@@ -4,8 +4,7 @@ import {View, StyleSheet} from "react-native";
 import Popover from '@material-ui/core/Popover';
 import {withStyles} from "@material-ui/core/styles";
 
-import {IconType} from "../../../icon/Icon.common";
-import IconButton from "../../../button/IconButton";
+import Button, {IconType} from "../../../button/Button";
 import {DeckListItemModel} from "../../../../models";
 
 export interface DeckListActionsMenuProps {
@@ -38,8 +37,8 @@ export const DeckListActionsMenu = React.memo(function DeckListActionsMenu(props
         disableScrollLock={true}
     >
         <View style={styles.column}>
-            <IconButton text="Edit" icon={IconType.Edit} onClick={onEdit} />
-            <IconButton text="Delete" icon={IconType.Delete} onClick={onDelete} style={styles.paddedButton} />
+            <Button title="Edit" icon={IconType.Edit} onClick={onEdit} square />
+            <Button title="Delete" icon={IconType.Delete} onClick={onDelete} style={styles.paddedButton} square />
         </View>
     </StyledPopover>
 });

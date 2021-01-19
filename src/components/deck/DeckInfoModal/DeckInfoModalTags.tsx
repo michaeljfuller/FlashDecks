@@ -50,7 +50,7 @@ export const DeckInfoModelTags: React.ComponentType<DeckInfoModelTagsProps> = Re
     if (tags.length) {
         return <View style={styles.tags}>
             {tags.map(tag => <Tag key={tag} value={tag} onDelete={editable ? onDelete : undefined} />)}
-            {editable && <IconButton icon={IconType.Add} onClick={onOpenInput} height={isPlatformWeb ? undefined : 29} />}
+            {editable && <IconButton icon={IconType.Add} onClick={onOpenInput} size={isPlatformWeb ? undefined : 29} />}
 
             <PromptModal
                 title="Add Tag"

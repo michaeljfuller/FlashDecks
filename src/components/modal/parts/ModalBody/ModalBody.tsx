@@ -1,14 +1,20 @@
 import React, {PropsWithChildren} from 'react';
-import {ScrollView, ViewStyle, StyleSheet} from "react-native";
+import {ViewStyle, StyleSheet, StyleProp} from "react-native";
+import Column, {ColumnProps} from "../../../layout/Column";
 
-export interface ModalBodyProps {
-    style?: ViewStyle;
-}
+export interface ModalBodyProps extends ColumnProps {}
 
 export function ModalBody(props: PropsWithChildren<ModalBodyProps>) {
-    return <ScrollView style={[styles.root, props.style]}>
-        {props.children}
-    </ScrollView>;
+    const {scroll=true, center=true, style, ...colProps} = props;
+    const styleArray: StyleProp<ViewStyle> = [styles.root];
+    if (style) Array.isArray(style) ? styleArray.push(...style) : styleArray.push(style);
+
+    return <Column
+        scroll={scroll}
+        center={center}
+        style={styleArray}
+        {...colProps}
+    >{props.children}</Column>;
 }
 export default ModalBody;
 

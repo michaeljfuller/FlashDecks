@@ -16,7 +16,7 @@ export const Tag = React.memo(function Tag(props: TagProps) {
 
     return <Badge style={styles.badge}>
         <Text style={{ color: theme.secondary.base }}>{props.value}</Text>
-        {onDelete && <IconButton icon={IconType.Cancel} width={18} height={26} onClick={onClickDelete} />}
+        {onDelete && <IconButton icon={IconType.Cancel} onClick={onClickDelete} />}
     </Badge>;
 });
 export default Tag;

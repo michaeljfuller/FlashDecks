@@ -41,7 +41,10 @@ const componentMap = {
  * Show an icon by its `type`.
  */
 export const Icon: React.ComponentType<IconProps> = React.memo(function Icon(props: IconProps) {
-    const { style = {} } = props;
+    const {
+        style = {},
+        flat = true
+    } = props;
     const component = componentMap[props.type];
     if (component) {
         return React.createElement(component, {
@@ -50,6 +53,7 @@ export const Icon: React.ComponentType<IconProps> = React.memo(function Icon(pro
                 height: style.height,
                 color: style.color,
                 padding: style.padding,
+                filter: !flat ? `drop-shadow(1px 1px 2px rgba(0,0,0,0.3))` : undefined,
             }
         } as SvgIconProps);
     }

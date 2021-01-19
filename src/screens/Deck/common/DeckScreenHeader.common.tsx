@@ -5,20 +5,16 @@ import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
 export interface DeckScreenHeaderProps {
     item: DeckModel;
     title?: string;
+    saveText?: string;
     editable?: boolean;
     onOpenInfoModal?: () => void;
     onAddCard?: () => void;
     onRemoveCard?: () => void;
-}
-export interface DeckScreenHeaderPropsState {
-    showInfo: boolean;
+    onSave?: () => void;
+    onUndo?: () => void;
 }
 
-export default class DeckScreenHeaderBase extends ImmutablePureComponent<DeckScreenHeaderProps, DeckScreenHeaderPropsState>{
-    state: DeckScreenHeaderPropsState = {
-        showInfo: false,
-    };
-
+export default class DeckScreenHeaderBase<State=any> extends ImmutablePureComponent<DeckScreenHeaderProps, State>{
     get cardCount() {
         return this.props.item.cards?.length || 0;
     }

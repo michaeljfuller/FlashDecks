@@ -1,42 +1,38 @@
 import React from "react";
 import {View, ViewStyle} from "react-native";
-import PropTypes from "prop-types";
 // @ts-ignore https://www.npmjs.com/package/react-native-material-indicators#progress-circle
 import {ProgressCircle as IndicatorCircle} from "react-native-material-indicators";
-import {CommonProgressProps, CommonProgressPropTypes, getDeterminate, getProgressFraction, getColor} from "./commonProgress";
-import {ComponentUnion} from "../../utils/component";
+import {CommonProgressProps, ProgressBase} from "./commonProgress";
+import {Color, ColorKey} from "../../styles/Color";
 
 export interface ProgressCircleProps extends CommonProgressProps {
     radius?: number;
     thickness?: number;
     style?: ViewStyle;
+    color?: ColorKey;
 }
 
-export const ProgressCircle: ComponentUnion<ProgressCircleProps> = React.memo(function ProgressCircle(props: ProgressCircleProps) {
-    const {radius=40, thickness=4, visible=true} = props;
-    const determinate = getDeterminate(props);
-    const fraction = getProgressFraction(props);
-    const color = getColor(props);
+export class ProgressCircle extends ProgressBase<ProgressCircleProps> {
+    render() {
+        const {radius=40, thickness=4, color="Blue", visible=true} = this.props;
 
-    if (!visible) return null;
-    return <View style={props.style}>
-        <IndicatorCircle
-            visible
-            determinate={determinate}
-            value={fraction*100}
-            size={radius}
-            thickness={thickness}
-            color={color}
-            animationMethod="timing"
-            animationConfig={{ duration: 500 }}
-            shouldAnimateFirstValue
-        />
-    </View>;
-});
-ProgressCircle.propTypes = {
-    ...CommonProgressPropTypes,
-    radius: PropTypes.number,
-    thickness: PropTypes.number,
-    style: PropTypes.object,
-};
+        if (!visible) return null;
+
+        return <View style={this.props.style}>
+            <IndicatorCircle
+                key={'ProgressCircle_'+this.state.iteration /*Create new instance if changes to reset animation*/}
+                visible
+                determinate={this.getDeterminate()}
+                value={this.getProgressFraction() * 100}
+                color={Color[color]}
+                size={radius}
+                thickness={thickness}
+                animationMethod="timing"
+                animationConfig={{ duration: 500 }}
+                shouldAnimateFirstValue
+            />
+        </View>;
+    }
+}
+
 export default ProgressCircle;

@@ -20,6 +20,7 @@ import {DeckInfo, DeckInfoModal} from "../../../components/deck/DeckInfoModal/De
 import {CardInfo, CardInfoModal} from "../../../components/card/CardInfo/CardInfoModal";
 import {appTree} from "../../../routes";
 import {goBack} from "../../../navigation/navigationHelpers";
+import {ProgressModal} from "../../../components/modal/ProgressModal/ProgressModal";
 
 export interface DeckEditScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -28,7 +29,10 @@ export interface DeckEditScreenState {
     originalDeck?: DeckModel;
     modifiedDeck?: DeckModel;
     loading: boolean;
-    saving: boolean;
+    saving?: {
+        message?: string;
+        finished?: boolean;
+    };
     showInfoModal: boolean;
     showDeleteCardPrompt: boolean;
     showCreateCardModal: boolean;
@@ -39,7 +43,6 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
 {
     state = {
         loading: false,
-        saving: false,
         showInfoModal: false,
         showDeleteCardPrompt: false,
         showCreateCardModal: false,
@@ -157,6 +160,8 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         this.cardIndex = index;
     }
 
+    onCloseSavingModal = () => this.setStateTo({ saving: undefined });
+
     onOpenDeleteCardPrompt = () => this.setStateTo({ showDeleteCardPrompt: true });
     onCloseDeleteCardPrompt = () => this.setStateTo({ showDeleteCardPrompt: false });
 
@@ -175,8 +180,10 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         let modifiedDeck = this.state.modifiedDeck;
 
         if (modifiedDeck) {
-            this.setStateTo({ saving: true });
+            this.setStateTo(draft => draft.saving = { finished: false });
             modifiedDeck = await this.uploadContent(modifiedDeck);
+
+            this.setStateTo(draft => draft.saving = { message: "Saving Deck" });
             this.saveDeckRequest = deckApi.push(modifiedDeck);
 
             await this.saveDeckRequest.wait(false);
@@ -189,18 +196,18 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
                 this.clearChanges();
             }
 
-            // Show toast
-            const toastRef = 'DeckEditScreen-save';
+            // Feedback
             if (error) {
-                this.toast.addError(error, `Failed to save ${modifiedDeck.title}`, { log: false, ref: toastRef });
+                this.setStateTo(draft => draft.saving = {
+                    finished: true,
+                    message: `Failed to save ${modifiedDeck?.title}`,
+                });
                 console.error("Error saving deck", { error,  request: this.saveDeckRequest });
             } else {
-                console.log('DeckEditScreen.onSavePressed', { response: this.saveDeckRequest, deck });
-                this.toast.add({ type: "success", text: `Saved: "${modifiedDeck.title}"`, duration: 2000, ref: toastRef });
+                this.setStateTo(draft => draft.saving = undefined); // Success, so close
             }
 
             delete this.saveDeckRequest;
-            this.setStateTo({ saving: false });
         } else {
             this.toast.add({type: "warning", text: `No changes to save.`});
         }
@@ -209,11 +216,8 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     async uploadContent(deck: DeckModel): Promise<DeckModel> {
         const observable = mediaApi.uploadFromDeck(deck);
         observable.subscribe(data => {
-            console.log('uploadContent', data);
-            toastStore.removeByRef();
-            toastStore.add({
-                title: 'Media Upload',
-                text: `Uploading ${data.currentIndex+1}/${data.list.length}.`,
+            this.setStateTo(draft => draft.saving = {
+                message: `Uploading media: ${data.currentIndex+1}/${data.list.length}`
             });
             this.mediaUploadRequest = data.request;
             this.setStateTo(draft => {
@@ -252,6 +256,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         const validation = DeckModel.validate(this.deck);
         const title = (newDeck? "New" : "Edit") + ": " + (this.deck?.title || 'Untitled');
         const hasChanges = !!this.state.modifiedDeck;
+        const canSave = !validation.invalid && editable && hasChanges;
         const card = this.deck.cards[this.cardIndex];
 
         let saveButtonText = 'Save Cards';
@@ -266,17 +271,15 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
                 onAddCard={this.onShowCreateCardModal}
                 onRemoveCard={this.onOpenDeleteCardPrompt}
                 title={title}
+                saveText={saveButtonText}
+                onSave={canSave ? this.onSavePressed : undefined}
+                onUndo={hasChanges ? this.clearChanges : undefined}
             />
             <DeckView
                 editable={editable}
                 item={this.deck}
                 onSetCard={this.onSetCard}
                 onScrollCards={this.onScrollCards}
-            />
-            <Button square
-                title={saveButtonText}
-                disabled={validation.invalid || !editable || !hasChanges}
-                onClick={this.onSavePressed}
             />
 
             <DeckInfoModal
@@ -302,6 +305,14 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
                     `Are you sure you want to remove "${card?.nameOrPlaceholder()}" from the Deck?\n` +
                     `This change will take effect next time you save.`
                 }
+            />
+            <ProgressModal
+                open={Boolean(this.state.saving)}
+                onClose={this.onCloseSavingModal}
+                closeButton={this.state.saving?.finished}
+                message={this.state.saving?.message}
+                value={!this.state.saving?.finished}
+                type="circle"
             />
         </React.Fragment>
     }

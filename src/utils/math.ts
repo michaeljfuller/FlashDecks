@@ -1,3 +1,4 @@
+import {padNumber} from "./string";
 
 /** Round a number to the given number of significant digits. */
 export function roundTo(value: number, digits?: number): number {
@@ -39,5 +40,5 @@ export function randomInt(digits = 4) {
     return Math.floor(Math.random() * Math.pow(10, digits));
 }
 export function randomIntString(digits = 4) {
-    return randomInt(digits).toString().padStart(digits, '0');
+    return padNumber(randomInt(digits), digits, '0');
 }
