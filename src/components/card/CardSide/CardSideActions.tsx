@@ -90,10 +90,10 @@ export function CardSideActionsMenu(props: CardSideActionsMenuProps) {
     >
         <View style={styles.column}>
             <Typography align="center">Card Side</Typography>
-            <Button title="Edit"       icon={IconType.Edit}   onClick={onPressEdit} />
-            <Button title="Add Before" icon={IconType.Add}    onClick={onPressAddBefore} style={styles.paddedButton} />
-            <Button title="Add After"  icon={IconType.Add}    onClick={onPressAddAfter}  style={styles.paddedButton} />
-            <Button title="Delete"     icon={IconType.Delete} onClick={onPressDelete}    style={styles.paddedButton} />
+            <Button square title="Edit"       icon={IconType.Edit}   onClick={onPressEdit} />
+            <Button square title="Add Before" icon={IconType.Add}    onClick={onPressAddBefore} style={styles.paddedButton} />
+            <Button square title="Add After"  icon={IconType.Add}    onClick={onPressAddAfter}  style={styles.paddedButton} />
+            <Button square title="Delete"     icon={IconType.Delete} onClick={onPressDelete}    style={styles.paddedButton} />
         </View>
     </StyledPopover>
 }
