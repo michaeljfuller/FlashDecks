@@ -13,6 +13,7 @@ import {DeckListItemModel} from "../../../models";
 import deckApi from "../../../api/DeckApi";
 import {toastStore} from "../../../store/toast/ToastStore";
 import ApiRequest from "../../../api/util/ApiRequest";
+import Row from "../../../components/layout/Row";
 
 export interface DeckListScreenProps extends NavigationScreenProps {}
 export interface DeckListScreenState {
@@ -88,10 +89,13 @@ export class DeckListScreen extends ImmutablePureComponent<
         return (
             <ScreenContainer>
                 <Text style={styles.title}>{this.constructor.name}</Text>
-                <View style={styles.actionsRow}>
-                    <Button icon={IconType.Add} title="New Deck" onClick={this.goToCreate} />
-                </View>
+
+                <Row right style={styles.actionsRow}>
+                    <Button icon={IconType.Add} title="New Deck" width={120} onClick={this.goToCreate} />
+                </Row>
+
                 <View style={styles.body}>{this.renderBody()}</View>
+
             </ScreenContainer>
         );
     }
@@ -119,8 +123,6 @@ const styles = StyleSheet.create({
     },
     actionsRow: {
         padding: 5,
-        flexDirection: "row",
-        justifyContent: "flex-end",
     },
     body: {
         padding: 5,
