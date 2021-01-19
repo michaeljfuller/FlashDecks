@@ -12,7 +12,7 @@ export interface DebugLoggerProps {
     logWillUnmount?: boolean;
     logShouldUpdate?: boolean;
     logRender?: boolean;
-    show?: boolean;
+    hide?: boolean;
     style?: StyleProp<ViewStyle>;
     label?: string;
 }
@@ -54,20 +54,26 @@ export class UpdateLogger extends React.Component<DebugLoggerProps> {
         return true;
     }
     render() {
+        const {
+            logRender=false,
+            hide=false,
+            label,
+            style,
+        } = this.props;
         this.renderCount++;
-        if (this.props.logRender) this.log('render');
-        if (this.props.show) {
-            const style: StyleProp<ViewStyle> = [styles.root];
-            if (this.props.style) Array.isArray(this.props.style) ? style.push(...this.props.style) : style.push(this.props.style);
-            return <View style={style}>
-                <Text style={styles.title}>{this.constructor.name+'#'+this.id}</Text>
-                <Row space>
-                    <Text style={styles.label}>{this.props.label}</Text>
-                    <Text style={styles.count}>{this.renderCount}</Text>
-                </Row>
-            </View>
-        }
-        return undefined;
+
+        if (logRender) this.log('render');
+        if (hide) return null;
+
+        const rootStyles: StyleProp<ViewStyle> = [styles.root];
+        if (style) Array.isArray(style) ? rootStyles.push(...style) : rootStyles.push(style);
+        return <View style={rootStyles}>
+            <Text style={styles.title}>{this.constructor.name+'#'+this.id}</Text>
+            <Row space>
+                <Text style={styles.label}>{label}</Text>
+                <Text style={styles.count}>{this.renderCount}</Text>
+            </Row>
+        </View>;
     }
 
 }
