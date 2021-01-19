@@ -256,6 +256,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         const validation = DeckModel.validate(this.deck);
         const title = (newDeck? "New" : "Edit") + ": " + (this.deck?.title || 'Untitled');
         const hasChanges = !!this.state.modifiedDeck;
+        const canSave = !validation.invalid && editable && hasChanges;
         const card = this.deck.cards[this.cardIndex];
 
         let saveButtonText = 'Save Cards';
@@ -270,17 +271,15 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
                 onAddCard={this.onShowCreateCardModal}
                 onRemoveCard={this.onOpenDeleteCardPrompt}
                 title={title}
+                saveText={saveButtonText}
+                onSave={canSave ? this.onSavePressed : undefined}
+                onUndo={hasChanges ? this.clearChanges : undefined}
             />
             <DeckView
                 editable={editable}
                 item={this.deck}
                 onSetCard={this.onSetCard}
                 onScrollCards={this.onScrollCards}
-            />
-            <Button square
-                title={saveButtonText}
-                disabled={validation.invalid || !editable || !hasChanges}
-                onClick={this.onSavePressed}
             />
 
             <DeckInfoModal
