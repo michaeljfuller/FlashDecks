@@ -30,15 +30,15 @@ export const DeckListItem = React.memo(function DeckListItem(props: DeckListItem
     return <UICard>
 
         {/* Header */}
-        <View style={{ backgroundColor: headerColor, flexDirection: 'row', height: 40 }}>
+        <View style={styles.header}>
 
-            <UICardItem button bordered onPress={handleClick} style={{ backgroundColor: headerColor, flexGrow: 1 }}>
-                <Text style={{ color: headerTextColor }}>{deck.title}</Text>
+            <UICardItem button bordered onPress={handleClick} style={styles.itemTitle}>
+                <Text style={styles.itemTitleText}>{deck.title}</Text>
             </UICardItem>
 
-            <UICardItem style={{ backgroundColor: headerColor }}>
-                <Text style={{ color: headerTextColor, paddingRight: 5 }}>{owner?.displayName || '?'}</Text>
-                <Avatar user={owner} size={30} />
+            <UICardItem style={styles.itemOwner}>
+                <Text style={styles.itemOwnerText}>{owner?.displayName || '?'}</Text>
+                <Avatar user={owner} size={30} style={{borderWidth:1, borderColor:'red', margin:0, padding:0}} />
             </UICardItem>
 
             {showActions && <IconButton
@@ -64,8 +64,27 @@ export const DeckListItem = React.memo(function DeckListItem(props: DeckListItem
 export default DeckListItem;
 
 const styles = StyleSheet.create({
+    header: {
+        flexDirection: 'row',
+        backgroundColor: headerColor,
+        height: 40
+    },
     moreButton: {
-        paddingTop: 5,
-        paddingRight: 5,
+        marginTop: 5,
+        marginRight: 5,
+    },
+    itemTitle: {
+        backgroundColor: headerColor,
+        flexGrow: 1,
+    },
+    itemTitleText: {
+        color: headerTextColor,
+    },
+    itemOwner: {
+        backgroundColor: headerColor,
+    },
+    itemOwnerText: {
+        color: headerTextColor,
+        marginRight: 5,
     },
 });
