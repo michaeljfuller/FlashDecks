@@ -246,7 +246,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         );
     }
 
-    renderBody() { // TODO Move into render() or separate component
+    renderBody() {
         if (this.state.loading) return <Text style={{lineHeight: 50}}>Loading Deck...</Text>;
         if (this.state.error) return <Text>{this.state.error}</Text>;
         if (!this.deck) return <Text>Could not find deck.</Text>;
@@ -312,6 +312,7 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
                 closeButton={this.state.saving?.finished}
                 message={this.state.saving?.message}
                 value={!this.state.saving?.finished}
+                type="circle"
             />
         </React.Fragment>
     }
