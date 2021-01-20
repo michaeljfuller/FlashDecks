@@ -1,10 +1,6 @@
 import React from "react";
-import {StyleSheet, Text, View} from "react-native";
+import {StyleSheet, Text} from "react-native";
 import {Button} from "../../../components/button/Button";
-import {ToastStore} from "../../../store/toast/ToastStore";
-import navigationStore from "../../../store/navigation/NavigationStore";
-import {ToastQueueItem} from "../../../store/toast/toast_actions";
-import {randomIntString} from "../../../utils/math";
 import {padNumber} from "../../../utils/string";
 import {repeat} from "../../../utils/array";
 import TempScreenSubsection from "../ui/TempScreenSubsection";
@@ -12,7 +8,7 @@ import Row from "../../../components/layout/Row";
 import Column from "../../../components/layout/Column";
 import {UpdateLogger} from "../../../components/debugging/UpdateLogger";
 import {Visibility} from "../../../components/layout/Visibility";
-import HR from "../../../components/ui/HR";
+import {Position} from "../../../components/layout/Position";
 
 interface TempScreenLayoutProps {}
 interface TempScreenLayoutState {
@@ -31,29 +27,64 @@ export class TempScreenLayout extends React.PureComponent<TempScreenLayoutProps,
     render() {
         return <TempScreenSubsection title="Layout">
 
-            <Text>Visibility</Text>
-            <Row>
-                <Button flex square title={this.state.showUpdateLogger   ? 'Hide'   : 'Show'  } onClick={this.toggleShowUpdateLogger} />
-                <Button flex square title={this.state.renderUpdateLogger ? 'Remove' : 'Render'} onClick={this.toggleRenderUpdateLogger} />
+            <Text>Visibility Component</Text>
+            <Row style={{height: 50}}>
+                <Button square width={100} title={this.state.showUpdateLogger   ? 'Hide'   : 'Show'  } onClick={this.toggleShowUpdateLogger} />
+                <Button square width={100} title={this.state.renderUpdateLogger ? 'Remove' : 'Render'} onClick={this.toggleRenderUpdateLogger} />
+                <Row flex style={{borderWidth:1, padding: 2}}>
+                    <Visibility visible={this.state.showUpdateLogger} render={this.state.renderUpdateLogger}>
+                        <UpdateLogger label="Misc" logConstructor logDidMount logWillUnmount logShouldUpdate logDidUpdate logRender />
+                    </Visibility>
+                </Row>
             </Row>
-            <Row center style={{height: 50, borderWidth:1, paddingTop: 2}}>
-                <Visibility visible={this.state.showUpdateLogger} render={this.state.renderUpdateLogger}>
-                    <UpdateLogger label="Misc" style={{width: 150, left:-150/2}}
-                        logConstructor logDidMount logWillUnmount logShouldUpdate logDidUpdate logRender
-                    />
-                </Visibility>
-            </Row>
+
+            <Text>Position Component</Text>
+            <Column style={{borderWidth:1}}>
+                <Row style={{ height: 50}}>
+                    <Position flex style={{borderWidth:1}} vertical="top" horizontal="left">
+                        <Text style={styles.blueTextBox}>Top Left</Text>
+                    </Position>
+                    <Position flex style={{borderWidth:1}} vertical="top">
+                        <Text style={styles.blueTextBox}>Top</Text>
+                    </Position>
+                    <Position flex style={{borderWidth:1}} vertical="top" horizontal="right">
+                        <Text style={styles.blueTextBox}>Top Right</Text>
+                    </Position>
+                </Row>
+                <Row style={{ height: 50}}>
+                    <Position flex style={{borderWidth:1}} horizontal="left">
+                        <Text style={styles.blueTextBox}>Left</Text>
+                    </Position>
+                    <Position flex style={{borderWidth:1}} >
+                        <Text style={styles.blueTextBox}>Center</Text>
+                    </Position>
+                    <Position flex style={{borderWidth:1}} horizontal="right">
+                        <Text style={styles.blueTextBox}>Right</Text>
+                    </Position>
+                </Row>
+                <Row style={{ height: 50}}>
+                    <Position flex style={{borderWidth:1}} vertical="bottom" horizontal="left">
+                        <Text style={styles.blueTextBox}>Bottom Left</Text>
+                    </Position>
+                    <Position flex style={{borderWidth:1}} vertical="bottom">
+                        <Text style={styles.blueTextBox}>Bottom</Text>
+                    </Position>
+                    <Position flex style={{borderWidth:1}} vertical="bottom" horizontal="right">
+                        <Text style={styles.blueTextBox}>Bottom Right</Text>
+                    </Position>
+                </Row>
+            </Column>
 
             <Text>Centering Row & Column</Text>
             <Row style={{ height: 60 }}>
-                <Row center style={{ flex:1, borderWidth: 1, margin: 2 }}>
+                <Row center flex style={{ borderWidth: 1, margin: 2 }}>
                     <Column center style={{ borderLeftWidth: 1, borderRightWidth: 1 }}>
-                        <Text style={{ backgroundColor: '#79F', textAlign: "center", padding: 5 }}>Row & Column</Text>
+                        <Text style={styles.blueTextBox}>Row & Column</Text>
                     </Column>
                 </Row>
-                <Column center style={{ flex:1, borderWidth: 1, margin: 2 }}>
+                <Column center flex style={{ borderWidth: 1, margin: 2 }}>
                     <Row center style={{ borderTopWidth: 1, borderBottomWidth: 1 }}>
-                        <Text style={{ backgroundColor: '#79F', textAlign: "center", padding: 5 }}>Column & Row</Text>
+                        <Text style={styles.blueTextBox}>Column & Row</Text>
                     </Row>
                 </Column>
             </Row>
@@ -121,6 +152,16 @@ export default TempScreenLayout;
 const styles = StyleSheet.create({
     centerText: {
         textAlign: "center"
+    },
+    dottedBorder: {
+        borderWidth: 1,
+        borderStyle: "dotted",
+    },
+    blueTextBox: {
+        backgroundColor: '#79F',
+        textAlign: "center",
+        padding: 5,
+        width: 120,
     },
     bigBlue: {
         fontSize: 40,
