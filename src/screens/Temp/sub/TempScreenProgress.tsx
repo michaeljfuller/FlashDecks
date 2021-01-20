@@ -47,11 +47,11 @@ export function TempScreenProgress() {
 
         <Row>
             <Row style={{ marginBottom: 2 }}>
-                <ProgressCircle radius={50} color="Grey" />
-                <ProgressCircle radius={40} color="Blue"   style={{ position: "absolute", left:  5, top:  5 }} value={autoProgress} maxValue={progressMax} />
-                <ProgressCircle radius={30} color="Red"    style={{ position: "absolute", left: 10, top: 10 }} value={0.40} />
-                <ProgressCircle radius={20} color="Orange" style={{ position: "absolute", left: 15, top: 15 }} value={0.75} />
-                <ProgressCircle radius={10} color="Green"  style={{ position: "absolute", left: 20, top: 20 }} value={0.90} />
+                <ProgressCircle size={50} color="Grey" />
+                <ProgressCircle size={40} color="Blue"   style={{ position: "absolute", left:  5, top:  5 }} value={autoProgress} maxValue={progressMax} />
+                <ProgressCircle size={30} color="Red"    style={{ position: "absolute", left: 10, top: 10 }} value={0.40} />
+                <ProgressCircle size={20} color="Orange" style={{ position: "absolute", left: 15, top: 15 }} value={0.75} />
+                <ProgressCircle size={10} color="Green"  style={{ position: "absolute", left: 20, top: 20 }} value={0.90} />
             </Row>
             <Column flex center space>
                 <ProgressBar color="Black" />
@@ -79,15 +79,6 @@ export function TempScreenProgress() {
         <ProgressBar style={{marginTop:5}} value={progress} maxValue={progressMax} />
         <Row center>
             <Text>{progress === undefined ? 'Indeterminate' : `${progress}%`}</Text>
-        </Row>
-
-        <Row>
-            <Column flex center>
-                <ProgressBar text="Message Text" />
-            </Column>
-            <Row flex center>
-                <ProgressCircle text="Message Text" />
-            </Row>
         </Row>
 
     </TempScreenSubsection>;

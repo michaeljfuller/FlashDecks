@@ -102,7 +102,7 @@ export class DeckListScreen extends ImmutablePureComponent<
     }
 
     renderBody() {
-        if (this.state.loading) return <Center><ProgressCircle radius={150} /></Center>;
+        if (this.state.loading) return <Center><ProgressCircle size={150} /></Center>;
         if (this.decks.length === 0) return <Center><Text>No decks found.</Text></Center>;
 
         return <DeckList

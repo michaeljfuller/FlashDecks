@@ -6,7 +6,7 @@ import {CommonProgressProps, ProgressBase} from "./commonProgress";
 import {Color, ColorKey} from "../../styles/Color";
 
 export interface ProgressCircleProps extends CommonProgressProps {
-    radius?: number;
+    size?: number;
     thickness?: number;
     style?: ViewStyle;
     color?: ColorKey;
@@ -14,7 +14,7 @@ export interface ProgressCircleProps extends CommonProgressProps {
 
 export class ProgressCircle extends ProgressBase<ProgressCircleProps> {
     render() {
-        const {radius=40, thickness=4, color="Blue", visible=true} = this.props;
+        const {size=40, thickness=4, color="Blue", visible=true} = this.props;
 
         if (!visible) return null;
 
@@ -25,7 +25,7 @@ export class ProgressCircle extends ProgressBase<ProgressCircleProps> {
                 determinate={this.getDeterminate()}
                 value={this.getProgressFraction() * 100}
                 color={Color[color]}
-                size={radius}
+                size={size}
                 thickness={thickness}
                 animationMethod="timing"
                 animationConfig={{ duration: 500 }}
