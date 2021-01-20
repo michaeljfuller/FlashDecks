@@ -11,7 +11,7 @@ export class Modal extends ModalBase {
     onClose = () => this.close();
 
     render() {
-        const { width, height, style, children } = this.props;
+        const { width=500, height, style, children } = this.props;
         return <MaterialModal open={this.isOpen} onClose={this.onClose}>
             {
                 this.isClosed
