@@ -107,7 +107,7 @@ export const styles = StyleSheet.create({
         borderColor: 'grey',
         backgroundColor: 'white',
         width: '100%',
-        height: 200,
+        minHeight: 200,
     },
     previewImage: {
         width: '100%',
