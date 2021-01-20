@@ -179,6 +179,7 @@ export class CardSide extends ImmutablePureComponent<CardSideProps, CardSideStat
             onOk={this.onContentModifyConfirmed}
             onChange={this.onContentModifyChange}
             onClose={this.onContentModifyClosed}
+            width={500}
         />;
     }
 

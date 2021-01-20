@@ -1,5 +1,5 @@
 import React from "react";
-import {Text, View, StyleSheet} from "react-native";
+import {Text, StyleSheet, View} from "react-native";
 
 import Button from "../../button/Button";
 import Modal, {ModalProps, extractModalProps} from "../../modal/core/Modal";
@@ -7,8 +7,9 @@ import {ModalHeader, ModalBody} from "../../modal/parts";
 import {ModalFooter} from "../../modal/parts";
 import {CardContentModel, CardContentType, cardContentTypes} from "../../../models";
 import {CardContentForm} from "./CardContentForm";
+import Row from "../../layout/Row";
 
-export type AddContentModalProps = {
+export type ModifyContentModalProps = {
     title?: string;
     content: CardContentModel;
     onChange: (content: CardContentModel) => void;
@@ -20,7 +21,7 @@ export type AddContentModalProps = {
 /**
  * A simple modal with "OK and "Cancel" buttons.
  */
-export class ModifyContentModal extends React.PureComponent<AddContentModalProps> {
+export class ModifyContentModal extends React.PureComponent<ModifyContentModalProps> {
 
     onPressOk = () => {
         const close = this.props.onOk() !== false;
@@ -47,9 +48,9 @@ export class ModifyContentModal extends React.PureComponent<AddContentModalProps
             <ModalHeader title={this.props.title || "Modify Content"} />
 
             <ModalBody style={styles.body}>
-                <View style={styles.typeButtonRow}>{ // Type Buttons
+                <Row overflow center style={styles.typeButtonRow}>{ // Type Buttons
                     cardContentTypes.map(
-                        contentType => <Button
+                        contentType => <Button square
                             key={contentType}
                             title={contentType}
                             onClick={() => this.setType(contentType)}
@@ -57,11 +58,11 @@ export class ModifyContentModal extends React.PureComponent<AddContentModalProps
                             style={styles.typeButton}
                         />
                     )
-                }</View>
+                }</Row>
                 {   // Form
                     this.props.content.validType
                     ? <CardContentForm content={this.props.content} onChange={this.onChange} preview />
-                    : <Text>Please select a content type.</Text>
+                    : <Text style={styles.centerText}>Please select a content type.</Text>
                 }
             </ModalBody>
 
@@ -77,12 +78,13 @@ export default ModifyContentModal;
 
 const styles = StyleSheet.create({
     body: {
-        minWidth: 500,
         padding: 5,
     },
     typeButtonRow: {
-        flexDirection: "row",
         paddingBottom: 5,
+    },
+    centerText: {
+        textAlign: "center",
     },
     typeButton: {
         flex: 1,
