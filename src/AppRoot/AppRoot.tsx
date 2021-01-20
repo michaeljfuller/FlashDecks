@@ -1,5 +1,5 @@
 import React from "react";
-import {Text, View, StyleSheet} from "react-native";
+import {Text} from "react-native";
 import {Provider as ReduxProvider} from 'react-redux';
 import {AppRootBase} from './AppRootBase';
 import AppAuthenticator from './Authenticator/AppAuthenticator';
@@ -10,6 +10,7 @@ import RootToast from "./RootToast/RootToast";
 import {logAppInfo} from "./logAppInfo";
 import ProgressCircle from "../components/progress/ProgressCircle";
 import Button from "../components/button/Button";
+import Center from "../components/layout/Center";
 
 logAppInfo();
 
@@ -25,24 +26,24 @@ export class AppRoot extends AppRootBase {
 
     renderStart() {
         if (this.state.started) return null;
-        return <View style={styles.centerContents}>
+        return <Center>
             <Button width={150} height={50} title="Start" onClick={() => this.start()} />
-        </View>;
+        </Center>;
     }
 
     renderAuth() {
         if (this.state.user) return null;
 
         if (!this.state.initialized) {
-            return <View style={styles.centerContents}>
+            return <Center>
                 <Text>{this.state.cognitoUser ? 'Getting User Data' : 'Authenticating...'}</Text>
                 <ProgressCircle />
-            </View>;
+            </Center>;
         }
 
-        return <View style={styles.centerContents}>
+        return <Center>
             <AppAuthenticator />
-        </View>;
+        </Center>;
     }
 
     renderApp() {
@@ -54,11 +55,3 @@ export class AppRoot extends AppRootBase {
 
 }
 export default AppRoot;
-
-const styles = StyleSheet.create({
-    centerContents: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});
