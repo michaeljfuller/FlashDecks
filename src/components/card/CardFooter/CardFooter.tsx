@@ -1,6 +1,7 @@
 import React from "react";
 import {StyleSheet, Text, TextStyle, View, ViewStyle} from "react-native";
 import IconButton, {IconType} from "../../button/IconButton";
+import {padNumber} from "../../../utils/string";
 
 export interface CardFooterProps {
     sideNumber: number;
@@ -13,7 +14,11 @@ export interface CardFooterProps {
 export const CardFooter = React.memo(function CardFooter(
     {sideNumber, totalSides, style, textStyle, onAddSide, onRemoveSide}: CardFooterProps
 ) {
-    const footerText = (onAddSide || totalSides > 1) ? `${sideNumber || 1}/${totalSides || 1}` : '';
+    let footerText = '';
+    if (onAddSide || totalSides > 1) {
+        const digits = totalSides.toString().length;
+        footerText = `Side: ${padNumber(sideNumber || 1, digits)}/${totalSides}`;
+    }
     return <View style={style}>
         <Text style={textStyle}>{footerText}</Text>
         <View style={styles.actions}>
