@@ -99,7 +99,6 @@ export class ImagePicker extends React.PureComponent<ImagePickerProps, ImagePick
 export const styles = StyleSheet.create({
     root: {
         width: '100%',
-        height: 200,
     },
     previewView: {
         flex: 1,
@@ -108,9 +107,10 @@ export const styles = StyleSheet.create({
         borderColor: 'grey',
         backgroundColor: 'white',
         width: '100%',
+        height: 200,
     },
     previewImage: {
         width: '100%',
         height: '100%',
-    }
+    },
 });
