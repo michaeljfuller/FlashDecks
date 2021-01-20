@@ -68,10 +68,10 @@ export class UpdateLogger extends React.Component<DebugLoggerProps> {
         const rootStyles: StyleProp<ViewStyle> = [styles.root];
         if (style) Array.isArray(style) ? rootStyles.push(...style) : rootStyles.push(style);
         return <View style={rootStyles}>
-            <Text style={styles.title}>{this.constructor.name+'#'+this.id}</Text>
+            <Text selectable={false} style={styles.title}>{this.constructor.name+'#'+this.id}</Text>
             <Row space>
-                <Text style={styles.label}>{label}</Text>
-                <Text style={styles.count}>{this.renderCount}</Text>
+                <Text selectable={false} style={styles.label}>{label}</Text>
+                <Text selectable={false} style={styles.count}>{this.renderCount}</Text>
             </Row>
         </View>;
     }
