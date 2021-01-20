@@ -12,26 +12,28 @@ import Column from "../layout/Column";
 export interface VideoPlayerState {
     error?: string;
     readyForDisplay: boolean;
-    width: number;
-    height: number;
+    layoutWidth: number;
+    layoutHeight: number;
 }
 
 export class VideoPlayer extends ImmutablePureComponent<VideoPlayerProps, VideoPlayerState> {
     readonly state = {
         readyForDisplay: false,
-        width: 0,
-        height: 0,
+        layoutWidth: 0,
+        layoutHeight: 0,
     } as Readonly<VideoPlayerState>;
 
     componentDidUpdate(prevProps: Readonly<VideoPlayerProps>/*, prevState: Readonly<VideoPlayerState>, snapshot?: any*/) {
         if (prevProps.sourceUri !== this.props.sourceUri) { // URI changed
-            this.setStateTo({ error: undefined });
+            this.setStateTo({ error: undefined, readyForDisplay: false });
         }
     }
 
     onLayout = (event: LayoutChangeEvent) => {
-        const {width, height} = event.nativeEvent.layout;
-        this.setStateTo({ width, height });
+        this.setStateTo({
+            layoutWidth: event.nativeEvent.layout.width,
+            layoutHeight: event.nativeEvent.layout.height
+        });
     }
     onReadyForDisplay = () => {
         this.setStateTo({ readyForDisplay: true });
@@ -52,8 +54,8 @@ export class VideoPlayer extends ImmutablePureComponent<VideoPlayerProps, VideoP
         const {
             error,
             readyForDisplay,
-            width,
-            height,
+            layoutWidth,
+            layoutHeight,
         } = this.state;
 
         if (error) {
@@ -62,8 +64,11 @@ export class VideoPlayer extends ImmutablePureComponent<VideoPlayerProps, VideoP
 
         return <View style={styles.root}>
 
-            <Visibility render={!readyForDisplay && width > 0}>
-                <Column center style={[styles.progressView, { width, height }]}>
+            <Visibility render={!readyForDisplay && !!sourceUri && layoutHeight > 0}>
+                <Column center style={[
+                    styles.progressView,
+                    { width: layoutWidth, height: layoutHeight },
+                ]}>
                     <Row center>
                         <ProgressCircle />
                     </Row>

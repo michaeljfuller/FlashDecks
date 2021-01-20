@@ -44,7 +44,6 @@ export class VideoPicker extends React.PureComponent<VideoPickerProps, VideoPick
             const video = await ExpoImagePicker.launchImageLibraryAsync({
                 mediaTypes: ExpoImagePicker.MediaTypeOptions.Videos
             });
-            console.log('VideoPicker.pick', video);
             if (!video.cancelled) {
                 this.setState({video});
                 this.props.onChange && this.props.onChange(video);
