@@ -12,6 +12,8 @@ import deckApi from "../../../api/DeckApi";
 import ApiRequest from "../../../api/util/ApiRequest";
 import ToastStore from "../../../store/toast/ToastStore";
 import {DeckInfoModal} from "../../../components/deck/DeckInfoModal/DeckInfoModal";
+import Center from "../../../components/layout/Center";
+import ProgressCircle from "../../../components/progress/ProgressCircle";
 
 export interface DeckViewScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -79,9 +81,11 @@ export class DeckViewScreen extends ImmutablePureComponent<DeckViewScreenProps &
     }
 
     renderBody() {
-        if (this.state.loading) return <Text>Loading Deck...</Text>;
-        if (this.state.error) return <Text>{this.state.error}</Text>;
-        if (!this.state.deck) return <Text>Could not find deck.</Text>;
+        return <Center><ProgressCircle radius={150} /></Center>;
+        if (this.state.loading) return <Center><ProgressCircle radius={150} /></Center>;
+        if (this.state.error) return <Center><Text>{this.state.error}</Text></Center>;
+        if (!this.state.deck) return <Center><Text>Could not find deck.</Text></Center>;
+
         return <React.Fragment>
             <DeckScreenHeader
                 item={this.state.deck}

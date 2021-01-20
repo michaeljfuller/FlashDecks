@@ -21,6 +21,8 @@ import {CardInfo, CardInfoModal} from "../../../components/card/CardInfo/CardInf
 import {appTree} from "../../../routes";
 import {goBack} from "../../../navigation/navigationHelpers";
 import {ProgressModal} from "../../../components/modal/ProgressModal/ProgressModal";
+import Center from "../../../components/layout/Center";
+import ProgressCircle from "../../../components/progress/ProgressCircle";
 
 export interface DeckEditScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -247,9 +249,9 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     }
 
     renderBody() {
-        if (this.state.loading) return <Text style={{lineHeight: 50}}>Loading Deck...</Text>;
-        if (this.state.error) return <Text>{this.state.error}</Text>;
-        if (!this.deck) return <Text>Could not find deck.</Text>;
+        if (this.state.loading) return <Center><ProgressCircle /></Center>;
+        if (this.state.error) return <Center><Text>{this.state.error}</Text></Center>;
+        if (!this.deck) return <Center><Text>Could not find deck.</Text></Center>;
 
         const newDeck = !this.deck?.id;
         const editable = !this.state.saving;

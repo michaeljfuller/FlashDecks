@@ -14,6 +14,8 @@ import deckApi from "../../../api/DeckApi";
 import {toastStore} from "../../../store/toast/ToastStore";
 import ApiRequest from "../../../api/util/ApiRequest";
 import Row from "../../../components/layout/Row";
+import Center from "../../../components/layout/Center";
+import ProgressCircle from "../../../components/progress/ProgressCircle";
 
 export interface DeckListScreenProps extends NavigationScreenProps {}
 export interface DeckListScreenState {
@@ -95,14 +97,14 @@ export class DeckListScreen extends ImmutablePureComponent<
                 </Row>
 
                 <View style={styles.body}>{this.renderBody()}</View>
-
             </ScreenContainer>
         );
     }
 
     renderBody() {
-        if (this.state.loading) return <Text>Loading...</Text>;
-        if (this.decks.length === 0) return <Text>No decks found.</Text>;
+        if (this.state.loading) return <Center><ProgressCircle radius={150} /></Center>;
+        if (this.decks.length === 0) return <Center><Text>No decks found.</Text></Center>;
+
         return <DeckList
             decks={this.decks}
             loggedInUser={this.props.loggedInUser}
@@ -126,5 +128,6 @@ const styles = StyleSheet.create({
     },
     body: {
         padding: 5,
+        flex:1,
     },
 });
