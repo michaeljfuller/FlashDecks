@@ -81,7 +81,6 @@ export class DeckViewScreen extends ImmutablePureComponent<DeckViewScreenProps &
     }
 
     renderBody() {
-        return <Center><ProgressCircle size={150} /></Center>;
         if (this.state.loading) return <Center><ProgressCircle size={150} /></Center>;
         if (this.state.error) return <Center><Text>{this.state.error}</Text></Center>;
         if (!this.state.deck) return <Center><Text>Could not find deck.</Text></Center>;
