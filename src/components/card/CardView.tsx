@@ -56,7 +56,7 @@ export default class CardView extends CardViewBase {
                     </View>
 
                     <ScrollView style={styles.scrollView} contentContainerStyle={styles.body}>
-                        { this.renderCardSide(bodyHeight, this.state.editing, this.canPress) }
+                        { this.renderCardSide(bodyHeight, this.props.editable, this.state.editing, this.canPress) }
                     </ScrollView>
 
                 </View>
@@ -120,14 +120,14 @@ export default class CardView extends CardViewBase {
         </View>;
     }
 
-    renderCardSide(height = 0, editing = false, canPress = false) {
+    renderCardSide(height = 0, editable = false, editing = false, canPress = false) {
         return <CardSide
             side={this.currentSide}
             onPress={canPress ? this.onPress : undefined}
             onModifications={this.onSideChange}
             height={height}
             editing={editing}
-            editable={this.props.editable}
+            editable={editable}
             style={[styles.side, canPress ? globalStyles.pointer : null]}
         />;
     }

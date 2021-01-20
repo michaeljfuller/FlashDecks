@@ -7,6 +7,7 @@ import {CardContentModel, CardSideModel} from "../../../models";
 import {PromptModal} from "../../modal/PromptModal/PromptModal";
 import {ModifyContentModal} from "../ModifyContent/ModifyContentModal";
 import Button from "../../button/Button";
+import Column from "../../layout/Column";
 
 export interface CardSideProps {
     side?: CardSideModel|undefined;
@@ -198,19 +199,23 @@ export class CardSide extends ImmutablePureComponent<CardSideProps, CardSideStat
     private renderNoContent() {
         if (this.currentContent.length > 0) return null;
         const {editing, editable} = this.props;
-        return <React.Fragment>
+
+        const details: React.ReactElement[] = [];
+        if (editable) {
+            if (editing) {
+                details.push(
+                    <Text style={styles.emptySideText}>Once you are done, press the check button to apply changes.</Text>,
+                    <Button title="Add Content" onClick={this.onContentAdd} />
+                );
+            } else {
+                details.push(<Text style={styles.emptySideText}>Press the top right button to edit.</Text>);
+            }
+        }
+
+        return <Column center flex>
             <Text style={styles.emptySideText}>This side is empty.</Text>
-            {
-                editable && !editing
-                ? <Text style={styles.emptySideText}>Press the top right button to edit.</Text>
-                : <Text style={styles.emptySideText}>Once you are done, press the check button to apply changes.</Text>
-            }
-            {
-                editing
-                ? <Button title="Add Content" onClick={this.onContentAdd} />
-                : null
-            }
-        </React.Fragment>;
+            {details}
+        </Column>;
     }
 
 }
