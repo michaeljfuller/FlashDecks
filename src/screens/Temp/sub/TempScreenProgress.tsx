@@ -81,6 +81,15 @@ export function TempScreenProgress() {
             <Text>{progress === undefined ? 'Indeterminate' : `${progress}%`}</Text>
         </Row>
 
+        <Row>
+            <Column flex center>
+                <ProgressBar text="Message Text" />
+            </Column>
+            <Row flex center>
+                <ProgressCircle text="Message Text" />
+            </Row>
+        </Row>
+
     </TempScreenSubsection>;
 }
 export default TempScreenProgress;
