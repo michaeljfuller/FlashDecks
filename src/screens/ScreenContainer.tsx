@@ -9,7 +9,7 @@ export interface ScreenContainerProps {
 
 export default function ScreenContainer(props: PropsWithChildren<ScreenContainerProps>) {
     const {scroll=true} = props;
-    return <Column scroll={scroll} style={props.style}>
+    return <Column flex scroll={scroll} style={props.style}>
         {props.children}
     </Column>;
 }
