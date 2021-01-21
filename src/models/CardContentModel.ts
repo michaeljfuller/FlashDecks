@@ -11,7 +11,7 @@ export interface ApiCardContent extends _ApiCardContent { // TODO Add `size` to 
 
 export type CardContentType = 'Text' | 'Image' | 'Video' | 'Link' | undefined;
 export const cardContentTypes: readonly Exclude<CardContentType, undefined>[] = ["Text", "Image", "Video", "Link"];
-export enum CardContentFormat { String, ImageData }
+export enum CardContentFormat { String, ImageData, VideoData, LocalURI }
 
 export class CardContentModel extends Model implements Omit<ApiCardContent, '__typename'|'type'> {
     readonly type: CardContentType = undefined;

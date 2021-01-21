@@ -37,7 +37,6 @@ export const CardFormImage = React.memo(function CardFormImage(props: CardFormIm
             <TextInput
                 editable
                 focusable
-                autoFocus
                 style={styles.input}
                 value={props.content.value}
                 onChangeText={onChangeText}

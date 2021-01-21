@@ -1,8 +1,9 @@
 import React, {useCallback} from "react";
-import {View, Text, TextInput, StyleSheet} from "react-native";
-import {CardContentModel} from "../../../../models";
+import {StyleSheet, Text, TextInput, View} from "react-native";
+import {CardContentFormat, CardContentModel} from "../../../../models";
 import {Color} from "../../../../styles/Color";
 import {CardMediaVideo} from "../../CardContent/media/CardMediaVideo";
+import {VideoPicker, VideoPickerData} from "../../../media-picker/VideoPicker";
 
 interface CardFormVideoProps {
     content: CardContentModel;
@@ -12,29 +13,47 @@ interface CardFormVideoProps {
 
 export const CardFormVideo = React.memo(function CardFormVideo(props: CardFormVideoProps) {
     const { content, onChange, preview } = props;
+    const remoteUrl = props.content.format === CardContentFormat.String ? props.content.value : '';
 
     const onChangeText = useCallback(
         (value: string) => onChange(content.update({value})),
         [onChange, content]
     );
 
+    const onChangeLocal = useCallback(
+        (data: VideoPickerData) => {
+            let format: CardContentFormat = CardContentFormat.String;
+            if (data.uri.startsWith('data:')) format = CardContentFormat.VideoData;
+            else if (data.uri.startsWith('false:')) format = CardContentFormat.LocalURI;
+            onChange(content.update({ format, value: data.uri }));
+        },
+        [onChange, content]
+    );
+
     return <View>
+
         <View style={styles.inputRow}>
             <Text>URL</Text>
             <TextInput
                 editable
                 focusable
-                autoFocus
                 style={styles.input}
-                value={props.content.value}
+                value={remoteUrl}
                 onChangeText={onChangeText}
             />
         </View>
+
+        <Text style={{fontWeight:'bold'}}>Example:</Text>
+        <Text selectable>https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4</Text>
+
+        <View style={styles.inputRow}>
+            <VideoPicker label="Pick video from device" onChange={onChangeLocal} />
+        </View>
+
         <View style={styles.preview}>
             {preview && content.validValue && <CardMediaVideo content={content} />}
         </View>
-        <Text style={{fontWeight:'bold'}}>Example:</Text>
-        <Text selectable>https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4</Text>
+
     </View>;
 
 });
