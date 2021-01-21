@@ -24,7 +24,7 @@ export const CardFormVideo = React.memo(function CardFormVideo(props: CardFormVi
         (data: VideoPickerData) => {
             let format: CardContentFormat = CardContentFormat.String;
             if (data.uri.startsWith('data:')) format = CardContentFormat.VideoData;
-            else if (data.uri.startsWith('false:')) format = CardContentFormat.LocalURI;
+            else if (data.uri.startsWith('file:')) format = CardContentFormat.LocalURI;
             onChange(content.update({ format, value: data.uri }));
         },
         [onChange, content]
