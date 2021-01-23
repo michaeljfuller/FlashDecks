@@ -1,6 +1,6 @@
 import React, {useCallback} from "react";
 import {StyleSheet, Text, TextInput, View} from "react-native";
-import {CardContentModel, CardContentFormat} from "../../../../models";
+import {CardContentModel} from "../../../../models";
 import {Color} from "../../../../styles/Color";
 import {CardMediaImage} from "../../CardContent/media/CardMediaImage";
 import {ImagePicker, ImagePickerData} from "../../../media-picker/ImagePicker";
@@ -19,14 +19,14 @@ export const CardFormImage = React.memo(function CardFormImage(props: CardFormIm
     const onChangeText = useCallback(
         (value: string) => onChange(content.update({
             value,
-            format: CardContentFormat.String
+            format: "String"
         })),
         [onChange, content]
     );
     const onChangeLocal = useCallback(
         (data: ImagePickerData) => onChange(content.update({
             value: data.dataUri,
-            format: CardContentFormat.ImageData
+            format: "ImageData"
         })),
         [onChange, content]
     );
@@ -38,7 +38,7 @@ export const CardFormImage = React.memo(function CardFormImage(props: CardFormIm
                 editable
                 focusable
                 style={styles.input}
-                value={content.format === CardContentFormat.String ? content.value : ''}
+                value={content.format === "String" ? content.value : ''}
                 onChangeText={onChangeText}
             />
         </View>

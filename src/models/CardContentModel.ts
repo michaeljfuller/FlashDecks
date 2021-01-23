@@ -11,13 +11,14 @@ export interface ApiCardContent extends _ApiCardContent { // TODO Add `size` to 
 
 export type CardContentType = 'Text' | 'Image' | 'Video' | 'Link' | undefined;
 export const cardContentTypes: readonly Exclude<CardContentType, undefined>[] = ["Text", "Image", "Video", "Link"];
-export enum CardContentFormat { String, ImageData, VideoData, LocalURI }
+export type CardContentFormat = 'String' | 'ImageData' | 'VideoData' | 'LocalURI';
+export const cardContentFormats: readonly CardContentFormat[] = ["String", "ImageData", "VideoData", "LocalURI"];
 
 export class CardContentModel extends Model implements Omit<ApiCardContent, '__typename'|'type'> {
     readonly type: CardContentType = undefined;
     readonly value: string = '';
     readonly size: number = 0;
-    readonly format: CardContentFormat = CardContentFormat.String;
+    readonly format: CardContentFormat = "String";
 
     static create(input: ModelUpdate<CardContentModel>) {
         return (new CardContentModel).update(input, false);
@@ -46,7 +47,7 @@ export class CardContentModel extends Model implements Omit<ApiCardContent, '__t
     asFile(): Blob|undefined {
         if (this.value) {
             switch (this.format) {
-                case CardContentFormat.ImageData: return fileFromImageData(this.value);
+                case "ImageData": return fileFromImageData(this.value);
             }
         }
     }

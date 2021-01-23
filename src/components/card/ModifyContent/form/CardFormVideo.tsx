@@ -13,7 +13,7 @@ interface CardFormVideoProps {
 
 export const CardFormVideo = React.memo(function CardFormVideo(props: CardFormVideoProps) {
     const { content, onChange, preview } = props;
-    const remoteUrl = props.content.format === CardContentFormat.String ? props.content.value : '';
+    const remoteUrl = props.content.format === "String" ? props.content.value : '';
 
     const onChangeText = useCallback(
         (value: string) => onChange(content.update({value})),
@@ -22,9 +22,9 @@ export const CardFormVideo = React.memo(function CardFormVideo(props: CardFormVi
 
     const onChangeLocal = useCallback(
         (data: VideoPickerData) => {
-            let format: CardContentFormat = CardContentFormat.String;
-            if (data.uri.startsWith('data:')) format = CardContentFormat.VideoData;
-            else if (data.uri.startsWith('file:')) format = CardContentFormat.LocalURI;
+            let format: CardContentFormat = "String";
+            if (data.uri.startsWith('data:')) format = "VideoData";
+            else if (data.uri.startsWith('file:')) format = "LocalURI";
             onChange(content.update({ format, value: data.uri }));
         },
         [onChange, content]
