@@ -11,6 +11,7 @@ import Column from "../../layout/Column";
 import Row from "../../layout/Row";
 import IconButton from "../../button/IconButton";
 import {Visibility} from "../../layout/Visibility";
+import withDefaultProps from "../../../utils/hoc/withDefaultProps/withDefaultProps";
 
 export interface CardSideProps {
     side?: CardSideModel|undefined;
@@ -204,16 +205,16 @@ export class CardSide extends ImmutablePureComponent<CardSideProps, CardSideStat
         const {editing, editable} = this.props;
 
         return <Column center flex>
-            <Text style={styles.emptySideText}>This side is empty.</Text>
+            <EmptySideText>This side is empty.</EmptySideText>
             <Visibility render={editable}>
             {
                 editing ? <View>
-                    <Text style={styles.emptySideText}>Once you are done, press the check button to apply changes.</Text>
+                    <EmptySideText>Once you are done, press the check button to apply changes.</EmptySideText>
                     <Button title="Add Content" style={styles.addContentButton} onClick={this.onContentAdd} />
-                </View> : <Row center>
-                    <Text style={styles.emptySideText}>Press the top-right</Text>
+                </View> : <Row center wrap>
+                    <EmptySideText>Press the top-right</EmptySideText>
                     <IconButton icon={IconType.More} color="Black" />
-                    <Text style={styles.emptySideText}>button to edit.</Text>
+                    <EmptySideText>button to edit.</EmptySideText>
                 </Row>
             }
             </Visibility>
@@ -232,9 +233,15 @@ const styles = StyleSheet.create({
         marginHorizontal: 3,
         lineHeight: 24,
         textAlign: "center",
+        overflow: "visible",
     },
     addContentButton: {
         marginTop: 10,
         marginHorizontal: 10,
     },
+});
+
+const EmptySideText = withDefaultProps(Text, {
+    style: styles.emptySideText,
+    numberOfLines: 1,
 });
