@@ -42,7 +42,7 @@ export default class CardView extends CardViewBase {
         const totalHeight = this.state.viewLayout.height;
         const bodyHeight = Math.max(0, totalHeight - (headerHeight + footerHeight + marginBottom + borderWidth * 2));
 
-        return <View style={this.props.style} onLayout={this.onLayout}>
+        return <View style={[this.props.style, styles.root]} onLayout={this.onLayout}>
             <StyledCard variant="elevation" raised={true} elevation={5}>
 
                 <View style={styles.inner}>
