@@ -13,24 +13,26 @@ export class MediaApi {
         const list = getDeckContentToUpload(deck);
         const result = new BehaviorSubject<UploadingContent>({deck, list, currentIndex: 0});
 
+        // Recursive function, uploading one item at a time, and replacing its value on the deck with the URL.
         const uploadNext = (index: number, currentDeck: DeckModel) => {
             const current = list[index];
             if (current) {
                 const request = new ApiRequest<string, ContentToUpload>(
                     this.uploadFile(current.file).then(
                         url => {
-                            currentDeck = deck.update(draft => {
+                            currentDeck = currentDeck.update(draft => {
                                 const {cardIndex, sideIndex, contentIndex} = current;
                                 draft.cards[cardIndex].sides[sideIndex].content[contentIndex].value = url;
+                                draft.cards[cardIndex].sides[sideIndex].content[contentIndex].format = "String";
                             });
+                            result.next({ deck: currentDeck, list, currentIndex: index, request });
+
                             uploadNext(index+1, currentDeck);
                             return url;
                         }
                     ),
                     current
                 );
-
-                result.next({ deck: currentDeck, list, currentIndex: index, request });
             } else {
                 result.next({ ...result.getValue(), request: undefined });
                 result.complete();
