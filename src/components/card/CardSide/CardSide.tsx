@@ -205,16 +205,16 @@ export class CardSide extends ImmutablePureComponent<CardSideProps, CardSideStat
         const {editing, editable} = this.props;
 
         return <Column center flex>
-            <EmptySideText>This side is empty.</EmptySideText>
+            <Text style={styles.emptySideText}>This side is empty.</Text>
             <Visibility render={editable}>
             {
                 editing ? <View>
-                    <EmptySideText>Once you are done, press the check button to apply changes.</EmptySideText>
+                    <Text style={styles.emptySideText}>Once you are done, press the check button to apply changes.</Text>
                     <Button title="Add Content" style={styles.addContentButton} onClick={this.onContentAdd} />
                 </View> : <Row center wrap>
-                    <EmptySideText>Press the top-right</EmptySideText>
+                    <Text style={styles.emptySideText} numberOfLines={1}>Press the top-right</Text>
                     <IconButton icon={IconType.More} color="Black" />
-                    <EmptySideText>button to edit.</EmptySideText>
+                    <Text style={styles.emptySideText} numberOfLines={1}>button to edit.</Text>
                 </Row>
             }
             </Visibility>
@@ -239,9 +239,4 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginHorizontal: 10,
     },
-});
-
-const EmptySideText = withDefaultProps(Text, {
-    style: styles.emptySideText,
-    numberOfLines: 1,
 });
