@@ -10,8 +10,8 @@ export class S3Storage {
 
     /** Get a pre-signed URL of the file or the object data when download:true */
     get<
-        Type = any,
-        Options extends StorageGetOptions|undefined = undefined,
+        Type = Blob,
+        Options extends StorageGetOptions = StorageGetOptions,
         Response = StorageGetResponse<Type, Options>
     >(
         key: string,
@@ -79,7 +79,7 @@ export interface StorageGetOptions {
 }
 
 /** Returns the file or the url, depending on the Options. */
-export type StorageGetResponse<Type, Options> = Options extends {download: true} ? Type : string;
+export type StorageGetResponse<Type, Options> = Options extends {download: true} ? GetObjectOutput<Type> : string;
 
 export interface StorageRemoveOptions {
     level?: StorageLevel;
@@ -88,6 +88,12 @@ export interface StorageRemoveOptions {
 export interface StorageListOptions {
     level?: StorageLevel;
     maxKeys?: number;
+}
+
+export interface GetObjectOutput<Body> {
+    Body: Body;
+    ContentType: MimeType;
+    LastModified: Date;
 }
 
 //</editor-fold>
