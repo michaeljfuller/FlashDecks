@@ -1,9 +1,9 @@
 import {LogColor} from './logging/logColors';
 import {PrintFactory} from "./logging/PrintFactory";
 import {interlace} from "./array";
-import {isPlatformWeb} from "../platform";
-import {getStack} from "./function";
+import {getParamNames, getStack} from "./function";
 import {getLogRef} from "./debugging/logRef";
+import {classColor, instanceColor, methodColor} from "./debugging/debuggingOptions";
 
 export {LogColor} from './logging/logColors';
 
@@ -161,9 +161,48 @@ export class Logger {
     }
 
     /** Queue string containing the target's reference. */
-    addLogRef(target: object, prepend = '', append = ''): this {
+    addLogRef(target: object, prepend = '', append = '', color = true): this {
         const {type, id} = getLogRef(target);
-        return this.add(prepend + type + '#' + id + append);
+        const originalColor = this.currentColor;
+        const originalBackground = this.currentBackground;
+
+        if (prepend) this.add(prepend);
+
+        if (color) this.resetColors();
+        if (color) this.color((classColor(type)));
+        this.add(type);
+
+        if (color) this.color((instanceColor(id)));
+        this.add(`{${id}}`);
+
+        if (color) {
+            this.color(originalColor);
+            this.background(originalBackground);
+        }
+        if (append) this.add(append);
+
+        return this;
+    }
+
+    /** Queue string with method name (and optional params). */
+    addMethod(func: Function|string, params = true, color = true): this {
+        const name = typeof func === "function" ? func.name : func;
+        const originalColor = this.currentColor;
+        const originalBackground = this.currentBackground;
+
+        if (color) this.resetColors();
+        if (color) this.color(methodColor(name));
+        this.add(name);
+
+        if (params && typeof func === "function") {
+            this.add('(' + getParamNames(func).join(', ') + ')');
+        }
+
+        if (color) {
+            this.color(originalColor);
+            this.background(originalBackground);
+        }
+        return this;
     }
 
     /** Queue a line break to be printed. */
@@ -216,6 +255,22 @@ export class Logger {
     }
     resetColors(): this {
         return this.color(null).background(null);
+    }
+
+    /** Last color added to the queue. */
+    get currentColor(): LogColor {
+        for (let i = this.queue.length-1; i >= 0; i--) {
+            if (this.queue[i].type === LogQueueItemType.Color) return this.queue[i].value;
+        }
+        return null;
+    }
+
+    /** Last background added to the queue. */
+    get currentBackground(): LogColor {
+        for (let i = this.queue.length-1; i >= 0; i--) {
+            if (this.queue[i].type === LogQueueItemType.Background) return this.queue[i].value;
+        }
+        return null;
     }
 
     get black(): this { return this.color("Black"); }
