@@ -3,21 +3,23 @@ import {Image} from "react-native";
 /**
  * Preload an image - load the data and size.
  */
-export async function preloadImage(uri: string) {
+export async function preloadImage(uri: string, key?: string) {
+    key = key || uri;
     try {
         await Image.prefetch(uri);
-        await getImageSize(uri);
+        await getImageSize(uri, key);
     } catch (e) {
         console.warn('preloadImage', e);
     }
 }
 
 /** Get the size of an image - cached or otherwise. */
-export async function getImageSize(uri: string): Promise<Readonly<ImageSize>> {
-    const cached = getCachedImageSize(uri);
+export async function getImageSize(uri: string, key?: string): Promise<Readonly<ImageSize>> {
+    key = key || uri;
+    const cached = getCachedImageSize(key);
     if (cached) return cached;
     try {
-        return preloadedImageSizes[uri] = await _getImageSize(uri);
+        return preloadedImageSizes[key] = await _getImageSize(uri);
     } catch (error) {
         return { width: 0, height: 0, error };
     }
@@ -44,7 +46,7 @@ export interface ImageSize {
 const preloadedImageSizes: Record<string, ImageSize> = {};
 
 /** Immediately get the cached image size */
-export function getCachedImageSize(uri: string): Readonly<ImageSize>|undefined {
-    const cached = preloadedImageSizes[uri];
+export function getCachedImageSize(key: string): Readonly<ImageSize>|undefined {
+    const cached = preloadedImageSizes[key];
     return cached ? { ...cached } : undefined;
 }
