@@ -68,7 +68,7 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
         // Get user data from DataBase.
         if (cognitoUser) {
             try {
-                user = await userApi.getUser(cognitoUser.sub);
+                user = await userApi.getUser(cognitoUser.sub).toPromise();
             } catch (e) {
                 this.onErrorMessage('Error getting current user.', getErrorText(e));
             }

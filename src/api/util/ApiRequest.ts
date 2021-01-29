@@ -1,17 +1,24 @@
-export interface ApiResponseData <Payload, RequestBody> {
-    payload?: Payload;
+import {Observable} from "rxjs";
+
+export interface ApiResponseData<Payload, RequestBody> {
+    payload: Payload|undefined;
     requestBody?: Readonly<RequestBody>;
     error?: any;
-    dropped?: boolean;
+    complete: boolean;
+    success: boolean;
 }
-type ApiResponseCancel = () => void;
 
+/**
+ * An Observable that tracks its state.
+ */
 export default class ApiRequest<
     Payload = object,
     RequestBody = object
-> implements ApiResponseData<Payload, RequestBody> {
-
-    // If the request was a success (even if dropped).
+>
+extends Observable<Payload>
+implements ApiResponseData<Payload, RequestBody>
+{
+    // If the request was a success.
     get success() { return this._success; }
     private _success = false;
 
@@ -19,76 +26,53 @@ export default class ApiRequest<
     get error() { return this._error; }
     private _error: any|undefined;
 
-    // If the request finished (even if dropped).
+    // If the request finished.
     get complete() { return Boolean(this.success || this.error); }
-
-    // If the request wasn't finished and isn't dropped.
-    get waiting() { return Boolean(!this.complete && !this.dropped); }
 
     // The response data.
     get payload() { return this._payload; }
     private _payload: Payload|undefined;
-
-    // If the user requested to drop the response.
-    get dropped() { return this._dropped; }
-    private _dropped = false;
-
-    // Captured functions to stop each `wait(stopOnDrop = true)`.
-    private _droppable: ApiResponseCancel[] = [];
-
-    // The request promise.
-    private readonly promise: Promise<void>
 
     // The data at the time this is called.
     get snapshot(): ApiResponseData<Payload, RequestBody> {
         return {
             payload: this.payload,
             requestBody: this.requestBody,
-            dropped: this.dropped,
-            error: this.error
+            error: this.error,
+            complete: this.complete,
+            success: this.success,
         };
     }
 
-    constructor(promise: Promise<Payload|undefined>, readonly requestBody?: RequestBody) {
-        this.promise = promise.then(
-            payload => {
-                // Capture payload and flag success. No need to re-resolve.
+    constructor(promise: Promise<Payload>, requestBody?: RequestBody);
+    constructor(observable: Observable<Payload>, requestBody?: RequestBody);
+
+    constructor(
+        input: Promise<Payload>|Observable<Payload>,
+        readonly requestBody?: RequestBody
+    ) {
+        super(subscribe => {
+
+            const onPayload = (payload: Payload) => {
                 this._success = true;
                 this._payload = payload;
-                this._droppable = [];
-            },
-            error => {
-                // Capture error. No need to re-throw.
+                subscribe.next(payload);
+            };
+            const onError = (error: any) => {
                 this._error = error;
+                subscribe.error(error);
             }
-        );
-    }
+            const onComplete = () => {
+                subscribe.complete();
+            }
 
-    /**
-     * Wait for the request to finish.
-     * @param {boolean} stopOnDrop - If true and `drop()` was called, finish immediately.
-     */
-    async wait(stopOnDrop = true): Promise<ApiResponseData<Payload, RequestBody>> {
-        if (!this.waiting) {
-            return this.snapshot;
-        }
-        return new Promise(resolve => {
-            // Resolve now, unless already done from drop.
-            // Never reject. Errors are on resolved data object.
-            this.promise.finally(() => resolve(this.snapshot));
-            if (stopOnDrop) {
-                this._droppable.push(() => resolve(this.snapshot));
+            if (input instanceof Observable) {
+                input.subscribe( onPayload, onError, onComplete );
+            } else {
+                input.then( onPayload, onError ).finally(onComplete);
             }
+
         });
-    }
-
-    /** Flag as dropped and stop any calls to `wait()` where `stopOnDrop = true`. */
-    drop() {
-        if (!this.dropped && !this.complete) {
-            this._dropped = true;
-            this._droppable.forEach(drop => drop());
-            this._droppable = [];
-        }
     }
 
 }

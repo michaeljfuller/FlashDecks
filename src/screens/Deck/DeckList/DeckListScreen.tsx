@@ -1,18 +1,17 @@
 import React from "react";
 import {Text, View, StyleSheet} from "react-native";
-import {castDraft} from "immer";
+import {Subscription} from "rxjs";
+
 import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
 import ScreenContainer from "../../ScreenContainer";
 import {NavigationScreenProps} from "../../../navigation/navigation_types";
 import DeckList from "../../../components/deck/DeckList/DeckList";
 import Button, {IconType} from "../../../components/button/Button";
-
 import {reduxConnector, DeckListScreenStoreProps} from "./DeckListScreen_redux";
 import DeckRoutes from "../DeckRoutes";
 import {DeckListItemModel} from "../../../models";
 import deckApi from "../../../api/DeckApi";
 import {toastStore} from "../../../store/toast/ToastStore";
-import ApiRequest from "../../../api/util/ApiRequest";
 import Row from "../../../components/layout/Row";
 import Center from "../../../components/layout/Center";
 import ProgressCircle from "../../../components/progress/ProgressCircle";
@@ -31,8 +30,8 @@ export class DeckListScreen extends ImmutablePureComponent<
         decks: [],
     } as DeckListScreenState;
 
-    getDeckListRequest?: ApiRequest<DeckListItemModel[]>;
-    deleteDeckListRequest?: ApiRequest<DeckListItemModel>;
+    getDeckListSubscription?: Subscription;
+    deleteDeckListSubscription?: Subscription;
 
     get decks() {
         return this.state.decks;
@@ -42,37 +41,41 @@ export class DeckListScreen extends ImmutablePureComponent<
         this.loadDecks();
     }
     componentWillUnmount() {
-        this.getDeckListRequest && this.getDeckListRequest.drop();
-        this.deleteDeckListRequest && this.deleteDeckListRequest.drop();
+        this.getDeckListSubscription?.unsubscribe();
+        this.deleteDeckListSubscription?.unsubscribe();
     }
 
     loadDecks() {
         this.setStateTo({ loading: true });
-        this.getDeckListRequest = deckApi.getList();
-
-        this.getDeckListRequest.wait().then(({payload, dropped, error}) => {
-            if (!dropped) {
-                if (payload) this.setStateTo(draft => draft.decks = castDraft(payload));
-                if (error) toastStore.addError(error, 'Error loading decks');
+        this.getDeckListSubscription?.unsubscribe();
+        this.getDeckListSubscription = deckApi.getList().subscribe(
+            decks => this.setStateTo(draft => {
+                draft.decks = decks;
+                draft.loading = false;
+            }),
+            error => {
+                toastStore.addError(error, 'Error loading decks');
                 this.setStateTo({ loading: false });
-            }
-            delete this.getDeckListRequest;
-        });
+            },
+        );
     }
 
     deleteDeck(deck: DeckListItemModel) {
         this.setStateTo({ loading: true });
-        this.deleteDeckListRequest = deckApi.remove(deck.id);
-
-        this.deleteDeckListRequest.wait().then(({payload, dropped, error}) => {
-            if (!dropped) {
-                if (payload) this.setStateTo(draft => draft.decks = draft.decks.filter(current => current.id !== payload.id));
-                if (error) toastStore.addError(error, `Error deleting "${deck?.title}".`);
-                else toastStore.add({type: "success", duration: 2000, text: `Deleted "${deck?.title}".`})
+        this.deleteDeckListSubscription?.unsubscribe();
+        this.deleteDeckListSubscription = deckApi.remove(deck.id).subscribe(
+            deletedDeck => {
+                this.setStateTo(draft => draft.decks = draft.decks.filter(current => current.id !== deletedDeck.id));
+            },
+            error => {
+                toastStore.addError(error, `Error deleting "${deck?.title}".`);
                 this.setStateTo({ loading: false });
-            }
-            delete this.getDeckListRequest;
-        });
+            },
+            () => {
+                toastStore.add({type: "success", duration: 2000, text: `Deleted "${deck?.title}".`});
+                this.setStateTo({ loading: false });
+            },
+        );
     }
 
     goTo(routeName: string, deck?: DeckListItemModel) {

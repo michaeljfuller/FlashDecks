@@ -1,19 +1,13 @@
 import React from "react";
-import {Text} from "react-native";
-import ScreenContainer from "../../ScreenContainer";
-import ImmutablePureComponent, {castDraft} from "../../../components/ImmutablePureComponent";
-import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
+import {StyleSheet, Text} from "react-native";
+import {castDraft} from "immer";
 
-import {reduxConnector, DeckEditScreenStoreProps} from "./DeckEditScreen_redux";
+import ScreenContainer from "../../ScreenContainer";
+import {reduxConnector} from "./DeckEditScreen_redux";
 import DeckView from "../../../components/deck/DeckView/DeckView";
-import Button from "../../../components/button/Button";
 import DeckScreenHeader from "../common/DeckScreenHeader";
 import {CardModel, DeckModel} from "../../../models";
-import deckApi from "../../../api/DeckApi";
-import mediaApi from "../../../api/MediaApi";
-import ToastStore, {toastStore} from "../../../store/toast/ToastStore";
-import navigationStore from "../../../store/navigation/NavigationStore";
-import ApiRequest from "../../../api/util/ApiRequest";
+import {toastStore} from "../../../store/toast/ToastStore";
 import {removeItem} from "../../../utils/array";
 import PromptModal from "../../../components/modal/PromptModal/PromptModal";
 import {DeckInfo, DeckInfoModal} from "../../../components/deck/DeckInfoModal/DeckInfoModal";
@@ -23,37 +17,30 @@ import {goBack} from "../../../navigation/navigationHelpers";
 import {ProgressModal} from "../../../components/modal/ProgressModal/ProgressModal";
 import Center from "../../../components/layout/Center";
 import ProgressCircle from "../../../components/progress/ProgressCircle";
+import {BaseDeckEditScreen, SaveDeckProgress} from "./BaseDeckEditScreen";
+import ProgressBar from "../../../components/progress/ProgressBar";
+import {Visibility} from "../../../components/layout/Visibility";
 
-export interface DeckEditScreenProps extends NavigationScreenProps<
-    NavigationScreenState, { deckId: string }
-> {}
 export interface DeckEditScreenState {
     originalDeck?: DeckModel;
     modifiedDeck?: DeckModel;
     loading: boolean;
-    saving?: {
-        message?: string;
-        finished?: boolean;
-    };
+    saving?: SaveDeckProgress;
     showInfoModal: boolean;
     showDeleteCardPrompt: boolean;
     showCreateCardModal: boolean;
     error?: string;
 }
 
-export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps & DeckEditScreenStoreProps, DeckEditScreenState>
+export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
 {
     state = {
-        loading: false,
+        loading: true,
         showInfoModal: false,
         showDeleteCardPrompt: false,
         showCreateCardModal: false,
     } as DeckEditScreenState;
 
-    toast = new ToastStore(this);
-    getDeckRequest?: ApiRequest<DeckModel>;
-    saveDeckRequest?: ApiRequest<DeckModel>;
-    mediaUploadRequest?: ApiRequest<string>;
     cardIndex = 0;
 
     get deck() {
@@ -63,7 +50,11 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     componentDidMount() {
         const {deckId} = this.props.route.params || {};
         if (deckId) {
-            this.getDeck(deckId);
+            this.getDeck(deckId).subscribe(
+                deck => this.setStateTo(draft => draft.originalDeck = castDraft(deck)),
+                error => this.toast.addError(error, "Error getting deck."),
+                () => this.setStateTo({ loading: false }),
+            )
         } else {
             this.setStateTo(draft => {
                 draft.originalDeck = castDraft(new DeckModel);
@@ -71,23 +62,10 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
             });
         }
     }
-    componentWillUnmount() {
-        this.toast.removeByRef();
-        this.blockNavigation(false);
-        this.getDeckRequest && this.getDeckRequest.drop();
-        this.saveDeckRequest && this.saveDeckRequest.drop();
-        this.mediaUploadRequest && this.mediaUploadRequest.drop();
-    }
 
-    blockNavigation(value = true) {
-        const ref = 'DeckEditScreen_Modified';
-        if (value) {
-            !navigationStore.has(ref) && navigationStore.block({
-                ref, reason: "There are unsaved changes.", attemptCallback: this.onBlockedNavAttempt
-            });
-        } else {
-            navigationStore.unblock(ref);
-        }
+    modifyDeck(deck: DeckModel, blockNavigation = true) {
+        this.setStateTo(draft => draft.modifiedDeck = castDraft(deck));
+        if (blockNavigation) this.blockNavigation(true);
     }
 
     onBlockedNavAttempt = (reason: string) => {
@@ -96,34 +74,6 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
             actionText: "Clear Changes",
             onClose: action => action && this.clearChanges(),
         });
-    }
-
-    getDeck(deckId: DeckModel['id']) {
-        let deck: DeckModel|undefined = this.props.decks[deckId];
-        if (deck) {
-            return this.setStateTo(draft => draft.originalDeck = castDraft(deck));
-        }
-
-        this.setStateTo({ loading: true });
-        this.getDeckRequest = deckApi.getById(deckId);
-
-        this.getDeckRequest.wait(true).then(
-            ({payload, error, dropped}) => {
-                deck = payload;
-                delete this.getDeckRequest;
-
-                if (!dropped) {
-                    this.setStateTo({ loading: false });
-                    if (error) this.toast.addError(error, "Error getting deck.");
-                }
-                this.setStateTo(draft => draft.originalDeck = castDraft(deck));
-            }
-        );
-    }
-
-    modifyDeck(deck: DeckModel, blockNavigation = true) {
-        this.setStateTo(draft => draft.modifiedDeck = castDraft(deck));
-        if (blockNavigation) this.blockNavigation(true);
     }
 
     onChangeInfo = (info: DeckInfo) => {
@@ -178,66 +128,30 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
     onShowCreateCardModal = () => this.setStateTo({ showCreateCardModal: true });
     onHideCreateCardModal = () => this.setStateTo({ showCreateCardModal: false });
 
-    onSavePressed = async () => {
-        let modifiedDeck = this.state.modifiedDeck;
-
-        if (modifiedDeck) {
-            this.setStateTo(draft => draft.saving = { finished: false });
-            modifiedDeck = await this.uploadContent(modifiedDeck);
-
-            this.setStateTo(draft => draft.saving = { message: "Saving Deck" });
-            this.saveDeckRequest = deckApi.push(modifiedDeck);
-
-            await this.saveDeckRequest.wait(false);
-            const deck = this.saveDeckRequest.payload;
-            const {complete, error} = this.saveDeckRequest;
-
-            // If complete (not canceled or errored), update state
-            if (complete && deck) {
-                this.setStateTo(draft => draft.originalDeck = castDraft(deck) );
-                this.clearChanges();
-            }
-
-            // Feedback
-            if (error) {
-                this.setStateTo(draft => draft.saving = {
-                    finished: true,
-                    message: `Failed to save ${modifiedDeck?.title}`,
-                });
-                console.error("Error saving deck", { error,  request: this.saveDeckRequest });
-            } else {
-                this.setStateTo(draft => draft.saving = undefined); // Success, so close
-            }
-
-            delete this.saveDeckRequest;
-        } else {
+    onSavePressed = () => {
+        const {modifiedDeck} = this.state;
+        if (!modifiedDeck) {
             this.toast.add({type: "warning", text: `No changes to save.`});
+            return;
         }
-    }
 
-    async uploadContent(deck: DeckModel): Promise<DeckModel> {
-        const observable = mediaApi.uploadFromDeck(deck);
-        observable.subscribe(data => {
-            this.setStateTo(draft => draft.saving = {
-                message: `Uploading media: ${data.currentIndex+1}/${data.list.length}`
-            });
-            this.mediaUploadRequest = data.request;
-            this.setStateTo(draft => {
-                draft.modifiedDeck = castDraft(data.deck);
-            });
-            deck = data.deck;
-        });
-        await observable.toPromise().then(
-            (data) => {
-                delete this.mediaUploadRequest;
-                if (data?.list?.length) {
-                    toastStore.removeByRef();
-                    toastStore.add({title: 'Media Upload', text: 'Complete', type: "success", duration: 1000})
-                }
+        let progress: SaveDeckProgress;
+        this.saveDeckAndContent(modifiedDeck).subscribe(
+            next => {
+                this.setStateTo(draft => draft.saving = castDraft(progress = next))
             },
-            err => toastStore.addError(err, 'Media Upload')
+            error => {
+                console.error("Error saving deck", error);
+                this.setStateTo(draft => draft.saving = undefined)
+            },
+            () => {
+                this.setStateTo(draft => {
+                    draft.originalDeck = castDraft(progress.deck);
+                    draft.saving = undefined;
+                });
+                this.clearChanges();
+            },
         );
-        return deck;
     }
 
     render() {
@@ -253,8 +167,9 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         if (this.state.error) return <Center><Text>{this.state.error}</Text></Center>;
         if (!this.deck) return <Center><Text>Could not find deck.</Text></Center>;
 
+        const {saving} = this.state;
         const newDeck = !this.deck?.id;
-        const editable = !this.state.saving;
+        const editable = !saving;
         const validation = DeckModel.validate(this.deck);
         const title = (newDeck? "New" : "Edit") + ": " + (this.deck?.title || 'Untitled');
         const hasChanges = !!this.state.modifiedDeck;
@@ -264,6 +179,10 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
         let saveButtonText = 'Save Cards';
         if (!this.state.modifiedDeck) saveButtonText = 'Save: No changes';
         else if (validation.invalid) saveButtonText = `Save: ${validation.reasons[0]}`
+
+        let savingMessage = 'Saving Deck.';
+        if (saving?.finished) savingMessage = `Saved "${saving.deck.title}".`;
+        if (saving?.error) savingMessage = `Failed to Save "${saving.deck.title}".`;
 
         return <React.Fragment>
             <DeckScreenHeader
@@ -311,14 +230,25 @@ export class DeckEditScreen extends ImmutablePureComponent<DeckEditScreenProps &
             <ProgressModal
                 open={Boolean(this.state.saving)}
                 onClose={this.onCloseSavingModal}
-                closeButton={this.state.saving?.finished}
-                message={this.state.saving?.message}
-                value={!this.state.saving?.finished}
+                closeButton={saving?.finished}
+                value={!saving?.finished}
+                message={savingMessage}
                 type="circle"
-            />
+            >
+                <Visibility render={saving?.contentUploaded === false && (saving?.contentList||[]).length > 0}>
+                    {saving?.contentList.length && <Text style={styles.centerText}>Uploading content: {saving.currentIndex+1}/{saving.contentList.length}</Text> }
+                    {saving?.currentProgress?.total && <ProgressBar value={saving.currentProgress?.loaded} maxValue={saving.currentProgress.total} /> }
+                </Visibility>
+            </ProgressModal>
         </React.Fragment>
     }
 
 }
 
 export default reduxConnector(DeckEditScreen);
+
+const styles = StyleSheet.create({
+    centerText: {
+        textAlign: "center",
+    },
+});

@@ -1,6 +1,7 @@
 import React from "react";
 import {Text} from "react-native";
 import {castDraft} from "immer";
+import {Subscription} from "rxjs";
 import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
 import ScreenContainer from "../../ScreenContainer";
 import DeckView from "../../../components/deck/DeckView/DeckView";
@@ -9,7 +10,6 @@ import {reduxConnector, DeckViewScreenStoreProps} from "./DeckViewScreen_redux";
 import DeckScreenHeader from "../common/DeckScreenHeader";
 import {DeckModel} from "../../../models";
 import deckApi from "../../../api/DeckApi";
-import ApiRequest from "../../../api/util/ApiRequest";
 import ToastStore from "../../../store/toast/ToastStore";
 import {DeckInfoModal} from "../../../components/deck/DeckInfoModal/DeckInfoModal";
 import Center from "../../../components/layout/Center";
@@ -32,7 +32,7 @@ export class DeckViewScreen extends ImmutablePureComponent<DeckViewScreenProps &
     } as DeckViewScreenState;
 
     toast = new ToastStore(this);
-    getDeckRequest?: ApiRequest<DeckModel>;
+    getDeckSubscription?: Subscription;
 
     componentDidMount() {
         const {deckId} = this.props.route.params || {};
@@ -42,30 +42,29 @@ export class DeckViewScreen extends ImmutablePureComponent<DeckViewScreenProps &
         this.getDeck(deckId);
     }
     componentWillUnmount() {
-        this.getDeckRequest && this.getDeckRequest.drop();
+        this.getDeckSubscription?.unsubscribe();
         this.toast.removeByRef();
     }
 
     getDeck(deckId: DeckModel['id']) {
-        let deck: DeckModel|undefined = this.props.decks[deckId];
-        if (deck) {
-            return this.setStateTo(draft => draft.deck = castDraft(deck));
+        const localDeck: DeckModel|undefined = this.props.decks[deckId];
+        if (localDeck) {
+            return this.setStateTo(draft => draft.deck = castDraft(localDeck));
         }
 
         this.setStateTo({ loading: true });
-        this.getDeckRequest = deckApi.getById(deckId);
-
-        this.getDeckRequest.wait(true).then(
-            ({payload, error, dropped}) => {
-                deck = payload;
-                delete this.getDeckRequest;
-
-                if (!dropped) {
-                    this.setStateTo({ loading: false });
-                    if (error) this.toast.addError(error, "Error getting deck.");
-                }
-                this.setStateTo(draft => draft.deck = castDraft(deck));
-            }
+        this.getDeckSubscription?.unsubscribe();
+        this.getDeckSubscription = deckApi.getById(deckId).subscribe(
+            remoteDeck => {
+                this.setStateTo(draft => {
+                    draft.deck = castDraft(remoteDeck);
+                    draft.loading = false;
+                });
+            },
+            error => {
+                this.toast.addError(error, "Error getting deck.");
+                this.setStateTo({ loading: false });
+            },
         );
     }
 

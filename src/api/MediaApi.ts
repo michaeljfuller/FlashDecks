@@ -1,56 +1,57 @@
-import {BehaviorSubject, Observable} from "rxjs";
+import {Observable} from "rxjs";
 import {CardContentModel, DeckModel} from "../models";
 import ApiRequest from "./util/ApiRequest";
 import {logClass} from "../utils/debugging/decorators/logClass";
 import s3, {StoragePutProgress, StoragePutProgressCallback} from "./MediaApi.s3";
 
-export interface UploadMediaFileResult {
-    url: string;
-    key: string;
-    contentType: string;
-}
-
 @logClass({ enabled: true })
 export class MediaApi {
 
     /** Get files from content, upload them, and return an updated deck. */
-    uploadFromDeck(deck: DeckModel): Observable<UploadingContent> {
-        const list = getDeckContentToUpload(deck);
-        const result = new BehaviorSubject<UploadingContent>({deck, list, currentIndex: 0});
+    uploadFromDeck(deck: DeckModel): ApiRequest<UploadingContent, DeckModel> {
+        const observable = new Observable<UploadingContent>(subscribe => {
 
-        const progressCallback = (currentProgress: StoragePutProgress) => {
-            result.next({ ...result.getValue(), currentProgress });
-        };
+            const contentList = getDeckContentToUpload(deck);
+            let value: UploadingContent = { deck, contentList, currentIndex: 0 };
+            subscribe.next(value);
 
-        // Recursive function, uploading one item at a time, and replacing its value on the deck with the URL.
-        const uploadNext = (index: number, currentDeck: DeckModel) => {
-            const current = list[index];
-            if (current) {
-                const request = new ApiRequest<UploadMediaFileResult, ContentToUpload>(
-                    this.uploadFile(current.file, progressCallback).then(
-                        uploadResult => {
-                            const {key} = uploadResult;
-                            currentDeck = currentDeck.update(draft => {
-                                const {cardIndex, sideIndex, contentIndex} = current;
-                                draft.cards[cardIndex].sides[sideIndex].content[contentIndex].value = key;
-                                draft.cards[cardIndex].sides[sideIndex].content[contentIndex].format = "S3Key";
-                            });
-                            result.next({ deck: currentDeck, list, currentIndex: index, request });
+            // Asynchronous recursive function to upload content one at a time
+            const uploadNext = (
+                contentIndex: number,
+                updatedDeck: DeckModel
+            ): void => {
+                // If exhausted the list, update the deck and complete.
+                if (contentIndex >= contentList.length) {
+                    subscribe.next(value = { ...value, deck: updatedDeck });
+                    return subscribe.complete();
+                }
 
-                            uploadNext(index+1, currentDeck);
-                            return uploadResult;
-                        }
-                    ),
-                    current
-                );
-            } else {
-                result.next({ ...result.getValue(), request: undefined });
-                result.complete();
-            }
-        };
+                // Update progress
+                subscribe.next(value = { ...value, deck: updatedDeck, currentIndex: contentIndex });
 
-        uploadNext(0, deck);
-        return result.asObservable();
+                // Upload the next item
+                const currentContent = contentList[contentIndex];
+                this.uploadFile(
+                    currentContent.file,
+                    (currentProgress: StoragePutProgress) => subscribe.next(value = {...value, currentProgress})
+                ).then(
+                    (uploadResult: UploadMediaFileResult) => {
+                        // On upload, replace the value and format with the S3Key.
+                        updatedDeck = updatedDeck.update(draft => {
+                            const {cardIndex, sideIndex, contentIndex} = currentContent;
+                            draft.cards[cardIndex].sides[sideIndex].content[contentIndex].value = uploadResult.key;
+                            draft.cards[cardIndex].sides[sideIndex].content[contentIndex].format = "S3Key";
+                        });
+                        uploadNext(contentIndex+1, updatedDeck); // Next item
+                    }
+                )
+
+            };
+
+            uploadNext(0, deck); // Kick off the process
+        });
+
+        return new ApiRequest(observable, deck);
     }
 
     /**
@@ -108,17 +109,22 @@ function getDeckContentToUpload(deck: DeckModel): ContentToUpload[] {
     return result;
 }
 
-interface ContentToUpload {
+export interface UploadMediaFileResult {
+    url: string;
+    key: string;
+    contentType: string;
+}
+
+export interface ContentToUpload {
     file: Blob;
     cardIndex: number;
     sideIndex: number;
     contentIndex: number;
 }
 
-interface UploadingContent {
+export interface UploadingContent {
     deck: DeckModel;
-    list: ContentToUpload[];
+    contentList: ContentToUpload[];
     currentIndex: number;
     currentProgress?: StoragePutProgress; // TODO Show in CardEditScreen
-    request?: ApiRequest<UploadMediaFileResult, ContentToUpload>;
 }

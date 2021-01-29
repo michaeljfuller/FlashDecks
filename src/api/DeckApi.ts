@@ -25,8 +25,10 @@ export class DeckApi {
         return new ApiRequest(
             sendGet(getDeck, variables).then(response => {
                 const apiModel = response.data?.getDeck;
+                if (!apiModel) throw new Error('No response object.');
                 const deck = apiModel ? DeckModel.createFromApi(apiModel) : undefined;
                 if (deck) decksStore.add(deck);
+                else throw new Error("Failed to parse Deck.");
                 return deck;
             }),
             variables
@@ -66,7 +68,9 @@ export class DeckApi {
         return new ApiRequest(
             sendCreateOrUpdate(createDeck, vars).then( response => {
                 const apiDeck = response.data?.createDeck;
-                return apiDeck ? DeckModel.createFromApi(apiDeck) : undefined;
+                const deck = apiDeck ? DeckModel.createFromApi(apiDeck) : undefined;
+                if (!deck) throw new Error("Failed to parse deck");
+                return deck;
             } ),
             vars
         );
@@ -81,7 +85,9 @@ export class DeckApi {
         return new ApiRequest(
             sendCreateOrUpdate(updateDeck, vars).then(response => {
                 const apiDeck = response.data?.updateDeck;
-                return apiDeck ? DeckModel.createFromApi(apiDeck) : undefined;
+                const deck = apiDeck ? DeckModel.createFromApi(apiDeck) : undefined;
+                if (!deck) throw new Error("Failed to parse deck");
+                return deck;
             }),
             vars
         );
@@ -101,7 +107,9 @@ export class DeckApi {
         return new ApiRequest(
             promise.then(response => {
                 const apiDeck = response.data?.deleteDeck;
-                return apiDeck ? DeckModel.createFromApi(apiDeck) : undefined;
+                const deck = apiDeck ? DeckModel.createFromApi(apiDeck) : undefined;
+                if (!deck) throw new Error("Failed to parse deck");
+                return deck;
             }),
             variables
         );

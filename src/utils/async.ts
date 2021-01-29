@@ -1,3 +1,5 @@
+import {Observable} from "rxjs"
+
 type CallbackBase = (...args: any) => boolean|void;
 
 /** Branches from CallbackManager to allow individual callbacks to be added or removed, but not triggered. */
@@ -43,4 +45,14 @@ export class CallbackManager<
         }
     }
 
+}
+
+/** Convert a promise to an Observable, which can be unsubscribed from when a component is unmounted. */
+export function toObservable<Type>(promise: Promise<Type>): Observable<Type> {
+    return new Observable(observer => {
+        promise.then(
+            value => observer.next(value),
+            error => observer.error(error),
+        ).finally(() => observer.complete()); // Observer ignores if there was an error
+    });
 }
