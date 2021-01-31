@@ -50,7 +50,7 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
 
     onLayout = (event: LayoutChangeEvent) => {
         const {width, height} = event.nativeEvent.layout;
-        const size = resizeCard(width, height, 10, 100);
+        const size = resizeCard(width, height, 30, 10, 100);
         this.setStateTo({ cardWidth: size.width, cardHeight: size.height });
     };
 
