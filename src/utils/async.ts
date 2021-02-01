@@ -1,4 +1,5 @@
-import {Observable} from "rxjs"
+import {Observable, OperatorFunction} from "rxjs"
+import {Logger} from "./Logger";
 
 type CallbackBase = (...args: any) => boolean|void;
 
@@ -56,3 +57,38 @@ export function toObservable<Type>(promise: Promise<Type>): Observable<Type> {
         ).finally(() => observer.complete()); // Observer ignores if there was an error
     });
 }
+
+/**
+ * When result is passed to an Observable.pipe(), the contents of the observer get logged.
+ * @example myObservable.pipe(pipeLogger('myObservable')).subscribe(...);
+ */
+export function pipeLogger<Type>(
+    label?: string
+): OperatorFunction<Type, Type> {
+    return (source) => {
+        if (!label) label = 'pipeLogger';
+        const id = pipeLoggerIdMap[label] || 1;
+        pipeLoggerIdMap[label] = id + 1;
+
+        const logger = new Logger;
+        const log = () => logger.bgMagenta.brightWhite.add(` ${label} [${id}]`);
+
+        return new Observable(subscriber => {
+            source.subscribe(
+                value => {
+                    log().brightWhite.bgBrightBlue.add(' next ').resetColors().space.log( value);
+                    subscriber.next(value);
+                },
+                error => {
+                    log().brightWhite.bgRed.add(' error ').resetColors().space.warning(error);
+                    subscriber.next(error);
+                },
+                () => {
+                    log().brightWhite.bgGreen.info(' complete ');
+                    subscriber.complete();
+                },
+            );
+        });
+    };
+}
+const pipeLoggerIdMap: Record<string, number> = {};
