@@ -1,5 +1,5 @@
 import Model, {ModelUpdate} from "./core/Model";
-import {fileFromImageData} from "../utils/file";
+import {fileFromImageData, fileFromVideoData} from "../utils/file";
 import {ApiCardSide} from "./CardSideModel";
 import {CardSideContentType} from "../graphql/API";
 import {v4 as uuid} from "uuid";
@@ -59,6 +59,7 @@ export class CardContentModel extends Model implements Omit<ApiCardContent, '__t
         if (this.value) {
             switch (this.format) {
                 case "ImageData": return fileFromImageData(this.value);
+                case "VideoData": return fileFromVideoData(this.value);
             }
         }
     }

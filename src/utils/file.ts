@@ -1,4 +1,8 @@
-export function fileFromImageData(dataUri: string): ReturnType<typeof fileFromBase64> {
+export function fileFromImageData(dataUri: string): Blob {
+    const {data, type} = parseDataUri(dataUri);
+    return fileFromBase64(data, {type});
+}
+export function fileFromVideoData(dataUri: string): Blob {
     const {data, type} = parseDataUri(dataUri);
     return fileFromBase64(data, {type});
 }
