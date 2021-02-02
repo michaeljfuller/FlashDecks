@@ -1,4 +1,5 @@
 import {Observable} from "rxjs";
+import {PromiseAndSubscription} from "../../utils/async";
 
 export interface ApiResponseData<Payload, RequestBody> {
     payload: Payload|undefined;
@@ -73,6 +74,10 @@ implements ApiResponseData<Payload, RequestBody>
             }
 
         });
+    }
+
+    toPromiseAndSubscription() {
+        return new PromiseAndSubscription(this);
     }
 
 }
