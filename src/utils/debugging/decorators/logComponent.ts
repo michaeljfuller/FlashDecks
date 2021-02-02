@@ -1,6 +1,7 @@
 import React from "react";
 import {GenericClass, renameClass} from "../../class";
 import {classColor} from "../debuggingOptions";
+import logger from "../../Logger";
 import {WrapAndLogFunctionOptions} from "../wrapAndLogFunction";
 import {LogColor} from "../../logging/logColors";
 import {logMethod} from "./logMethod";
@@ -14,6 +15,8 @@ export interface LogComponentOptions<C extends Component> {
     logDidUpdate?: boolean|WrapAndLogFunctionOptions<C>;
     logWillUnmount?: boolean|WrapAndLogFunctionOptions<C>;
     logRender?: boolean|WrapAndLogFunctionOptions<C>;
+    logProps?: boolean;
+    logState?: boolean;
     color?: LogColor;
 }
 
@@ -26,6 +29,8 @@ export function logComponent<T extends Component>(options?: LogComponentOptions<
         logDidUpdate = true,
         logWillUnmount = true,
         logRender = true,
+        logProps = true,
+        logState = true,
     } = options || {};
 
     return function (component: GenericClass<T>) {
@@ -43,6 +48,9 @@ export function logComponent<T extends Component>(options?: LogComponentOptions<
                 typeof logDidMount === 'boolean' ? { enabled: logDidMount } : logDidMount
             ))
             componentDidMount() {
+                const self: React.Component = this as any;
+                if (logProps) logger.addLogRef(self).space.add('Props').info(self.props);
+                if (logState) logger.addLogRef(self).space.add('State').info(self.state);
                 super.componentDidMount && super.componentDidMount();
             }
 
@@ -51,6 +59,9 @@ export function logComponent<T extends Component>(options?: LogComponentOptions<
                 typeof logDidUpdate === 'boolean' ? { enabled: logDidUpdate } : logDidUpdate
             ))
             componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<any>, snapshot?: any) {
+                const self: React.Component = this as any;
+                if (logProps && prevProps !== self.props) logger.addLogRef(self).space.add('Props').info(self.props);
+                if (logState && prevState !== self.state) logger.addLogRef(self).space.add('State').info(self.state);
                 super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, snapshot);
             }
 
