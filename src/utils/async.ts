@@ -1,4 +1,4 @@
-import {Observable, OperatorFunction} from "rxjs"
+import {Observable, OperatorFunction, Subscription} from "rxjs"
 import {Logger} from "./Logger";
 
 type CallbackBase = (...args: any) => boolean|void;
@@ -56,6 +56,27 @@ export function toObservable<Type>(promise: Promise<Type>): Observable<Type> {
             error => observer.error(error),
         ).finally(() => observer.complete()); // Observer ignores if there was an error
     });
+}
+
+/** Converts an Observable to a wrapped Promise and Subscription to drop Promise. */
+export class PromiseAndSubscription<Type> {
+    readonly promise: Promise<Type>;
+    get subscription() { return this._subscription; }
+    private _subscription?: Subscription;
+
+    constructor(observable: Observable<Type>) {
+        this.promise = new Promise((resolve, reject) => {
+            let value: Type|undefined = undefined;
+            this._subscription = observable.subscribe(
+                next => value = next,
+                error => reject(error),
+                () => resolve(value),
+            );
+        });
+    }
+}
+export function toPromiseAndSubscription<Type>(observable: Observable<Type>) {
+    return new PromiseAndSubscription(observable);
 }
 
 /**
