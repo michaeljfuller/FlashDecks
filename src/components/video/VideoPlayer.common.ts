@@ -6,3 +6,7 @@ export interface VideoPlayerProps {
     sourceUri: string;
     onError?: (e?: string) => void;
 }
+
+export const supportedVideoTypes = [
+    "video/webm", "video/mp4", "video/ogg"
+];

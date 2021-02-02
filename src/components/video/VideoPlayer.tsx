@@ -1,6 +1,6 @@
 import React, {SyntheticEvent} from "react";
 import {View} from "react-native";
-import {VideoPlayerProps} from "./VideoPlayer.common";
+import {supportedVideoTypes, VideoPlayerProps} from "./VideoPlayer.common";
 import VideoPlayerError from "./VideoPlayerError";
 import ImmutablePureComponent from "../ImmutablePureComponent";
 
@@ -12,22 +12,12 @@ export class VideoPlayer extends ImmutablePureComponent<VideoPlayerProps, VideoP
     readonly state = {} as Readonly<VideoPlayerState>;
 
     get sourceType(): HTMLSourceElement['type']|undefined {
-        let result = this.props.sourceUri;
+        const result = this.props.sourceUri;
         if (result) {
             // Extract from source
-            result = result.startsWith('data:')
+            return result.startsWith('data:')
                 ? result.substr('data:'.length).split(';')[0]   // Local file
                 : "video/" + result.split('.').pop();           // Remote URL
-            // Check if not a video
-            if (!result.startsWith('video/')) {
-                return result;
-            }
-            // If a video isn't supported, try as mp4.
-            // Unsupported: "video/quicktime" (mov), "video/x-matroska" (mkv), ...
-            if (result.startsWith('video/') && ["video/webm", "video/mp4", "video/ogg"].indexOf(result) < 0) {
-                result = "video/mp4";
-            }
-            return result;
         }
         return undefined;
     }
@@ -54,6 +44,13 @@ export class VideoPlayer extends ImmutablePureComponent<VideoPlayerProps, VideoP
         } = this.props;
         const {error} = this.state;
 
+        // If a video isn't supported, try as mp4.
+        // Unsupported: "video/quicktime" (mov), "video/x-matroska" (mkv), ...
+        let type = this.sourceType || '';
+        if (type.startsWith('video/') && supportedVideoTypes.indexOf(type) < 0) {
+            type = "video/mp4";
+        }
+
         if (error) {
             return <VideoPlayerError message={error} />;
         }
@@ -70,7 +67,7 @@ export class VideoPlayer extends ImmutablePureComponent<VideoPlayerProps, VideoP
             onError={this.onError}
             width="100%"
         >
-            <source src={sourceUri} type={this.sourceType} />
+            <source src={sourceUri} type={type} />
         </video>;
     }
 
