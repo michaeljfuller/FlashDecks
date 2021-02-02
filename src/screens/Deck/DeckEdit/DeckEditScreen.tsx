@@ -238,6 +238,7 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
                 value={!saving?.finished}
                 message={savingMessage}
                 type="circle"
+                bodyStyle={styles.progressModalBody}
             >
                 <Visibility render={saving?.contentUploaded === false && (saving?.contentList||[]).length > 0}>
                     {saving?.contentList.length && <Text style={styles.centerText}>Uploading content: {saving.currentIndex+1}/{saving.contentList.length}</Text> }
@@ -254,5 +255,8 @@ export default reduxConnector(DeckEditScreen);
 const styles = StyleSheet.create({
     centerText: {
         textAlign: "center",
+    },
+    progressModalBody: {
+        minHeight: 150,
     },
 });
