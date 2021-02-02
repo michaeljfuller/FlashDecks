@@ -16,7 +16,7 @@ export const CardFormVideo = React.memo(function CardFormVideo(props: CardFormVi
     const remoteUrl = props.content.format === "String" ? props.content.value : '';
 
     const onChangeText = useCallback(
-        (value: string) => onChange(content.update({value})),
+        (value: string) => onChange(content.update({value, format: "String"})),
         [onChange, content]
     );
 
@@ -44,7 +44,9 @@ export const CardFormVideo = React.memo(function CardFormVideo(props: CardFormVi
         </View>
 
         <Text style={{fontWeight:'bold'}}>Example:</Text>
-        <Text selectable>https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4</Text>
+        <Text selectable style={styles.example}>https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4</Text>
+        <Text selectable style={styles.example}>https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mov-file.mov</Text>
+        <Text selectable style={styles.example}>http://techslides.com/demos/sample-videos/small.ogv</Text>
 
         <View style={styles.inputRow}>
             <VideoPicker label="Pick video from device" onChange={onChangeLocal} />
@@ -78,5 +80,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         flexDirection: "column",
         backgroundColor: "#DDD",
+    },
+    example: {
+        fontSize: 10,
     },
 });
