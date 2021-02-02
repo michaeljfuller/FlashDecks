@@ -47,6 +47,10 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
         return this.state.modifiedDeck || this.state.originalDeck || new DeckModel;
     }
 
+    get isNewDeck(): boolean {
+        return !!this.deck?.id;
+    }
+
     componentDidMount() {
         const {deckId} = this.props.route.params || {};
         if (deckId) {
@@ -59,6 +63,7 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
             this.setStateTo(draft => {
                 draft.originalDeck = castDraft(new DeckModel);
                 draft.showInfoModal = true;
+                draft.loading = false;
             });
         }
     }
@@ -168,10 +173,9 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
         if (!this.deck) return <Center><Text>Could not find deck.</Text></Center>;
 
         const {saving} = this.state;
-        const newDeck = !this.deck?.id;
         const editable = !saving;
         const validation = DeckModel.validate(this.deck);
-        const title = (newDeck? "New" : "Edit") + ": " + (this.deck?.title || 'Untitled');
+        const title = (this.isNewDeck ? "New" : "Edit") + ": " + (this.deck?.title || 'Untitled');
         const hasChanges = !!this.state.modifiedDeck;
         const canSave = !validation.invalid && editable && hasChanges;
         const card = this.deck.cards[this.cardIndex];
