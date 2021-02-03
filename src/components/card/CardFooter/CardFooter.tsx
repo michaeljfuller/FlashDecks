@@ -17,7 +17,7 @@ export const CardFooter = React.memo(function CardFooter(
     let footerText = '';
     if (onAddSide || totalSides > 1) {
         const digits = totalSides.toString().length;
-        footerText = `Side: ${padNumber(sideNumber || 1, digits)}/${totalSides}`;
+        footerText = `Side: ${padNumber(sideNumber || 1, digits)}/${Math.max(totalSides, 1)}`;
     }
     return <View style={style}>
         <Text style={textStyle}>{footerText}</Text>
