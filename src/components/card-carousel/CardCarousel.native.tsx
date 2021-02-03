@@ -6,6 +6,7 @@ import {CardCarouselBase, CardCarouselBaseState, resizeCard} from "./CardCarouse
 import {CardModel} from "../../models";
 import Button, {IconType} from "../button/Button";
 import {Visibility} from "../layout/Visibility";
+import Center from "../layout/Center";
 export * from "./CardCarousel.common";
 
 export interface CardCarouselState extends CardCarouselBaseState {
@@ -40,7 +41,7 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
 
     onLayout = (event: LayoutChangeEvent) => {
         const {width, height} = event.nativeEvent.layout;
-        const size = resizeCard(width, height, 10, 100);
+        const size = resizeCard(width, height, 10, 10, 100);
         this.setStateTo({
             width: event.nativeEvent.layout.width,
             cardWidth: size.width,
@@ -90,11 +91,11 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
         const {style, editable} = this.props;
 
         return <React.Fragment>
-            <View style={[styles.root, styles.rootWithoutCards, style]}>{
+            <Center style={[styles.root, style]}>{
                 editable
-                    ? <Button icon={IconType.Add} title="Add Card" onClick={this.onShowCreateCardModal} />
+                    ? <Button icon={IconType.Add} title="Add Card" width={140} onClick={this.onShowCreateCardModal} />
                     : <Text>No cards found.</Text>
-            }</View>
+            }</Center>
             {this.renderCreateCardModal()}
         </React.Fragment>;
     }
@@ -108,11 +109,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         width: "100%",
         paddingBottom: 5,
-    },
-    rootWithoutCards: {
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
     },
     cardContainer: {
         flex: 1,
