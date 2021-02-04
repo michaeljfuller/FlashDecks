@@ -7,6 +7,9 @@ import Center from "../../../layout/Center";
 import ProgressCircle from "../../../progress/ProgressCircle";
 import {Visibility} from "../../../layout/Visibility";
 import {Color} from "../../../../styles/Color";
+import {stopTouchPropagation} from "../../../../utils/hoc/stopTouchPropagation";
+
+const CardVideoPlayer = stopTouchPropagation(VideoPlayer);
 
 export class CardMediaVideo extends BaseCardMedia {
     onError = (error?: string) => {
@@ -25,7 +28,7 @@ export class CardMediaVideo extends BaseCardMedia {
         return <View style={[styles.root, {height}]}>
             {this.mediaUri ? undefined : <Center><ProgressCircle /></Center>}
             <Visibility render={!!this.mediaUri} style={[styles.fullSize]}>
-                <VideoPlayer
+                <CardVideoPlayer
                     sourceUri={this.mediaUri||''}
                     autoplay
                     controls

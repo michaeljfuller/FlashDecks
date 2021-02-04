@@ -3,6 +3,7 @@ import {View} from "react-native";
 import {supportedVideoTypes, VideoPlayerProps} from "./VideoPlayer.common";
 import VideoPlayerError from "./VideoPlayerError";
 import ImmutablePureComponent from "../ImmutablePureComponent";
+import {Color} from "../../styles/Color";
 
 export interface VideoPlayerState {
     error?: string;
@@ -66,6 +67,8 @@ export class VideoPlayer extends ImmutablePureComponent<VideoPlayerProps, VideoP
             key={sourceUri}
             onError={this.onError}
             width="100%"
+            height="100%"
+            style={{ backgroundColor: Color.OffBlack }}
         >
             <source src={sourceUri} type={type} />
         </video>;

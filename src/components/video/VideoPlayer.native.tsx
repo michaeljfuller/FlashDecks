@@ -1,6 +1,6 @@
 import React from "react";
 import {Text, View, StyleSheet, LayoutChangeEvent} from "react-native";
-import {Video} from 'expo-av';
+import {Video, VideoReadyForDisplayEvent} from 'expo-av';
 import ImmutablePureComponent from "../ImmutablePureComponent";
 import {VideoPlayerProps} from "./VideoPlayer.common";
 import VideoPlayerError from "./VideoPlayerError";
@@ -8,6 +8,7 @@ import {Visibility} from "../layout/Visibility";
 import ProgressCircle from "../progress/ProgressCircle";
 import Row from "../layout/Row";
 import Column from "../layout/Column";
+import {Color} from "../../styles/Color";
 
 export interface VideoPlayerState {
     error?: string;
@@ -35,7 +36,7 @@ export class VideoPlayer extends ImmutablePureComponent<VideoPlayerProps, VideoP
             layoutHeight: event.nativeEvent.layout.height
         });
     }
-    onReadyForDisplay = () => {
+    onReadyForDisplay = (_: VideoReadyForDisplayEvent) => {
         this.setStateTo({ readyForDisplay: true });
     }
     onError = (error: string) => {
@@ -108,5 +109,6 @@ export const styles = StyleSheet.create({
     video: {
         width: '100%',
         height: '100%',
+        backgroundColor: Color.OffBlack,
     },
 });
