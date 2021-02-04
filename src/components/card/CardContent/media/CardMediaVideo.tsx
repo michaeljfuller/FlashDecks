@@ -16,12 +16,13 @@ export class CardMediaVideo extends BaseCardMedia {
 
     render() {
         const {error} = this.state;
+        const height = this.props.height || 200;
 
         if (error) {
-            return <CardMediaError message={error}  />;
+            return <CardMediaError message={error} />;
         }
 
-        return <View style={styles.root}>
+        return <View style={[styles.root, {height}]}>
             {this.mediaUri ? undefined : <Center><ProgressCircle /></Center>}
             <Visibility render={!!this.mediaUri} style={[styles.fullSize]}>
                 <VideoPlayer

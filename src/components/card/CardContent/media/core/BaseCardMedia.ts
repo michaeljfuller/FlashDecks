@@ -1,14 +1,13 @@
 import ImmutablePureComponent from "../../../../ImmutablePureComponent";
 import {CardContentModel} from "../../../../../models";
 import logger from "../../../../../utils/Logger";
-import {CardMediaImageProps} from "../CardMediaImage";
 import mediaApi from "../../../../../api/MediaApi";
 import {getErrorText} from "../../../../../utils/string";
 import {Observable, Subscription} from "rxjs";
-import {pipeLogger} from "../../../../../utils/async";
 
 export interface BaseCardMediaProps {
     content: CardContentModel;
+    height?: number;
 }
 export interface BaseCardMediaState {
     mediaUrl?: string;
@@ -51,7 +50,7 @@ export abstract class BaseCardMedia<
         this.fetchMediaUrlSub?.unsubscribe();
     }
 
-    componentDidUpdate(prevProps: Readonly<CardMediaImageProps>/*, prevState: Readonly<CardMediaImageState>/*, snapshot?: any*/) {
+    componentDidUpdate(prevProps: Readonly<BaseCardMediaProps>/*, prevState: Readonly<BaseCardMediaState>/*, snapshot?: any*/) {
         const {content} = this.props;
         if (prevProps.content.value !== content.value) { // URI/S3Key changed
             this.initMedia();

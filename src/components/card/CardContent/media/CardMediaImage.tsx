@@ -9,14 +9,11 @@ import {Visibility} from "../../../layout/Visibility";
 import Center from "../../../layout/Center";
 import {BaseCardMedia, BaseCardMediaProps, BaseCardMediaState} from "./core/BaseCardMedia";
 
-export interface CardMediaImageProps extends BaseCardMediaProps {
-    height?: number;
-}
 export interface CardMediaImageState extends BaseCardMediaState {
     imageSize?: ImageSize;
 }
 
-export class CardMediaImage extends BaseCardMedia<CardMediaImageProps, CardMediaImageState> {
+export class CardMediaImage extends BaseCardMedia<BaseCardMediaProps, CardMediaImageState> {
 
     private getImageSizeSub?: Subscription;
     componentWillUnmount() {
