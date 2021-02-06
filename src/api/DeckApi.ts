@@ -1,110 +1,103 @@
 import {API, graphqlOperation} from "aws-amplify";
-import {getDeck, getDecksByOwner, listDecks} from "../graphql/queries";
-import {createDeck, updateDeck, deleteDeck} from "../graphql/mutations";
-import {
-    CreateDeckInput, CreateDeckMutation, CreateDeckMutationVariables,
-    UpdateDeckInput, UpdateDeckMutation, UpdateDeckMutationVariables,
-    GetDeckQuery, GetDeckQueryVariables,
-    GetDecksByOwnerQuery, GetDecksByOwnerQueryVariables,
-    ListDecksQuery, ListDecksQueryVariables,
-    DeleteDeckInput, DeleteDeckMutation, DeleteDeckMutationVariables,
-} from "../API";
 import {DeckListItemModel, DeckModel} from "../models";
 import decksStore from "../store/decks/DecksStore";
 import ApiRequest from "./util/ApiRequest";
 import {GraphQueryResponse} from "./util/ApiTypes";
 import {filterExists} from "../utils/array";
+import {logClass} from "../utils/debugging/decorators/logClass";
+import {
+    getDeck, GetDeckQueryString, GetDeckQueryVariables,
+    getDecksByOwner, GetDecksByOwnerQueryString, GetDecksByOwnerQueryVariables,
+    listDecks, ListDecksQueryString, ListDecksQueryVariables,
+    createDeck, CreateDeckMutationString, CreateDeckInput,
+    updateDeck, UpdateDeckMutationString, UpdateDeckInput,
+    deleteDeck, DeleteDeckMutation, DeleteDeckInput, DeleteDeckMutationVariables,
+    VariablesFromQueryString, ResponseFromQueryString, CreateDeckMutationVariables, UpdateDeckMutationVariables,
+} from "./DeckApi.queries";
 
+@logClass({ enabled: true })
 export class DeckApi {
 
-    getById(id: GetDeckQueryVariables['id']): ApiRequest<DeckModel> {
+    getById(
+        id: GetDeckQueryVariables['id']
+    ): ApiRequest<DeckModel, GetDeckQueryVariables> {
         const variables = { id } as GetDeckQueryVariables;
-        const promise = API.graphql(
-            graphqlOperation(getDeck, variables)
-        ) as GraphQueryResponse<GetDeckQuery>;
-
-        // promise.then(data => console.log('DeckApi.getById', id, data));
-
         return new ApiRequest(
-            promise.then( response => {
+            sendGet(getDeck, variables).then(response => {
                 const apiModel = response.data?.getDeck;
+                if (!apiModel) throw new Error('No response object.');
                 const deck = apiModel ? DeckModel.createFromApi(apiModel) : undefined;
                 if (deck) decksStore.add(deck);
+                else throw new Error("Failed to parse Deck.");
                 return deck;
             }),
             variables
         );
     }
 
-    getList(variables?: ListDecksQueryVariables): ApiRequest<DeckListItemModel[]> {
-        const promise = API.graphql(
-            graphqlOperation(listDecks, variables)
-        ) as GraphQueryResponse<ListDecksQuery>;
-
-        // promise.then(data => console.log('DeckApi.getList', variables, data));
-
+    getList(
+        variables?: ListDecksQueryVariables
+    ): ApiRequest<DeckListItemModel[], ListDecksQueryVariables> {
         return new ApiRequest(
-            promise.then(
+            sendGet(listDecks, variables).then(
                 response => filterExists(response.data?.listDecks?.items || []).map(DeckListItemModel.createFromApi)
             ),
             variables
         );
     }
 
-    getForUser(ownerId: string, options: Omit<GetDecksByOwnerQueryVariables, 'ownerId'>): ApiRequest<DeckListItemModel[]> {
-        const variables: GetDecksByOwnerQueryVariables = { ownerId, ...options};
-        const promise = API.graphql(
-            graphqlOperation(getDecksByOwner, variables)
-        ) as GraphQueryResponse<GetDecksByOwnerQuery>;
-
-        // promise.then(data => console.log('DeckApi.getForUser', variables, data));
-
+    getForUser(
+        ownerId: string,
+        options: Omit<GetDecksByOwnerQueryVariables, 'ownerId'>
+    ): ApiRequest<DeckListItemModel[], GetDecksByOwnerQueryVariables> {
+        const variables: GetDecksByOwnerQueryVariables = { ownerId, ...options };
         return new ApiRequest(
-            promise.then(
+            sendGet(getDecksByOwner, variables).then(
                 response => filterExists(response.data?.getDecksByOwner?.items || []).map(DeckListItemModel.createFromApi)
             ),
             variables
         );
     }
 
-    create(input: CreateDeckInput): ApiRequest<DeckModel> {
-        const variables = { input } as CreateDeckMutationVariables;
-
-        const promise = API.graphql(
-            graphqlOperation(createDeck, variables)
-        ) as GraphQueryResponse<CreateDeckMutation>;
-
+    create(deck: DeckModel): ApiRequest<DeckModel, CreateDeckMutationVariables>;
+    create(vars: CreateDeckMutationVariables): ApiRequest<DeckModel, CreateDeckMutationVariables>;
+    create(deckOrVars: DeckModel|CreateDeckMutationVariables): ApiRequest<DeckModel, CreateDeckMutationVariables> {
+        const vars: CreateDeckMutationVariables = deckOrVars instanceof DeckModel
+            ? { input: deckToCreateDeckInput(deckOrVars) }
+            : deckOrVars;
         return new ApiRequest(
-            promise.then(response => {
-                // deck.update({ id: response.data?.createDeck?.id })
+            sendCreateOrUpdate(createDeck, vars).then( response => {
                 const apiDeck = response.data?.createDeck;
-                return apiDeck ? DeckModel.createFromApi(apiDeck) : undefined;
-            }),
-            variables
-        );
-    }
-
-    /**
-     * TODO Delete removed cards. Same for future `DeckApi.remove()`.
-     * TODO `DeckModel.source: ApiDeck` to find removed cards.
-     */
-    update(input: UpdateDeckInput): ApiRequest<DeckModel> {
-        const variables = { input } as UpdateDeckMutationVariables;
-
-        const promise = API.graphql(
-            graphqlOperation(updateDeck, variables)
-        ) as GraphQueryResponse<UpdateDeckMutation>;
-
-        return new ApiRequest(
-            promise.then( response => {
-                const apiDeck = response.data?.updateDeck;
-                return apiDeck ? DeckModel.createFromApi(apiDeck) : undefined;
+                const deck = apiDeck ? DeckModel.createFromApi(apiDeck) : undefined;
+                if (!deck) throw new Error("Failed to parse deck");
+                return deck;
             } ),
-            variables
+            vars
         );
     }
 
-    remove(id: DeleteDeckInput['id']): ApiRequest<DeckModel> {
+    update(deck: DeckModel): ApiRequest<DeckModel, UpdateDeckMutationVariables>;
+    update(vars: UpdateDeckMutationVariables): ApiRequest<DeckModel, UpdateDeckMutationVariables>;
+    update(deckOrVars: DeckModel|UpdateDeckMutationVariables): ApiRequest<DeckModel, UpdateDeckMutationVariables> {
+        const vars: UpdateDeckMutationVariables = deckOrVars instanceof DeckModel
+            ? { input: deckToUpdateDeckInput(deckOrVars) }
+            : deckOrVars;
+        return new ApiRequest(
+            sendCreateOrUpdate(updateDeck, vars).then(response => {
+                const apiDeck = response.data?.updateDeck;
+                const deck = apiDeck ? DeckModel.createFromApi(apiDeck) : undefined;
+                if (!deck) throw new Error("Failed to parse deck");
+                return deck;
+            }),
+            vars
+        );
+    }
+
+    push(deck: DeckModel): ApiRequest<DeckModel, CreateDeckMutationVariables|UpdateDeckMutationVariables> {
+        return deck.id ? this.update(deck) : this.create(deck);
+    }
+
+    remove(id: DeleteDeckInput['id']): ApiRequest<DeckModel, DeleteDeckMutationVariables> {
         const variables = { input: { id } } as DeleteDeckMutationVariables;
 
         const promise = API.graphql(
@@ -114,7 +107,9 @@ export class DeckApi {
         return new ApiRequest(
             promise.then(response => {
                 const apiDeck = response.data?.deleteDeck;
-                return apiDeck ? DeckModel.createFromApi(apiDeck) : undefined;
+                const deck = apiDeck ? DeckModel.createFromApi(apiDeck) : undefined;
+                if (!deck) throw new Error("Failed to parse deck");
+                return deck;
             }),
             variables
         );
@@ -124,3 +119,48 @@ export class DeckApi {
 
 export const deckApi = new DeckApi;
 export default deckApi;
+
+/** Make the request to get deck(s). */
+function sendGet<
+    Query extends GetDeckQueryString | GetDecksByOwnerQueryString | ListDecksQueryString,
+    Vars extends VariablesFromQueryString<Query>,
+    Data extends ResponseFromQueryString<Query>
+>(query: Query, variables: Vars): Promise<{ data?: Data }> { // Use "Promise" alias for GraphQueryResponse so type checking for async func works.
+    return API.graphql(
+        graphqlOperation(query, variables)
+    ) as GraphQueryResponse<Data>;
+}
+
+/** Send the deck to be created/updated */
+async function sendCreateOrUpdate<
+    Query extends CreateDeckMutationString | UpdateDeckMutationString,
+    Vars extends VariablesFromQueryString<Query>,
+    Data extends ResponseFromQueryString<Query>
+>(query: Query, vars: Vars): Promise<{ data?: Data }> { // Use "Promise" alias for GraphQueryResponse so type checking for async func works.
+    return await API.graphql(
+        graphqlOperation(query, vars)
+    ) as GraphQueryResponse<Data>;
+}
+
+function deckToCreateDeckInput(deck: DeckModel): CreateDeckInput {
+    return {
+        title: deck.title,
+        description: deck.description,
+        tags: deck.tags,
+        cards: deck.cards?.map(card => ({
+            title: card.title,
+            sides: card.sides?.map(side => ({
+                content: side.content?.map(content => ({
+                    value: content.value,
+                    type: content.type as any
+                }))
+            }))
+        }))
+    } as CreateDeckInput;
+}
+function deckToUpdateDeckInput(deck: DeckModel): UpdateDeckInput {
+    return {
+        ...deckToCreateDeckInput(deck),
+        id: deck.id,
+    };
+}

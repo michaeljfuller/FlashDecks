@@ -1,8 +1,9 @@
 import {LogColor} from './logging/logColors';
 import {PrintFactory} from "./logging/PrintFactory";
 import {interlace} from "./array";
-import {isPlatformWeb} from "../platform";
-import {getStack} from "./function";
+import {getParamNames, getStack} from "./function";
+import {getLogRef} from "./debugging/logRef";
+import {classColor, instanceColor, methodColor} from "./debugging/debuggingOptions";
 
 export {LogColor} from './logging/logColors';
 
@@ -44,85 +45,105 @@ export class Logger {
     protected printer: PrintFactory = new PrintFactory();
     public enabled = true;
 
+    get isEmpty() {
+        return this.queue.length >= 0;
+    }
+    get notEmpty() {
+        return !this.isEmpty;
+    }
+
     constructor(readonly canStyle = true) {}
 
     //<editor-fold desc="Output">
 
     /** Output group */
-    group(...items: any[]): void {
+    group(...items: any[]): this {
         if (this.enabled) {
             this.addSpaced(...items);
             console.group(...this.getPrintArgs());
             this.groupDepth++;
         }
         this.clear();
+        return this;
     }
 
     /** Output collapsed group */
-    groupCollapsed(...items: any[]): void {
+    groupCollapsed(...items: any[]): this {
         if (this.enabled) {
             this.addSpaced(...items);
             console.groupCollapsed(...this.getPrintArgs());
             this.groupDepth++;
         }
         this.clear();
+        return this;
     }
 
     /** Output log */
-    log(...items: any[]): void {
+    log(...items: any[]): this {
         if (this.enabled) {
             this.addSpaced(...items);
-            console.log(...this.getPrintArgs());
+            const args = this.getPrintArgs();
+            if (args.length) console.log(...args);
         }
         this.clear();
+        return this;
     }
 
     /** Output info */
-    info(...items: any[]): void {
+    info(...items: any[]): this {
         if (this.enabled) {
             this.addSpaced(...items);
-            console.log(...this.getPrintArgs());
+            const args = this.getPrintArgs();
+            if (args.length) console.info(...args);
         }
         this.clear();
+        return this;
     }
 
     /** Output void */
-    error(...items: any[]): void {
+    error(...items: any[]): this {
         if (this.enabled) {
             this.addSpaced(...items);
-            console.log(...this.getPrintArgs());
+            const args = this.getPrintArgs();
+            if (args.length) console.error(...args);
         }
         this.clear();
+        return this;
     }
 
     /** Output warning */
-    warning(...items: any[]): void {
+    warning(...items: any[]): this {
         if (this.enabled) {
             this.addSpaced(...items);
-            console.log(...this.getPrintArgs());
+            const args = this.getPrintArgs();
+            if (args.length) console.warn(...args);
         }
         this.clear();
+        return this;
     }
 
     /** Close the group. */
-    groupEnd(): void {
+    groupEnd(): this {
         if (this.enabled) {
             if (this.groupDepth > 0) {
                 console.groupEnd();
                 this.groupDepth--;
             }
         }
+        return this;
     }
 
-    groupEndAll(): void {
+    groupEndAll(): this {
         while (this.enabled && this.groupDepth > 0) {
             this.groupEnd();
         }
+        return this;
     }
 
-    clear(): void {
+    clear(): this {
         this.queue = [];
         this.printer.clear();
+        return this;
     }
 
     //</editor-fold>
@@ -137,6 +158,51 @@ export class Logger {
     /** Queue items to be printed, with spaces between them. */
     addSpaced(...items: any[]): this {
         return this.add(...interlace(items, ' '));
+    }
+
+    /** Queue string containing the target's reference. */
+    addLogRef(target: object, prepend = '', append = '', color = true): this {
+        const {type, id} = getLogRef(target);
+        const originalColor = this.currentColor;
+        const originalBackground = this.currentBackground;
+
+        if (prepend) this.add(prepend);
+
+        if (color) this.resetColors();
+        if (color) this.color((classColor(type)));
+        this.add(type);
+
+        if (color) this.color((instanceColor(id)));
+        this.add(`{${id}}`);
+
+        if (color) {
+            this.color(originalColor);
+            this.background(originalBackground);
+        }
+        if (append) this.add(append);
+
+        return this;
+    }
+
+    /** Queue string with method name (and optional params). */
+    addMethod(func: Function|string, params = true, color = true): this {
+        const name = typeof func === "function" ? func.name : func;
+        const originalColor = this.currentColor;
+        const originalBackground = this.currentBackground;
+
+        if (color) this.resetColors();
+        if (color) this.color(methodColor(name));
+        this.add(name);
+
+        if (params && typeof func === "function") {
+            this.add('(' + getParamNames(func).join(', ') + ')');
+        }
+
+        if (color) {
+            this.color(originalColor);
+            this.background(originalBackground);
+        }
+        return this;
     }
 
     /** Queue a line break to be printed. */
@@ -189,6 +255,22 @@ export class Logger {
     }
     resetColors(): this {
         return this.color(null).background(null);
+    }
+
+    /** Last color added to the queue. */
+    get currentColor(): LogColor {
+        for (let i = this.queue.length-1; i >= 0; i--) {
+            if (this.queue[i].type === LogQueueItemType.Color) return this.queue[i].value;
+        }
+        return null;
+    }
+
+    /** Last background added to the queue. */
+    get currentBackground(): LogColor {
+        for (let i = this.queue.length-1; i >= 0; i--) {
+            if (this.queue[i].type === LogQueueItemType.Background) return this.queue[i].value;
+        }
+        return null;
     }
 
     get black(): this { return this.color("Black"); }

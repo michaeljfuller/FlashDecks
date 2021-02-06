@@ -19,10 +19,12 @@ export enum IconType {
 export interface IconProps {
     type: IconType;
     style?: IconStyles;
+    flat?: boolean;
 }
 export const IconPropTypes: Record<keyof IconProps, any> = {
     type: PropTypes.number.isRequired,
     style: PropTypes.object,
+    flat: PropTypes.bool,
 };
 
 export interface IconStyles {
@@ -31,3 +33,4 @@ export interface IconStyles {
     color?: string;
     padding?: number;
 }
+export const iconStandardSize = 24;

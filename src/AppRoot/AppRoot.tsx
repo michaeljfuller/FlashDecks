@@ -1,5 +1,5 @@
 import React from "react";
-import {Text, View, StyleSheet} from "react-native";
+import {Text} from "react-native";
 import {Provider as ReduxProvider} from 'react-redux';
 import {AppRootBase} from './AppRootBase';
 import AppAuthenticator from './Authenticator/AppAuthenticator';
@@ -8,7 +8,9 @@ import AppNavigation from "../navigation/AppNavigation/AppNavigation";
 import store from '../store/store';
 import RootToast from "./RootToast/RootToast";
 import {logAppInfo} from "./logAppInfo";
-import {isProduction} from "../env";
+import ProgressCircle from "../components/progress/ProgressCircle";
+import Button from "../components/button/Button";
+import Center from "../components/layout/Center";
 
 logAppInfo();
 
@@ -17,35 +19,31 @@ export class AppRoot extends AppRootBase {
     render() {
         return <ErrorBoundary>
             <ReduxProvider store={store}>
-                {this.renderAuth() || this.renderApp()}
+                {this.renderStart() || this.renderAuth() || this.renderApp()}
             </ReduxProvider>
         </ErrorBoundary>;
     }
 
+    renderStart() {
+        if (this.state.started) return null;
+        return <Center>
+            <Button width={150} height={50} title="Start" onClick={() => this.start()} />
+        </Center>;
+    }
+
     renderAuth() {
-        if (!this.state.cognitoUser) {
-            return <View style={styles.centerContents}>
+        if (this.state.user) return null;
 
-                {isProduction ? null : <View>
-                    <View style={{flexDirection:"row"}}>
-                        <Text style={{fontWeight:"bold", width: 80}}>Test User: </Text>
-                        <Text>test_user</Text>
-                    </View>
-                    <View style={{flexDirection:"row"}}>
-                        <Text style={{fontWeight:"bold", width: 80}}>Password: </Text>
-                        <Text>password</Text>
-                    </View>
-                </View>}
+        if (!this.state.initialized) {
+            return <Center>
+                <Text>{this.state.cognitoUser ? 'Getting User Data' : 'Authenticating...'}</Text>
+                <ProgressCircle />
+            </Center>;
+        }
 
-                <AppAuthenticator />
-            </View>;
-        }
-        if (!this.state.user) {
-            return <View style={styles.centerContents}>
-                <Text>Getting user data...</Text>
-            </View>;
-        }
-        return null;
+        return <Center>
+            <AppAuthenticator />
+        </Center>;
     }
 
     renderApp() {
@@ -57,11 +55,3 @@ export class AppRoot extends AppRootBase {
 
 }
 export default AppRoot;
-
-const styles = StyleSheet.create({
-    centerContents: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});

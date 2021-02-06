@@ -1,4 +1,6 @@
 {
+    "identityPoolName": "FlashDecksAmplifyAuth_identitypool_553b3633",
+    "allowUnauthenticatedIdentities": false,
     "resourceNameTruncated": "flashd5161d449",
     "userPoolName": "FlashDecksAmplify_UserPool",
     "autoVerifiedAttributes": [
@@ -31,7 +33,7 @@
     "userpoolClientSetAttributes": false,
     "sharedId": "5161d449",
     "resourceName": "FlashDecksAmplifyAuth",
-    "authSelections": "userPoolOnly",
+    "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
             "AuthRole",

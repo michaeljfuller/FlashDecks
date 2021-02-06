@@ -1,14 +1,23 @@
 import {API, graphqlOperation} from "aws-amplify";
 import {getUser} from "../graphql/queries";
-import {ApiUser, UserModel} from "../models";
+import {GetUserQuery} from "../graphql/API";
+import {UserModel} from "../models";
+import ApiRequest from "./util/ApiRequest";
+import {GraphQueryResponse} from "./util/ApiTypes";
 
 export class UserApi {
 
     /** Get a user by ID */
-    async getUser(id: string): Promise<UserModel|undefined> {
-        const response: any = await API.graphql(graphqlOperation(getUser, { id }));
-        const apiUser: ApiUser = response && response.data && response.data.getUser;
-        return apiUser ? UserModel.fromApi(apiUser) : undefined; // TODO Throw error?
+    getUser(id: string): ApiRequest<UserModel> {
+        const request = API.graphql(graphqlOperation(getUser, { id })) as GraphQueryResponse<GetUserQuery>;
+        const promise = request.then(response => {
+            const apiUser = response?.data?.getUser;
+            if (!apiUser) throw new Error('No response object.');
+            const user = apiUser ? UserModel.fromApi(apiUser) : undefined;
+            if (!user) throw new Error("Failed to parse User.");
+            return user;
+        });
+        return new ApiRequest(promise, {id});
     }
 
 }

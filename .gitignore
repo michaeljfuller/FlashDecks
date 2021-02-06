@@ -1,5 +1,6 @@
 .temp/
 .env
+*.log
 
 # Expo
 .expo/*

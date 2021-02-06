@@ -12,12 +12,16 @@ export interface ModalProps {
     onClose: () => void;
     /** Style contents */
     style?: ViewStyle;
+    /** Width when not full-page */
+    width?: number;
+    /** Height when not full-page */
+    height?: number;
 }
 
 /** Pull only ModalProps members from an object that may have others. */
 export function extractModalProps(props: ModalProps): ModalProps {
-    const {open, onOpen, onClose, style} = props;
-    return {open, onOpen, onClose, style};
+    const {open, onOpen, onClose, style, width, height} = props;
+    return {open, onOpen, onClose, style, width, height};
 }
 
 export abstract class ModalBase extends React.PureComponent<ModalProps> {

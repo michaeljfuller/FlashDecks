@@ -40,6 +40,14 @@ export function safeJsonStringify<T>(
     }
 }
 
+/** Add padding to the left of a number if it's under the defined number of digits. */
+export function padNumber(number: number, integers = 4, decimals = 0, padding='0'): string {
+    let [integerStr, decimalStr] = number.toString(10).split('.', 2);
+    integerStr = integerStr.padStart(integers, padding);
+    if (decimals > 0) decimalStr = (decimalStr||'').padEnd(decimals, padding);
+    return !decimalStr ? integerStr : integerStr + '.' + decimalStr;
+}
+
 // /** Split a string in two, at the given index. */
 // export function divideString(str: string, index: number): [string, string] {
 //     return [str.slice(0, index), str.slice(index)];

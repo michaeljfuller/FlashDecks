@@ -11,6 +11,7 @@ export class Modal extends ModalBase {
     onClose = () => this.close();
 
     render() {
+        const { width=500, height, style, children } = this.props;
         return <MaterialModal open={this.isOpen} onClose={this.onClose}>
             {
                 this.isClosed
@@ -18,8 +19,12 @@ export class Modal extends ModalBase {
                 : <DialogContent>
                     <View style={styles.modalParent}>
                         <View style={styles.modalWrapper}>
-                            <View style={[styles.modalContents, this.props.style]}>
-                                {this.props.children}
+                            <View style={[
+                                styles.modalContents,
+                                { width, height },
+                                style
+                            ]}>
+                                {children}
                             </View>
                         </View>
                     </View>

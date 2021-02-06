@@ -1,8 +1,9 @@
 import React, {useCallback} from "react";
-import {View, Text, TextInput, StyleSheet} from "react-native";
+import {StyleSheet, Text, TextInput, View} from "react-native";
 import {CardContentModel} from "../../../../models";
 import {Color} from "../../../../styles/Color";
 import {CardMediaImage} from "../../CardContent/media/CardMediaImage";
+import {ImagePicker, ImagePickerData} from "../../../media-picker/ImagePicker";
 
 interface CardFormImageProps {
     content: CardContentModel;
@@ -16,7 +17,17 @@ export const CardFormImage = React.memo(function CardFormImage(props: CardFormIm
     const { content, onChange, preview } = props;
 
     const onChangeText = useCallback(
-        (value: string) => onChange(content.update({value})),
+        (value: string) => onChange(content.update({
+            value,
+            format: "String"
+        })),
+        [onChange, content]
+    );
+    const onChangeLocal = useCallback(
+        (data: ImagePickerData) => onChange(content.update({
+            value: data.dataUri,
+            format: "ImageData"
+        })),
         [onChange, content]
     );
 
@@ -26,11 +37,20 @@ export const CardFormImage = React.memo(function CardFormImage(props: CardFormIm
             <TextInput
                 editable
                 focusable
-                autoFocus
                 style={styles.input}
-                value={props.content.value}
+                value={content.format === "String" ? content.value : ''}
                 onChangeText={onChangeText}
             />
+        </View>
+        <View style={{marginVertical: 4}}>
+            <Text style={{fontWeight:'bold'}}>Example:</Text>
+            <Text selectable>https://file-examples-com.github.io/uploads/2017/10/file_example_JPG_100kB.jpg</Text>
+            <Text selectable>https://file-examples-com.github.io/uploads/2017/10/file_example_GIF_500kB.gif</Text>
+            <Text selectable>https://file-examples-com.github.io/uploads/2017/10/file_example_PNG_500kB.png</Text>
+            <Text selectable>https://file-examples-com.github.io/uploads/2020/03/file_example_SVG_20kB.svg</Text>
+        </View>
+        <View style={styles.inputRow}>
+            <ImagePicker label="Pick image from device" onChange={onChangeLocal} />
         </View>
         <View style={styles.preview}>
             {preview && content.validValue && <View style={styles.image}>

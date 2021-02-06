@@ -42,7 +42,7 @@ export default class CardView extends CardViewBase {
         const totalHeight = this.state.viewLayout.height;
         const bodyHeight = Math.max(0, totalHeight - (headerHeight + footerHeight + marginBottom + borderWidth * 2));
 
-        return <View style={this.props.style} onLayout={this.onLayout}>
+        return <View style={[this.props.style, styles.root]} onLayout={this.onLayout}>
             <StyledCard variant="elevation" raised={true} elevation={5}>
 
                 <View style={styles.inner}>
@@ -56,7 +56,7 @@ export default class CardView extends CardViewBase {
                     </View>
 
                     <ScrollView style={styles.scrollView} contentContainerStyle={styles.body}>
-                        { this.renderCardSide(bodyHeight, this.state.editing, this.canPress) }
+                        { this.renderCardSide(bodyHeight, this.props.editable, this.state.editing, this.canPress) }
                     </ScrollView>
 
                 </View>
@@ -99,8 +99,8 @@ export default class CardView extends CardViewBase {
                 onPressDone={this.state.modifiedCard ? this.onClickDoneEditSide : undefined}
                 onPressCancel={this.onClickCancelEditSide}
                 onPressEdit={this.onClickEditSide}
-                onPressAddBefore={this.addSideBefore}
-                onPressAddAfter={this.addSideAfter}
+                onPressAddBefore={this.onAddSideBefore}
+                onPressAddAfter={this.onAddSideAfter}
                 onPressDelete={this.showDeleteSidePrompt}
             />
             <CardInfoModal
@@ -120,13 +120,14 @@ export default class CardView extends CardViewBase {
         </View>;
     }
 
-    renderCardSide(height = 0, editing = false, canPress = false) {
+    renderCardSide(height = 0, editable = false, editing = false, canPress = false) {
         return <CardSide
             side={this.currentSide}
             onPress={canPress ? this.onPress : undefined}
             onModifications={this.onSideChange}
             height={height}
             editing={editing}
+            editable={editable}
             style={[styles.side, canPress ? globalStyles.pointer : null]}
         />;
     }

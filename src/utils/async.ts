@@ -1,3 +1,6 @@
+import {Observable, OperatorFunction, Subscription} from "rxjs"
+import {Logger} from "./Logger";
+
 type CallbackBase = (...args: any) => boolean|void;
 
 /** Branches from CallbackManager to allow individual callbacks to be added or removed, but not triggered. */
@@ -44,3 +47,69 @@ export class CallbackManager<
     }
 
 }
+
+/** Convert a promise to an Observable, which can be unsubscribed from when a component is unmounted. */
+export function toObservable<Type>(promise: Promise<Type>): Observable<Type> {
+    return new Observable(observer => {
+        promise.then(
+            value => observer.next(value),
+            error => observer.error(error),
+        ).finally(() => observer.complete()); // Observer ignores if there was an error
+    });
+}
+
+/** Converts an Observable to a wrapped Promise and Subscription to drop Promise. */
+export class PromiseAndSubscription<Type> {
+    readonly promise: Promise<Type>;
+    get subscription() { return this._subscription; }
+    private _subscription?: Subscription;
+
+    constructor(observable: Observable<Type>) {
+        this.promise = new Promise((resolve, reject) => {
+            let value: Type|undefined = undefined;
+            this._subscription = observable.subscribe(
+                next => value = next,
+                error => reject(error),
+                () => resolve(value),
+            );
+        });
+    }
+}
+export function toPromiseAndSubscription<Type>(observable: Observable<Type>) {
+    return new PromiseAndSubscription(observable);
+}
+
+/**
+ * When result is passed to an Observable.pipe(), the contents of the observer get logged.
+ * @example myObservable.pipe(pipeLogger('myObservable')).subscribe(...);
+ */
+export function pipeLogger<Type>(
+    label?: string
+): OperatorFunction<Type, Type> {
+    return (source) => {
+        if (!label) label = 'pipeLogger';
+        const id = pipeLoggerIdMap[label] || 1;
+        pipeLoggerIdMap[label] = id + 1;
+
+        const logger = new Logger;
+        const log = () => logger.bgMagenta.brightWhite.add(` ${label} [${id}]`);
+
+        return new Observable(subscriber => {
+            source.subscribe(
+                value => {
+                    log().brightWhite.bgBrightBlue.add(' next ').resetColors().space.log( value);
+                    subscriber.next(value);
+                },
+                error => {
+                    log().brightWhite.bgRed.add(' error ').resetColors().space.warning(error);
+                    subscriber.next(error);
+                },
+                () => {
+                    log().brightWhite.bgGreen.info(' complete ');
+                    subscriber.complete();
+                },
+            );
+        });
+    };
+}
+const pipeLoggerIdMap: Record<string, number> = {};

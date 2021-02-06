@@ -1,20 +1,12 @@
 import React, {PropsWithChildren} from "react";
-import {ScrollView, StyleSheet} from "react-native";
-import {ScreenContainerProps} from "./ScreenContainer.common";
-export * from "./ScreenContainer.common";
+import Column, {ColumnProps} from "../components/layout/Column";
 
-export default function ScreenContainer(props: PropsWithChildren<ScreenContainerProps>) {
-    return <ScrollView
-        style={styles.parent}
-        contentContainerStyle={[ styles.child, props.style ]}
-    >{props.children}</ScrollView>;
+export interface ScreenContainerProps extends ColumnProps {
 }
 
-const styles = StyleSheet.create({
-    parent: {
-        flex: 1,
-    },
-    child: {
-        height: '100%',
-    },
-});
+export default function ScreenContainer(props: PropsWithChildren<ScreenContainerProps>) {
+    const {children, scroll=true, ...columnProps} = props;
+    return <Column scroll={scroll} {...columnProps}>
+        {children}
+    </Column>;
+}

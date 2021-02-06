@@ -1,18 +1,24 @@
 import React from 'react';
-import {View, TouchableWithoutFeedback, StyleSheet, Text, ViewStyle} from 'react-native';
+import {StyleSheet, Text, TouchableWithoutFeedback, View, ViewStyle} from 'react-native';
 import ImmutablePureComponent, {castDraft} from "../../ImmutablePureComponent";
 import {Color} from "../../../styles/Color";
 import CardContentView from "../CardContent/CardContent";
 import {CardContentModel, CardSideModel} from "../../../models";
 import {PromptModal} from "../../modal/PromptModal/PromptModal";
 import {ModifyContentModal} from "../ModifyContent/ModifyContentModal";
-import Button from "../../button/Button";
+import Button, {IconType} from "../../button/Button";
+import Column from "../../layout/Column";
+import Row from "../../layout/Row";
+import IconButton from "../../button/IconButton";
+import {Visibility} from "../../layout/Visibility";
+import withDefaultProps from "../../../utils/hoc/withDefaultProps/withDefaultProps";
 
 export interface CardSideProps {
     side?: CardSideModel|undefined;
     style?: ViewStyle|Array<ViewStyle|null|undefined>;
     height: number;
     editing?: boolean;
+    editable?: boolean;
     onPress?: () => void;
     onModifications?: (side: CardSideModel|null) => void;
 }
@@ -196,10 +202,23 @@ export class CardSide extends ImmutablePureComponent<CardSideProps, CardSideStat
 
     private renderNoContent() {
         if (this.currentContent.length > 0) return null;
-        return <React.Fragment>
+        const {editing, editable} = this.props;
+
+        return <Column center flex>
             <Text style={styles.emptySideText}>This side is empty.</Text>
-            {this.props.editing && <Button title="Add Content" onClick={this.onContentAdd} />}
-        </React.Fragment>;
+            <Visibility render={editable}>
+            {
+                editing ? <View>
+                    <Text style={styles.emptySideText}>Once you are done, press the check button to apply changes.</Text>
+                    <Button title="Add Content" style={styles.addContentButton} onClick={this.onContentAdd} />
+                </View> : <Row center wrap>
+                    <Text style={styles.emptySideText} numberOfLines={1}>Press the top-right</Text>
+                    <IconButton icon={IconType.More} color="Black" />
+                    <Text style={styles.emptySideText} numberOfLines={1}>button to edit.</Text>
+                </Row>
+            }
+            </Visibility>
+        </Column>;
     }
 
 }
@@ -211,7 +230,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
     },
     emptySideText: {
-        marginVertical: 5,
+        marginHorizontal: 3,
+        lineHeight: 24,
         textAlign: "center",
+        overflow: "visible",
+    },
+    addContentButton: {
+        marginTop: 10,
+        marginHorizontal: 10,
     },
 });

@@ -5,7 +5,8 @@ import Typography from "@material-ui/core/Typography";
 import {withStyles} from "@material-ui/core/styles";
 
 import {CardActionsProps} from "./CardSideActions.common";
-import IconButton, {IconType} from "../../button/IconButton";
+import Button, {IconType} from "../../button/Button";
+import IconButton from "../../button/IconButton";
 
 /** Action buttons for CardSide. */
 export const CardSideActions = React.memo(function CardSideActions(props: CardActionsProps) {
@@ -22,8 +23,8 @@ export const CardSideActions = React.memo(function CardSideActions(props: CardAc
     let button: React.ReactElement;
     if (props.editing) {
         button = <React.Fragment>
-            <IconButton icon={IconType.Done} onClick={props.onPressDone} color="Black" />
-            <IconButton icon={IconType.Cancel} onClick={props.onPressCancel} color="Black" />
+            <IconButton icon={IconType.Done} onClick={props.onPressDone} color={props.onPressDone ? "Green" : "Grey"} />
+            <IconButton icon={IconType.Cancel} onClick={props.onPressCancel} color="Red" />
         </React.Fragment>;
     } else {
         button = <IconButton icon={IconType.More} onClick={openActions} color="Black" />;
@@ -89,10 +90,10 @@ export function CardSideActionsMenu(props: CardSideActionsMenuProps) {
     >
         <View style={styles.column}>
             <Typography align="center">Card Side</Typography>
-            <IconButton text="Edit"       icon={IconType.Edit}   onClick={onPressEdit} />
-            <IconButton text="Add Before" icon={IconType.Add}    onClick={onPressAddBefore} style={styles.paddedButton} />
-            <IconButton text="Add After"  icon={IconType.Add}    onClick={onPressAddAfter}  style={styles.paddedButton} />
-            <IconButton text="Delete"     icon={IconType.Delete} onClick={onPressDelete}    style={styles.paddedButton} />
+            <Button square title="Edit"       icon={IconType.Edit}   onClick={onPressEdit} />
+            <Button square title="Add Before" icon={IconType.Add}    onClick={onPressAddBefore} style={styles.paddedButton} />
+            <Button square title="Add After"  icon={IconType.Add}    onClick={onPressAddAfter}  style={styles.paddedButton} />
+            <Button square title="Delete"     icon={IconType.Delete} onClick={onPressDelete}    style={styles.paddedButton} />
         </View>
     </StyledPopover>
 }

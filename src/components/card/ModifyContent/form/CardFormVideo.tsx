@@ -1,8 +1,9 @@
 import React, {useCallback} from "react";
-import {View, Text, TextInput, StyleSheet} from "react-native";
-import {CardContentModel} from "../../../../models";
+import {StyleSheet, Text, TextInput, View} from "react-native";
+import {CardContentFormat, CardContentModel} from "../../../../models";
 import {Color} from "../../../../styles/Color";
 import {CardMediaVideo} from "../../CardContent/media/CardMediaVideo";
+import {VideoPicker, VideoPickerData} from "../../../media-picker/VideoPicker";
 
 interface CardFormVideoProps {
     content: CardContentModel;
@@ -10,31 +11,51 @@ interface CardFormVideoProps {
     preview?: boolean;
 }
 
-const previewHeight = 200;
-
 export const CardFormVideo = React.memo(function CardFormVideo(props: CardFormVideoProps) {
     const { content, onChange, preview } = props;
+    const remoteUrl = props.content.format === "String" ? props.content.value : '';
 
     const onChangeText = useCallback(
-        (value: string) => onChange(content.update({value})),
+        (value: string) => onChange(content.update({value, format: "String"})),
+        [onChange, content]
+    );
+
+    const onChangeLocal = useCallback(
+        (data: VideoPickerData) => {
+            let format: CardContentFormat = "String";
+            if (data.uri.startsWith('data:')) format = "VideoData";
+            else if (data.uri.startsWith('file:')) format = "LocalURI";
+            onChange(content.update({ format, value: data.uri }));
+        },
         [onChange, content]
     );
 
     return <View>
+
         <View style={styles.inputRow}>
             <Text>URL</Text>
             <TextInput
                 editable
                 focusable
-                autoFocus
                 style={styles.input}
-                value={props.content.value}
+                value={remoteUrl}
                 onChangeText={onChangeText}
             />
         </View>
-        <View style={styles.preview}>
-            {preview && content.validValue && <CardMediaVideo content={content} height={previewHeight} />}
+
+        <Text style={{fontWeight:'bold'}}>Example:</Text>
+        <Text selectable style={styles.example}>https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4</Text>
+        <Text selectable style={styles.example}>https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mov-file.mov</Text>
+        <Text selectable style={styles.example}>http://techslides.com/demos/sample-videos/small.ogv</Text>
+
+        <View style={styles.inputRow}>
+            <VideoPicker label="Pick video from device" onChange={onChangeLocal} />
         </View>
+
+        <View style={styles.preview}>
+            {preview && content.validValue && <CardMediaVideo content={content} />}
+        </View>
+
     </View>;
 
 });
@@ -54,10 +75,13 @@ const styles = StyleSheet.create({
     },
     preview: {
         marginTop: 5,
-        height: previewHeight,
+        height: 200,
         overflow: "hidden",
         justifyContent: "center",
         flexDirection: "column",
         backgroundColor: "#DDD",
+    },
+    example: {
+        fontSize: 10,
     },
 });

@@ -1,43 +1,52 @@
-import React, {SyntheticEvent} from "react";
-import {View} from "react-native";
-import ImmutablePureComponent from "../../../ImmutablePureComponent";
-import {CardMediaVideoProps} from "./CardMediaVideo.common";
+import React from "react";
+import {VideoPlayer} from "../../../video/VideoPlayer";
+import {BaseCardMedia} from "./core/BaseCardMedia";
 import {CardMediaError} from "./CardMediaError";
+import {StyleSheet, Text, View} from "react-native";
+import Center from "../../../layout/Center";
+import ProgressCircle from "../../../progress/ProgressCircle";
+import {Color} from "../../../../styles/Color";
+import stopTouchPropagation from "../../../../utils/hoc/stopTouchPropagation";
+import withDefaultProps from "../../../../utils/hoc/withDefaultProps/withDefaultProps";
 
-export interface CardMediaVideoState {
-    error?: string;
-}
-export class CardMediaVideo extends ImmutablePureComponent<CardMediaVideoProps, CardMediaVideoState> {
-    readonly state = {} as Readonly<CardMediaVideoState>;
+const CardVideoPlayer = withDefaultProps(
+    stopTouchPropagation(VideoPlayer),
+    { autoplay: true, controls: true, loop: true, muted: true },
+    undefined,
+    "CardVideoPlayer"
+);
 
-    componentDidUpdate(prevProps: Readonly<CardMediaVideoProps>/*, prevState: Readonly<CardMediaVideoState>, snapshot?: any*/) {
-        if (prevProps.content.value !== this.props.content.value) { // URI changed
-            this.setStateTo({ error: undefined });
-        }
-    }
-
-    onError = (error: SyntheticEvent<HTMLVideoElement, Event>) => {
-        const message = `Failed to load video.`;
-        console.warn(message, this.props.content.value, error);
-        this.setStateTo({ error: message });
+export class CardMediaVideo extends BaseCardMedia {
+    onError = (error?: string) => {
+        this.logger(this.onError).warning(error);
+        this.setStateTo({ error: error || 'An error occurred.' });
     }
 
     render() {
         const {error} = this.state;
-        const {content, height} = this.props;
+        const height = this.props.height || 200;
 
         if (error) {
-            return <CardMediaError message={error} height={height} />;
+            return <CardMediaError message={error} />;
         }
 
-        return <View>
-            <video autoPlay loop muted controls
-                   height={height}
-                   key={content.value}
-                   onError={this.onError}
-            >
-                <source src={content.value} type={"video/"+content.value.split('.').pop()} />
-            </video>
+        return <View style={[styles.root, {height}]}>
+            {!this.mediaUri
+            ?   <Center><ProgressCircle /></Center>
+            :   <CardVideoPlayer sourceUri={this.mediaUri} onError={this.onError} />
+            }
         </View>;
     }
+
 }
+
+const styles = StyleSheet.create({
+    root: {
+        flex: 1,
+    },
+    error: {
+        color: Color.White,
+        backgroundColor: Color.Red,
+        textAlign: "center",
+    },
+});

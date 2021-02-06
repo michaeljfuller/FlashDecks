@@ -1,6 +1,6 @@
 import {isEqual} from "underscore";
 import Model, {ModelUpdate} from "./core/Model";
-import {ListDecksQuery} from "../API";
+import {ListDecksQuery} from "../graphql/API";
 import {ModalValidation} from "./core/Model.types";
 import {UserModel} from "./UserModel";
 

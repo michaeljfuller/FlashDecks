@@ -1,28 +1,13 @@
 import {Auth, Hub} from "aws-amplify";
+import logger from "../utils/Logger";
 import {ApiCognitoUser, CognitoUserModel} from "../models";
 import {CallbackManager} from "../utils/async";
-
-/** https://docs.amplify.aws/lib/utilities/hub/q/platform/js#authentication-events */
-enum AuthEventType {
-    SIGN_IN = 'signIn',
-    SIGN_UP = 'signUp',
-    SIGN_OUT = 'signOut',
-    SIGN_IN_FAILED = 'signIn_failure',
-    CONFIGURED = 'configured'
-}
-
-/** https://aws-amplify.github.io/amplify-js/api/globals.html#hubcapsule */
-interface HubCapsule {
-    channel: 'auth';
-    source: 'Auth';
-    payload: {
-        event: AuthEventType;
-        message?: string;
-        data?: any|ApiCognitoUser;
-    };
-}
-
-type MessageCallback = (message: string) => boolean|void;
+import {
+    AuthEventType,
+    HubCapsule,
+    MessageCallback,
+    SignInError
+} from "./AuthApi.types";
 
 export class AuthApi {
     private signInCallbacks = new CallbackManager;
@@ -45,6 +30,21 @@ export class AuthApi {
     async getUser(): Promise<CognitoUserModel|undefined> {
         const apiCognitoUser = await Auth.currentAuthenticatedUser() as ApiCognitoUser;
         return apiCognitoUser ? CognitoUserModel.fromApi(apiCognitoUser) : undefined;
+    }
+
+    /**
+     * @link https://docs.amplify.aws/lib/auth/emailpassword/q/platform/js#sign-in
+     * https://docs.aws.amazon.com/pt_br/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html
+     */
+    async signIn(username: string, password: string): Promise<CognitoUserModel> {
+        try {
+            const user = await Auth.signIn(username, password);
+            // logger.green.log('AuthApi.signIn Success:', user).groupCollapsed();
+            return CognitoUserModel.fromApi(user);
+        } catch(e) {
+            logger.red.error('AuthApi.signIn Error:', e);
+            throw e;
+        }
     }
 
     signOut() {

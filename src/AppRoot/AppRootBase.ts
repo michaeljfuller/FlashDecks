@@ -5,26 +5,36 @@ import userApi from "../api/UserApi";
 import auth from "../api/AuthApi";
 import ToastStore from "../store/toast/ToastStore";
 import {getErrorText} from "../utils/string";
+import logger from "../utils/Logger";
 
 export interface AppRootProps {}
 export interface AppRootState {
     user?: UserModel;
     cognitoUser?: CognitoUserModel;
+    started: boolean;
+    initialized: boolean;
 }
 
 export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppRootState> {
     state: AppRootState = {
         user: undefined,
         cognitoUser: undefined,
+        started: false,
+        initialized: false,
     };
     toast = new ToastStore(this);
 
-    async componentDidMount() {
+    componentDidMount() {
+        this.start(); // Comment out to show "Start" button
+    }
+
+    start() {
+        this.setState({started:true});
         auth.onSignIn.add(() => this.fetchUserData());
         auth.onSignOut.add(() => this.clearUser());
         auth.onSignInFailed.add(message => this.onErrorMessage(message || 'Failed to sign in.'));
         auth.onConfigured.add(message => this.onErrorMessage('Auth module already configured.', message));
-        await this.fetchUserData();
+        this.fetchUserData(false);
     }
 
     componentWillUnmount() {
@@ -44,7 +54,7 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
     /**
      * Try to add `cognitoUser` & `user` to the state.
      */
-    async fetchUserData(): Promise<void> {
+    async fetchUserData(showError = true): Promise<void> {
         let cognitoUser: CognitoUserModel|undefined = undefined;
         let user: UserModel|undefined = undefined;
 
@@ -52,13 +62,13 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
         try {
             cognitoUser = await auth.getUser();
         } catch (e) {
-            this.onErrorMessage('Unable to sign in.', getErrorText(e));
+            if (showError) this.onErrorMessage('Unable to sign in.', getErrorText(e));
         }
 
         // Get user data from DataBase.
         if (cognitoUser) {
             try {
-                user = await userApi.getUser(cognitoUser.sub);
+                user = await userApi.getUser(cognitoUser.sub).toPromise();
             } catch (e) {
                 this.onErrorMessage('Error getting current user.', getErrorText(e));
             }
@@ -67,10 +77,17 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
         // Update state
         if (cognitoUser && user) {
             LoggedInUserStore.update(user);
+            logger.green.log(` Logged in as "${user.displayName}" `, LoggedInUserStore.state.value);
             this.setState({ cognitoUser, user });
         } else {
+            console.log('AppRootBase.fetchUserData() No user.');
             this.clearUser();
+            this.setState({ initialized: true });
         }
+    }
+
+    logInGuest() {
+        // LoggedInUserStore TODO Add guest log in and catch log out
     }
 
 }

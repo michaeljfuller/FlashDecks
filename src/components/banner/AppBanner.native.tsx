@@ -7,20 +7,22 @@ import {Color} from "../../styles/Color";
 import AppBreadcrumbs from "./breadcrumbs/AppBreadcrumbs";
 import Avatar from "../avatar/Avatar";
 import {UserModel} from "../../models";
+import Row from "../layout/Row";
+import {AppBannerStoreProps} from "./AppBanner_redux";
 
 export {AppBannerProps} from "./AppBanner.common";
 
 // const color = Color.White;
 const backgroundColor = Color.Blue;
 
-export const AppBanner = React.memo(function AppBanner(props: AppBannerProps) {
+export const AppBanner = React.memo(function AppBanner(props: AppBannerProps & AppBannerStoreProps) {
     const {
         loggedInUser, onToggleSidebar, onSignOutClick, routerDetails
     } = props;
 
     return <Header androidStatusBarColor={backgroundColor} style={styles.header}>
         <Left style={styles.left}>
-            <IconButton icon={IconType.Menu} onClick={onToggleSidebar} transparent color="White" />
+            <IconButton icon={IconType.Menu} onClick={onToggleSidebar} transparent square color="White" />
         </Left>
         <AppBreadcrumbs routerDetails={routerDetails} />
         <Right>
@@ -42,13 +44,10 @@ function AppBannerUserDisplay(props: AppBannerUserDisplayProps) {
         label={user ? user.displayName : 'guest'}
         labelPlacement="right"
     />;
-    if (user) {
-        return <React.Fragment>
-            <Body style={styles.body}>{avatar}</Body>
-            <IconButton icon={IconType.Exit} onClick={onSignOutClick} transparent color="White" />
-        </React.Fragment>;
-    }
-    return <Body style={styles.body}>{avatar}</Body>;
+    return <Row>
+        <Body style={styles.body}>{avatar}</Body>
+        <IconButton icon={IconType.Exit} onClick={onSignOutClick} transparent color="White" />
+    </Row>;
 }
 
 const styles = StyleSheet.create({
@@ -64,6 +63,6 @@ const styles = StyleSheet.create({
         paddingRight: 15,
     },
     body: {
-        flexDirection: 'row',
+        // flexDirection: 'row',
     }
 });

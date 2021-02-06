@@ -3,11 +3,10 @@ import {Animated, LayoutChangeEvent, StyleSheet, Text, View} from 'react-native'
 import {isPlatformWeb} from "../../platform";
 import CardView from "../card/CardView";
 import {CardCarouselBase, CardCarouselBaseState, resizeCard} from "./CardCarousel.common";
-import Button from "../button/Button";
+import Button, {IconType} from "../button/Button";
 import {UIColorThemeMap} from "../../styles/UIColorTheme";
 import {preloadCards} from "../../utils/media/card";
 import withDefaultProps from "../../utils/hoc/withDefaultProps/withDefaultProps";
-import IconButton, {IconType} from "../button/IconButton";
 
 export * from "./CardCarousel.common";
 
@@ -51,7 +50,7 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
 
     onLayout = (event: LayoutChangeEvent) => {
         const {width, height} = event.nativeEvent.layout;
-        const size = resizeCard(width, height, 10, 100);
+        const size = resizeCard(width, height, 30, 10, 100);
         this.setStateTo({ cardWidth: size.width, cardHeight: size.height });
     };
 
@@ -142,7 +141,7 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
         return <React.Fragment>
             <View style={[styles.root, styles.rootWithoutCards, style]}>{
                 editable
-                ? <IconButton icon={IconType.Add} text="Add Card" onClick={this.onShowCreateCardModal} />
+                ? <Button icon={IconType.Add} title="Add Card" onClick={this.onShowCreateCardModal} />
                 : <Text>No cards found.</Text>
             }</View>
             {this.renderCreateCardModal()}

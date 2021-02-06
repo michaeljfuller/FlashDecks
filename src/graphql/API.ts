@@ -22,6 +22,7 @@ export type CardSideInput = {
 export type CardSideContentInput = {
   type: CardSideContentType,
   value: string,
+  file?: S3ObjectInput | null,
 };
 
 export enum CardSideContentType {
@@ -31,6 +32,12 @@ export enum CardSideContentType {
   Link = "Link",
 }
 
+
+export type S3ObjectInput = {
+  bucket: string,
+  region: string,
+  key: string,
+};
 
 export type ModelDeckConditionInput = {
   createdAt?: ModelStringInput | null,

@@ -47,11 +47,12 @@ export const cardAspectRatio = 0.7;
 export function resizeCard(
     width: number,
     height: number,
-    cardMargin = 10,
+    cardMarginHorizontal = 10,
+    cardMarginVertical = 10,
     minSize = 100
 ) {
-    width -= cardMargin * 2;
-    height -= cardMargin * 2;
+    width -= cardMarginHorizontal * 2;
+    height -= cardMarginVertical * 2;
 
     width = Math.max(width, minSize);
     height = Math.max(height, minSize);

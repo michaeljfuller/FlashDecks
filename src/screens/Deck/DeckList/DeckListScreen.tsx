@@ -1,19 +1,20 @@
 import React from "react";
 import {Text, View, StyleSheet} from "react-native";
-import {castDraft} from "immer";
+import {Subscription} from "rxjs";
+
 import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
 import ScreenContainer from "../../ScreenContainer";
 import {NavigationScreenProps} from "../../../navigation/navigation_types";
 import DeckList from "../../../components/deck/DeckList/DeckList";
-import IconButton, {IconType} from "../../../components/button/IconButton";
-
+import Button, {IconType} from "../../../components/button/Button";
 import {reduxConnector, DeckListScreenStoreProps} from "./DeckListScreen_redux";
 import DeckRoutes from "../DeckRoutes";
 import {DeckListItemModel} from "../../../models";
 import deckApi from "../../../api/DeckApi";
 import {toastStore} from "../../../store/toast/ToastStore";
-import ApiRequest from "../../../api/util/ApiRequest";
-import {removeItem} from "../../../utils/array";
+import Row from "../../../components/layout/Row";
+import Center from "../../../components/layout/Center";
+import ProgressCircle from "../../../components/progress/ProgressCircle";
 
 export interface DeckListScreenProps extends NavigationScreenProps {}
 export interface DeckListScreenState {
@@ -29,8 +30,8 @@ export class DeckListScreen extends ImmutablePureComponent<
         decks: [],
     } as DeckListScreenState;
 
-    getDeckListRequest?: ApiRequest<DeckListItemModel[]>;
-    deleteDeckListRequest?: ApiRequest<DeckListItemModel>;
+    getDeckListSubscription?: Subscription;
+    deleteDeckListSubscription?: Subscription;
 
     get decks() {
         return this.state.decks;
@@ -40,37 +41,41 @@ export class DeckListScreen extends ImmutablePureComponent<
         this.loadDecks();
     }
     componentWillUnmount() {
-        this.getDeckListRequest && this.getDeckListRequest.drop();
-        this.deleteDeckListRequest && this.deleteDeckListRequest.drop();
+        this.getDeckListSubscription?.unsubscribe();
+        this.deleteDeckListSubscription?.unsubscribe();
     }
 
     loadDecks() {
         this.setStateTo({ loading: true });
-        this.getDeckListRequest = deckApi.getList();
-
-        this.getDeckListRequest.wait().then(({payload, dropped, error}) => {
-            if (!dropped) {
-                if (payload) this.setStateTo(draft => draft.decks = castDraft(payload));
-                if (error) toastStore.addError(error, 'Error loading decks');
+        this.getDeckListSubscription?.unsubscribe();
+        this.getDeckListSubscription = deckApi.getList().subscribe(
+            decks => this.setStateTo(draft => {
+                draft.decks = decks;
+                draft.loading = false;
+            }),
+            error => {
+                toastStore.addError(error, 'Error loading decks');
                 this.setStateTo({ loading: false });
-            }
-            delete this.getDeckListRequest;
-        });
+            },
+        );
     }
 
     deleteDeck(deck: DeckListItemModel) {
         this.setStateTo({ loading: true });
-        this.deleteDeckListRequest = deckApi.remove(deck.id);
-
-        this.deleteDeckListRequest.wait().then(({payload, dropped, error}) => {
-            if (!dropped) {
-                if (payload) this.setStateTo(draft => draft.decks = draft.decks.filter(current => current.id !== payload.id));
-                if (error) toastStore.addError(error, `Error deleting "${deck?.title}".`);
-                else toastStore.add({type: "success", duration: 2000, text: `Deleted "${deck?.title}".`})
+        this.deleteDeckListSubscription?.unsubscribe();
+        this.deleteDeckListSubscription = deckApi.remove(deck.id).subscribe(
+            deletedDeck => {
+                this.setStateTo(draft => draft.decks = draft.decks.filter(current => current.id !== deletedDeck.id));
+            },
+            error => {
+                toastStore.addError(error, `Error deleting "${deck?.title}".`);
                 this.setStateTo({ loading: false });
-            }
-            delete this.getDeckListRequest;
-        });
+            },
+            () => {
+                toastStore.add({type: "success", duration: 2000, text: `Deleted "${deck?.title}".`});
+                this.setStateTo({ loading: false });
+            },
+        );
     }
 
     goTo(routeName: string, deck?: DeckListItemModel) {
@@ -89,17 +94,20 @@ export class DeckListScreen extends ImmutablePureComponent<
         return (
             <ScreenContainer>
                 <Text style={styles.title}>{this.constructor.name}</Text>
-                <View style={styles.actionsRow}>
-                    <IconButton icon={IconType.Add} text="New Deck" onClick={this.goToCreate} />
-                </View>
+
+                <Row right style={styles.actionsRow}>
+                    <Button icon={IconType.Add} title="New Deck" width={120} onClick={this.goToCreate} />
+                </Row>
+
                 <View style={styles.body}>{this.renderBody()}</View>
             </ScreenContainer>
         );
     }
 
     renderBody() {
-        if (this.state.loading) return <Text>Loading...</Text>;
-        if (this.decks.length === 0) return <Text>No decks found.</Text>;
+        if (this.state.loading) return <Center><ProgressCircle size={150} /></Center>;
+        if (this.decks.length === 0) return <Center><Text>No decks found.</Text></Center>;
+
         return <DeckList
             decks={this.decks}
             loggedInUser={this.props.loggedInUser}
@@ -120,10 +128,9 @@ const styles = StyleSheet.create({
     },
     actionsRow: {
         padding: 5,
-        flexDirection: "row",
-        justifyContent: "flex-end",
     },
     body: {
         padding: 5,
+        flex:1,
     },
 });

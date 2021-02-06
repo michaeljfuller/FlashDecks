@@ -1,5 +1,5 @@
 import Model, {ModelUpdate} from "./core/Model";
-import {GetUserQuery} from "../API";
+import {GetUserQuery} from "../graphql/API";
 
 export type ApiUser = NonNullable<GetUserQuery['getUser']>;
 

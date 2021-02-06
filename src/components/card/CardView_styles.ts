@@ -31,6 +31,9 @@ export const StyledCardHeader = withStyles({
 })(CardHeader) as typeof CardHeader;
 
 export const styles = StyleSheet.create({
+    root: {
+        minHeight: 300,
+    },
     inner: {
         flexDirection: "column",
         height: '100%',

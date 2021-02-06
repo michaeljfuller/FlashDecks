@@ -4,7 +4,9 @@ import CardView from "../card/CardView";
 import {preloadCards} from "../../utils/media/card";
 import {CardCarouselBase, CardCarouselBaseState, resizeCard} from "./CardCarousel.common";
 import {CardModel} from "../../models";
-import IconButton, {IconType} from "../button/IconButton";
+import Button, {IconType} from "../button/Button";
+import {Visibility} from "../layout/Visibility";
+import Center from "../layout/Center";
 export * from "./CardCarousel.common";
 
 export interface CardCarouselState extends CardCarouselBaseState {
@@ -12,16 +14,12 @@ export interface CardCarouselState extends CardCarouselBaseState {
     cardWidth: number;
     cardHeight: number;
 }
-// Used to restore previous measurements
-let cachedWidth = 0;
-let cachedCardWidth = 0;
-let cachedCardHeight = 0;
 
 export class CardCarousel extends CardCarouselBase<CardCarouselState>{
     state = {
-        width: cachedWidth,
-        cardWidth: cachedCardWidth,
-        cardHeight: cachedCardHeight,
+        width: 0,
+        cardWidth: 0,
+        cardHeight: 0,
         showCreateCardModal: false,
     } as Readonly<CardCarouselState>;
 
@@ -43,11 +41,11 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
 
     onLayout = (event: LayoutChangeEvent) => {
         const {width, height} = event.nativeEvent.layout;
-        const size = resizeCard(width, height, 10, 100);
+        const size = resizeCard(width, height, 10, 10, 100);
         this.setStateTo({
-            width: cachedWidth = event.nativeEvent.layout.width,
-            cardWidth: cachedCardWidth = size.width,
-            cardHeight: cachedCardHeight = size.height,
+            width: event.nativeEvent.layout.width,
+            cardWidth: size.width,
+            cardHeight: size.height,
         });
     }
 
@@ -63,10 +61,9 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
             width: cardWidth,
             height: cardHeight,
             marginHorizontal: (width - cardWidth)/2 || 0,
-            opacity: cardWidth ? undefined : 0, // Hide until sized
         } as ViewStyle;
 
-        return <View style={[styles.root, style]}>
+        return <Visibility visible={width > 0} style={[styles.root, style]}>
             <FlatList<CardModel>
                 ref={this.flatList}
                 data={cards}
@@ -87,18 +84,18 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
                 decelerationRate="fast"
                 onLayout={this.onLayout}
             />
-        </View>;
+        </Visibility>;
     }
 
     renderNoCards() {
         const {style, editable} = this.props;
 
         return <React.Fragment>
-            <View style={[styles.root, styles.rootWithoutCards, style]}>{
+            <Center style={[styles.root, style]}>{
                 editable
-                    ? <IconButton icon={IconType.Add} text="Add Card" onClick={this.onShowCreateCardModal} />
+                    ? <Button icon={IconType.Add} title="Add Card" width={140} onClick={this.onShowCreateCardModal} />
                     : <Text>No cards found.</Text>
-            }</View>
+            }</Center>
             {this.renderCreateCardModal()}
         </React.Fragment>;
     }
@@ -112,11 +109,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         width: "100%",
         paddingBottom: 5,
-    },
-    rootWithoutCards: {
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
     },
     cardContainer: {
         flex: 1,
