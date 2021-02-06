@@ -26,6 +26,7 @@ export const createDeck = /* GraphQL */ `
           content {
             type
             value
+            size
           }
         }
       }
@@ -56,6 +57,7 @@ export const updateDeck = /* GraphQL */ `
           content {
             type
             value
+            size
           }
         }
       }
@@ -86,6 +88,7 @@ export const deleteDeck = /* GraphQL */ `
           content {
             type
             value
+            size
           }
         }
       }

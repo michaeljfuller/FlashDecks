@@ -152,7 +152,8 @@ function deckToCreateDeckInput(deck: DeckModel): CreateDeckInput {
             sides: card.sides?.map(side => ({
                 content: side.content?.map(content => ({
                     value: content.value,
-                    type: content.type as any
+                    type: content.type as any,
+                    size: content.size,
                 }))
             }))
         }))

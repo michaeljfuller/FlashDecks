@@ -22,7 +22,7 @@ export type CardSideInput = {
 export type CardSideContentInput = {
   type: CardSideContentType,
   value: string,
-  file?: S3ObjectInput | null,
+  size?: number | null,
 };
 
 export enum CardSideContentType {
@@ -32,12 +32,6 @@ export enum CardSideContentType {
   Link = "Link",
 }
 
-
-export type S3ObjectInput = {
-  bucket: string,
-  region: string,
-  key: string,
-};
 
 export type ModelDeckConditionInput = {
   createdAt?: ModelStringInput | null,
@@ -177,6 +171,7 @@ export type CreateDeckMutation = {
           __typename: "CardSideContent",
           type: CardSideContentType,
           value: string,
+          size: number | null,
         } > | null,
       } > | null,
     } > | null,
@@ -213,6 +208,7 @@ export type UpdateDeckMutation = {
           __typename: "CardSideContent",
           type: CardSideContentType,
           value: string,
+          size: number | null,
         } > | null,
       } > | null,
     } > | null,
@@ -249,6 +245,7 @@ export type DeleteDeckMutation = {
           __typename: "CardSideContent",
           type: CardSideContentType,
           value: string,
+          size: number | null,
         } > | null,
       } > | null,
     } > | null,
@@ -297,6 +294,7 @@ export type GetDeckQuery = {
           __typename: "CardSideContent",
           type: CardSideContentType,
           value: string,
+          size: number | null,
         } > | null,
       } > | null,
     } > | null,
@@ -397,6 +395,7 @@ export type OnCreateDeckSubscription = {
           __typename: "CardSideContent",
           type: CardSideContentType,
           value: string,
+          size: number | null,
         } > | null,
       } > | null,
     } > | null,
@@ -428,6 +427,7 @@ export type OnUpdateDeckSubscription = {
           __typename: "CardSideContent",
           type: CardSideContentType,
           value: string,
+          size: number | null,
         } > | null,
       } > | null,
     } > | null,
@@ -459,6 +459,7 @@ export type OnDeleteDeckSubscription = {
           __typename: "CardSideContent",
           type: CardSideContentType,
           value: string,
+          size: number | null,
         } > | null,
       } > | null,
     } > | null,

@@ -4,12 +4,7 @@ import {ApiCardSide} from "./CardSideModel";
 import {CardSideContentType} from "../graphql/API";
 import {v4 as uuid} from "uuid";
 
-type _ApiCardContent = NonNullable<ApiCardSide["content"]>[0];
-export interface ApiCardContent extends _ApiCardContent { // TODO Add `size` to API.
-    // Fraction of the CardSide height. Total is able to exceed 1.00.
-    // If set, content scales to fit size, otherwise no scaling is applied.
-    size?: number;
-}
+export type ApiCardContent = NonNullable<ApiCardSide["content"]>[0];
 
 export type CardContentType = 'Text' | 'Image' | 'Video' | 'Link' | undefined;
 export const cardContentTypes: readonly Exclude<CardContentType, undefined>[] = ["Text", "Image", "Video", "Link"];
@@ -17,9 +12,19 @@ export type CardContentFormat = 'String' | 'S3Key' | 'ImageData' | 'VideoData' |
 export const cardContentFormats: readonly CardContentFormat[] = ["String", "S3Key", "ImageData", "VideoData", "LocalURI"];
 
 export class CardContentModel extends Model implements Omit<ApiCardContent, '__typename'|'type'> {
+    /** The type of content. */
     readonly type: CardContentType = undefined;
+
+    /** The value of the content. */
     readonly value: string = '';
+
+    /**
+     * Fraction of the CardSide height. Total is able to exceed 1.00.
+     * If set, content scales to fit size, otherwise no scaling is applied.
+     */
     readonly size: number = 0;
+
+    /** How to interpret the value. */
     readonly format: CardContentFormat = "String";
 
     static create(input: ModelUpdate<CardContentModel>) {
@@ -44,7 +49,7 @@ export class CardContentModel extends Model implements Omit<ApiCardContent, '__t
             if (obj.value.startsWith('media/')) format = "S3Key";
         }
         return CardContentModel.create({
-            size: obj.size,
+            size: obj.size || undefined,
             value: obj.value,
             type: obj.type as any,
             format,

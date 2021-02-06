@@ -32,6 +32,7 @@ export const getDeck = /* GraphQL */ `
           content {
             type
             value
+            size
           }
         }
       }

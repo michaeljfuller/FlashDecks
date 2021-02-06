@@ -15,7 +15,7 @@ type CardSide {
 type CardSideContent {
     type: CardSideContentType!
     value: String!
-    file: S3Object
+    size: Float
 }
 enum CardSideContentType { Text, Image, Video, Link }
 
@@ -30,5 +30,5 @@ input CardSideInput {
 input CardSideContentInput {
     type: CardSideContentType!
     value: String!
-    file: S3ObjectInput
+    size: Float
 }
