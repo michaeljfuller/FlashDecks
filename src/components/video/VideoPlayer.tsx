@@ -1,5 +1,5 @@
 import React, {SyntheticEvent} from "react";
-import {View} from "react-native";
+import {View, StyleSheet} from "react-native";
 import {supportedVideoTypes, VideoPlayerProps} from "./VideoPlayer.common";
 import VideoPlayerError from "./VideoPlayerError";
 import ImmutablePureComponent from "../ImmutablePureComponent";
@@ -59,19 +59,27 @@ export class VideoPlayer extends ImmutablePureComponent<VideoPlayerProps, VideoP
             return <View />;
         }
 
-        return <video
-            autoPlay={autoplay}
-            loop={loop}
-            muted={muted}
-            controls={controls}
-            key={sourceUri}
-            onError={this.onError}
-            width="100%"
-            height="100%"
-            style={{ backgroundColor: Color.OffBlack }}
-        >
-            <source src={sourceUri} type={type} />
-        </video>;
+        return <View style={styles.root}>
+            <video
+                autoPlay={autoplay}
+                loop={loop}
+                muted={muted}
+                controls={controls}
+                key={sourceUri}
+                onError={this.onError}
+                height="100%"
+                width="100%"
+            >
+                <source src={sourceUri} type={type} />
+            </video>
+        </View>;
     }
 
 }
+
+const styles = StyleSheet.create({
+    root: {
+        backgroundColor: Color.OffBlack,
+        flex: 1,
+    },
+});

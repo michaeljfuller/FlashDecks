@@ -65,19 +65,17 @@ export class VideoPlayer extends ImmutablePureComponent<VideoPlayerProps, VideoP
 
         return <View style={styles.root}>
 
-            <Visibility render={!readyForDisplay && !!sourceUri && layoutHeight > 0}>
-                <Column center style={[
-                    styles.progressView,
-                    { width: layoutWidth, height: layoutHeight },
-                ]}>
+            {!readyForDisplay && !!sourceUri && layoutHeight > 0
+            ?   <Column center style={[ styles.progressView, { width: layoutWidth, height: layoutHeight } ]}>
                     <Row center>
                         <ProgressCircle />
                     </Row>
                     <Text style={styles.progressMessage}>Readying Video...</Text>
                 </Column>
-            </Visibility>
+            : null
+            }
 
-            <Visibility visible={readyForDisplay}>
+            <Visibility visible={readyForDisplay} style={styles.videoContainer}>
                 <Video
                     shouldPlay={autoplay}
                     isLooping={loop}
@@ -98,13 +96,16 @@ export class VideoPlayer extends ImmutablePureComponent<VideoPlayerProps, VideoP
 
 export const styles = StyleSheet.create({
     root: {
-        width: '100%',
+        flex:1,
     },
     progressView: {
         position: "absolute",
     },
     progressMessage: {
         textAlign: "center",
+    },
+    videoContainer: {
+        flex: 1,
     },
     video: {
         width: '100%',

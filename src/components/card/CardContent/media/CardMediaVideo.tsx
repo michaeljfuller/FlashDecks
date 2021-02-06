@@ -2,14 +2,19 @@ import React from "react";
 import {VideoPlayer} from "../../../video/VideoPlayer";
 import {BaseCardMedia} from "./core/BaseCardMedia";
 import {CardMediaError} from "./CardMediaError";
-import {StyleSheet, View} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import Center from "../../../layout/Center";
 import ProgressCircle from "../../../progress/ProgressCircle";
-import {Visibility} from "../../../layout/Visibility";
 import {Color} from "../../../../styles/Color";
-import {stopTouchPropagation} from "../../../../utils/hoc/stopTouchPropagation";
+import stopTouchPropagation from "../../../../utils/hoc/stopTouchPropagation";
+import withDefaultProps from "../../../../utils/hoc/withDefaultProps/withDefaultProps";
 
-const CardVideoPlayer = stopTouchPropagation(VideoPlayer);
+const CardVideoPlayer = withDefaultProps(
+    stopTouchPropagation(VideoPlayer),
+    { autoplay: true, controls: true, loop: true, muted: true },
+    undefined,
+    "CardVideoPlayer"
+);
 
 export class CardMediaVideo extends BaseCardMedia {
     onError = (error?: string) => {
@@ -26,17 +31,10 @@ export class CardMediaVideo extends BaseCardMedia {
         }
 
         return <View style={[styles.root, {height}]}>
-            {this.mediaUri ? undefined : <Center><ProgressCircle /></Center>}
-            <Visibility render={!!this.mediaUri} style={[styles.fullSize]}>
-                <CardVideoPlayer
-                    sourceUri={this.mediaUri||''}
-                    autoplay
-                    controls
-                    loop
-                    muted
-                    onError={this.onError}
-                />
-            </Visibility>
+            {!this.mediaUri
+            ?   <Center><ProgressCircle /></Center>
+            :   <CardVideoPlayer sourceUri={this.mediaUri} onError={this.onError} />
+            }
         </View>;
     }
 
@@ -44,15 +42,11 @@ export class CardMediaVideo extends BaseCardMedia {
 
 const styles = StyleSheet.create({
     root: {
-        alignItems: "center",
+        flex: 1,
     },
     error: {
         color: Color.White,
         backgroundColor: Color.Red,
         textAlign: "center",
     },
-    fullSize: {
-        width: '100%',
-        height: '100%',
-    }
 });
