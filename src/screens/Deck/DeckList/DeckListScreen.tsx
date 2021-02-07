@@ -4,9 +4,9 @@ import {Subscription} from "rxjs";
 
 import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
 import ScreenContainer from "../../ScreenContainer";
-import {NavigationScreenProps} from "../../../navigation/navigation_types";
+import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
 import DeckList from "../../../components/deck/DeckList/DeckList";
-import Button, {IconType} from "../../../components/button/Button";
+import Button from "../../../components/button/Button";
 import {reduxConnector, DeckListScreenStoreProps} from "./DeckListScreen_redux";
 import DeckRoutes from "../DeckRoutes";
 import {DeckListItemModel} from "../../../models";
@@ -15,12 +15,20 @@ import {toastStore} from "../../../store/toast/ToastStore";
 import Row from "../../../components/layout/Row";
 import Center from "../../../components/layout/Center";
 import ProgressCircle from "../../../components/progress/ProgressCircle";
+import withDefaultProps from "../../../utils/hoc/withDefaultProps/withDefaultProps";
 
-export interface DeckListScreenProps extends NavigationScreenProps {}
+export interface DeckListScreenNavigationProps {
+    s?: DeckSelection;
+}
+export interface DeckListScreenProps extends NavigationScreenProps<
+    NavigationScreenState, DeckListScreenNavigationProps
+> {}
 export interface DeckListScreenState {
     loading: boolean;
     decks: DeckListItemModel[];
 }
+type DeckSelection = "all"|"own";
+
 export class DeckListScreen extends ImmutablePureComponent<
     DeckListScreenProps & DeckListScreenStoreProps,
     DeckListScreenState
@@ -37,8 +45,17 @@ export class DeckListScreen extends ImmutablePureComponent<
         return this.state.decks;
     }
 
+    get selection(): DeckSelection {
+        return this.props.route.params?.s || "own";
+    }
+
     componentDidMount() {
         this.loadDecks();
+    }
+    componentDidUpdate(prevProps: Readonly<DeckListScreenProps & DeckListScreenStoreProps>/*, prevState: Readonly<DeckListScreenState>, snapshot?: {}*/) {
+        if (prevProps.route.params?.s !== this.props.route.params?.s) {
+            this.loadDecks();
+        }
     }
     componentWillUnmount() {
         this.getDeckListSubscription?.unsubscribe();
@@ -46,18 +63,20 @@ export class DeckListScreen extends ImmutablePureComponent<
     }
 
     loadDecks() {
+        let request: ReturnType<typeof deckApi.getList|typeof deckApi.getForUser>|undefined = undefined;
+        if (this.selection === "all") request = deckApi.getList();
+        else if (this.selection === "own") request = deckApi.getForUser(this.props.loggedInUser?.id);
+
+        const {promise, subscription} = request?.toPromiseAndSubscription() || {};
         this.setStateTo({ loading: true });
+
         this.getDeckListSubscription?.unsubscribe();
-        this.getDeckListSubscription = deckApi.getList().subscribe(
-            decks => this.setStateTo(draft => {
-                draft.decks = decks;
-                draft.loading = false;
-            }),
-            error => {
-                toastStore.addError(error, 'Error loading decks');
-                this.setStateTo({ loading: false });
-            },
-        );
+        this.getDeckListSubscription = subscription;
+
+        promise?.then(
+            decks => this.setStateTo( draft => draft.decks = decks),
+            error => toastStore.addError(error, 'Error loading decks'),
+        ).finally(() => this.setStateTo({ loading: false }));
     }
 
     deleteDeck(deck: DeckListItemModel) {
@@ -84,19 +103,30 @@ export class DeckListScreen extends ImmutablePureComponent<
             deck ? {deckId: deck.id} : undefined
         );
     }
+    setSelection(selection: DeckSelection) {
+        this.props.navigation.navigate(
+            DeckRoutes.List, {
+                s: selection
+            } as DeckListScreenNavigationProps
+        );
+    }
 
+    selectAllDecks = () => this.setSelection("all");
+    selectOwnDecks = () => this.setSelection("own");
     goToCreate = () => this.goTo(DeckRoutes.New);
     goToEdit = (deck: DeckListItemModel) => this.goTo(DeckRoutes.Edit, deck);
     goToView = (deck: DeckListItemModel) => this.goTo(DeckRoutes.View, deck);
-    handleDelete = (deck: DeckListItemModel) => this.deleteDeck(deck)
+    handleDelete = (deck: DeckListItemModel) => this.deleteDeck(deck);
 
     render() {
         return (
             <ScreenContainer>
-                <Text style={styles.title}>{this.constructor.name}</Text>
+                <Text style={styles.title}>{this.constructor.name}: {this.selection}</Text>
 
-                <Row right style={styles.actionsRow}>
-                    <Button icon={IconType.Add} title="New Deck" width={120} onClick={this.goToCreate} />
+                <Row style={styles.actionsRow}>
+                    <ActionsButton title="Own Decks" onClick={this.selectOwnDecks} disabled={this.selection==="own"} />
+                    <ActionsButton title="All Decks" onClick={this.selectAllDecks} disabled={this.selection==="all"} />
+                    <ActionsButton title="Create Deck" onClick={this.goToCreate} />
                 </Row>
 
                 <View style={styles.body}>{this.renderBody()}</View>
@@ -134,3 +164,10 @@ const styles = StyleSheet.create({
         flex:1,
     },
 });
+
+const ActionsButton = withDefaultProps(
+    Button,
+    { square: true, flat: true, flex: true },
+    {},
+    "ActionsButton"
+);

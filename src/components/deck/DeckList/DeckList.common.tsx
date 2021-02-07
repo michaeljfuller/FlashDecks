@@ -21,10 +21,8 @@ export default class DeckListBase<State = {}> extends ImmutablePureComponent<Dec
         this.props.onDeleteDeck(deck);
     }
 
-    canShowActions(_: DeckListItemModel): boolean {
-        return true;
-        // TODO
-        // const user = this.props.loggedInUser;
-        // return !!user && user.id === deck.ownerId;
+    canShowActions(deck: DeckListItemModel): boolean {
+        const loggedInUserId = this.props.loggedInUser?.id;
+        return !!loggedInUserId && deck.ownerId === loggedInUserId;
     }
 }
