@@ -47,12 +47,13 @@ export class DeckApi {
     }
 
     getForUser(
-        ownerId: string,
-        options: Omit<GetDecksByOwnerQueryVariables, 'ownerId'>
+        ownerId: string|undefined,
+        options?: Omit<GetDecksByOwnerQueryVariables, 'ownerId'>
     ): ApiRequest<DeckListItemModel[], GetDecksByOwnerQueryVariables> {
         const variables: GetDecksByOwnerQueryVariables = { ownerId, ...options };
+        const promise = ownerId ? sendGet(getDecksByOwner, variables) : Promise.reject("No owner passed.");
         return new ApiRequest(
-            sendGet(getDecksByOwner, variables).then(
+            promise.then(
                 response => filterExists(response.data?.getDecksByOwner?.items || []).map(DeckListItemModel.createFromApi)
             ),
             variables
