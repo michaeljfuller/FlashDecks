@@ -5,6 +5,7 @@ export type ApiUser = NonNullable<GetUserQuery['getUser']>;
 
 export class UserModel extends Model implements Omit<ApiUser, '__typename'> {
     readonly id: string = '';
+    readonly userName: string = '';
     readonly displayName: string = '';
 
     static create(input: ModelUpdate<UserModel>) {
@@ -15,6 +16,7 @@ export class UserModel extends Model implements Omit<ApiUser, '__typename'> {
         return UserModel.create({
             id: obj.id,
             displayName: obj.displayName,
+            userName: obj.userName,
         });
     }
 
