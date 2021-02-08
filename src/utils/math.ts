@@ -40,5 +40,5 @@ export function randomInt(digits = 4) {
     return Math.floor(Math.random() * Math.pow(10, digits));
 }
 export function randomIntString(digits = 4) {
-    return padNumber(randomInt(digits), digits, '0');
+    return padNumber(randomInt(digits), digits, 0, '0');
 }
