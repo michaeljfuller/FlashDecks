@@ -12,6 +12,7 @@ https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html
 # Media API
 Media API to access S3 from, rather than direct from client, which exposes the bucket.  
 An API also allows us to do some validation, such as file size/type checks.
+Using this as a proxy would stop 403 error occurring when watching a video so long the temp S3 credentials expire (15mins).
 Decks would only need a `file-key`, rather than an `S3Object`, since the bucket's details can be made available from config.
 
 `POST /api/media/`
