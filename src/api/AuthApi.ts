@@ -1,29 +1,39 @@
 import {Auth, Hub} from "aws-amplify";
+import {HubPayload} from "aws-amplify-react-native/types";
+import {Subject} from "rxjs";
 import logger from "../utils/Logger";
 import {ApiCognitoUser, CognitoUserModel} from "../models";
-import {CallbackManager} from "../utils/async";
-import {
-    AuthEventType,
-    HubCapsule,
-    MessageCallback,
-    SignInError
-} from "./AuthApi.types";
+import {AuthEventType} from "./AuthApi.types";
 
 export class AuthApi {
-    private signInCallbacks = new CallbackManager;
-    private signUpCallbacks = new CallbackManager;
-    private signOutCallbacks = new CallbackManager;
-    private signInFailedCallbacks = new CallbackManager<MessageCallback>();
-    private configuredCallbacks = new CallbackManager<MessageCallback>();
+    private eventSubject = new Subject<HubPayload>();
 
-    readonly onSignIn = this.signInCallbacks.listeners;
-    readonly onSignUp = this.signUpCallbacks.listeners;
-    readonly onSignOut = this.signOutCallbacks.listeners;
-    readonly onSignInFailed = this.signInFailedCallbacks.listeners;
-    readonly onConfigured = this.configuredCallbacks.listeners;
+    private signInSubject = new Subject();
+    private signUpSubject = new Subject();
+    private signOutSubject = new Subject();
+    private signInFailedSubject = new Subject<string>();
+    private configuredSubject = new Subject<string>();
+
+    readonly onSignIn = this.signInSubject.asObservable();
+    readonly onSignUp = this.signUpSubject.asObservable();
+    readonly onSignOut = this.signOutSubject.asObservable();
+    readonly onSignInFailed = this.signInFailedSubject.asObservable();
+    readonly onConfigured = this.configuredSubject.asObservable();
 
     constructor() {
-        Hub.listen('auth', capsule => this.onAuthEvent(capsule as HubCapsule));
+        // https://docs.amplify.aws/lib/utilities/hub/q/platform/js
+        Hub.listen('auth', capsule => {
+            this.eventSubject.next(capsule.payload);
+            const {event, message, data} = capsule.payload;
+            switch(event) {
+                case AuthEventType.SIGN_IN:         return this.signInSubject.next();
+                case AuthEventType.SIGN_UP:         return this.signUpSubject.next();
+                case AuthEventType.SIGN_OUT:        return this.signOutSubject.next();
+                case AuthEventType.SIGN_IN_FAILED:  return this.signInFailedSubject.next(data?.message || message || '');
+                case AuthEventType.CONFIGURED:      return this.configuredSubject.next(message || '');
+                default: console.warn('CognitoApi.onAuthEvent', 'No handled case for', event);
+            }
+        });
     }
 
     /** Get the logged in user */
@@ -49,21 +59,6 @@ export class AuthApi {
 
     signOut() {
         return Auth.signOut();
-    }
-
-    /**
-     * @link https://docs.amplify.aws/lib/utilities/hub/q/platform/js
-     */
-    private onAuthEvent(capsule: HubCapsule) {
-        const {event, message, data} = capsule.payload;
-        switch(event) {
-            case AuthEventType.SIGN_IN: return this.signInCallbacks.call();
-            case AuthEventType.SIGN_UP: return this.signUpCallbacks.call();
-            case AuthEventType.SIGN_OUT: return this.signOutCallbacks.call();
-            case AuthEventType.SIGN_IN_FAILED: return this.signInFailedCallbacks.call(data?.message || message || '');
-            case AuthEventType.CONFIGURED: return this.configuredCallbacks.call(message || '');
-            default: console.warn('CognitoApi.onAuthEvent', 'No handled case for', event);
-        }
     }
 
 }

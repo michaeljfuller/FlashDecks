@@ -30,10 +30,10 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
 
     start() {
         this.setState({started:true});
-        auth.onSignIn.add(() => this.fetchUserData());
-        auth.onSignOut.add(() => this.clearUser());
-        auth.onSignInFailed.add(message => this.onErrorMessage(message || 'Failed to sign in.'));
-        auth.onConfigured.add(message => this.onErrorMessage('Auth module already configured.', message));
+        auth.onSignIn.subscribe(() => this.fetchUserData());
+        auth.onSignOut.subscribe(() => this.clearUser());
+        auth.onSignInFailed.subscribe(message => this.onErrorMessage(message || 'Failed to sign in.'));
+        auth.onConfigured.subscribe(message => this.onErrorMessage('Auth module already configured.', message));
         this.fetchUserData(false);
     }
 
