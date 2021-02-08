@@ -15,6 +15,11 @@ import {
     VariablesFromQueryString, ResponseFromQueryString, CreateDeckMutationVariables, UpdateDeckMutationVariables,
 } from "./DeckApi.queries";
 
+export interface DeckListResponse {
+    decks: DeckListItemModel[];
+    nextToken?: string;
+}
+
 @logClass({ enabled: true })
 export class DeckApi {
 
@@ -37,10 +42,16 @@ export class DeckApi {
 
     getList(
         variables?: ListDecksQueryVariables
-    ): ApiRequest<DeckListItemModel[], ListDecksQueryVariables> {
+    ): ApiRequest<DeckListResponse, ListDecksQueryVariables> {
         return new ApiRequest(
             sendGet(listDecks, variables).then(
-                response => filterExists(response.data?.listDecks?.items || []).map(DeckListItemModel.createFromApi)
+                response => {
+                    const payload = response.data?.listDecks;
+                    return {
+                        decks: filterExists(payload?.items || []).map(DeckListItemModel.createFromApi),
+                        nextToken: payload?.nextToken || undefined,
+                    };
+                }
             ),
             variables
         );
@@ -49,12 +60,18 @@ export class DeckApi {
     getForUser(
         ownerId: string|undefined,
         options?: Omit<GetDecksByOwnerQueryVariables, 'ownerId'>
-    ): ApiRequest<DeckListItemModel[], GetDecksByOwnerQueryVariables> {
+    ): ApiRequest<DeckListResponse, GetDecksByOwnerQueryVariables> {
         const variables: GetDecksByOwnerQueryVariables = { ownerId, ...options };
         const promise = ownerId ? sendGet(getDecksByOwner, variables) : Promise.reject("No owner passed.");
         return new ApiRequest(
             promise.then(
-                response => filterExists(response.data?.getDecksByOwner?.items || []).map(DeckListItemModel.createFromApi)
+                response => {
+                    const payload = response.data?.getDecksByOwner;
+                    return {
+                        decks: filterExists(payload?.items || []).map(DeckListItemModel.createFromApi),
+                        nextToken: payload?.nextToken || undefined,
+                    };
+                }
             ),
             variables
         );
