@@ -8,11 +8,12 @@ import Row from "../../components/layout/Row";
 import {SignIn} from "./sections/SignIn";
 import {SignUp} from "./sections/SignUp";
 import {ForgotPassword} from "./sections/ForgotPassword";
+import {ConfirmRegistration} from "./sections/ConfirmRegistration";
 import {AmplifyAuthenticator} from "./AmplifyAuthenticator";
 
 export interface AppAuthenticatorProps {}
 interface AppAuthenticatorState {
-    tab: "SignIn"|"SignUp"|"Forgot"|"Amazon";
+    tab: "SignIn"|"SignUp"|"Forgot"|"Amazon"|"Confirm";
 }
 
 /**
@@ -20,34 +21,38 @@ interface AppAuthenticatorState {
  */
 export class AppAuthenticator extends React.PureComponent<AppAuthenticatorProps, AppAuthenticatorState> {
     state = {
-        tab: "Amazon",
+        tab: "SignIn",
     } as AppAuthenticatorState;
 
-    goToSignIn = () => this.setState({ tab: "SignIn" });
-    goToSignUp = () => this.setState({ tab: "SignUp" });
-    goToForgot = () => this.setState({ tab: "Forgot" });
-    goToAmazon = () => this.setState({ tab: "Amazon" });
+    goToSignIn  = () => this.setState({ tab: "SignIn"  });
+    goToSignUp  = () => this.setState({ tab: "SignUp"  });
+    goToForgot  = () => this.setState({ tab: "Forgot"  });
+    goToConfirm = () => this.setState({ tab: "Confirm" });
+    goToAmazon  = () => this.setState({ tab: "Amazon"  });
 
     render() {
-        const isSignIn = this.state.tab === "SignIn";
-        const isSignUp = this.state.tab === "SignUp";
-        const isForgot = this.state.tab === "Forgot";
-        const isAmazon = this.state.tab === "Amazon";
+        const isSignIn  = this.state.tab === "SignIn";
+        const isSignUp  = this.state.tab === "SignUp";
+        const isForgot  = this.state.tab === "Forgot";
+        const isConfirm = this.state.tab === "Confirm";
+        const isAmazon  = this.state.tab === "Amazon";
 
         return <Column center space scroll={!isPlatformWeb} style={styles.root}>
             <Row wrap style={styles.tabRow}>
-                <TabButton title="Amplify Auth"    onClick={this.goToAmazon} disabled={isAmazon} transparent={isAmazon} color="Orange" />
-                <TabButton title="Sign In"         onClick={this.goToSignIn} disabled={isSignIn} transparent={isSignIn} color="Green" />
-                <TabButton title="Sign Up"         onClick={this.goToSignUp} disabled={isSignUp} transparent={isSignUp} />
-                <TabButton title="Forgot Password" onClick={this.goToForgot} disabled={isForgot} transparent={isForgot} />
+                <TabButton title="Sign In"         onClick={this.goToSignIn}  disabled={isSignIn}  transparent={isSignIn}  color="Green"  />
+                <TabButton title="Register"        onClick={this.goToSignUp}  disabled={isSignUp}  transparent={isSignUp}  color="Green"  />
+                <TabButton title="Forgot Password" onClick={this.goToForgot}  disabled={isForgot}  transparent={isForgot}  color="Blue"   />
+                <TabButton title="Confirm"         onClick={this.goToConfirm} disabled={isConfirm} transparent={isConfirm} color="Blue"   />
+                <TabButton title="Amplify Auth"    onClick={this.goToAmazon}  disabled={isAmazon}  transparent={isAmazon}  color="Orange" />
                 {/*<TabButton title="Sign Out"        onClick={authApi.signOut} color="Orange" />*/}
             </Row>
             <Row flex center style={styles.contentsRow}>
                 <Column scroll center style={styles.contentsColumn}>
-                    {isSignIn ? <SignIn /> : null}
-                    {isSignUp ? <SignUp /> : null}
-                    {isForgot ? <ForgotPassword /> : null}
-                    {isAmazon ? <AmplifyAuthenticator /> : null}
+                    {isSignIn  ? <SignIn /> : null}
+                    {isSignUp  ? <SignUp /> : null}
+                    {isForgot  ? <ForgotPassword /> : null}
+                    {isConfirm ? <ConfirmRegistration /> : null}
+                    {isAmazon  ? <AmplifyAuthenticator /> : null}
                 </Column>
             </Row>
         </Column>;
