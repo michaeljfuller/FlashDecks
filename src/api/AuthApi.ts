@@ -1,9 +1,10 @@
 import {Auth, Hub} from "aws-amplify";
 import {HubPayload} from "aws-amplify-react-native/types";
-import {Subject} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import logger from "../utils/Logger";
 import {ApiCognitoUser, CognitoUserModel} from "../models";
 import {AuthEventType} from "./AuthApi.types";
+import {PromiseAndSubscription, toPromiseAndSubscription} from "../utils/async";
 
 export class AuthApi {
     private eventSubject = new Subject<HubPayload>();
@@ -44,17 +45,59 @@ export class AuthApi {
 
     /**
      * @link https://docs.amplify.aws/lib/auth/emailpassword/q/platform/js#sign-in
-     * https://docs.aws.amazon.com/pt_br/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html
+     * https://docs.aws.amazon.com/en_gb/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html
      */
-    async signIn(username: string, password: string): Promise<CognitoUserModel> {
-        try {
-            const user = await Auth.signIn(username, password);
-            // logger.green.log('AuthApi.signIn Success:', user).groupCollapsed();
-            return CognitoUserModel.fromApi(user);
-        } catch(e) {
-            logger.red.error('AuthApi.signIn Error:', e);
-            throw e;
-        }
+    signIn(username: string, password: string): PromiseAndSubscription<CognitoUserModel> {
+        return toPromiseAndSubscription(new Observable<CognitoUserModel>(sub => {
+            Auth.signIn(username, password).then(
+                data => sub.next(data),
+                error => {
+                    logger.red.error('AuthApi.signIn Error:', error);
+                    sub.error(error);
+                },
+            ).finally(() => sub.complete());
+        }));
+    }
+
+    /**
+     * Register the user.
+     * @link https://docs.aws.amazon.com/en_gb/cognito-user-identity-pools/latest/APIReference/API_SignUp.html
+     */
+    signUp(username: string, password: string, email: string): PromiseAndSubscription<CognitoUserModel> {
+        return toPromiseAndSubscription(new Observable<CognitoUserModel>(sub => {
+            Auth.signUp({
+                username, password, attributes: { name: username, email }
+            }).then(
+                ({user, userSub}) => sub.next(CognitoUserModel.fromApi({
+                    username: user.getUsername(),
+                    attributes: {
+                        email,
+                        email_verified: false,
+                        sub: userSub,
+                    },
+                })),
+                error => {
+                    logger.red.error('AuthApi.signUp Error:', error);
+                    sub.error(error);
+                },
+            ).finally(() => sub.complete());
+        }));
+    }
+
+    /**
+     * Enter the confirmation code emailed to the user.
+     * @link https://docs.aws.amazon.com/en_gb/cognito-user-identity-pools/latest/APIReference/API_ConfirmSignUp.html
+     */
+    confirmSignUp(username: string, confirmationCode: string): PromiseAndSubscription<void> {
+        return toPromiseAndSubscription(new Observable<void>(sub => {
+            Auth.confirmSignUp(username, confirmationCode).then(
+                () => sub.next(),
+                error => {
+                    logger.red.error('AuthApi.confirmSignUp Error:', error);
+                    sub.error(error);
+                }
+            ).finally(() => sub.complete());
+        }));
     }
 
     signOut() {

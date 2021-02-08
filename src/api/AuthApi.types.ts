@@ -14,3 +14,14 @@ export interface SignInError {
     name: string; // NotAuthorizedException
     message: string; // Incorrect username or password.
 }
+
+export interface SignUpError {
+    code: string;
+    name: string;
+    message: string;
+}
+export interface ConfirmSignUpError {
+    code: string;
+    name: string;
+    message: string;
+}

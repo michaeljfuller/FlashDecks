@@ -1,4 +1,5 @@
 import React from "react";
+import {Subscription} from "rxjs";
 import {testPassword, testUsername} from "../../../env";
 import authApi from "../../../api/AuthApi";
 import Column from "../../../components/layout/Column";
@@ -10,6 +11,7 @@ import {FormTextInput} from "../ui/FormTextInput";
 import {FormPasswordInput} from "../ui/FormPasswordInput";
 import {SignInError} from "../../../api/AuthApi.types";
 import ProgressBar from "../../../components/progress/ProgressBar";
+import {getErrorText} from "../../../utils/string";
 
 export interface SignInProps {}
 interface SignInState {
@@ -32,14 +34,24 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
         error: '',
     } as SignInState;
 
+    private signInSub?: Subscription;
+
+    componentWillUnmount() {
+        this.signInSub?.unsubscribe();
+    }
+
     onInputUsername = (username: string) => this.setState({ username });
     onInputPassword = (password: string) => this.setState({ password });
     toggleHidePassword = () => this.setState({ hidePassword: !this.state.hidePassword });
 
     signIn = () => {
         this.setState({error: '', processing: true})
-        authApi.signIn(this.state.username, this.state.password).catch(
-            (e: SignInError) => this.setState({error: e?.message || 'Error signing in.', processing: false}),
+        const {subscription, promise} = authApi.signIn(this.state.username, this.state.password);
+
+        this.signInSub?.unsubscribe();
+        this.signInSub = subscription;
+        promise.catch(
+            (e: SignInError) => this.setState({error: getErrorText(e?.message, 'Error signing in.'), processing: false}),
         );
     };
 
