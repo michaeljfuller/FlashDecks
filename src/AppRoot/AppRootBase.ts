@@ -47,7 +47,7 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
     }
 
     protected clearUser() {
-        this.setState({ user: undefined, cognitoUser: undefined });
+        this.setState({ user: undefined, cognitoUser: undefined, initialized: true });
         LoggedInUserStore.clear();
     }
 
