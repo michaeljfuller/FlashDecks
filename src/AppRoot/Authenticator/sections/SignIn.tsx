@@ -82,7 +82,7 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
 
             <Text style={styles.error}>{this.state.error}</Text>
 
-            <Button title="Continue as Guest (TODO)" flat square disabled style={{marginVertical: 10}} color="Green" />
+            {/*<Button title="Continue as Guest (TODO)" flat square disabled style={{marginVertical: 10}} color="Green" />*/}
 
         </Column>;
     }

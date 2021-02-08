@@ -41,6 +41,8 @@ Decks would only need a `file-key`, rather than an `S3Object`, since the bucket'
 # Client
 * Finish AppAuthenticator.
 * Deck Tag editing.
+* Fix sign-out
+* Continue as guest - Needs updating permissions on API to allow unauthenticated.
 * Fix sign-in warnings.
   * Error message logging in with preceding space
 
