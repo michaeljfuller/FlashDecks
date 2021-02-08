@@ -30,6 +30,8 @@ export interface DeckListScreenState {
 }
 type DeckSelection = "all"|"own";
 
+const pageSize = 20;
+
 export class DeckListScreen extends ImmutablePureComponent<
     DeckListScreenProps & DeckListScreenStoreProps,
     DeckListScreenState
@@ -68,10 +70,10 @@ export class DeckListScreen extends ImmutablePureComponent<
     loadDecks(nextToken?: string) {
         let request: ReturnType<typeof deckApi.getList|typeof deckApi.getForUser>|undefined = undefined;
         if (this.selection === "all") request = deckApi.getList({
-            limit: 3, nextToken,
+            limit: pageSize, nextToken,
         });
         else if (this.selection === "own") request = deckApi.getForUser(this.props.loggedInUser?.id, {
-            limit: 3, nextToken,
+            limit: pageSize, nextToken,
         });
 
         const {promise, subscription} = request?.toPromiseAndSubscription() || {};
