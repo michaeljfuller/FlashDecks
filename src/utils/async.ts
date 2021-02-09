@@ -64,7 +64,8 @@ export class PromiseAndSubscription<Type> {
     get subscription() { return this._subscription; }
     private _subscription?: Subscription;
 
-    constructor(observable: Observable<Type>) {
+    constructor(input: Promise<Type>|Observable<Type>) {
+        const observable = input instanceof Observable ? input : toObservable(input);
         this.promise = new Promise((resolve, reject) => {
             let value: Type|undefined = undefined;
             this._subscription = observable.subscribe(
@@ -75,8 +76,8 @@ export class PromiseAndSubscription<Type> {
         });
     }
 }
-export function toPromiseAndSubscription<Type>(observable: Observable<Type>) {
-    return new PromiseAndSubscription(observable);
+export function toPromiseAndSubscription<Type>(input: Promise<Type>|Observable<Type>) {
+    return new PromiseAndSubscription(input);
 }
 
 /**
