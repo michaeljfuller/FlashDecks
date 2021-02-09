@@ -10,7 +10,14 @@ import authApi from "../../../api/AuthApi";
 import {SignUpError} from "../../../api/AuthApi.types";
 import {getErrorText} from "../../../utils/string";
 import ProgressBar from "../../../components/progress/ProgressBar";
-import {passwordMinLength, usernameMinLength} from "../authRules";
+import {Visibility} from "../../../components/layout/Visibility";
+import {
+    validateUsername,
+    validatePassword,
+    validateEmail,
+    validateEmailConfirm,
+    validatePasswordConfirm
+} from "../authRules";
 
 export interface SignUpProps {}
 interface SignUpState {
@@ -44,23 +51,27 @@ export class SignUp extends React.PureComponent<SignUpProps, SignUpState> {
     private signUpSub?: Subscription;
 
     get valid() {
-        return this.usernameValid && this.password1Valid && this.password2Valid && this.email1Valid && this.email2Valid;
+        return this.usernameValidation.valid
+            && this.password1Validation.valid
+            && this.password2Validation.valid
+            && this.email1Validation.valid
+            && this.email2Validation.valid;
     }
 
-    get usernameValid(): boolean {
-        return this.state.username.length >= usernameMinLength; // TODO
+    get usernameValidation() {
+        return validateUsername(this.state.username);
     }
-    get password1Valid(): boolean {
-        return this.state.password1.length >= passwordMinLength; // TODO
+    get password1Validation() {
+        return validatePassword(this.state.password1);
     }
-    get password2Valid(): boolean {
-        return this.state.password1 === this.state.password2;
+    get password2Validation() {
+        return validatePasswordConfirm(this.state.password1, this.state.password2);
     }
-    get email1Valid(): boolean {
-        return this.state.email1.length > 0; // TODO
+    get email1Validation() {
+        return validateEmail(this.state.email1);
     }
-    get email2Valid(): boolean {
-        return this.state.email1 === this.state.email2;
+    get email2Validation() {
+        return validateEmailConfirm(this.state.email1, this.state.email2);
     }
 
     componentWillUnmount() {
@@ -102,53 +113,67 @@ export class SignUp extends React.PureComponent<SignUpProps, SignUpState> {
     };
 
     render() {
-        const {processing} = this.state;
+        const {
+            usernameValidation, password1Validation, password2Validation, email1Validation, email2Validation,
+        } = this;
+        const {
+            processing, hidePassword, success, error, username, password1, password2, email1, email2,
+        } = this.state;
+
         return <Column>
             <Text style={styles.title}>Sign Up</Text>
 
             <Text>Username</Text>
             <FormTextInput
-                value={this.state.username}
+                value={username}
                 onChangeText={this.onInputUsername}
                 disabled={processing}
                 textContentType={"username"}
             />
+            <Visibility visible={Boolean(!usernameValidation.valid)}>
+                <Text style={styles.rule}>{usernameValidation.reason || 'Invalid username'}</Text>
+            </Visibility>
 
             <Text>Password</Text>
             <FormPasswordInput
-                value={this.state.password1}
+                value={password1}
                 onChangeText={this.onInputPassword1}
                 existingPassword={false}
                 disabled={processing}
-                showPassword={!this.state.hidePassword}
+                showPassword={!hidePassword}
                 toggleShowPassword={this.toggleHidePassword}
             />
             <FormPasswordInput
-                value={this.state.password2}
+                value={password2}
                 onChangeText={this.onInputPassword2}
                 existingPassword={false}
                 disabled={processing}
-                showPassword={!this.state.hidePassword}
+                showPassword={!hidePassword}
                 style={styles.confirmInput}
             />
-            <Text style={styles.rule}>Passwords must be at least {passwordMinLength} characters.</Text>
+            <Visibility visible={Boolean(!password1Validation.valid || !password2Validation.valid)}>
+                <Text style={styles.rule}>{password1Validation.reason || password2Validation.reason || 'Invalid password.'}</Text>
+            </Visibility>
 
             <Text>E-mail</Text>
             <FormTextInput
-                value={this.state.email1}
+                value={email1}
                 onChangeText={this.onInputEmail1}
                 textContentType="newPassword"
                 keyboardType="email-address"
                 disabled={processing}
             />
             <FormTextInput
-                value={this.state.email2}
+                value={email2}
                 onChangeText={this.onInputEmail2}
                 textContentType="newPassword"
                 keyboardType="email-address"
                 disabled={processing}
                 style={styles.confirmInput}
             />
+            <Visibility visible={Boolean(!email1Validation.valid || !email2Validation.valid)}>
+                <Text style={styles.rule}>{email1Validation.reason || email2Validation.reason || 'Invalid email.'}</Text>
+            </Visibility>
 
             <Button
                 title="Submit"
@@ -159,8 +184,8 @@ export class SignUp extends React.PureComponent<SignUpProps, SignUpState> {
 
             <ProgressBar visible={processing} style={styles.progress} />
 
-            {this.state.success ? <Text style={styles.success}>{this.state.success}</Text> : null}
-            {this.state.error ? <Text style={styles.error}>{this.state.error}</Text> : null}
+            {success ? <Text style={styles.success}>{success}</Text> : null}
+            {error ? <Text style={styles.error}>{error}</Text> : null}
 
         </Column>;
     }
