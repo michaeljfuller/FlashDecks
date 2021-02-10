@@ -14,6 +14,8 @@ import {AmplifyAuthenticator} from "./amplify-ui/AmplifyAuthenticator";
 export interface AppAuthenticatorProps {}
 interface AppAuthenticatorState {
     tab: "SignIn"|"SignUp"|"Forgot"|"Amazon"|"Confirm";
+    username?: string;
+    password?: string;
 }
 
 /**
@@ -24,11 +26,13 @@ export class AppAuthenticator extends React.PureComponent<AppAuthenticatorProps,
         tab: "SignIn",
     } as AppAuthenticatorState;
 
-    goToSignIn  = () => this.setState({ tab: "SignIn"  });
-    goToSignUp  = () => this.setState({ tab: "SignUp"  });
-    goToForgot  = () => this.setState({ tab: "Forgot"  });
-    goToConfirm = () => this.setState({ tab: "Confirm" });
-    goToAmazon  = () => this.setState({ tab: "Amazon"  });
+    goToSignIn  = () => this.setState({ tab: "SignIn",  username: undefined, password: undefined });
+    goToSignUp  = () => this.setState({ tab: "SignUp",  username: undefined, password: undefined });
+    goToForgot  = () => this.setState({ tab: "Forgot",  username: undefined, password: undefined });
+    goToConfirm = () => this.setState({ tab: "Confirm", username: undefined, password: undefined });
+    goToAmazon  = () => this.setState({ tab: "Amazon",  username: undefined, password: undefined });
+
+    onCredentials = (username?: string, password?: string) => this.setState({ tab: "SignIn", username, password });
 
     render() {
         const isSignIn  = this.state.tab === "SignIn";
@@ -48,10 +52,10 @@ export class AppAuthenticator extends React.PureComponent<AppAuthenticatorProps,
             </Row>
             <Row flex center style={styles.contentsRow}>
                 <Column scroll center style={styles.contentsColumn}>
-                    {isSignIn  ? <SignIn /> : null}
+                    {isSignIn  ? <SignIn username={this.state.username} password={this.state.password} onCredentials={this.onCredentials} /> : null}
                     {isSignUp  ? <SignUp /> : null}
-                    {isForgot  ? <ForgotPassword /> : null}
-                    {isConfirm ? <ConfirmRegistration /> : null}
+                    {isForgot  ? <ForgotPassword onComplete={this.onCredentials} /> : null}
+                    {isConfirm ? <ConfirmRegistration onComplete={this.onCredentials} /> : null}
                     {isAmazon  ? <AmplifyAuthenticator /> : null}
                 </Column>
             </Row>

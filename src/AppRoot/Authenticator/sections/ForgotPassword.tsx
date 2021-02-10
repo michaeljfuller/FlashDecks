@@ -12,7 +12,9 @@ import {FormPasswordInput} from "../ui/FormPasswordInput";
 import authApi from "../../../api/AuthApi";
 import {getErrorText} from "../../../utils/string";
 
-export interface ForgotPasswordProps {}
+export interface ForgotPasswordProps {
+    onComplete?: (username: string, password: string) => void;
+}
 interface ForgotPasswordState {
     username: string;
     password1: string;
@@ -90,7 +92,13 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
         this.forgotPasswordSub?.unsubscribe();
         this.forgotPasswordSub = subscription;
         promise.then(
-            () => this.setState({ success: 'Password updated.' }),
+            () => {
+                if (this.props.onComplete) {
+                    this.props.onComplete(this.state.username, this.state.password1)
+                } else {
+                    this.setState({ success: 'Password updated.' });
+                }
+            },
             e => this.setState({ error: getErrorText(e?.message, 'Error') }),
         ).finally(() => this.setState({ processing: false }));
     }

@@ -13,10 +13,12 @@ import {SignInError} from "../../../api/AuthApi.types";
 import ProgressBar from "../../../components/progress/ProgressBar";
 import {getErrorText} from "../../../utils/string";
 
-export interface SignInProps {}
+export interface SignInProps {
+    username?: string;
+    password?: string;
+    onCredentials: (username: string, password: string) => void;
+}
 interface SignInState {
-    username: string;
-    password: string;
     hidePassword: boolean;
     processing: boolean;
     error: string;
@@ -27,8 +29,6 @@ interface SignInState {
  */
 export class SignIn extends React.PureComponent<SignInProps, SignInState> {
     state = {
-        username: testUsername,
-        password: testPassword,
         hidePassword: true,
         processing: false,
         error: '',
@@ -36,17 +36,26 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
 
     private signInSub?: Subscription;
 
+    get username() {
+        return this.props.username || '';
+    }
+    get password() {
+        return this.props.password || '';
+    }
+
     componentWillUnmount() {
         this.signInSub?.unsubscribe();
     }
 
-    onInputUsername = (username: string) => this.setState({ username, error: '' });
-    onInputPassword = (password: string) => this.setState({ password, error: '' });
+    // onInputUsername = (username: string) => this.setState({ username, error: '' });
+    // onInputPassword = (password: string) => this.setState({ password, error: '' });
+    onInputUsername = (username: string) => this.props.onCredentials(username, this.password);
+    onInputPassword = (password: string) => this.props.onCredentials(this.username, password)
     toggleHidePassword = () => this.setState({ hidePassword: !this.state.hidePassword });
 
     signIn = () => {
         this.setState({error: '', processing: true})
-        const {subscription, promise} = authApi.signIn(this.state.username, this.state.password);
+        const {subscription, promise} = authApi.signIn(this.username, this.password);
 
         this.signInSub?.unsubscribe();
         this.signInSub = subscription;
@@ -67,7 +76,7 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
 
             <Text>Username</Text>
             <FormTextInput
-                value={this.state.username}
+                value={this.props.username}
                 onChangeText={this.onInputUsername}
                 disabled={processing}
                 textContentType={"username"}
@@ -75,7 +84,7 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
 
             <Text>Password</Text>
             <FormPasswordInput
-                value={this.state.password}
+                value={this.password}
                 onChangeText={this.onInputPassword}
                 existingPassword={true}
                 disabled={processing}
@@ -86,7 +95,7 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
             <Button
                 title="Submit"
                 onClick={this.signIn}
-                disabled={processing || !this.state.username || !this.state.password}
+                disabled={processing || !this.username || !this.password}
                 square style={styles.submit}
             />
 

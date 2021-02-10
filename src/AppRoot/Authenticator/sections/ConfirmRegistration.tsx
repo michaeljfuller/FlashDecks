@@ -10,7 +10,9 @@ import ProgressBar from "../../../components/progress/ProgressBar";
 import {ConfirmSignUpError} from "../../../api/AuthApi.types";
 import {getErrorText} from "../../../utils/string";
 
-export interface SignInProps {}
+export interface SignInProps {
+    onComplete?: (username: string) => void;
+}
 interface SignInState {
     username: string;
     code: string;
@@ -47,7 +49,13 @@ export class ConfirmRegistration extends React.PureComponent<SignInProps, SignIn
         this.confirmSignUpSub?.unsubscribe();
         this.confirmSignUpSub = subscription;
         promise.then(
-            () => this.setState({ success: `You can now log in.` }),
+            () => {
+                if (this.props.onComplete) {
+                    this.props.onComplete(this.state.username);
+                } else {
+                    this.setState({ success: `You can now log in.` })
+                }
+            },
             (e: ConfirmSignUpError) => this.setState({ error: getErrorText(e?.message, 'Error confirming registration.') }),
         ).finally(() => this.setState({ processing: false }));
     };
