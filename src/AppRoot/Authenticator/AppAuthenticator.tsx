@@ -8,12 +8,11 @@ import Row from "../../components/layout/Row";
 import {SignIn} from "./sections/SignIn";
 import {SignUp} from "./sections/SignUp";
 import {ForgotPassword} from "./sections/ForgotPassword";
-import {ConfirmRegistration} from "./sections/ConfirmRegistration";
 import {AmplifyAuthenticator} from "./amplify-ui/AmplifyAuthenticator";
 
 export interface AppAuthenticatorProps {}
 interface AppAuthenticatorState {
-    tab: "SignIn"|"SignUp"|"Forgot"|"Amazon"|"Confirm";
+    tab: "SignIn"|"SignUp"|"Forgot"|"Amazon";
     username?: string;
     password?: string;
 }
@@ -26,37 +25,36 @@ export class AppAuthenticator extends React.PureComponent<AppAuthenticatorProps,
         tab: "SignIn",
     } as AppAuthenticatorState;
 
-    goToSignIn  = () => this.setState({ tab: "SignIn",  username: undefined, password: undefined });
-    goToSignUp  = () => this.setState({ tab: "SignUp",  username: undefined, password: undefined });
-    goToForgot  = () => this.setState({ tab: "Forgot",  username: undefined, password: undefined });
-    goToConfirm = () => this.setState({ tab: "Confirm", username: undefined, password: undefined });
-    goToAmazon  = () => this.setState({ tab: "Amazon",  username: undefined, password: undefined });
+    goToSignIn  = () => this.setState({ tab: "SignIn" });
+    goToSignUp  = () => this.setState({ tab: "SignUp", username: undefined, password: undefined });
+    goToForgot  = () => this.setState({ tab: "Forgot" });
+    goToAmazon  = () => this.setState({ tab: "Amazon" });
 
-    onCredentials = (username?: string, password?: string) => this.setState({ tab: "SignIn", username, password });
+    onCredentials = (username?: string, password?: string) => {
+        this.setState({ tab: "SignIn", username, password });
+    }
 
     render() {
-        const isSignIn  = this.state.tab === "SignIn";
-        const isSignUp  = this.state.tab === "SignUp";
-        const isForgot  = this.state.tab === "Forgot";
-        const isConfirm = this.state.tab === "Confirm";
-        const isAmazon  = this.state.tab === "Amazon";
+        const { tab, username, password } = this.state;
+        const isSignIn = tab === "SignIn";
+        const isSignUp = tab === "SignUp";
+        const isForgot = tab === "Forgot";
+        const isAmazon = tab === "Amazon";
 
         return <Column center space scroll={!isPlatformWeb} style={styles.root}>
             <Row wrap style={styles.tabRow}>
-                <TabButton title="Sign In"         onClick={this.goToSignIn}  disabled={isSignIn}  transparent={isSignIn}  color="Green"  />
-                <TabButton title="Register"        onClick={this.goToSignUp}  disabled={isSignUp}  transparent={isSignUp}  color="Green"  />
-                <TabButton title="Forgot Password" onClick={this.goToForgot}  disabled={isForgot}  transparent={isForgot}  color="Blue"   />
-                <TabButton title="Confirm"         onClick={this.goToConfirm} disabled={isConfirm} transparent={isConfirm} color="Blue"   />
-                <TabButton title="Amplify Auth"    onClick={this.goToAmazon}  disabled={isAmazon}  transparent={isAmazon}  color="Orange" />
+                <TabButton title="Sign In"         onClick={this.goToSignIn} disabled={isSignIn} transparent={isSignIn} color="Green"  />
+                <TabButton title="Register"        onClick={this.goToSignUp} disabled={isSignUp} transparent={isSignUp} color="Green"  />
+                <TabButton title="Forgot Password" onClick={this.goToForgot} disabled={isForgot} transparent={isForgot} color="Blue"   />
+                <TabButton title="Amplify Auth"    onClick={this.goToAmazon} disabled={isAmazon} transparent={isAmazon} color="Orange" />
                 {/*<TabButton title="Sign Out"        onClick={authApi.signOut} color="Orange" />*/}
             </Row>
             <Row flex center style={styles.contentsRow}>
                 <Column scroll center style={styles.contentsColumn}>
-                    {isSignIn  ? <SignIn username={this.state.username} password={this.state.password} onCredentials={this.onCredentials} /> : null}
-                    {isSignUp  ? <SignUp /> : null}
-                    {isForgot  ? <ForgotPassword onComplete={this.onCredentials} /> : null}
-                    {isConfirm ? <ConfirmRegistration onComplete={this.onCredentials} /> : null}
-                    {isAmazon  ? <AmplifyAuthenticator /> : null}
+                    {isSignIn ? <SignIn username={username} password={password} onCredentials={this.onCredentials} /> : null}
+                    {isSignUp ? <SignUp onComplete={this.onCredentials} /> : null}
+                    {isForgot ? <ForgotPassword username={username} onComplete={this.onCredentials} /> : null}
+                    {isAmazon ? <AmplifyAuthenticator /> : null}
                 </Column>
             </Row>
         </Column>;

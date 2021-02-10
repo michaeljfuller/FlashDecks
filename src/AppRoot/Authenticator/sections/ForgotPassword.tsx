@@ -1,11 +1,11 @@
 import React from "react";
 import {StyleSheet, Text} from "react-native";
+import {Subscription} from "rxjs";
 import Column from "../../../components/layout/Column";
 import {FormTextInput} from "../ui/FormTextInput";
 import Button from "../../../components/button/Button";
 import ProgressBar from "../../../components/progress/ProgressBar";
 import {Color} from "../../../styles/Color";
-import {Subscription} from "rxjs";
 import {validateUsername, validatePassword, validatePasswordConfirm, validateForgotPasswordCode} from "../../../api/validation/authValidation";
 import {Visibility} from "../../../components/layout/Visibility";
 import {FormPasswordInput} from "../ui/FormPasswordInput";
@@ -13,7 +13,8 @@ import authApi from "../../../api/AuthApi";
 import {getErrorText} from "../../../utils/string";
 
 export interface ForgotPasswordProps {
-    onComplete?: (username: string, password: string) => void;
+    onComplete: (username: string, password: string) => void;
+    username?: string;
 }
 interface ForgotPasswordState {
     username: string;
@@ -67,6 +68,9 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
         return validateForgotPasswordCode(this.state.code);
     }
 
+    componentDidMount() {
+        this.setState({ username: this.props.username || '' });
+    }
     componentWillUnmount() {
         this.forgotPasswordSub?.unsubscribe();
     }
@@ -82,8 +86,13 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
         this.forgotPasswordSub?.unsubscribe();
         this.forgotPasswordSub = subscription;
         promise.then(
-            () => this.setState({ success: 'Sending email. Please enter code above.', enterCode: true }),
-            e => this.setState({ error: getErrorText(e?.message, 'Error') }),
+            () => this.setState({
+                success: 'Sending email.',
+                enterCode: true,
+            }),
+            e => this.setState({
+                error: getErrorText(e?.message, 'Error'),
+            }),
         ).finally(() => this.setState({ processing: false }));
     }
 
@@ -92,15 +101,12 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
         this.forgotPasswordSub?.unsubscribe();
         this.forgotPasswordSub = subscription;
         promise.then(
-            () => {
-                if (this.props.onComplete) {
-                    this.props.onComplete(this.state.username, this.state.password1)
-                } else {
-                    this.setState({ success: 'Password updated.' });
-                }
-            },
-            e => this.setState({ error: getErrorText(e?.message, 'Error') }),
-        ).finally(() => this.setState({ processing: false }));
+            () => this.props.onComplete(this.state.username, this.state.password1),
+            e => this.setState({
+                error: getErrorText(e?.message, 'Error'),
+                processing: false,
+            }),
+        );
     }
 
     onSubmit = () => {
@@ -110,7 +116,9 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
             this.submitNewPassword();
         }
     };
-    onEnterCode = () => this.setState({ enterCode: true });
+    onEnterCode = () => {
+        this.setState({ enterCode: true });
+    }
 
     render() {
         const {
@@ -178,14 +186,7 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
                 square style={styles.submit}
             />
 
-            {!this.state.enterCode
-                ? <Button
-                    title="Enter Code"
-                    onClick={this.onEnterCode}
-                    square transparent
-                />
-                : null
-            }
+            {!this.state.enterCode ? <Button title="Enter Code" onClick={this.onEnterCode} square transparent /> : null }
 
             <ProgressBar visible={processing} style={styles.progress} />
 

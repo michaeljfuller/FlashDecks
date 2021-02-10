@@ -47,8 +47,6 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
         this.signInSub?.unsubscribe();
     }
 
-    // onInputUsername = (username: string) => this.setState({ username, error: '' });
-    // onInputPassword = (password: string) => this.setState({ password, error: '' });
     onInputUsername = (username: string) => this.props.onCredentials(username, this.password);
     onInputPassword = (password: string) => this.props.onCredentials(this.username, password)
     toggleHidePassword = () => this.setState({ hidePassword: !this.state.hidePassword });
@@ -60,7 +58,10 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
         this.signInSub?.unsubscribe();
         this.signInSub = subscription;
         promise.catch(
-            (e: SignInError) => this.setState({error: getErrorText(e?.message, 'Error signing in.'), processing: false}),
+            (e: SignInError) => this.setState({
+                error: getErrorText(e?.message, 'Error signing in.'),
+                processing: false,
+            }),
         );
     };
 
@@ -76,7 +77,7 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
 
             <Text>Username</Text>
             <FormTextInput
-                value={this.props.username}
+                value={this.username}
                 onChangeText={this.onInputUsername}
                 disabled={processing}
                 textContentType={"username"}
