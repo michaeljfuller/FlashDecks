@@ -2,7 +2,7 @@ import React from "react";
 import {Text, View} from "react-native";
 
 import { Authenticator, AmplifyTheme } from 'aws-amplify-react';
-import {isProduction, testUsername, testPassword} from "../../env";
+import {isProduction, testUsername, testPassword} from "../../../env";
 
 /**
  * @link https://docs.amplify.aws/ui/auth/authenticator/q/framework/react#basic-usage

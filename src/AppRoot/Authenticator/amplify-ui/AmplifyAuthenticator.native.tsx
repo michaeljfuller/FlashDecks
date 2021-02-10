@@ -2,8 +2,8 @@ import React from "react";
 import {Text, View} from "react-native";
 // @ts-ignore
 import { Authenticator, AmplifyTheme } from 'aws-amplify-react-native';
-import {isProduction, testUsername, testPassword} from "../../env";
-import Row from "../../components/layout/Row";
+import {isProduction, testUsername, testPassword} from "../../../env";
+import Row from "../../../components/layout/Row";
 
 /**
  * @link https://docs.amplify.aws/ui/auth/authenticator/q/framework/react-native#using-withauthenticator-hoc

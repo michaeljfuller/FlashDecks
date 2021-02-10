@@ -9,7 +9,7 @@ import {SignIn} from "./sections/SignIn";
 import {SignUp} from "./sections/SignUp";
 import {ForgotPassword} from "./sections/ForgotPassword";
 import {ConfirmRegistration} from "./sections/ConfirmRegistration";
-import {AmplifyAuthenticator} from "./AmplifyAuthenticator";
+import {AmplifyAuthenticator} from "./amplify-ui/AmplifyAuthenticator";
 
 export interface AppAuthenticatorProps {}
 interface AppAuthenticatorState {
