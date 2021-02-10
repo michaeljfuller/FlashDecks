@@ -1,9 +1,10 @@
 import React from "react";
-import {View, ViewStyle} from "react-native";
+import {ViewStyle} from "react-native";
 // @ts-ignore https://www.npmjs.com/package/react-native-material-indicators#progress-circle
 import {ProgressCircle as IndicatorCircle} from "react-native-material-indicators";
 import {CommonProgressProps, ProgressBase} from "./commonProgress";
 import {Color, ColorKey} from "../../styles/Color";
+import {Visibility} from "../layout/Visibility";
 
 export interface ProgressCircleProps extends CommonProgressProps {
     size?: number;
@@ -14,11 +15,9 @@ export interface ProgressCircleProps extends CommonProgressProps {
 
 export class ProgressCircle extends ProgressBase<ProgressCircleProps> {
     render() {
-        const {size=40, thickness=4, color="Blue", visible=true} = this.props;
+        const {size=40, thickness=4, color="Blue", visible=true, render=true} = this.props;
 
-        if (!visible) return null;
-
-        return <View style={this.props.style}>
+        return <Visibility style={this.props.style} visible={visible} render={render}>
             <IndicatorCircle
                 key={'ProgressCircle_'+this.state.iteration /*Create new instance if changes to reset animation*/}
                 visible
@@ -31,7 +30,7 @@ export class ProgressCircle extends ProgressBase<ProgressCircleProps> {
                 animationConfig={{ duration: 500 }}
                 shouldAnimateFirstValue
             />
-        </View>;
+        </Visibility>;
     }
 }
 

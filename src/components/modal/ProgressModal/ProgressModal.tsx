@@ -56,14 +56,14 @@ export const ProgressModal = React.memo<ProgressModalPropsWithChildren>(function
             {children && <View>{children}</View>}
 
             {type === 'circle' && <ProgressCircle
-                visible={typeof value === "number" ? true : value}
+                render={typeof value === "number" ? true : value}
                 value={typeof value === "number" ? value : undefined}
                 maxValue={maxValue}
                 size={60}
                 style={styles.progressCircle}
             />}
             {type === 'bar' && <ProgressBar
-                visible={typeof value === "number" ? true : value}
+                render={typeof value === "number" ? true : value}
                 value={typeof value === "number" ? value : undefined}
                 maxValue={maxValue}
                 style={styles.progressBar}

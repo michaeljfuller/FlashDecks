@@ -1,9 +1,10 @@
 import React from "react";
-import {View, ViewStyle} from "react-native";
+import {ViewStyle} from "react-native";
 // @ts-ignore https://www.npmjs.com/package/react-native-material-indicators#progress-bar
 import {ProgressBar as IndicatorBar} from "react-native-material-indicators";
 import {ProgressBase, CommonProgressProps} from "./commonProgress";
 import {Color, ColorKey} from "../../styles/Color";
+import {Visibility} from "../layout/Visibility";
 
 export interface ProgressBarProps extends CommonProgressProps {
     style?: ViewStyle;
@@ -12,11 +13,9 @@ export interface ProgressBarProps extends CommonProgressProps {
 
 export class ProgressBar extends ProgressBase<ProgressBarProps> {
     render() {
-        const {color="Blue", visible=true} = this.props;
+        const {color="Blue", visible=true, render=true} = this.props;
 
-        if (!visible) return null;
-
-        return <View style={this.props.style}>
+        return <Visibility style={this.props.style} visible={visible} render={render}>
             <IndicatorBar
                 key={'ProgressBar_'+this.state.iteration /*Create new instance if changes to reset animation*/}
                 visible
@@ -24,7 +23,7 @@ export class ProgressBar extends ProgressBase<ProgressBarProps> {
                 value={this.getProgressFraction() * 100}
                 color={Color[color]}
             />
-        </View>;
+        </Visibility>;
     }
 }
 

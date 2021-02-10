@@ -3,6 +3,7 @@ import React from "react";
 export interface CommonProgressProps {
     determinate?: boolean;
     visible?: boolean;
+    render?: boolean;
     value?: number; // Range 0-maxValue
     maxValue?: number;
 }
