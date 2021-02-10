@@ -78,11 +78,11 @@ export class SignUp extends React.PureComponent<SignUpProps, SignUpState> {
         this.signUpSub?.unsubscribe();
     }
 
-    onInputUsername = (username: string) => this.setState({ username });
-    onInputPassword1 = (password1: string) => this.setState({ password1 });
-    onInputPassword2 = (password2: string) => this.setState({ password2 });
-    onInputEmail1 = (email1: string) => this.setState({ email1 });
-    onInputEmail2 = (email2: string) => this.setState({ email2 });
+    onInputUsername = (username: string) => this.setState({ username, success: '', error: '' });
+    onInputPassword1 = (password1: string) => this.setState({ password1, success: '', error: '' });
+    onInputPassword2 = (password2: string) => this.setState({ password2, success: '', error: '' });
+    onInputEmail1 = (email1: string) => this.setState({ email1, success: '', error: '' });
+    onInputEmail2 = (email2: string) => this.setState({ email2, success: '', error: '' });
     toggleHidePassword = () => this.setState({ hidePassword: !this.state.hidePassword });
 
     clearInput() {
@@ -198,13 +198,6 @@ const styles = StyleSheet.create({
     },
     rule: {
         color: "grey",
-    },
-    input: {
-        borderWidth: 1,
-        paddingHorizontal: 6,
-        paddingVertical: 4,
-        backgroundColor: Color.White,
-        flex: 1,
     },
     confirmInput: {
         marginTop: 2,

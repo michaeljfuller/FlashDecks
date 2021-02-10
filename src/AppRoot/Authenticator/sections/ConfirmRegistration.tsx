@@ -7,7 +7,7 @@ import Button from "../../../components/button/Button";
 import {Color} from "../../../styles/Color";
 import {FormTextInput} from "../ui/FormTextInput";
 import ProgressBar from "../../../components/progress/ProgressBar";
-import {ConfirmSignUpError, SignInError} from "../../../api/AuthApi.types";
+import {ConfirmSignUpError} from "../../../api/AuthApi.types";
 import {getErrorText} from "../../../utils/string";
 
 export interface SignInProps {}
@@ -37,8 +37,8 @@ export class ConfirmRegistration extends React.PureComponent<SignInProps, SignIn
         this.confirmSignUpSub?.unsubscribe();
     }
 
-    onInputUsername = (username: string) => this.setState({ username });
-    onInputCode = (code: string) => this.setState({ code });
+    onInputUsername = (username: string) => this.setState({ username, success: '', error: '' });
+    onInputCode = (code: string) => this.setState({ code, success: '', error: '' });
 
     submit = () => {
         this.setState({error: '', processing: true});
@@ -91,13 +91,6 @@ const styles = StyleSheet.create({
     title: {
         fontWeight: "bold",
         textAlign: "center",
-    },
-    input: {
-        borderWidth: 1,
-        paddingHorizontal: 6,
-        paddingVertical: 4,
-        backgroundColor: Color.White,
-        flex: 1,
     },
     success: {
         color: Color.Green,

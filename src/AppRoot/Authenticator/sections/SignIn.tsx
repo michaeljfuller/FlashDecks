@@ -40,8 +40,8 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
         this.signInSub?.unsubscribe();
     }
 
-    onInputUsername = (username: string) => this.setState({ username });
-    onInputPassword = (password: string) => this.setState({ password });
+    onInputUsername = (username: string) => this.setState({ username, error: '' });
+    onInputPassword = (password: string) => this.setState({ password, error: '' });
     toggleHidePassword = () => this.setState({ hidePassword: !this.state.hidePassword });
 
     signIn = () => {
@@ -104,13 +104,6 @@ const styles = StyleSheet.create({
     title: {
         fontWeight: "bold",
         textAlign: "center",
-    },
-    input: {
-        borderWidth: 1,
-        paddingHorizontal: 6,
-        paddingVertical: 4,
-        backgroundColor: Color.White,
-        flex: 1,
     },
     error: {
         color: Color.Red,
