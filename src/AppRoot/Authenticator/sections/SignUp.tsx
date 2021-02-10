@@ -10,7 +10,7 @@ import ProgressBar from "../../../components/progress/ProgressBar";
 import {SignUpForm} from "./SignUp/SignUpForm";
 import Button from "../../../components/button/Button";
 import {SignUpConfirmation} from "./SignUp/SignUpConfirmation";
-import {ValidationText} from "../../../components/ui/form/ValidationText";
+import {FormValidationText} from "../../../components/ui/form/FormValidationText";
 
 export interface SignUpProps {
     onComplete: (username?: string, password?: string) => void;
@@ -104,7 +104,7 @@ export class SignUp extends React.PureComponent<SignUpProps, SignUpState> {
 
             <ProgressBar visible={processing} style={styles.progress} />
 
-            <ValidationText
+            <FormValidationText
                 type={error ? "error" : "success"}
                 visible={Boolean(error || success)}
                 text={error || success}

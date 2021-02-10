@@ -8,7 +8,7 @@ export interface ValidationTextProps {
     visible?: boolean;
     type?: "standard"|"error"|"success";
 }
-export const ValidationText = React.memo(function ({
+export const FormValidationText = React.memo(function FormValidationText ({
     text, visible=true, type
 }: ValidationTextProps) {
     return <Visibility visible={visible}>

@@ -3,8 +3,8 @@ import {Subscription} from "rxjs";
 import Column from "../../../../components/layout/Column";
 import {StyleSheet, Text} from "react-native";
 import Button from "../../../../components/button/Button";
-import {FormTextInput} from "../../ui/FormTextInput";
-import {ValidationText} from "../../../../components/ui/form/ValidationText";
+import {FormTextInput} from "../../../../components/ui/form/FormTextInput";
+import {FormValidationText} from "../../../../components/ui/form/FormValidationText";
 import {validateRegistrationCode, validateUsername} from "../../../../api/validation/authValidation";
 
 export interface SignUpConfirmationProps {
@@ -56,7 +56,7 @@ export class SignUpConfirmation extends React.PureComponent<SignUpConfirmationPr
                 onChangeText={this.onInputUsername}
                 disabled={this.props.disabled}
             />
-            <ValidationText visible={!usernameValidation.valid} type={username ? "error" : "standard"} text={usernameValidation.reason} />
+            <FormValidationText visible={!usernameValidation.valid} type={username ? "error" : "standard"} text={usernameValidation.reason} />
 
             <Text>Code</Text>
             <FormTextInput
@@ -66,7 +66,7 @@ export class SignUpConfirmation extends React.PureComponent<SignUpConfirmationPr
                 textContentType={"oneTimeCode"}
                 keyboardType={"number-pad"}
             />
-            <ValidationText visible={!codeValidation.valid} type={code ? "error" : "standard"} text={codeValidation.reason} />
+            <FormValidationText visible={!codeValidation.valid} type={code ? "error" : "standard"} text={codeValidation.reason} />
 
             <Button
                 title="Submit"

@@ -2,8 +2,8 @@ import React from "react";
 import Column from "../../../../components/layout/Column";
 import {StyleSheet, Text} from "react-native";
 import Button from "../../../../components/button/Button";
-import {FormTextInput} from "../../ui/FormTextInput";
-import {FormPasswordInput} from "../../ui/FormPasswordInput";
+import {FormTextInput} from "../../../../components/ui/form/FormTextInput";
+import {FormPasswordInput} from "../../../../components/ui/form/FormPasswordInput";
 import {
     validateUsername,
     validatePassword,
@@ -11,7 +11,7 @@ import {
     validateEmailConfirm,
     validatePasswordConfirm, flattenValidation
 } from "../../../../api/validation/authValidation";
-import {ValidationText} from "../../../../components/ui/form/ValidationText";
+import {FormValidationText} from "../../../../components/ui/form/FormValidationText";
 
 export interface SignUpFormProps {
     onSubmit: (username: string, password: string, email: string) => void;
@@ -89,7 +89,7 @@ export class SignUpForm extends React.PureComponent<SignUpFormProps, SignUpFormS
                 disabled={disabled}
                 textContentType={"username"}
             />
-            <ValidationText
+            <FormValidationText
                 visible={!usernameValidation.valid}
                 type={username ? "error" : "standard"}
                 text={usernameValidation.reason}
@@ -112,7 +112,7 @@ export class SignUpForm extends React.PureComponent<SignUpFormProps, SignUpFormS
                 showPassword={!hidePassword}
                 style={styles.confirmInput}
             />
-            <ValidationText
+            <FormValidationText
                 visible={Boolean(!password1Validation.valid || !password2Validation.valid)}
                 type={(password1 && !password1Validation.valid) || (password2 && !password2Validation.valid) ? "error" : "standard"}
                 text={flattenValidation([password1Validation, password2Validation], 0).reason}
@@ -134,7 +134,7 @@ export class SignUpForm extends React.PureComponent<SignUpFormProps, SignUpFormS
                 disabled={disabled}
                 style={styles.confirmInput}
             />
-            <ValidationText
+            <FormValidationText
                 visible={Boolean(!email1Validation.valid || !email2Validation.valid)}
                 type={(email1 && !email1Validation.valid) || (email2 && !email2Validation.valid) ? "error" : "standard"}
                 text={flattenValidation([email1Validation, email2Validation], 0).reason}

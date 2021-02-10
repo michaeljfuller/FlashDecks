@@ -2,7 +2,7 @@ import React from "react";
 import {StyleSheet, Text} from "react-native";
 import {Subscription} from "rxjs";
 import Column from "../../../components/layout/Column";
-import {FormTextInput} from "../ui/FormTextInput";
+import {FormTextInput} from "../../../components/ui/form/FormTextInput";
 import Button from "../../../components/button/Button";
 import ProgressBar from "../../../components/progress/ProgressBar";
 import {Color} from "../../../styles/Color";
@@ -14,10 +14,10 @@ import {
     flattenValidation
 } from "../../../api/validation/authValidation";
 import {Visibility} from "../../../components/layout/Visibility";
-import {FormPasswordInput} from "../ui/FormPasswordInput";
+import {FormPasswordInput} from "../../../components/ui/form/FormPasswordInput";
 import authApi from "../../../api/AuthApi";
 import {getErrorText} from "../../../utils/string";
-import {ValidationText} from "../../../components/ui/form/ValidationText";
+import {FormValidationText} from "../../../components/ui/form/FormValidationText";
 
 export interface ForgotPasswordProps {
     onComplete: (username: string, password: string) => void;
@@ -146,7 +146,7 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
                 disabled={processing}
                 textContentType={"username"}
             />
-            <ValidationText
+            <FormValidationText
                 visible={!usernameValidation.valid}
                 type={username ? "error" : "standard"}
                 text={usernameValidation.reason}
@@ -171,7 +171,7 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
                     showPassword={!hidePassword}
                     style={styles.confirmInput}
                 />
-                <ValidationText
+                <FormValidationText
                     visible={Boolean(!password1Validation.valid || !password2Validation.valid)}
                     type={(password1 && !password1Validation.valid) || (password2 && !password2Validation.valid) ? "error" : "standard"}
                     text={flattenValidation([password1Validation, password2Validation], 0).reason}
@@ -185,7 +185,7 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
                     textContentType={"oneTimeCode"}
                     keyboardType={"number-pad"}
                 />
-                <ValidationText
+                <FormValidationText
                     visible={!codeValidation.valid}
                     type={code ? "error" : "standard"}
                     text={codeValidation.reason}
@@ -204,7 +204,7 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
 
             <ProgressBar visible={processing} style={styles.progress} />
 
-            <ValidationText
+            <FormValidationText
                 visible={Boolean(success || error)}
                 text={error || success}
                 type={error ? "error" : "success"}

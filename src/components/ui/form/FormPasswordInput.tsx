@@ -1,7 +1,7 @@
 import React from "react";
 import {StyleSheet} from "react-native";
-import Row from "../../../components/layout/Row";
-import Button from "../../../components/button/Button";
+import Row from "../../layout/Row";
+import Button from "../../button/Button";
 import {FormTextInput, FormTextInputProps} from "./FormTextInput";
 
 export interface FormPasswordInputProps extends FormTextInputProps {

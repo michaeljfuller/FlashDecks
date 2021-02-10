@@ -7,12 +7,12 @@ import {StyleSheet, Text, View} from "react-native";
 import Row from "../../../components/layout/Row";
 import Button from "../../../components/button/Button";
 import {Color} from "../../../styles/Color";
-import {FormTextInput} from "../ui/FormTextInput";
-import {FormPasswordInput} from "../ui/FormPasswordInput";
+import {FormTextInput} from "../../../components/ui/form/FormTextInput";
+import {FormPasswordInput} from "../../../components/ui/form/FormPasswordInput";
 import {SignInError} from "../../../api/AuthApi.types";
 import ProgressBar from "../../../components/progress/ProgressBar";
 import {getErrorText} from "../../../utils/string";
-import {ValidationText} from "../../../components/ui/form/ValidationText";
+import {FormValidationText} from "../../../components/ui/form/FormValidationText";
 
 export interface SignInProps {
     username?: string;
@@ -103,7 +103,7 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
 
             <ProgressBar visible={processing} style={styles.progress} />
 
-            <ValidationText type="error" visible={Boolean(this.state.error)} text={this.state.error} />
+            <FormValidationText type="error" visible={Boolean(this.state.error)} text={this.state.error} />
 
             {/*<Button title="Continue as Guest (TODO)" flat square disabled style={{marginVertical: 10}} color="Green" />*/}
 
