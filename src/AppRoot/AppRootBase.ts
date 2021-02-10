@@ -6,6 +6,7 @@ import auth from "../api/AuthApi";
 import ToastStore from "../store/toast/ToastStore";
 import {getErrorText} from "../utils/string";
 import logger from "../utils/Logger";
+import {Subscription} from "rxjs";
 
 export interface AppRootProps {}
 export interface AppRootState {
@@ -23,6 +24,8 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
         initialized: false,
     };
     toast = new ToastStore(this);
+    signInSub?: Subscription;
+    signOutSub?: Subscription;
 
     componentDidMount() {
         this.start(); // Comment out to show "Start" button
@@ -30,15 +33,17 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
 
     start() {
         this.setState({started:true});
-        auth.onSignIn.subscribe(() => this.fetchUserData());
-        auth.onSignOut.subscribe(() => this.clearUser());
-        auth.onSignInFailed.subscribe(message => this.onErrorMessage(message || 'Failed to sign in.'));
-        auth.onConfigured.subscribe(message => this.onErrorMessage('Auth module already configured.', message));
+        this.signInSub?.unsubscribe();
+        this.signOutSub?.unsubscribe();
+        this.signInSub = auth.onSignIn.subscribe(() => this.fetchUserData());
+        this.signOutSub = auth.onSignOut.subscribe(() => this.clearUser());
         this.fetchUserData(false);
     }
 
     componentWillUnmount() {
         this.toast.removeByRef();
+        this.signInSub?.unsubscribe();
+        this.signOutSub?.unsubscribe();
     }
 
     onErrorMessage(message: string, details?: string) { // TODO Child implementations to use Toast

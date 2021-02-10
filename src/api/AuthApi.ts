@@ -7,34 +7,47 @@ import {AuthEventType} from "./AuthApi.types";
 import {PromiseAndSubscription, toPromiseAndSubscription} from "../utils/async";
 
 export class AuthApi {
+    //<editor-fold desc="Subjects">
+
     private eventSubject = new Subject<HubPayload>();
-
     private signInSubject = new Subject();
-    private signUpSubject = new Subject();
     private signOutSubject = new Subject();
-    private signInFailedSubject = new Subject<string>();
-    private configuredSubject = new Subject<string>();
 
+    //</editor-fold>
+    //<editor-fold desc="Observables">
+
+    readonly onEvent = this.eventSubject.asObservable();
     readonly onSignIn = this.signInSubject.asObservable();
-    readonly onSignUp = this.signUpSubject.asObservable();
     readonly onSignOut = this.signOutSubject.asObservable();
-    readonly onSignInFailed = this.signInFailedSubject.asObservable();
-    readonly onConfigured = this.configuredSubject.asObservable();
+
+    //</editor-fold>
 
     constructor() {
         // https://docs.amplify.aws/lib/utilities/hub/q/platform/js
         Hub.listen('auth', capsule => {
             this.eventSubject.next(capsule.payload);
             const {event, message, data} = capsule.payload;
+
+            this.log(event, message, data);
             switch(event) {
-                case AuthEventType.SIGN_IN:         return this.signInSubject.next();
-                case AuthEventType.SIGN_UP:         return this.signUpSubject.next();
-                case AuthEventType.SIGN_OUT:        return this.signOutSubject.next();
-                case AuthEventType.SIGN_IN_FAILED:  return this.signInFailedSubject.next(data?.message || message || '');
-                case AuthEventType.CONFIGURED:      return this.configuredSubject.next(message || '');
-                default: console.warn('CognitoApi.onAuthEvent', 'No handled case for', event);
+                case AuthEventType.SIGN_IN:                 return this.signInSubject.next();
+                case AuthEventType.SIGN_UP:                 return;
+                case AuthEventType.SIGN_OUT:                return this.signOutSubject.next();
+                case AuthEventType.SIGN_IN_FAILED:          return; // data?.message || message || ''
+                case AuthEventType.FORGOT_PASSWORD:         return;
+                case AuthEventType.FORGOT_PASSWORD_FAILED:  return; // data?.message || message || ''
+                case AuthEventType.FORGOT_PASSWORD_SUBMIT:  return;
+                case AuthEventType.CONFIGURED:              return; // message || ''
+                default: this.warn("Error", `No handled case for "${event}".`, {message, data});
             }
         });
+    }
+
+    private log(tag: string, ...messages: any[]) {
+        logger.brightWhite.bgGray.add(` ${this.constructor.name} `).bgBlue.add(` ${tag} `).resetColors().log(...messages);
+    }
+    private warn(tag: string, ...messages: any[]) {
+        logger.brightWhite.bgGray.add(` ${this.constructor.name} `).bgRed.add(` ${tag} `).resetColors().log(...messages);
     }
 
     /** Get the logged in user */
@@ -98,6 +111,26 @@ export class AuthApi {
                 }
             ).finally(() => sub.complete());
         }));
+    }
+
+    /**
+     * Send request for a new password.
+     * @link https://docs.aws.amazon.com/en_gb/cognito-user-identity-pools/latest/APIReference/API_ForgotPassword.html
+     */
+    forgotPassword(username: string): PromiseAndSubscription<void> {
+        return toPromiseAndSubscription(
+            Auth.forgotPassword(username)
+        );
+    }
+
+    /**
+     * Submit a new password.
+     * @link https://docs.aws.amazon.com/en_gb/cognito-user-identity-pools/latest/APIReference/API_ConfirmForgotPassword.html
+     */
+    forgotPasswordSubmit(username: string, password: string, code: string): PromiseAndSubscription<void> {
+        return toPromiseAndSubscription(
+            Auth.forgotPasswordSubmit(username, code, password)
+        );
     }
 
     signOut() {
