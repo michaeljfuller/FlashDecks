@@ -44,10 +44,10 @@ export class AuthApi {
     }
 
     private log(tag: string, ...messages: any[]) {
-        logger.brightWhite.bgGray.add(` ${this.constructor.name} `).bgBlue.add(` ${tag} `).resetColors().log(...messages);
+        logger.brightWhite.bgGray.add(` ${this.constructor.name} `).bgBlue.add(` ${tag} `).resetColors().space.log(...messages);
     }
     private warn(tag: string, ...messages: any[]) {
-        logger.brightWhite.bgGray.add(` ${this.constructor.name} `).bgRed.add(` ${tag} `).resetColors().log(...messages);
+        logger.brightWhite.bgGray.add(` ${this.constructor.name} `).bgRed.add(` ${tag} `).resetColors().space.log(...messages);
     }
 
     /** Get the logged in user */
