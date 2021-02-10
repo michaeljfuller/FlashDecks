@@ -1,7 +1,12 @@
 export const usernameMinLength = 1;
 export const passwordMinLength = 8;
 
-export function validateUsername(username: string): { valid: boolean; reason?: string } {
+export interface AuthValidation {
+    valid: boolean;
+    reason?: string;
+}
+
+export function validateUsername(username: string): AuthValidation {
     if (!username) return {
         valid: false,
         reason: `Username is required.`,
@@ -13,7 +18,7 @@ export function validateUsername(username: string): { valid: boolean; reason?: s
     return { valid: true };
 }
 
-export function validatePassword(password: string): { valid: boolean; reason?: string } {
+export function validatePassword(password: string): AuthValidation {
     if (!password) return {
         valid: false,
         reason: `Password is required.`,
@@ -25,7 +30,7 @@ export function validatePassword(password: string): { valid: boolean; reason?: s
     return { valid: true };
 }
 
-export function validatePasswordConfirm(password: string, confirmPassword: string): { valid: boolean; reason?: string } {
+export function validatePasswordConfirm(password: string, confirmPassword: string): AuthValidation {
     if (!confirmPassword) return {
         valid: false,
         reason: `Password must be confirmed.`,
@@ -37,7 +42,7 @@ export function validatePasswordConfirm(password: string, confirmPassword: strin
     return { valid: true };
 }
 
-export function validateEmail(email: string): { valid: boolean; reason?: string } {
+export function validateEmail(email: string): AuthValidation {
     if (email.length === 0) return {
         valid: false,
         reason: `Email is required.`,
@@ -45,7 +50,7 @@ export function validateEmail(email: string): { valid: boolean; reason?: string 
     return { valid: true };
 }
 
-export function validateEmailConfirm(email: string, confirmEmail: string): { valid: boolean; reason?: string } {
+export function validateEmailConfirm(email: string, confirmEmail: string): AuthValidation {
     if (!confirmEmail) return {
         valid: false,
         reason: `Email must be confirmed.`,
@@ -53,6 +58,14 @@ export function validateEmailConfirm(email: string, confirmEmail: string): { val
     if (email !== confirmEmail) return {
         valid: false,
         reason: `Email does not match confirmation.`,
+    };
+    return { valid: true };
+}
+
+export function validateForgotPasswordCode(code: string): AuthValidation {
+    if (!code) return {
+        valid: false,
+        reason: `Code is required.`,
     };
     return { valid: true };
 }

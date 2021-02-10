@@ -17,7 +17,7 @@ import {
     validateEmail,
     validateEmailConfirm,
     validatePasswordConfirm
-} from "../authRules";
+} from "../../../api/validation/authValidation";
 
 export interface SignUpProps {}
 interface SignUpState {
