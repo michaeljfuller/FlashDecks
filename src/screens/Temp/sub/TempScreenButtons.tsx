@@ -10,64 +10,78 @@ import LinkButton from "../../../components/button/LinkButton";
 import Column from "../../../components/layout/Column";
 
 export function TempScreenButtons() {
-    const noop = React.useCallback(() => {}, []);
+    const [clicks1, setClicks1] = React.useState(0);
+    const [clicks2, setClicks2] = React.useState(0);
+    const [clicks3, setClicks3] = React.useState(0);
+    const [clicks4, setClicks4] = React.useState(0);
+    const [clicks5, setClicks5] = React.useState(0);
+    const [clicks6, setClicks6] = React.useState(0);
+    const [clicks7, setClicks7] = React.useState(0);
+
+    const incClicks1 = React.useCallback(() => setClicks1(clicks1 + 1), [clicks1]);
+    const incClicks2 = React.useCallback(() => setClicks2(clicks2 + 1), [clicks2]);
+    const incClicks3 = React.useCallback(() => setClicks3(clicks3 + 1), [clicks3]);
+    const incClicks4 = React.useCallback(() => setClicks4(clicks4 + 1), [clicks4]);
+    const incClicks5 = React.useCallback(() => setClicks5(clicks5 + 1), [clicks5]);
+    const incClicks6 = React.useCallback(() => setClicks6(clicks6 + 1), [clicks6]);
+    const incClicks7 = React.useCallback(() => setClicks7(clicks7 + 1), [clicks7]);
 
     return <TempScreenSubsection title="Buttons">
 
-        <TitleButton title="Button" />
+        <TitleButton title={`Button [${clicks1}]`} onClick={incClicks1} />
         <ScrollRow>
-            <Button onClick={noop} title="Standard" />
-            <Button onClick={noop} title="Square"      square      color="Green" />
-            <Button onClick={noop} title="Square"      square      color="Orange" />
-            <Button onClick={noop} title="Square"      square      color="Red"    />
-            <Button onClick={noop} title="Square Flat" square flat color="Black"  />
-            <Button onClick={noop} title="Flat"        flat        color="Blue" />
-            <Button onClick={noop} title="Inverted"    invertColor color="White" />
-            <Button onClick={noop} title="Disabled"    disabled />
+            <Button onClick={incClicks1} title="Standard" />
+            <Button onClick={incClicks1} title="Square"      square      color="Green" />
+            <Button onClick={incClicks1} title="Square"      square      color="Orange" />
+            <Button onClick={incClicks1} title="Square"      square      color="Red"    />
+            <Button onClick={incClicks1} title="Square Flat" square flat color="Black"  />
+            <Button onClick={incClicks1} title="Flat"        flat        color="Blue" />
+            <Button onClick={incClicks1} title="Inverted"    invertColor color="White" />
+            <Button onClick={incClicks1} title="Disabled"    disabled />
         </ScrollRow>
 
-        <TitleButton title="Button (with icon)" icon={IconType.Info} />
+        <TitleButton title={`Button (with icon) [${clicks2}]`} icon={IconType.Info} onClick={incClicks2} />
         <ScrollRow>
-            <Button onClick={noop} icon={IconType.Info} title="Standard" />
-            <Button onClick={noop} icon={IconType.Info} title="Left"     color="Green"  iconPosition="left" />
-            <Button onClick={noop} icon={IconType.Info} title="Right"    color="Orange" iconPosition="right" />
-            <Button onClick={noop} icon={IconType.Info} title=""         color="Red" />
-            <Button onClick={noop} icon={IconType.Info} title="Square"   color="Black" square />
-            <Button onClick={noop} icon={IconType.Info} title=""         color="Grey"  square flat />
-            <Button onClick={noop} icon={IconType.Info} title="Flat"     color="Blue"  flat />
-            <Button onClick={noop} icon={IconType.Info} title="Inverted" color="White" invertColor />
-            <Button onClick={noop} icon={IconType.Info} title="Disabled" disabled />
+            <Button onClick={incClicks2} icon={IconType.Info} title="Standard" />
+            <Button onClick={incClicks2} icon={IconType.Info} title="Left"     color="Green"  iconPosition="left" />
+            <Button onClick={incClicks2} icon={IconType.Info} title="Right"    color="Orange" iconPosition="right" />
+            <Button onClick={incClicks2} icon={IconType.Info} title=""         color="Red" />
+            <Button onClick={incClicks2} icon={IconType.Info} title="Square"   color="Black" square />
+            <Button onClick={incClicks2} icon={IconType.Info} title=""         color="Grey"  square flat />
+            <Button onClick={incClicks2} icon={IconType.Info} title="Flat"     color="Blue"  flat />
+            <Button onClick={incClicks2} icon={IconType.Info} title="Inverted" color="White" invertColor />
+            <Button onClick={incClicks2} icon={IconType.Info} title="Disabled" disabled />
         </ScrollRow>
 
-        <TitleButton title="Button (transparent)" transparent />
+        <TitleButton title={`Button (transparent) [${clicks3}]`} transparent onClick={incClicks3} />
         <ScrollRow>
-            <Button onClick={noop} transparent title="Standard" />
-            <Button onClick={noop} transparent title="Square"      square      color="Green"  />
-            <Button onClick={noop} transparent title="Square Flat" square flat color="Orange" />
-            <Button onClick={noop} transparent title="Flat"        flat        color="Red"    />
-            <Button onClick={noop} transparent title="Inverted"    invertColor color="White"  />
-            <Button onClick={noop} transparent title="Disabled"    disabled />
+            <Button onClick={incClicks3} transparent title="Standard" />
+            <Button onClick={incClicks3} transparent title="Square"      square      color="Green"  />
+            <Button onClick={incClicks3} transparent title="Square Flat" square flat color="Orange" />
+            <Button onClick={incClicks3} transparent title="Flat"        flat        color="Red"    />
+            <Button onClick={incClicks3} transparent title="Inverted"    invertColor color="White"  />
+            <Button onClick={incClicks3} transparent title="Disabled"    disabled />
         </ScrollRow>
 
-        <TitleButton title="Button (transparent with icon)" transparent icon={IconType.Info} />
+        <TitleButton title={`Button (transparent with icon) [${clicks4}]`} transparent icon={IconType.Info} onClick={incClicks4} />
         <ScrollRow>
-            <Button onClick={noop} transparent icon={IconType.Info} title="Standard" />
-            <Button onClick={noop} transparent icon={IconType.Info} title="Left"   color="Green"  iconPosition="left" />
-            <Button onClick={noop} transparent icon={IconType.Info} title="Right"  color="Orange" iconPosition="right" />
-            <Button onClick={noop} transparent icon={IconType.Info} title=""       color="Red" />
-            <Button onClick={noop} transparent icon={IconType.Info} title="Square" color="Black" square />
-            <Button onClick={noop} transparent icon={IconType.Info} title=""       color="Grey"  square flat />
-            <Button onClick={noop} transparent icon={IconType.Info} title="Flat"   color="Blue"  flat />
-            <Button onClick={noop} transparent icon={IconType.Info} title="Inverted" color="White" invertColor />
-            <Button onClick={noop} transparent icon={IconType.Info} title="Disabled" disabled />
+            <Button onClick={incClicks4} transparent icon={IconType.Info} title="Standard" />
+            <Button onClick={incClicks4} transparent icon={IconType.Info} title="Left"   color="Green"  iconPosition="left" />
+            <Button onClick={incClicks4} transparent icon={IconType.Info} title="Right"  color="Orange" iconPosition="right" />
+            <Button onClick={incClicks4} transparent icon={IconType.Info} title=""       color="Red" />
+            <Button onClick={incClicks4} transparent icon={IconType.Info} title="Square" color="Black" square />
+            <Button onClick={incClicks4} transparent icon={IconType.Info} title=""       color="Grey"  square flat />
+            <Button onClick={incClicks4} transparent icon={IconType.Info} title="Flat"   color="Blue"  flat />
+            <Button onClick={incClicks4} transparent icon={IconType.Info} title="Inverted" color="White" invertColor />
+            <Button onClick={incClicks4} transparent icon={IconType.Info} title="Disabled" disabled />
         </ScrollRow>
 
-        <Row center><TitleButton title="Button (set size)" width={150} height={20} /></Row>
+        <Row center><TitleButton title={`Button (set size) [${clicks5}]`} width={200} height={20} onClick={incClicks5} /></Row>
         <ScrollRow>
-            <Button onClick={noop} icon={IconType.Info} height={24} width={24} />
-            <Button onClick={noop} icon={IconType.Exit} height={24} width={24} square />
-            <Button onClick={noop} icon={IconType.Exit} height={24} />
-            <Button onClick={noop} icon={IconType.Info} height={24} title="Hello World" />
+            <Button onClick={incClicks5} icon={IconType.Info} height={24} width={24} />
+            <Button onClick={incClicks5} icon={IconType.Exit} height={24} width={24} square />
+            <Button onClick={incClicks5} icon={IconType.Exit} height={24} />
+            <Button onClick={incClicks5} icon={IconType.Info} height={24} title="Hello World" />
         </ScrollRow>
 
         <LinkButton url="http://www.google.com" title="LinkButton" icon={IconType.Exit} iconPosition="right" square flat style={styles.titleButton} />
@@ -83,24 +97,24 @@ export function TempScreenButtons() {
         </ScrollRow>
 
         <Row center style={{marginBottom: 2}}>
-            <IconButton onClick={noop} icon={IconType.Info} />
-            <Text style={{marginLeft:2, fontWeight: "bold"}}>IconButton</Text>
+            <IconButton onClick={incClicks6} icon={IconType.Info} />
+            <Text style={{marginLeft:2, fontWeight: "bold"}}>IconButton [{clicks6}]</Text>
         </Row>
         <ScrollRow>
-            <LabelledIconButton label="Standard"    icon={IconType.Info} />
-            <LabelledIconButton label="Square"      icon={IconType.Info} color="Green"  square />
-            <LabelledIconButton label="Flat"        icon={IconType.Info} color="Orange"  flat />
-            <LabelledIconButton label="Inverted"    icon={IconType.Info} color="Red"  invertColor />
-            <LabelledIconButton label="Transparent" icon={IconType.Info} color="Black" transparent />
-            <LabelledIconButton label="Disabled"    icon={IconType.Info} color="Blue" disabled />
-            <LabelledIconButton label="No Icon" />
+            <LabelledIconButton onClick={incClicks6} label="Standard"    icon={IconType.Info} />
+            <LabelledIconButton onClick={incClicks6} label="Square"      icon={IconType.Info} color="Green"  square />
+            <LabelledIconButton onClick={incClicks6} label="Flat"        icon={IconType.Info} color="Orange"  flat />
+            <LabelledIconButton onClick={incClicks6} label="Inverted"    icon={IconType.Info} color="Red"  invertColor />
+            <LabelledIconButton onClick={incClicks6} label="Transparent" icon={IconType.Info} color="Black" transparent />
+            <LabelledIconButton onClick={incClicks6} label="Disabled"    icon={IconType.Info} color="Blue" disabled />
+            <LabelledIconButton onClick={incClicks6} label="No Icon" />
         </ScrollRow>
 
-        <TextButton onClick={noop} title="TextButton" style={styles.titleButton} />
+        <TextButton onClick={incClicks7} title={`TextButton [${clicks7}]`} style={styles.titleButton} />
         <ScrollRow>
-            <TextButton onClick={noop} title="Standard" />
-            <Column center><TextButton onClick={noop} title="120x20" color="Green" width={120} height={20} /></Column>
-            <TextButton onClick={noop} title="Disabled" color="Red" disabled />
+            <TextButton onClick={incClicks7} title="Standard" />
+            <Column center><TextButton onClick={incClicks7} title="120x20" color="Green" width={120} height={20} /></Column>
+            <TextButton onClick={incClicks7} title="Disabled" color="Red" disabled />
         </ScrollRow>
 
     </TempScreenSubsection>;
@@ -144,13 +158,13 @@ const ScrollRow = withDefaultProps(Row, {
     style: styles.row,
 });
 
-interface LabelledIconButtonProps extends Omit<IconButtonProps, 'onClick'> {
+interface LabelledIconButtonProps extends IconButtonProps {
     label: string;
 }
 function LabelledIconButton(props: LabelledIconButtonProps) {
     const {label, ...iconButtonProps} = props;
     return <Row style={styles.labelledView}>
         <Text style={styles.labelledViewText}>{label}</Text>
-        <IconButton onClick={() => {}} {...iconButtonProps} />
+        <IconButton {...iconButtonProps} />
     </Row>;
 }
