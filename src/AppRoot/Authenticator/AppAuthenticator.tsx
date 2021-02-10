@@ -43,10 +43,10 @@ export class AppAuthenticator extends React.PureComponent<AppAuthenticatorProps,
 
         return <Column center space scroll={!isPlatformWeb} style={styles.root}>
             <Row wrap style={styles.tabRow}>
-                <TabButton title="Sign In"         onClick={this.goToSignIn} disabled={isSignIn} transparent={isSignIn} color="Green"  />
-                <TabButton title="Register"        onClick={this.goToSignUp} disabled={isSignUp} transparent={isSignUp} color="Green"  />
-                <TabButton title="Forgot Password" onClick={this.goToForgot} disabled={isForgot} transparent={isForgot} color="Blue"   />
-                <TabButton title="Amplify Auth"    onClick={this.goToAmazon} disabled={isAmazon} transparent={isAmazon} color="Orange" />
+                <TabButton title="Sign In"         onClick={this.goToSignIn} disabled={isSignIn} color="Blue"   />
+                <TabButton title="Register"        onClick={this.goToSignUp} disabled={isSignUp} color="Green"  />
+                <TabButton title="Forgot Password" onClick={this.goToForgot} disabled={isForgot} color="Orange" />
+                <TabButton title="Amplify UI"      onClick={this.goToAmazon} disabled={isAmazon} color="Grey"   />
                 {/*<TabButton title="Sign Out"        onClick={authApi.signOut} color="Orange" />*/}
             </Row>
             <Row flex center style={styles.contentsRow}>
