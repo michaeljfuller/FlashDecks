@@ -1,7 +1,7 @@
 import React from "react";
 import {Subscription} from "rxjs";
 import Column from "../../../components/layout/Column";
-import {StyleSheet, Text} from "react-native";
+import {StyleSheet} from "react-native";
 import {Color} from "../../../styles/Color";
 import authApi from "../../../api/AuthApi";
 import {ConfirmSignUpError, SignUpError} from "../../../api/AuthApi.types";
@@ -10,6 +10,7 @@ import ProgressBar from "../../../components/progress/ProgressBar";
 import {SignUpForm} from "./SignUp/SignUpForm";
 import Button from "../../../components/button/Button";
 import {SignUpConfirmation} from "./SignUp/SignUpConfirmation";
+import {ValidationText} from "../../../components/ui/form/ValidationText";
 
 export interface SignUpProps {
     onComplete: (username?: string, password?: string) => void;
@@ -103,26 +104,17 @@ export class SignUp extends React.PureComponent<SignUpProps, SignUpState> {
 
             <ProgressBar visible={processing} style={styles.progress} />
 
-            {success ? <Text style={styles.success}>{success}</Text> : null}
-            {error ? <Text style={styles.error}>{error}</Text> : null}
+            <ValidationText
+                type={error ? "error" : "success"}
+                visible={Boolean(error || success)}
+                text={error || success}
+            />
 
         </Column>;
     }
 }
 
 const styles = StyleSheet.create({
-    success: {
-        color: Color.Green,
-        fontWeight: 'bold',
-        lineHeight: 24,
-        minWidth: 24,
-    },
-    error: {
-        color: Color.Red,
-        fontWeight: 'bold',
-        lineHeight: 24,
-        minWidth: 24,
-    },
     progress: {
         marginTop: 2,
     },

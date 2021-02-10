@@ -4,14 +4,14 @@ import {StyleSheet, Text} from "react-native";
 import Button from "../../../../components/button/Button";
 import {FormTextInput} from "../../ui/FormTextInput";
 import {FormPasswordInput} from "../../ui/FormPasswordInput";
-import {Visibility} from "../../../../components/layout/Visibility";
 import {
     validateUsername,
     validatePassword,
     validateEmail,
     validateEmailConfirm,
-    validatePasswordConfirm
+    validatePasswordConfirm, flattenValidation
 } from "../../../../api/validation/authValidation";
+import {ValidationText} from "../../../../components/ui/form/ValidationText";
 
 export interface SignUpFormProps {
     onSubmit: (username: string, password: string, email: string) => void;
@@ -75,13 +75,9 @@ export class SignUpForm extends React.PureComponent<SignUpFormProps, SignUpFormS
     };
 
     render() {
-        const {
-            usernameValidation, password1Validation, password2Validation, email1Validation, email2Validation,
-        } = this;
-        const {disabled} = this.props;
-        const {
-             hidePassword, username, password1, password2, email1, email2,
-        } = this.state;
+        const { usernameValidation, password1Validation, password2Validation, email1Validation, email2Validation } = this;
+        const { disabled } = this.props;
+        const { hidePassword, username, password1, password2, email1, email2 } = this.state;
 
         return <Column>
             <Text style={styles.title}>Enter Confirmation Code</Text>
@@ -93,9 +89,11 @@ export class SignUpForm extends React.PureComponent<SignUpFormProps, SignUpFormS
                 disabled={disabled}
                 textContentType={"username"}
             />
-            <Visibility visible={Boolean(!usernameValidation.valid)}>
-                <Text style={styles.rule}>{usernameValidation.reason || 'Invalid username'}</Text>
-            </Visibility>
+            <ValidationText
+                visible={!usernameValidation.valid}
+                type={username ? "error" : "standard"}
+                text={usernameValidation.reason}
+            />
 
             <Text>Password</Text>
             <FormPasswordInput
@@ -114,9 +112,11 @@ export class SignUpForm extends React.PureComponent<SignUpFormProps, SignUpFormS
                 showPassword={!hidePassword}
                 style={styles.confirmInput}
             />
-            <Visibility visible={Boolean(!password1Validation.valid || !password2Validation.valid)}>
-                <Text style={styles.rule}>{password1Validation.reason || password2Validation.reason || 'Invalid password.'}</Text>
-            </Visibility>
+            <ValidationText
+                visible={Boolean(!password1Validation.valid || !password2Validation.valid)}
+                type={(password1 && !password1Validation.valid) || (password2 && !password2Validation.valid) ? "error" : "standard"}
+                text={flattenValidation([password1Validation, password2Validation], 0).reason}
+            />
 
             <Text>E-mail</Text>
             <FormTextInput
@@ -134,9 +134,11 @@ export class SignUpForm extends React.PureComponent<SignUpFormProps, SignUpFormS
                 disabled={disabled}
                 style={styles.confirmInput}
             />
-            <Visibility visible={Boolean(!email1Validation.valid || !email2Validation.valid)}>
-                <Text style={styles.rule}>{email1Validation.reason || email2Validation.reason || 'Invalid email.'}</Text>
-            </Visibility>
+            <ValidationText
+                visible={Boolean(!email1Validation.valid || !email2Validation.valid)}
+                type={(email1 && !email1Validation.valid) || (email2 && !email2Validation.valid) ? "error" : "standard"}
+                text={flattenValidation([email1Validation, email2Validation], 0).reason}
+            />
 
             <Button
                 title="Submit"
@@ -153,9 +155,6 @@ const styles = StyleSheet.create({
     title: {
         fontWeight: "bold",
         textAlign: "center",
-    },
-    rule: {
-        color: "grey",
     },
     confirmInput: {
         marginTop: 2,

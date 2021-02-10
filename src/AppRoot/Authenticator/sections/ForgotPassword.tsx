@@ -6,11 +6,18 @@ import {FormTextInput} from "../ui/FormTextInput";
 import Button from "../../../components/button/Button";
 import ProgressBar from "../../../components/progress/ProgressBar";
 import {Color} from "../../../styles/Color";
-import {validateUsername, validatePassword, validatePasswordConfirm, validateForgotPasswordCode} from "../../../api/validation/authValidation";
+import {
+    validateUsername,
+    validatePassword,
+    validatePasswordConfirm,
+    validateForgotPasswordCode,
+    flattenValidation
+} from "../../../api/validation/authValidation";
 import {Visibility} from "../../../components/layout/Visibility";
 import {FormPasswordInput} from "../ui/FormPasswordInput";
 import authApi from "../../../api/AuthApi";
 import {getErrorText} from "../../../utils/string";
+import {ValidationText} from "../../../components/ui/form/ValidationText";
 
 export interface ForgotPasswordProps {
     onComplete: (username: string, password: string) => void;
@@ -139,9 +146,11 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
                 disabled={processing}
                 textContentType={"username"}
             />
-            <Visibility visible={Boolean(!usernameValidation.valid)}>
-                <Text style={styles.rule}>{usernameValidation.reason || 'Invalid username'}</Text>
-            </Visibility>
+            <ValidationText
+                visible={!usernameValidation.valid}
+                type={username ? "error" : "standard"}
+                text={usernameValidation.reason}
+            />
 
             <Visibility render={this.state.enterCode}>
 
@@ -162,20 +171,25 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
                     showPassword={!hidePassword}
                     style={styles.confirmInput}
                 />
-                <Visibility visible={Boolean(!password1Validation.valid || !password2Validation.valid)}>
-                    <Text style={styles.rule}>{password1Validation.reason || password2Validation.reason || 'Invalid password.'}</Text>
-                </Visibility>
+                <ValidationText
+                    visible={Boolean(!password1Validation.valid || !password2Validation.valid)}
+                    type={(password1 && !password1Validation.valid) || (password2 && !password2Validation.valid) ? "error" : "standard"}
+                    text={flattenValidation([password1Validation, password2Validation], 0).reason}
+                />
 
-                <Text>Code</Text>
+                <Text>Verification Code</Text>
                 <FormTextInput
                     value={code}
                     onChangeText={this.onInputCode}
                     disabled={processing}
                     textContentType={"oneTimeCode"}
+                    keyboardType={"number-pad"}
                 />
-                <Visibility visible={Boolean(!codeValidation.valid)}>
-                    <Text style={styles.rule}>{codeValidation.reason || 'Invalid code'}</Text>
-                </Visibility>
+                <ValidationText
+                    visible={!codeValidation.valid}
+                    type={code ? "error" : "standard"}
+                    text={codeValidation.reason}
+                />
 
             </Visibility>
 
@@ -190,9 +204,11 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
 
             <ProgressBar visible={processing} style={styles.progress} />
 
-            <Visibility visible={Boolean(success || error)}>
-                <Text style={error ? styles.error : styles.success}>{error || success || '?'}</Text>
-            </Visibility>
+            <ValidationText
+                visible={Boolean(success || error)}
+                text={error || success}
+                type={error ? "error" : "success"}
+            />
 
         </Column>;
     }
@@ -205,21 +221,6 @@ const styles = StyleSheet.create({
     },
     confirmInput: {
         marginTop: 2,
-    },
-    rule: {
-        color: "grey",
-    },
-    success: {
-        color: Color.Green,
-        fontWeight: 'bold',
-        lineHeight: 24,
-        minWidth: 24,
-    },
-    error: {
-        color: Color.Red,
-        fontWeight: 'bold',
-        lineHeight: 24,
-        minWidth: 24,
     },
     submit: {
         marginTop: 10,

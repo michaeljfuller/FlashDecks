@@ -12,6 +12,7 @@ import {FormPasswordInput} from "../ui/FormPasswordInput";
 import {SignInError} from "../../../api/AuthApi.types";
 import ProgressBar from "../../../components/progress/ProgressBar";
 import {getErrorText} from "../../../utils/string";
+import {ValidationText} from "../../../components/ui/form/ValidationText";
 
 export interface SignInProps {
     username?: string;
@@ -102,7 +103,7 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
 
             <ProgressBar visible={processing} style={styles.progress} />
 
-            <Text style={styles.error}>{this.state.error}</Text>
+            <ValidationText type="error" visible={Boolean(this.state.error)} text={this.state.error} />
 
             {/*<Button title="Continue as Guest (TODO)" flat square disabled style={{marginVertical: 10}} color="Green" />*/}
 
@@ -114,12 +115,6 @@ const styles = StyleSheet.create({
     title: {
         fontWeight: "bold",
         textAlign: "center",
-    },
-    error: {
-        color: Color.Red,
-        fontWeight: 'bold',
-        lineHeight: 24,
-        minWidth: 24,
     },
     submit: {
         marginTop: 10,
