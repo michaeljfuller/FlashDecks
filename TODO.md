@@ -45,6 +45,8 @@ Decks would only need a `file-key`, rather than an `S3Object`, since the bucket'
 * Continue as guest - Needs updating permissions on API to allow unauthenticated.
 * Fix sign-in warnings.
   * Error message logging in with preceding space
+* User management screen
+  * Set display name.
 
 # Testing
 * Update unit tests.
