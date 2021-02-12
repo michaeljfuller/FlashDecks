@@ -80,7 +80,7 @@ export class SignUpForm extends React.PureComponent<SignUpFormProps, SignUpFormS
         const { hidePassword, username, password1, password2, email1, email2 } = this.state;
 
         return <Column>
-            <Text style={styles.title}>Enter Confirmation Code</Text>
+            <Text style={styles.title}>Register New Account</Text>
 
             <Text>Username</Text>
             <FormTextInput
