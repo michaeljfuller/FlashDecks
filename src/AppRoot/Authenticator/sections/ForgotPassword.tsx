@@ -5,7 +5,6 @@ import Column from "../../../components/layout/Column";
 import {FormTextInput} from "../../../components/ui/form/FormTextInput";
 import Button from "../../../components/button/Button";
 import ProgressBar from "../../../components/progress/ProgressBar";
-import {Color} from "../../../styles/Color";
 import {
     validateUsername,
     validatePassword,
@@ -20,7 +19,9 @@ import {getErrorText} from "../../../utils/string";
 import {FormValidationText} from "../../../components/ui/form/FormValidationText";
 
 export interface ForgotPasswordProps {
-    onComplete: (username: string, password: string) => void;
+    onComplete: (message: string, username: string, password: string) => void;
+    onSuccess: (message: string) => void;
+    onError: (message: string) => void;
     username?: string;
 }
 interface ForgotPasswordState {
@@ -32,8 +33,6 @@ interface ForgotPasswordState {
     enterCode: boolean;
     hidePassword: boolean;
     processing: boolean;
-    success: string;
-    error: string;
 }
 
 export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, ForgotPasswordState> {
@@ -46,8 +45,6 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
         enterCode: false,
         hidePassword: true,
         processing: false,
-        success: '',
-        error: '',
     } as ForgotPasswordState;
 
     private forgotPasswordSub?: Subscription;
@@ -82,38 +79,63 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
         this.forgotPasswordSub?.unsubscribe();
     }
 
-    onInputUsername = (username: string) => this.setState({ username, success: '', error: '' });
-    onInputPassword1 = (password1: string) => this.setState({ password1, success: '', error: '' });
-    onInputPassword2 = (password2: string) => this.setState({ password2, success: '', error: '' });
-    onInputCode = (code: string) => this.setState({ code, success: '', error: '' });
-    toggleHidePassword = () => this.setState({ hidePassword: !this.state.hidePassword });
+    clearMessages() {
+        this.props.onSuccess('');
+        this.props.onError('');
+    }
+    onInputUsername = (username: string) => {
+        this.clearMessages();
+        this.setState({ username });
+    };
+    onInputPassword1 = (password1: string) => {
+        this.clearMessages();
+        this.setState({ password1 });
+    };
+    onInputPassword2 = (password2: string) => {
+        this.clearMessages();
+        this.setState({ password2 });
+    };
+    onInputCode = (code: string) => {
+        this.clearMessages();
+        this.setState({ code });
+    };
+    toggleHidePassword = () => {
+        this.setState({ hidePassword: !this.state.hidePassword });
+    };
 
     submitForgotPassword() {
         const {subscription, promise} = authApi.forgotPassword(this.state.username);
+        this.clearMessages();
+        this.setState({ processing: true });
         this.forgotPasswordSub?.unsubscribe();
         this.forgotPasswordSub = subscription;
         promise.then(
-            () => this.setState({
-                success: 'Sending email.',
-                enterCode: true,
-            }),
-            e => this.setState({
-                error: getErrorText(e?.message, 'Error'),
-            }),
+            () => {
+                this.props.onSuccess('Sending email.');
+                this.setState({ enterCode: true });
+            },
+            e => this.props.onError(
+                getErrorText(e?.message, 'Error')
+            ),
         ).finally(() => this.setState({ processing: false }));
     }
 
     submitNewPassword() {
         const {subscription, promise} = authApi.forgotPasswordSubmit(this.state.username, this.state.password1, this.state.code);
+        this.clearMessages();
+        this.setState({ processing: true });
         this.forgotPasswordSub?.unsubscribe();
         this.forgotPasswordSub = subscription;
         promise.then(
-            () => this.props.onComplete(this.state.username, this.state.password1),
-            e => this.setState({
-                error: getErrorText(e?.message, 'Error'),
-                processing: false,
-            }),
-        );
+            () => this.props.onComplete(
+                `Password updated for ${this.state.username}.`,
+                this.state.username,
+                this.state.password1
+            ),
+            e => this.props.onError(
+                getErrorText(e?.message, 'Error')
+            ),
+        ).finally(() => this.setState({ processing: false }));
     }
 
     onSubmit = () => {
@@ -123,17 +145,14 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
             this.submitNewPassword();
         }
     };
+
     onEnterCode = () => {
         this.setState({ enterCode: true });
-    }
+    };
 
     render() {
-        const {
-            usernameValidation, password1Validation, password2Validation, codeValidation,
-        } = this;
-        const {
-            processing, hidePassword, success, error, username, password1, password2, code,
-        } = this.state;
+        const { usernameValidation, password1Validation, password2Validation, codeValidation } = this;
+        const { processing, hidePassword, username, password1, password2, code } = this.state;
 
         return <Column>
 
@@ -203,12 +222,6 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
             {!this.state.enterCode ? <Button title="Enter Code" onClick={this.onEnterCode} square transparent /> : null }
 
             <ProgressBar visible={processing} style={styles.progress} />
-
-            <FormValidationText
-                visible={Boolean(success || error)}
-                text={error || success}
-                type={error ? "error" : "success"}
-            />
 
         </Column>;
     }

@@ -1,28 +1,26 @@
 import React from "react";
 import {Subscription} from "rxjs";
-import {testPassword, testUsername} from "../../../env";
+import {isProduction, testPassword, testUsername} from "../../../env";
 import authApi from "../../../api/AuthApi";
 import Column from "../../../components/layout/Column";
 import {StyleSheet, Text, View} from "react-native";
 import Row from "../../../components/layout/Row";
 import Button from "../../../components/button/Button";
-import {Color} from "../../../styles/Color";
 import {FormTextInput} from "../../../components/ui/form/FormTextInput";
 import {FormPasswordInput} from "../../../components/ui/form/FormPasswordInput";
 import {SignInError} from "../../../api/AuthApi.types";
 import ProgressBar from "../../../components/progress/ProgressBar";
 import {getErrorText} from "../../../utils/string";
-import {FormValidationText} from "../../../components/ui/form/FormValidationText";
 
 export interface SignInProps {
     username?: string;
     password?: string;
     onCredentials: (username: string, password: string) => void;
+    onError: (message: string) => void;
 }
 interface SignInState {
     hidePassword: boolean;
     processing: boolean;
-    error: string;
 }
 
 /**
@@ -32,7 +30,6 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
     state = {
         hidePassword: true,
         processing: false,
-        error: '',
     } as SignInState;
 
     private signInSub?: Subscription;
@@ -53,16 +50,19 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
     toggleHidePassword = () => this.setState({ hidePassword: !this.state.hidePassword });
 
     signIn = () => {
-        this.setState({error: '', processing: true})
+        this.props.onError('');
+        this.setState({ processing: true });
         const {subscription, promise} = authApi.signIn(this.username, this.password);
 
         this.signInSub?.unsubscribe();
         this.signInSub = subscription;
         promise.catch(
-            (e: SignInError) => this.setState({
-                error: getErrorText(e?.message, 'Error signing in.'),
-                processing: false,
-            }),
+            (e: SignInError) => {
+                this.props.onError(
+                    getErrorText(e?.message, 'Error signing in.')
+                );
+                this.setState({ processing: false });
+            },
         );
     };
 
@@ -71,7 +71,7 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
         return <Column>
             <Text style={styles.title}>Sign In</Text>
 
-            {testUsername || testPassword ? <View style={{marginBottom: 10}}>
+            {!isProduction && (testUsername || testPassword) ? <View style={{marginBottom: 10}}>
                 <Row><Text style={{fontWeight:"bold", width:80}}>Test User: </Text><Text>{testUsername}</Text></Row>
                 <Row><Text style={{fontWeight:"bold", width:80}}>Password:  </Text><Text>{testPassword}</Text></Row>
             </View> : null}
@@ -102,8 +102,6 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
             />
 
             <ProgressBar visible={processing} style={styles.progress} />
-
-            <FormValidationText type="error" visible={Boolean(this.state.error)} text={this.state.error} />
 
             {/*<Button title="Continue as Guest (TODO)" flat square disabled style={{marginVertical: 10}} color="Green" />*/}
 
