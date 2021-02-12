@@ -65,7 +65,7 @@ export class AuthApi {
             Auth.signIn(username, password).then(
                 data => sub.next(data),
                 error => {
-                    logger.red.error('AuthApi.signIn Error:', error);
+                    this.log('AuthApi.signIn Error', error);
                     sub.error(error);
                 },
             ).finally(() => sub.complete());
@@ -90,7 +90,7 @@ export class AuthApi {
                     },
                 })),
                 error => {
-                    logger.red.error('AuthApi.signUp Error:', error);
+                    this.log('AuthApi.signUp Error', error);
                     sub.error(error);
                 },
             ).finally(() => sub.complete());
@@ -106,7 +106,7 @@ export class AuthApi {
             Auth.confirmSignUp(username, confirmationCode).then(
                 () => sub.next(),
                 error => {
-                    logger.red.error('AuthApi.confirmSignUp Error:', error);
+                    this.log('AuthApi.confirmSignUp Error', error);
                     sub.error(error);
                 }
             ).finally(() => sub.complete());
