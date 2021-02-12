@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet, Text} from "react-native";
+import {StyleProp, StyleSheet, Text, ViewStyle} from "react-native";
 import {Visibility} from "../../layout/Visibility";
 import {Color} from "../../../styles/Color";
 
@@ -7,11 +7,12 @@ export interface ValidationTextProps {
     text: string;
     visible?: boolean;
     type?: "standard"|"error"|"success";
+    style?: StyleProp<ViewStyle>;
 }
 export const FormValidationText = React.memo(function FormValidationText ({
-    text, visible=true, type
+    text, visible=true, type, style
 }: ValidationTextProps) {
-    return <Visibility visible={visible}>
+    return <Visibility visible={visible} style={style}>
         <Text style={[
             styles.base,
             type === "success" && styles.success,
