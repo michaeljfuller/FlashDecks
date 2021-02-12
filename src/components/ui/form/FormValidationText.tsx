@@ -23,7 +23,6 @@ export const FormValidationText = React.memo(function FormValidationText ({
 const styles = StyleSheet.create({
     base: {
         color: "grey",
-        lineHeight: 24,
     },
     error: {
         color: Color.Red,
