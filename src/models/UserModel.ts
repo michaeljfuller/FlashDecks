@@ -15,7 +15,7 @@ export class UserModel extends Model implements Omit<ApiUser, '__typename'> {
     static fromApi(obj: ApiUser) {
         return UserModel.create({
             id: obj.id,
-            displayName: obj.displayName,
+            displayName: obj.displayName || obj.userName,
             userName: obj.userName,
         });
     }
