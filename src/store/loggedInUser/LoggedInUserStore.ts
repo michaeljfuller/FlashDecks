@@ -2,10 +2,11 @@ import AStoreHelper from "../AStoreHelper";
 import {ActionType, LoggedInUserRemove, LoggedInUserSet} from "../store";
 import {LoggedInUserState} from "./loggedInUser_reducer";
 import {UserModel} from "../../models";
+import {Store} from "redux";
 
 export class LoggedInUserStore extends AStoreHelper<LoggedInUserState> {
-    constructor() {
-        super('loggedInUser');
+    constructor(store?: Store) {
+        super('loggedInUser', store);
     }
 
     /** Add user to the store. */

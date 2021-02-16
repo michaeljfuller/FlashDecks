@@ -28,3 +28,4 @@ export class UserModel extends Model implements Omit<ApiUser, '__typename'> {
         return !UserModel.same(first, second);
     }
 }
+export default UserModel;

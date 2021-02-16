@@ -3,7 +3,14 @@ import {LoggedInUserState} from "./loggedInUser_reducer";
 import {LoggedInUserSet, LoggedInUserRemove} from "./loggedInUser_actions";
 import {ActionType} from "../store_actions";
 import {mockStoreBuilder, expectStore} from "../../../test/mocks/MockStoreBuilder";
-import {UserModel} from "../../models";
+import {ApiUser, UserModel} from "../../models";
+
+const makeApiUser = (ref = 'test'): ApiUser => ({
+    __typename: "User",
+    id: ref+'_id',
+    userName: ref+'_userName',
+    displayName: ref+'displayName',
+});
 
 describe('LoggedInUserStore', () => {
     function setup(initialState: LoggedInUserState = {value: null}) {
@@ -15,10 +22,7 @@ describe('LoggedInUserStore', () => {
     describe('logIn', () => {
         it('dispatches action with user', () => {
             const {helper, store} = setup();
-            const user = UserModel.fromApi({
-                id: 'test_id',
-                displayName: 'mock-user',
-            }) as UserModel;
+            const user = UserModel.fromApi(makeApiUser()) as UserModel;
             helper.update(user);
             expectStore(store).toOnlyHaveAction<LoggedInUserSet>({
                 type: ActionType.LOGGED_IN_USER_SET,
@@ -30,10 +34,7 @@ describe('LoggedInUserStore', () => {
     describe('logOut', () => {
         it('dispatches action', () => {
             const {helper, store} = setup({
-                value: UserModel.fromApi({
-                    id: 'test_id',
-                    displayName: 'mock-initial-user',
-                }) as UserModel
+                value: UserModel.fromApi(makeApiUser()) as UserModel
             });
             helper.clear();
             expectStore(store).toOnlyHaveAction<LoggedInUserRemove>({

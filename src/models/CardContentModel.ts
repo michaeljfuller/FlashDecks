@@ -69,3 +69,4 @@ export class CardContentModel extends Model implements Omit<ApiCardContent, '__t
         }
     }
 }
+export default CardContentModel;

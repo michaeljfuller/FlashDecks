@@ -32,3 +32,4 @@ export class CognitoUserModel extends Model implements
         });
     }
 }
+export default CognitoUserModel;
