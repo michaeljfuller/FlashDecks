@@ -36,7 +36,7 @@ export function buttonPropsWithDefaults(props: ButtonProps): Required<ButtonProp
         transparent = false,
         style = {},
         color = DefaultTheme.primary.key,
-        square = false,
+        square = props.transparent || false,
         invertColor = false,
         width = Number.NaN,
         height = Number.NaN,

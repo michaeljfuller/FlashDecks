@@ -5,12 +5,16 @@ import {iconStandardSize} from '../icon/Icon';
 
 export {IconType} from '../icon/Icon';
 
-export interface IconButtonProps extends Omit<ButtonProps, 'title'|'width'|'height'> {
+export interface IconButtonProps extends Omit<ButtonProps, 'title'> {
     size?: number;
 }
 
 export const IconButton = React.memo(function IconButton(props: IconButtonProps) {
-    const { size = iconStandardSize, ...buttonProps } = props;
-    return <Button {...buttonProps} width={size} height={size} />;
+    const {
+        width = props.size || iconStandardSize,
+        height = props.size || iconStandardSize,
+        ...buttonProps
+    } = props;
+    return <Button {...buttonProps} width={width} height={height} />;
 });
 export default IconButton;

@@ -46,7 +46,7 @@ function AppBannerUserDisplay(props: AppBannerUserDisplayProps) {
     />;
     return <Row>
         <Body style={styles.body}>{avatar}</Body>
-        <IconButton icon={IconType.Exit} onClick={onSignOutClick} transparent color="White" />
+        <IconButton icon={IconType.Exit} onClick={onSignOutClick} transparent width={50} color="White" />
     </Row>;
 }
 
