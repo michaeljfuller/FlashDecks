@@ -22,7 +22,7 @@ export const AppBanner = React.memo(function AppBanner(props: AppBannerProps & A
 
     return <Header androidStatusBarColor={backgroundColor} style={styles.header}>
         <Left style={styles.left}>
-            <IconButton icon={IconType.Menu} onClick={onToggleSidebar} transparent square color="White" />
+            <IconButton icon={IconType.Menu} onClick={onToggleSidebar} transparent size={32} square color="White" />
         </Left>
         <AppBreadcrumbs routerDetails={routerDetails} />
         <Right>
@@ -40,13 +40,13 @@ function AppBannerUserDisplay(props: AppBannerUserDisplayProps) {
     const {user, onSignOutClick} = props;
     const avatar = <Avatar
         user={user}
-        size={20}
+        size={24}
         label={user ? user.displayName : 'guest'}
         labelPlacement="right"
     />;
     return <Row>
         <Body style={styles.body}>{avatar}</Body>
-        <IconButton icon={IconType.Exit} onClick={onSignOutClick} transparent width={50} color="White" />
+        <IconButton icon={IconType.Exit} onClick={onSignOutClick} transparent width={50} height={32} color="White" />
     </Row>;
 }
 
