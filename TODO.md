@@ -6,7 +6,7 @@ https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html
   * Any other dependencies?
 
 # Server API (+ Client)
-* Search (i.e. DeckApi.getDecksByUserId).
+* Deck search
 * Add Card content sizes.
 
 # Media API
@@ -39,14 +39,11 @@ Decks would only need a `file-key`, rather than an `S3Object`, since the bucket'
 * Download - 500: S3 Error.
 
 # Client
-* Finish AppAuthenticator.
 * Deck Tag editing.
-* Fix sign-out
 * Continue as guest - Needs updating permissions on API to allow unauthenticated.
-* Fix sign-in warnings.
-  * Error message logging in with preceding space
 * User management screen
   * Set display name.
+  * Set avatar.
 
 # Testing
 * Update unit tests.
