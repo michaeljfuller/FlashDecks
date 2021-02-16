@@ -1,12 +1,12 @@
 import {getDeck, listDecks, getDecksByOwner} from "../graphql/queries";
 import {createDeck, updateDeck, deleteDeck} from "../graphql/mutations";
 import {
-    CreateDeckInput, CreateDeckMutation, CreateDeckMutationVariables,
-    UpdateDeckInput, UpdateDeckMutation, UpdateDeckMutationVariables,
+    /*CreateDeckInput,*/ CreateDeckMutation, CreateDeckMutationVariables,
+    /*UpdateDeckInput,*/ UpdateDeckMutation, UpdateDeckMutationVariables,
     GetDeckQuery, GetDeckQueryVariables,
     GetDecksByOwnerQuery, GetDecksByOwnerQueryVariables,
     ListDecksQuery, ListDecksQueryVariables,
-    DeleteDeckInput, DeleteDeckMutation, DeleteDeckMutationVariables,
+    /*DeleteDeckInput,*/ DeleteDeckMutation, DeleteDeckMutationVariables,
 } from "../graphql/API";
 
 export {

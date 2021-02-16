@@ -1,5 +1,5 @@
 import React from 'react';
-import {ImageStyle, LayoutChangeEvent, LayoutRectangle, StyleSheet, Text, View, ViewStyle} from 'react-native';
+import {ImageStyle, StyleSheet, Text, View, ViewStyle} from 'react-native';
 import * as ExpoImagePicker from 'expo-image-picker';
 import {ImageInfo} from "expo-image-picker/src/ImagePicker.types";
 import ToastStore from "../../store/toast/ToastStore";

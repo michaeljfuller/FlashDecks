@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet, Text, View} from "react-native";
+import {StyleSheet, Text} from "react-native";
 import {Button, IconType} from "../../../components/button/Button";
 import TextButton from "../../../components/button/TextButton";
 import IconButton, {IconButtonProps} from "../../../components/button/IconButton";

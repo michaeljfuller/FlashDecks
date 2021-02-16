@@ -4,7 +4,6 @@ import Modal, {ModalProps, extractModalProps} from "../../modal/core/Modal";
 import {DeckModel} from "../../../models";
 import deckApi from "../../../api/DeckApi";
 import ToastStore from "../../../store/toast/ToastStore";
-import ApiRequest from "../../../api/util/ApiRequest";
 import {DeckInfoModalEdit} from "./parts/DeckInfoModalEdit";
 import {DeckInfoModalView} from "./parts/DeckInfoModalView";
 import {Subscription} from "rxjs";

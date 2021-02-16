@@ -2,7 +2,7 @@ import React from "react";
 import {VideoPlayer} from "../../../video/VideoPlayer";
 import {BaseCardMedia} from "./core/BaseCardMedia";
 import {CardMediaError} from "./CardMediaError";
-import {StyleSheet, Text, View} from "react-native";
+import {StyleSheet, View} from "react-native";
 import Center from "../../../layout/Center";
 import ProgressCircle from "../../../progress/ProgressCircle";
 import {Color} from "../../../../styles/Color";

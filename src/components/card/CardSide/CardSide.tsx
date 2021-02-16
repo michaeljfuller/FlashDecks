@@ -11,7 +11,6 @@ import Column from "../../layout/Column";
 import Row from "../../layout/Row";
 import IconButton from "../../button/IconButton";
 import {Visibility} from "../../layout/Visibility";
-import withDefaultProps from "../../../utils/hoc/withDefaultProps/withDefaultProps";
 
 export interface CardSideProps {
     side?: CardSideModel|undefined;

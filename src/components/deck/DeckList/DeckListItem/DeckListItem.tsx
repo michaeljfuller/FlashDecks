@@ -9,7 +9,6 @@ import Typography from '@material-ui/core/Typography';
 
 import IconButton, {IconType} from "../../../button/IconButton";
 import {DeckListItemProps} from "./DeckListItem.common";
-import {repeat} from "../../../../utils/array";
 import Avatar from "../../../avatar/Avatar";
 import {Color, UIColorThemeMap} from "../../../../styles/UIColorTheme";
 import Fadeout from "../../../layout/Fadeout";

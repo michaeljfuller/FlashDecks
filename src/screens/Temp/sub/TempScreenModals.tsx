@@ -9,7 +9,6 @@ import {PromptModal} from "../../../components/modal/PromptModal/PromptModal";
 import {ProgressModal, ProgressModalProps} from "../../../components/modal/ProgressModal/ProgressModal";
 import TempScreenSubsection from "../ui/TempScreenSubsection";
 import Row from "../../../components/layout/Row";
-import Column from "../../../components/layout/Column";
 
 export function TempScreenModals() {
     const [showDebugModal,  setShowDebugModal ] = React.useState(false);

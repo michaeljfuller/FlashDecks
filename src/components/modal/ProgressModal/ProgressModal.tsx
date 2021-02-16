@@ -5,7 +5,6 @@ import Modal, {ModalProps, extractModalProps} from "../core/Modal";
 import {ModalHeader, ModalBody, ModalFooter} from "../parts";
 import ProgressCircle from "../../progress/ProgressCircle";
 import ProgressBar from "../../progress/ProgressBar";
-import Column from "../../layout/Column";
 
 type SpinnerType = 'bar'|'circle';
 
