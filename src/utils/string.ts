@@ -25,6 +25,10 @@ export function capitalise(string: string): string {
     return string.substr(0, 1).toUpperCase() + string.substr(1);
 }
 
+export function removeWhitespace(str: string): string {
+    return str.replace(/\s/g, '');
+}
+
 type StringifyParam = Parameters<JSON['stringify']>;
 /** Return the result of JSON.stringify, or defaultValue if it fails (e.g. due to cyclical references). */
 export function safeJsonStringify<T>(

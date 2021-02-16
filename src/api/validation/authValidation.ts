@@ -28,6 +28,18 @@ export function validateUsername(username: string): AuthValidation {
         valid: false,
         reason: `Username is required.`,
     };
+    // https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SignUp.html#CognitoUserPools-SignUp-request-Username
+    // PCRE RegEx: [\p{L}\p{M}\p{S}\p{N}\p{P}]+
+    // https://regex101.com/r/Gr27tw/1
+    // * Any kind of letter from any language
+    // * A character intended to be combined with another character (e.g. accents, umlauts, enclosing boxes, etc.)
+    // * Any math symbols, currency signs, dingbats, box-drawing characters, etc
+    // * Any kind of numeric character in any script
+    // * Any kind of punctuation character
+    if (username.match(/\s/)) return {
+        valid: false,
+        reason: `Username cannot contain spaces.`,
+    };
     if (username.length < usernameMinLength) return {
         valid: false,
         reason: `Username must be at least ${usernameMinLength} characters.`,
@@ -39,6 +51,13 @@ export function validatePassword(password: string): AuthValidation {
     if (!password) return {
         valid: false,
         reason: `Password is required.`,
+    };
+    // https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SignUp.html#CognitoUserPools-SignUp-request-Password
+    // PCRE RegEx: [\S]+
+    // * Any non-whitespace character
+    if (password.match(/\s/)) return {
+        valid: false,
+        reason: `Password cannot contain spaces.`,
     };
     if (password.length < passwordMinLength) return {
         valid: false,

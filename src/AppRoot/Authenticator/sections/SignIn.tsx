@@ -10,7 +10,7 @@ import {FormTextInput} from "../../../components/ui/form/FormTextInput";
 import {FormPasswordInput} from "../../../components/ui/form/FormPasswordInput";
 import {SignInError} from "../../../api/AuthApi.types";
 import ProgressBar from "../../../components/progress/ProgressBar";
-import {getErrorText} from "../../../utils/string";
+import {getErrorText, removeWhitespace} from "../../../utils/string";
 
 export interface SignInProps {
     username?: string;
@@ -45,8 +45,8 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
         this.signInSub?.unsubscribe();
     }
 
-    onInputUsername = (username: string) => this.props.onCredentials(username, this.password);
-    onInputPassword = (password: string) => this.props.onCredentials(this.username, password)
+    onInputUsername = (username: string) => this.props.onCredentials(removeWhitespace(username), this.password);
+    onInputPassword = (password: string) => this.props.onCredentials(this.username, removeWhitespace(password))
     toggleHidePassword = () => this.setState({ hidePassword: !this.state.hidePassword });
 
     signIn = () => {
