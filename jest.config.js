@@ -7,12 +7,13 @@ module.exports = {
     preset: 'jest-expo/web',
     coverageDirectory: './test/output/reports/coverage',
     coveragePathIgnorePatterns: defaults.coveragePathIgnorePatterns.concat([
-        ".mock.", 'amplify/'
+        ".mock.",
+        '/amplify/'
     ]),
     coverageReporters: ["html", "text", "text-summary"],
     collectCoverageFrom: [
-        './src/*.{ts,tsx,js,jsx}',
-        './src/**/*.{ts,tsx,js,jsx}'
+        'src/*.{ts,tsx,js,jsx}',
+        'src/**/*.{ts,tsx,js,jsx}',
     ],
     reporters: [
         "default",

@@ -13,7 +13,7 @@ gulp.task('test:android',   shellTask(`jest --config="jest.config.android.js"`))
 gulp.task('test:universal', shellTask(`jest --config="jest.config.universal.js"`));
 
 gulp.task('coverage',           shellTask(`jest --coverage --silent --reporters="<rootDir>/test/jest/silent-report.js"`));
-gulp.task('coverage:verbose',   shellTask(`jest --coverage`));
+gulp.task('coverage:verbose',   shellTask(`jest --coverage --verbose`));
 gulp.task('coverage:universal', shellTask(`jest --coverage --config="jest.config.universal.js"`));
 
 function shellTask(command) {
