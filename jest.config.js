@@ -25,6 +25,7 @@ module.exports = {
         }]
     ],
     moduleNameMapper: {
+        "expo-constants": "<rootDir>/test/mocks/expo-constants.js",
         "\\.(css|less)$": "<rootDir>/test/mocks/MockStyle.js",
     },
     notifyMode: 'failure-change',

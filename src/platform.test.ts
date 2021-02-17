@@ -2,9 +2,11 @@ import * as platform from './platform';
 import {objectToTypeMap} from "../test/test-utils";
 import {PlatformType} from "./platform";
 
-jest.mock('expo-constants');
+jest.mock('expo-constants', () => ({
+    deviceName: 'test-deviceName',
+}));
 jest.mock('react-native', () => ({
-    Platform: { OS: 'web' }
+    Platform: { OS: 'test-os' },
 }));
 
 describe('platform module', () => {
@@ -20,9 +22,9 @@ describe('platform module', () => {
         }));
     });
     it('has properties in the expected values', () => {
-        expect(platform.platformOS).toBe('web');
-        expect(platform.deviceName).toBe('mock-deviceName');
-        expect(platform.isPlatformWeb).toBe(true);
+        expect(platform.platformOS).toBe('test-os');
+        expect(platform.deviceName).toBe('test-deviceName');
+        expect(platform.isPlatformWeb).toBe(false);
         expect(platform.isPlatformAndroid).toBe(false);
         expect(platform.isPlatformIos).toBe(false);
     });
