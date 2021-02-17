@@ -24,6 +24,9 @@ module.exports = {
             sort: "status"
         }]
     ],
+    moduleNameMapper: {
+        "\\.(css|less)$": "<rootDir>/test/mocks/MockStyle.js",
+    },
     notifyMode: 'failure-change',
     setupFiles: ['./test/jest/setupJest.js'],
     globals: Object.assign({
