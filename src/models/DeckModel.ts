@@ -28,10 +28,7 @@ export class DeckModel extends DeckListItemModel implements Omit<ApiDeck, '__typ
     }
 
     static createFromApi(deck: ApiDeck) {
-        const owner = deck.owner ? UserModel.create({
-            id: deck.owner.id,
-            displayName: deck.owner.displayName
-        }) : undefined;
+        const owner = deck.owner ? UserModel.fromApi(deck.owner) : undefined;
         return DeckModel.create({
             id: deck.id,
             ownerId: deck.ownerId,
@@ -64,3 +61,4 @@ export class DeckModel extends DeckListItemModel implements Omit<ApiDeck, '__typ
     }
 
 }
+export default DeckModel;

@@ -1,27 +1,19 @@
 import {assertNewInstance, assertProperties, repeat} from "./core/model-test-utils";
 import CardModel , {ApiCard} from "./CardModel";
-import UserModel, {ApiUser} from "./UserModel";
 import CardSideModel, {ApiCardSide} from "./CardSideModel";
-import {ApiCardContent, CardContentType} from "./CardContentModel";
+import {ApiCardContent} from "./CardContentModel";
+import {CardSideContentType} from "../graphql/API";
 import {castDraft} from "immer";
 
-const TEST_ID = 'test-id';
 const TEST_NAME = 'test-name';
-const TEST_OWNER_ID = 'test-owner-id';
-const TEST_OWNER_API = {
-    id: TEST_OWNER_ID,
-    displayName: 'test-owner-displayName'
-} as ApiUser;
-const TEST_OWNER = UserModel.fromApi(TEST_OWNER_API);
 const TEST_SIDES_API = repeat<ApiCardSide>(3, sideIndex => ({
-    content: repeat<ApiCardContent>(3,
-        (contentIndex, array, size) => ({
-            id: `test-side-${sideIndex+1}-content-${contentIndex+1}`,
-            type: (['Text', 'Image', 'Video', 'Link'] as CardContentType[])[contentIndex % size],
-            value: `test-side-${sideIndex+1}-value-${contentIndex+1}`,
-            size: contentIndex/size,
-        })
-    )
+    __typename: "CardSide",
+    content: repeat<ApiCardContent>(3, (contentIndex, array, size) => ({
+        __typename: "CardSideContent",
+        size: null,
+        type: (['Text', 'Image', 'Video', 'Link'] as CardSideContentType[])[contentIndex % size],
+        value: `test-side-${sideIndex+1}-value-${contentIndex+1}`,
+    })),
 }));
 const TEST_SIDES = TEST_SIDES_API.map(CardSideModel.fromApi);
 
@@ -35,18 +27,12 @@ describe('CardModel', () => {
         describe('with callback', () => {
             const original = new CardModel;
             const updated = original.update(draft => {
-                draft.id = TEST_ID;
-                draft.name = TEST_NAME;
-                draft.ownerId = TEST_OWNER_ID;
-                draft.owner = TEST_OWNER;
+                draft.title = TEST_NAME;
                 draft.sides = castDraft(TEST_SIDES);
             });
             assertNewInstance(original, updated);
             assertProperties(updated, {
-                id: TEST_ID,
-                name: TEST_NAME,
-                ownerId: TEST_OWNER_ID,
-                owner: TEST_OWNER,
+                title: TEST_NAME,
                 sides: TEST_SIDES,
             });
         });
@@ -54,18 +40,12 @@ describe('CardModel', () => {
         describe('with object', () => {
             const original = new CardModel;
             const updated = original.update({
-                id: TEST_ID,
-                name: TEST_NAME,
-                ownerId: TEST_OWNER_ID,
-                owner: TEST_OWNER,
+                title: TEST_NAME,
                 sides: TEST_SIDES,
             });
             assertNewInstance(original, updated);
             assertProperties(updated, {
-                id: TEST_ID,
-                name: TEST_NAME,
-                ownerId: TEST_OWNER_ID,
-                owner: TEST_OWNER,
+                title: TEST_NAME,
                 sides: TEST_SIDES,
             });
         });
@@ -74,21 +54,29 @@ describe('CardModel', () => {
 
     describe('#fromApi()', () => {
         const api = {
-            id: TEST_ID,
-            name: TEST_NAME,
-            ownerId: TEST_OWNER_ID,
-            owner: TEST_OWNER_API,
+            title: TEST_NAME,
             sides: TEST_SIDES_API,
         } as ApiCard;
-        it ('creates an object', () => {
-            expect(CardModel.fromApi(api)).toBeDefined()
-        });
-        assertProperties(CardModel.fromApi(api), {
-            id: TEST_ID,
-            name: TEST_NAME,
-            ownerId: TEST_OWNER_ID,
-            owner: TEST_OWNER,
-            sides: TEST_SIDES,
+        const model = CardModel.fromApi(api);
+
+        it ('creates an object', () => expect(model).toBeDefined());
+        it ('has the right title', () => expect(model.title).toBe(TEST_NAME));
+        it ('has sides', () => expect(model.sides.length).toBeGreaterThan(0));
+        it ('has the right number of sides', () => expect(model.sides.length).toEqual(TEST_SIDES.length));
+
+        model.sides.forEach((side, sideIndex) => {
+            describe(`side ${sideIndex+1}`, () => {
+                it ('has content', () => expect(side.content.length).toBeGreaterThan(0));
+                it ('has the right number of content', () => expect(side.content.length).toEqual(TEST_SIDES[sideIndex].content.length));
+                side.content.forEach((content, contentIndex) => {
+                    assertProperties(content, {
+                        type: TEST_SIDES[sideIndex].content[contentIndex].type,
+                        value: TEST_SIDES[sideIndex].content[contentIndex].value,
+                        size: TEST_SIDES[sideIndex].content[contentIndex].size,
+                        format: TEST_SIDES[sideIndex].content[contentIndex].format,
+                    }, `content ${contentIndex+1}`)
+                })
+            });
         });
     });
 

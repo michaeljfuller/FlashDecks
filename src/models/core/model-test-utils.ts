@@ -14,7 +14,7 @@ export function assertNewInstance<Model extends Record<string, any>>(
 export function assertProperties<Model extends Record<string, any>>(
     model: Model,
     properties: Partial<Model>,
-    prependLabel = 'updates value of'
+    prependLabel = 'has right value for'
 ) {
     Object.keys(properties).forEach(key => {
         it(prependLabel + ' #' + key, () => {

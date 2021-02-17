@@ -36,3 +36,4 @@ export class CardModel extends Model implements Omit<ApiCard, '__typename'|'owne
         });
     }
 }
+export default CardModel;
