@@ -7,12 +7,13 @@ module.exports = {
     preset: 'jest-expo/web',
     coverageDirectory: './test/output/reports/coverage',
     coveragePathIgnorePatterns: defaults.coveragePathIgnorePatterns.concat([
-        ".mock.", 'amplify/'
+        ".mock.",
+        '/amplify/'
     ]),
     coverageReporters: ["html", "text", "text-summary"],
     collectCoverageFrom: [
-        './src/*.{ts,tsx,js,jsx}',
-        './src/**/*.{ts,tsx,js,jsx}'
+        'src/*.{ts,tsx,js,jsx}',
+        'src/**/*.{ts,tsx,js,jsx}',
     ],
     reporters: [
         "default",
@@ -24,6 +25,10 @@ module.exports = {
             sort: "status"
         }]
     ],
+    moduleNameMapper: {
+        "expo-constants": "<rootDir>/test/mocks/expo-constants.js",
+        "\\.(css|less)$": "<rootDir>/test/mocks/MockStyle.js",
+    },
     notifyMode: 'failure-change',
     setupFiles: ['./test/jest/setupJest.js'],
     globals: Object.assign({

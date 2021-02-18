@@ -1,10 +1,12 @@
 import {assertNewInstance, assertProperties, repeat} from "./core/model-test-utils";
 import {ApiCardSide, CardSideModel} from "./CardSideModel";
-import {ApiCardContent, CardContentModel, CardContentType} from "./CardContentModel";
+import {ApiCardContent, CardContentModel} from "./CardContentModel";
+import {CardSideContentType} from "../graphql/API";
 
 const TEST_CONTENT_API = repeat<ApiCardContent>(3, (index, array, size) => ({
+    __typename: "CardSideContent",
     id: 'test-content-id-'+(index+1),
-    type: (['Text', 'Image', 'Video', 'Link'] as CardContentType[])[index % size],
+    type: (['Text', 'Image', 'Video', 'Link'] as CardSideContentType[])[index % size],
     value: 'test-content-value-'+(index+1),
     size: index,
 }));
@@ -45,11 +47,24 @@ describe('CardSideModel', () => {
         const api = {
             content: TEST_CONTENT_API,
         } as ApiCardSide;
-        it ('creates an object', () => {
-            expect(CardSideModel.fromApi(api)).toBeDefined()
+        const modal = CardSideModel.fromApi(api);
+        const newContent = CardContentModel.fromApi({
+            __typename: "CardSideContent",
+            value: "updated-content",
+            type: CardSideContentType.Text,
+            size: null,
         });
-        assertProperties(CardSideModel.fromApi(api), {
-            content: TEST_CONTENT,
+        const newContentIndex = 0;
+
+        it ('creates an object', () => {
+            expect(modal).toBeDefined()
+        });
+        it ('can update content', () => {
+            const updatedModal = modal.setContent(newContent, newContentIndex);
+            expect(updatedModal.content[newContentIndex].value).toEqual(newContent.value);
+        });
+        it ("content doesn't change on original modal (is immutable)", () => {
+            expect(modal.content[newContentIndex].value).not.toEqual(newContent.value);
         });
     });
 

@@ -7,7 +7,9 @@ interface TestStoreHelperState {
     value: string;
 }
 class TestStoreHelper extends AStoreHelper<TestStoreHelperState> {
-    readonly stateName = STATE_NAME;
+    constructor(store: Store) {
+        super(STATE_NAME as any, store);
+    }
 }
 function createMockStore(
     initialValue: TestStoreHelperState = {value: ''}

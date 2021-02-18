@@ -34,3 +34,4 @@ export class CardSideModel extends Model {
         return this.update(draft => draft.content.splice(index, 1));
     }
 }
+export default CardSideModel;

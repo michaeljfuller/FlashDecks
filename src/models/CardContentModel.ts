@@ -5,6 +5,7 @@ import {CardSideContentType} from "../graphql/API";
 import {v4 as uuid} from "uuid";
 
 export type ApiCardContent = NonNullable<ApiCardSide["content"]>[0];
+export const ApiCardContentType = CardSideContentType;
 
 export type CardContentType = 'Text' | 'Image' | 'Video' | 'Link' | undefined;
 export const cardContentTypes: readonly Exclude<CardContentType, undefined>[] = ["Text", "Image", "Video", "Link"];
@@ -69,3 +70,4 @@ export class CardContentModel extends Model implements Omit<ApiCardContent, '__t
         }
     }
 }
+export default CardContentModel;
