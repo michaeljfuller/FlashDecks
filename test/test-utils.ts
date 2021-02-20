@@ -29,6 +29,39 @@ type MockedFunctionFactory<
 
 /**
  * Create a map of functions that create a mock for the specified ClassTarget + MethodKey.
+ * @example createMockMap(myFunction, {
+ *     success: () => jest.fn(() => true),
+ *     failure: (error: string) => jest.fn(() => throw new Error(error)),
+ * });
+ */
+export function createMockMap<
+    Method extends GenericFunction,
+    Mock extends MockedFunctionFactory<Method>,
+    Mocks extends Record<string, Mock>,
+    Options extends {
+        mockName?: string;
+    }
+>(method: Method, mocks: Mocks, options?: Options): Mocks {
+    const {
+        mockName = method.name,
+    } = options || {};
+
+    // Wrap mock factories to add to result.
+    for (const key in mocks) {
+        if (Object.prototype.hasOwnProperty.call(mocks, key)) {
+            const original: Mock = mocks[key];
+            mocks[key] = ((...args: any[]) => {
+                let result = original(...args);
+                if (mockName) result = result.mockName(mockName);
+                return result;
+            }) as any;
+        }
+    }
+    return mocks;
+}
+
+/**
+ * Create a map of functions that create a mock for the specified ClassTarget + MethodKey.
  * @example createMockMap(MyClass, "myMethod", {
  *     success: () => jest.fn(() => true),
  *     failure: (error: string) => jest.fn(() => throw new Error(error)),
@@ -38,18 +71,10 @@ export function createMockMethodMap<
     ClassTarget extends GenericClass,
     MethodKey extends PickKeysWithType<InstanceType<ClassTarget>, (...args: any) => any>,
     Method extends InstanceType<ClassTarget>[MethodKey],
-    Returns extends ReturnType<Method>,
     Mock extends MockedFunctionFactory<Method>,
     Mocks extends Record<string, Mock>,
 >(target: ClassTarget, key: MethodKey, mocks: Mocks): Mocks {
-    // Wrap mock factories to add to result.
-    for (const key in mocks) {
-        if (Object.prototype.hasOwnProperty.call(mocks, key)) {
-            const original: Mock = mocks[key];
-            mocks[key] = ((...args: any[]) => {
-                return original(...args).mockName(key);
-            }) as any;
-        }
-    }
-    return mocks;
+    const mockName = typeof key === "string" ? key : undefined;
+    const method: GenericFunction = (target.prototype as any)[key];
+    return createMockMap(method, mocks, { mockName })
 }
