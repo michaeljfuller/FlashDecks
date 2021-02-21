@@ -23,15 +23,19 @@ export class MockAuthApi implements PublicMembers<AuthApi> {
     readonly onSignIn = this.signInSubject.asObservable();
     readonly onSignOut = this.signOutSubject.asObservable();
 
-    getUser = AuthApi_getUser.loggedIn();
-    signIn = AuthApi_signIn.success();
-    signUp = AuthApi_signUp.success();
-    confirmSignUp = AuthApi_confirmSignUp.success();
-    forgotPassword = AuthApi_forgotPassword.success();
-    forgotPasswordSubmit = AuthApi_forgotPasswordSubmit.success();
-    signOut = AuthApi_signOut.success();
+    getUser = jest.fn(AuthApi_getUser.loggedIn());
+    signIn = jest.fn(AuthApi_signIn.success());
+    signUp = jest.fn(AuthApi_signUp.success());
+    confirmSignUp = jest.fn(AuthApi_confirmSignUp.success());
+    forgotPassword = jest.fn(AuthApi_forgotPassword.success());
+    forgotPasswordSubmit = jest.fn(AuthApi_forgotPasswordSubmit.success());
+    signOut = jest.fn(AuthApi_signOut.success());
 }
 
 export { MockAuthApi as AuthApi }
 export const authApi = new MockAuthApi;
 export default authApi;
+
+export function asMockAuthApi(api: AuthApi): MockAuthApi {
+    return api as any;
+}

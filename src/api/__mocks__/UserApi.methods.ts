@@ -1,11 +1,10 @@
+import type {UserApi} from "../UserApi";
 import {UserModel} from "../../models";
 import ApiRequest from "../util/ApiRequest";
-import {UserApi} from "../UserApi";
-import {createMockMethodMap} from "../../../test/test-utils";
 
-export const UserApi_getUser = createMockMethodMap(UserApi, "getUser", {
+export const UserApi_getUser = {
 
-    resolvesUser: (user?: UserModel) => jest.fn(function(id: string) {
+    resolvesUser: (user?: UserModel) => function(id: string) {
         id = id || 'mock-id'
         return new ApiRequest(
             Promise.resolve(
@@ -18,9 +17,9 @@ export const UserApi_getUser = createMockMethodMap(UserApi, "getUser", {
             ),
             {id}
         );
-    }),
+    } as UserApi['getUser'],
 
-    noUser: () => jest.fn(function(id: string) {
+    noUser: () => function(id: string) {
         id = id || 'mock-id'
         return new ApiRequest(
             Promise.reject(
@@ -28,6 +27,6 @@ export const UserApi_getUser = createMockMethodMap(UserApi, "getUser", {
             ),
             {id}
         );
-    }),
+    } as UserApi['getUser'],
 
-});
+};
