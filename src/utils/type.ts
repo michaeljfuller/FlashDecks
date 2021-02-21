@@ -1,3 +1,5 @@
+import {GenericFunction} from "./function";
+
 /** Return the class name, function name, the JS data type, or "null". */
 export function getType(target: any): DataType | "null" | string {
     if (target === null) return "null";
@@ -31,4 +33,17 @@ export type PickValuesWithType<Target extends object, Type> = Pick<Target, {
  * Creates a union of keys from Target, where those keys only relate to properties of type Type.
  * @example PickKeysWithType<{a: number; b: string; c: string}, string> // "b"|"c"
  */
-export type PickKeysWithType<Target extends object, Type> = keyof PickValuesWithType<Target, Type>;
+export type PickKeysWithType<
+    Target extends object, Type
+> = keyof PickValuesWithType<Target, Type>;
+
+/** Type which is a union of keys to the passed Target's methods. */
+export type MethodKey<
+    Target extends object
+> = PickKeysWithType<Target, GenericFunction>;
+
+/** Method based on the passed Type and Key. */
+export type MethodFromClassAndKey<
+    Target extends object,
+    Key extends MethodKey<Target>
+> = Target[Key];
