@@ -19,3 +19,59 @@ export function objectToTypeMap<
         value: getType(value)
     }));
 }
+
+/**
+ * Return the names of all the components that appear in the hierarchy, and how many times.
+ * @example {
+ *     Foo: 1,
+ *     Bar: 5,
+ *     Baz: 2
+ * }
+ */
+export function countAllWrapperChildren(wrapper: ShallowWrapper): Record<string, number> {
+    const result: Record<string, number> = {};
+    wrapper.findWhere(child => {
+        const key = child.name();
+        result[key] = (result[key] || 0) + 1;
+        return false;
+    });
+    return result;
+}
+/**
+ * Return the names of immediate children, and how many times they appear.
+ * @example {
+ *     Foo: 1,
+ *     Bar: 5,
+ *     Baz: 2
+ * }
+ */
+export function countWrapperChildren(wrapper: ShallowWrapper): Record<string, number> {
+    const result: Record<string, number> = {};
+    wrapper.forEach(child => {
+        const key = child.name();
+        result[key] = (result[key] || 0) + 1;
+        return false;
+    });
+    return result;
+}
+
+/**
+ * Return the hierarchy of the ShallowWrapper in a JSON string-able format.
+ * @example {
+ *     "MyComponent": [
+ *         {
+ *             "SubComponent": []
+ *         }
+ *     ]
+ * }
+ */
+export function getWrapperHierarchy(wrapper: ShallowWrapper): object {
+    const name = wrapper.name();
+    const children = wrapper.children().map(getWrapperHierarchy).filter(v => v);
+    return { [name]: children };
+}
+export function getWrapperHierarchyJson(wrapper: ShallowWrapper): string {
+    return JSON.stringify(
+        getWrapperHierarchy(wrapper), null, 4
+    );
+}
