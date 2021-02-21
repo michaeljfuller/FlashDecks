@@ -12,9 +12,12 @@ import ProgressCircle from "../components/progress/ProgressCircle";
 import Button from "../components/button/Button";
 import Center from "../components/layout/Center";
 
-logAppInfo();
-
 export class AppRoot extends AppRootBase {
+
+    componentDidMount() {
+        super.componentDidMount();
+        logAppInfo();
+    }
 
     render() {
         return <ErrorBoundary>
