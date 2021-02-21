@@ -43,6 +43,13 @@ describe('AppRoot', () => {
         it("Redux Provider has store", () => expect(reduxWrapper.prop("store")).toBe(store));
     });
 
+    describe('unmounting', () => {
+        const wrapper = shallow<AppRoot>(<AppRoot manualStart />);
+        const removeToastSpy = jest.spyOn(wrapper.instance().toast, "removeByRef");
+        wrapper.unmount();
+        it('removes toast', () => expect(removeToastSpy).toHaveBeenCalled());
+    });
+
     describe('while initializing', () => {
         const wrapper = shallow<AppRoot>(<AppRoot manualStart />);
         beforeAll(() => {
