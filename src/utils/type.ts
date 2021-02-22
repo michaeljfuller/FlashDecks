@@ -17,8 +17,37 @@ export function getType(target: any): DataType | "null" | string {
 }
 export type DataType = "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function";
 
+/** Returns a readable DataType value, or the type. */
+export function getTypeOrValue(target: any, maxValueLength=0): ReturnType<typeof getType>|string {
+    maxValueLength = Math.max(0, maxValueLength);
+    const type = getType(target);
+    let value: string = type;
+    switch (type) {
+        case "string":
+            if (maxValueLength && (target as string).length+2 > maxValueLength) {
+                value = `'${(target as string).substr(0, maxValueLength-3)}…'`;
+            } else {
+                value = `'${target}'`;
+            }
+            break;
+        case "number":
+            value = (target as number).toString(10);
+            if (maxValueLength && value.length > maxValueLength) {
+                const [integer] = value.split('.', 2);
+                const exponent = `e+${integer.length-1}`;
+                const fractionDigits = maxValueLength-exponent.length;
+                value = (target as number).toExponential(fractionDigits);
+            }
+            break;
+        case "boolean":
+            value = target ? 'true' : 'false';
+            break;
+    }
+    return value;
+}
+
 export function isClass(target: any): boolean {
-    return (typeof target === "function") && typeof target.prototype?.constructor === "function";
+    return (typeof target === "function") && target.prototype?.constructor?.name;
 }
 
 /**
