@@ -1,6 +1,6 @@
 import {ShallowWrapper} from "enzyme";
 import {mapToObject} from "../src/utils/object";
-import {getType} from "../src/utils/type";
+import {getType, getTypeOrValue} from "../src/utils/type";
 
 export function findByTestId(wrapper: ShallowWrapper, testId: string) {
     // return wrapper.findWhere((item) => {
@@ -58,20 +58,38 @@ export function countWrapperChildren(wrapper: ShallowWrapper): Record<string, nu
 /**
  * Return the hierarchy of the ShallowWrapper in a JSON string-able format.
  * @example {
- *     "MyComponent": [
+ *     "<MyComponent>": [
  *         {
  *             "SubComponent": []
  *         }
  *     ]
  * }
  */
-export function getWrapperHierarchy(wrapper: ShallowWrapper): object {
+export function getWrapperHierarchy(
+    wrapper: ShallowWrapper, maxValueLength = 16,
+): object|string {
     const name = wrapper.name();
-    const children = wrapper.children().map(getWrapperHierarchy).filter(v => v);
-    return { [name]: children };
+    const children = wrapper.children().map(
+        child => getWrapperHierarchy(child, maxValueLength)
+    ).filter(v => v);
+    const props: string[] = Object.entries(wrapper.props()).filter(
+        ([key, value]) => key !== 'children' && value !== undefined
+    ).map(
+        ([key, value]) => `${key}={${
+            getTypeOrValue(value, maxValueLength)
+        }}`
+    );
+
+    let label = '<' + name;
+    if (props.length) label += ' ' + props.join(' ');
+    label += '>';
+
+    return children.length ? { [label]: children } : label;
 }
-export function getWrapperHierarchyJson(wrapper: ShallowWrapper): string {
+export function getWrapperHierarchyJson(
+    wrapper: ShallowWrapper, maxValueLength = 16,
+): string {
     return JSON.stringify(
-        getWrapperHierarchy(wrapper), null, 4
+        getWrapperHierarchy(wrapper, maxValueLength), null, 4
     );
 }
