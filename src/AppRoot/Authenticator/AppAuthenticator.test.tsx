@@ -1,4 +1,5 @@
 import React from "react";
+import {ShallowWrapper} from "enzyme";
 import {AppAuthenticator, AppAuthenticatorState, TabButton} from './AppAuthenticator';
 import {configureEnzyme, shallow} from "../../../test/Enzyme";
 
@@ -6,7 +7,8 @@ import {SignIn} from "./sections/SignIn";
 import {SignUp} from "./sections/SignUp";
 import {ForgotPassword} from "./sections/ForgotPassword";
 import {AmplifyAuthenticator} from "./amplify-ui/AmplifyAuthenticator";
-import {FormValidationText} from "../../components/ui/form/FormValidationText";
+import {FormValidationText, ValidationTextProps} from "../../components/ui/form/FormValidationText";
+import {ButtonProps} from "../../components/button/Button.common";
 
 configureEnzyme();
 
@@ -15,12 +17,12 @@ configureEnzyme();
 const shallowAppAuthenticator = () => shallow<AppAuthenticator>(<AppAuthenticator />);
 type AuthWrapper = ReturnType<typeof shallowAppAuthenticator>;
 
-function findTabButton(wrapper: AuthWrapper, label: string) {
+function findTabButton(wrapper: AuthWrapper, label: string): ShallowWrapper<ButtonProps> {
     return wrapper.findWhere(child => {
         return child.is(TabButton) && child.prop("title") === label;
     });
 }
-function findFeedbackText(wrapper: AuthWrapper, type: "success"|"error") {
+function findFeedbackText(wrapper: AuthWrapper, type: "success"|"error"): ShallowWrapper<ValidationTextProps> {
     return wrapper.findWhere(child => {
         return child.is(FormValidationText)
             && child.prop("visible") === true
