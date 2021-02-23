@@ -102,7 +102,6 @@ export const AuthApi_forgotPassword = {
         return toPromiseAndSubscription(Promise.resolve());
     } as AuthApi["forgotPassword"],
 
-
     /** Resolves along with the passed promise (or never). */
     wait: (promise?: Promise<void>) => function() {
         return toPromiseAndSubscription(
@@ -121,6 +120,13 @@ export const AuthApi_forgotPasswordSubmit = {
 
     success: () => function(..._rest) {
         return toPromiseAndSubscription(Promise.resolve());
+    } as AuthApi["forgotPasswordSubmit"],
+
+    /** Resolves along with the passed promise (or never). */
+    wait: (promise?: Promise<void>) => function() {
+        return toPromiseAndSubscription(
+            promise || new Promise(_ => {})
+        );
     } as AuthApi["forgotPasswordSubmit"],
 
     failure: (error: any = 'mock-error') => function(..._rest) {

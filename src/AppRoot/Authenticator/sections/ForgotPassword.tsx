@@ -132,7 +132,7 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
                 this.state.password1
             ),
             e => this.props.onError(
-                getErrorText(e?.message, 'Error')
+                getErrorText(e, 'Error')
             ),
         ).finally(() => this.setState({ processing: false }));
     }

@@ -100,11 +100,18 @@ function inputVerificationCode(wrapper: ForgotPasswordWrapper, value: string) {
     onChangeText && onChangeText(value);
 }
 
-const clickSubmit = (
+const clickSubmitForgotPassword = (
     wrapper: ForgotPasswordWrapper,
     mock?: Parameters<typeof authApi.forgotPassword.mockImplementationOnce>[0]
 ) => {
     if (mock) authApi.forgotPassword.mockImplementationOnce(mock);
+    getSubmitButton(wrapper).invoke("onClick")?.call(null);
+}
+const clickSubmitNewPassword = (
+    wrapper: ForgotPasswordWrapper,
+    mock?: Parameters<typeof authApi.forgotPasswordSubmit.mockImplementationOnce>[0]
+) => {
+    if (mock) authApi.forgotPasswordSubmit.mockImplementationOnce(mock);
     getSubmitButton(wrapper).invoke("onClick")?.call(null);
 }
 
@@ -141,7 +148,7 @@ function testInput(
 
 //</editor-fold>
 
-describe.only("ForgotPassword", () => {
+describe("ForgotPassword", () => {
 
     describe("mounting", () => {
         const wrapper = shallowForgotPassword();
@@ -190,7 +197,7 @@ describe.only("ForgotPassword", () => {
                 inputUsername(wrapper, "");
                 expect(getSubmitButton(wrapper).prop("disabled")).toBe(true);
             });
-            it("can be pressed", () => {
+            it("is enabled if the form is valid", () => {
                 inputUsername(wrapper, "test-username");
                 expect(getSubmitButton(wrapper).prop("disabled")).toBe(false);
             });
@@ -199,18 +206,16 @@ describe.only("ForgotPassword", () => {
                 const authSpy = jest.spyOn(authApi, "forgotPassword");
                 const successSpy = jest.spyOn(wrapper.instance().props, "onSuccess");
                 const errorSpy = jest.spyOn(wrapper.instance().props, "onError");
-                beforeAll(() => clickSubmit(wrapper, AuthApi_forgotPassword.wait()));
+                beforeAll(() => clickSubmitForgotPassword(wrapper, AuthApi_forgotPassword.wait()));
 
                 it("calls api", () => expect(authSpy).toHaveBeenCalledWith("test-username"));
                 it("calls onSuccess to clear message", () => {
-                    expect(successSpy).toHaveBeenCalledTimes(1);
                     expect(successSpy).toHaveBeenCalledWith('');
                 });
                 it("calls onError to clear message", () => {
-                    expect(errorSpy).toHaveBeenCalledTimes(1);
                     expect(errorSpy).toHaveBeenCalledWith('');
                 });
-                it("shows progress bar", async () => {
+                it("shows progress bar", () => {
                     expect(getProgressBar(wrapper).prop("visible")).toBeTruthy();
                 });
                 it('is still on section 1', () => {
@@ -220,16 +225,15 @@ describe.only("ForgotPassword", () => {
             describe('on success', () => {
                 const wrapper = shallowForgotPassword();
                 const successSpy = jest.spyOn(wrapper.instance().props, "onSuccess");
-                beforeAll(() => clickSubmit(wrapper, AuthApi_forgotPassword.success()));
+                beforeAll(() => clickSubmitForgotPassword(wrapper, AuthApi_forgotPassword.success()));
 
-                it("calls onSuccess with message", async () => {
-                    expect(successSpy).toHaveBeenCalledTimes(2);
+                it("calls onSuccess with message", () => {
                     expect(successSpy).toHaveBeenCalledWith('Sending email.');
                 });
-                it("hides progress bar", async () => {
+                it("hides progress bar", () => {
                     expect(getProgressBar(wrapper).prop("visible")).toBeFalsy();
                 });
-                it("goes to section 2", async () => {
+                it("goes to section 2", () => {
                     expect(wrapper.state().enterCode).toBeTruthy();
                 });
             });
@@ -237,11 +241,10 @@ describe.only("ForgotPassword", () => {
                 const wrapper = shallowForgotPassword();
                 const errorSpy = jest.spyOn(wrapper.instance().props, "onError");
                 beforeAll(() => {
-                    clickSubmit(wrapper, AuthApi_forgotPassword.failure(new Error("mock-error")));
+                    clickSubmitForgotPassword(wrapper, AuthApi_forgotPassword.failure(new Error("test-error")));
                 });
                 it("calls onError with message", () => {
-                    expect(errorSpy).toHaveBeenCalledTimes(2);
-                    expect(errorSpy).toHaveBeenCalledWith("mock-error");
+                    expect(errorSpy).toHaveBeenCalledWith("test-error");
                 });
                 it("hides progress bar", () => {
                     expect(getProgressBar(wrapper).prop("visible")).toBeFalsy();
@@ -400,16 +403,117 @@ describe.only("ForgotPassword", () => {
         );
 
         describe("submit", () => {
-            it.todo("is disabled if invalid username ");
-            it.todo("is disabled if invalid password");
-            it.todo("is disabled if invalid password confirmation");
-            it.todo("is disabled if invalid verification code");
-            it.todo("can be pressed");
-            it.todo("calls api");
-            it.todo("shows progress bar while processing");
-            it.todo("calls onComplete on success");
-            it.todo("calls onError on error");
-            it.todo("hides progress bar when finished");
+
+            describe("button", () => {
+                const wrapper = shallowForgotPassword();
+                beforeAll(() => wrapper.setState({ enterCode: true }));
+                beforeEach(() => {
+                    inputUsername(wrapper,"test-username");
+                    inputPassword(wrapper, "test-password");
+                    inputPasswordConfirmation(wrapper, "test-password");
+                    inputVerificationCode(wrapper, "test-code");
+                })
+                it("is enabled if the form is valid", () => {
+                    expect(getSubmitButton(wrapper).prop("disabled")).toBe(false);
+                });
+                it("is disabled if invalid username", () => {
+                    inputUsername(wrapper,"");
+                    expect(getSubmitButton(wrapper).prop("disabled")).toBe(true);
+                });
+                it("is disabled if invalid password", () => {
+                    inputPassword(wrapper,"");
+                    expect(getSubmitButton(wrapper).prop("disabled")).toBe(true);
+                });
+                it("is disabled if invalid password confirmation", () => {
+                    inputPasswordConfirmation(wrapper,"");
+                    expect(getSubmitButton(wrapper).prop("disabled")).toBe(true);
+                });
+                it("is disabled if invalid verification code", () => {
+                    inputVerificationCode(wrapper,"");
+                    expect(getSubmitButton(wrapper).prop("disabled")).toBe(true);
+                });
+            });
+            describe('on click', () => {
+                const wrapper = shallowForgotPassword();
+                const authSpy = jest.spyOn(authApi, "forgotPasswordSubmit");
+                const successSpy = jest.spyOn(wrapper.instance().props, "onSuccess");
+                const errorSpy = jest.spyOn(wrapper.instance().props, "onError");
+                beforeAll(() => {
+                    wrapper.setState({ enterCode: true });
+                    inputUsername(wrapper,"test-username");
+                    inputPassword(wrapper, "test-password");
+                    inputPasswordConfirmation(wrapper, "test-password");
+                    inputVerificationCode(wrapper, "test-code");
+                    successSpy.mockReset();
+                    errorSpy.mockReset();
+                    clickSubmitNewPassword(wrapper, AuthApi_forgotPasswordSubmit.wait());
+                });
+
+                it("calls api", () => expect(authSpy).toHaveBeenCalledWith(
+                    "test-username", "test-password", "test-code",
+                ));
+                it("calls onSuccess to clear message", () => {
+                    expect(successSpy).toHaveBeenCalledTimes(1);
+                    expect(successSpy).toHaveBeenCalledWith('');
+                });
+                it("calls onError to clear message", () => {
+                    expect(errorSpy).toHaveBeenCalledTimes(1);
+                    expect(errorSpy).toHaveBeenCalledWith('');
+                });
+                it("shows progress bar", () => {
+                    expect(getProgressBar(wrapper).prop("visible")).toBeTruthy();
+                });
+                it('is still on section 2', () => expect(wrapper.state().enterCode).toBeTruthy());
+            });
+
+            describe("on success", () => {
+                const wrapper = shallowForgotPassword();
+                const completeSpy = jest.spyOn(wrapper.instance().props, "onComplete");
+                beforeAll(() => {
+                    wrapper.setState({ enterCode: true });
+                    inputUsername(wrapper,"test-username");
+                    inputPassword(wrapper, "test-password");
+                    inputPasswordConfirmation(wrapper, "test-password");
+                    inputVerificationCode(wrapper, "test-code");
+                    completeSpy.mockReset();
+                    clickSubmitNewPassword(wrapper, AuthApi_forgotPasswordSubmit.success());
+                });
+
+                it("calls onComplete", () => {
+                    expect(completeSpy).toHaveBeenCalledWith(
+                        "Password updated for test-username.", "test-username", "test-password",
+                    );
+                });
+                it("hides progress bar", () => {
+                    expect(getProgressBar(wrapper).prop("visible")).toBeFalsy();
+                });
+            });
+
+            describe("on failure", () => {
+                const wrapper = shallowForgotPassword();
+                const errorSpy = jest.spyOn(wrapper.instance().props, "onError");
+                const completeSpy = jest.spyOn(wrapper.instance().props, "onComplete");
+                beforeAll(() => {
+                    wrapper.setState({ enterCode: true });
+                    inputUsername(wrapper,"test-username");
+                    inputPassword(wrapper, "test-password");
+                    inputPasswordConfirmation(wrapper, "test-password");
+                    inputVerificationCode(wrapper, "test-code");
+                    errorSpy.mockReset();
+                    clickSubmitNewPassword(wrapper, AuthApi_forgotPasswordSubmit.failure("test-error"));
+                });
+
+                it("calls onError with message", () => {
+                    expect(errorSpy).toHaveBeenCalledWith("test-error");
+                });
+                it("hides progress bar", () => {
+                    expect(getProgressBar(wrapper).prop("visible")).toBeFalsy();
+                });
+                it("doesn't call completeSpy", () => {
+                    expect(completeSpy).not.toHaveBeenCalled();
+                });
+
+            });
         });
 
     });
