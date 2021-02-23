@@ -83,9 +83,21 @@ function getProgressBar(wrapper: ForgotPasswordWrapper): ShallowWrapper<Progress
     return wrapper.find(ProgressBar);
 }
 
-function inputUsername(wrapper: ForgotPasswordWrapper, username: string) {
+function inputUsername(wrapper: ForgotPasswordWrapper, value: string) {
     const onChangeText = getUsernameInput(wrapper).invoke("onChangeText");
-    onChangeText && onChangeText(username);
+    onChangeText && onChangeText(value);
+}
+function inputPassword(wrapper: ForgotPasswordWrapper, value: string) {
+    const onChangeText = getPasswordInput(wrapper).invoke("onChangeText");
+    onChangeText && onChangeText(value);
+}
+function inputPasswordConfirmation(wrapper: ForgotPasswordWrapper, value: string) {
+    const onChangeText = getPasswordConfirmationInput(wrapper).invoke("onChangeText");
+    onChangeText && onChangeText(value);
+}
+function inputVerificationCode(wrapper: ForgotPasswordWrapper, value: string) {
+    const onChangeText = getVerificationCodeInput(wrapper).invoke("onChangeText");
+    onChangeText && onChangeText(value);
 }
 
 const clickSubmit = (
@@ -94,6 +106,37 @@ const clickSubmit = (
 ) => {
     if (mock) authApi.forgotPassword.mockImplementationOnce(mock);
     getSubmitButton(wrapper).invoke("onClick")?.call(null);
+}
+
+function testInput(
+    name: string,
+    valueGetter: () => string|undefined,
+    valueSetter: (value: string) => void,
+    validationGetter: () => ShallowWrapper<ValidationTextProps>,
+    validations: Array<{
+        description: string;
+        value: string;
+        before?: () => void;
+        type?: ValidationTextProps['type'];
+        text: ValidationTextProps['text']|null;
+    }>,
+    others?: () => void
+) {
+    describe(name, () => {
+        it("can be entered", () => {
+            valueSetter("test-input-"+name);
+            expect(valueGetter()).toBe("test-input-"+name);
+        });
+        if (others) others();
+        validations.forEach((valid) => it(valid.description, () => {
+            valid.before?.call(null);
+            valueSetter(valid.value);
+            const validation = validationGetter();
+            expect(validation.prop("visible")).toBe(!!valid.text);
+            if (valid.text) expect(validation.prop("type")).toBe(valid.type || "error");
+            if (valid.text) expect(validation.prop("text")).toBe(valid.text);
+        }));
+    });
 }
 
 //</editor-fold>
@@ -107,8 +150,7 @@ describe.only("ForgotPassword", () => {
 
     describe("section 1", () => {
         const wrapper = shallowForgotPassword();
-        it('is on section 1', () => expect(wrapper.state().enterCode).toBeFalsy());
-
+        it('starts on section 1', () => expect(wrapper.state().enterCode).toBeFalsy());
         describe("input", () => {
             it("has username", () => expect(getUsernameInput(wrapper).exists()).toBeTruthy());
             it("doesn't have password", () => expect(getPasswordInput(wrapper).exists()).toBeFalsy());
@@ -117,38 +159,31 @@ describe.only("ForgotPassword", () => {
             it("has submit button", () => expect(getSubmitButton(wrapper).exists()).toBeTruthy());
             it("has skip button", () => expect(getSkipButton(wrapper).exists()).toBeTruthy());
         });
-        describe("username", () => {
-            it("can be entered", () => {
-                expect(getUsernameInput(wrapper).prop("value")).toBe("initial-username");
-                inputUsername(wrapper, "test-username");
-                expect(getUsernameInput(wrapper).prop("value")).toBe("test-username");
-            });
-            it("shows error if it isn't given", () => {
-                inputUsername(wrapper, "");
-                const validation = getUsernameValidation(wrapper);
-                expect(validation.prop("visible")).toBe(true);
-                expect(validation.prop("type")).toBe("standard");
-                expect(validation.prop("text")).toBe("Username is required.");
-            });
-            it("shows error if it has spaces", () => {
-                inputUsername(wrapper, "has space");
-                const validation = getUsernameValidation(wrapper);
-                expect(validation.prop("visible")).toBe(true);
-                expect(validation.prop("type")).toBe("error");
-                expect(validation.prop("text")).toBe("Username cannot contain spaces.");
-            });
-            it("shows error if it's too short", () => {
-                inputUsername(wrapper, "a");
-                const validation = getUsernameValidation(wrapper);
-                expect(validation.prop("visible")).toBe(true);
-                expect(validation.prop("type")).toBe("error");
-                expect(validation.prop("text")).toBe(`Username must be at least ${usernameMinLength} characters.`);
-            });
-            it("shows no error if it's valid", () => {
-                inputUsername(wrapper, "u".repeat(usernameMinLength));
-                expect(getUsernameValidation(wrapper).prop("visible")).toBe(false);
-            });
-        });
+        testInput("username",
+            () => getUsernameInput(wrapper).prop("value"),
+            (str) => inputUsername(wrapper, str),
+            () => getUsernameValidation(wrapper),
+            [
+                {
+                    description: "shows error if it isn't given",
+                    value: "",
+                    type: "standard",
+                    text: "Username is required.",
+                },{
+                    description: "shows error if it has spaces",
+                    value: "has space",
+                    text: "Username cannot contain spaces.",
+                },{
+                    description: "shows error if it's too short",
+                    value: "a",
+                    text: `Username must be at least ${usernameMinLength} characters.`,
+                },{
+                    description: "shows no error if it's valid",
+                    value: "u".repeat(usernameMinLength),
+                    text: null,
+                }
+            ]
+        );
         describe("submit", () => {
             const wrapper = shallowForgotPassword();
             it("is disabled if the form invalid", () => {
@@ -224,43 +259,145 @@ describe.only("ForgotPassword", () => {
                 expect(wrapper.state().enterCode).toBe(true);
             });
         });
-
     });
 
     describe("section 2", () => {
 
+        const wrapper = shallowForgotPassword();
+        beforeEach(() => wrapper.setState({ enterCode: true }));
+
         describe("input", () => {
-            it.todo("has username");
-            it.todo("has password");
-            it.todo("has password confirmation");
-            it.todo("has verification code");
-            it.todo("has submit button");
-            it.todo("doesn't have skip button");
+            it("has username", () => expect(getUsernameInput(wrapper).exists()).toBeTruthy());
+            it("has password", () => expect(getPasswordInput(wrapper).exists()).toBeTruthy());
+            it("has password confirmation", () => expect(getPasswordConfirmationInput(wrapper).exists()).toBeTruthy());
+            it("has verification code", () => expect(getVerificationCodeInput(wrapper).exists()).toBeTruthy());
+            it("has submit button", () => expect(getSubmitButton(wrapper).exists()).toBeTruthy());
+            it("doesn't have skip button", () => expect(getSkipButton(wrapper).exists()).toBeFalsy());
         });
-        describe("username", () => {
-            it.todo("can be entered");
-            it.todo("shows error if it isn't given");
-            it.todo("shows error if it has spaces");
-            it.todo("shows error if it's too short");
-            it.todo("no error if it's valid");
-        });
-        describe("password", () => {
-            it.todo("can be entered");
-            it.todo("confirmation can be entered");
-            it.todo("is hidden by default");
-            it.todo("can be shown");
-            it.todo("can be hidden");
-            it.todo("shows error if it isn't given");
-            it.todo("shows error if it has spaces");
-            it.todo("shows error if it's too short");
-            it.todo("no error if it's valid");
-        });
-        describe("verification code", () => {
-            it.todo("can be entered");
-            it.todo("shows error if it isn't given");
-            it.todo("shows error if it's too short");
-            it.todo("no error if it's valid");
-        });
+        testInput(
+            "username",
+            () => getUsernameInput(wrapper).prop("value"),
+            (value) => inputUsername(wrapper, value),
+            () => getUsernameValidation(wrapper),
+            [
+                {
+                    description: "shows error if it isn't given",
+                    value: "",
+                    type: "standard",
+                    text: "Username is required.",
+                },{
+                    description: "shows error if it has spaces",
+                    value: "has space",
+                    text: "Username cannot contain spaces.",
+                },{
+                    description: "shows error if it's too short",
+                    value: "u".repeat(usernameMinLength-1),
+                    text: `Username must be at least ${usernameMinLength} characters.`,
+                },{
+                    description: "shows no error if it's valid",
+                    value: "u".repeat(usernameMinLength),
+                    text: null,
+                }
+            ]
+        );
+        testInput("password",
+            () => getPasswordInput(wrapper).prop("value"),
+            (value) => inputPassword(wrapper, value),
+            () => getPasswordValidation(wrapper),
+            [
+                {
+                    description: "shows error if it isn't given",
+                    value: "",
+                    type: "standard",
+                    text: "Password is required.",
+                },{
+                    description: "shows error if it has spaces",
+                    value: "has space",
+                    text: "Password cannot contain spaces.",
+                },{
+                    description: "shows error if it's too short",
+                    value: "p".repeat(passwordMinLength-1),
+                    text: `Password must be at least ${passwordMinLength} characters.`,
+                },{
+                    description: "shows error if no confirmation",
+                    value: "p".repeat(passwordMinLength),
+                    text: "Password must be confirmed.",
+                    type: "standard",
+                }
+            ],
+            () => {
+                it("is hidden by default", () => {
+                    expect(getPasswordInput(wrapper).prop("showPassword")).toBe(false);
+                });
+                it("has toggle show button", () => {
+                    expect(typeof getPasswordInput(wrapper).prop("toggleShowPassword")).toBe("function");
+                });
+                it("can toggle show", () => {
+                    getPasswordInput(wrapper).invoke("toggleShowPassword")?.call(null);
+                    expect(getPasswordInput(wrapper).prop("showPassword")).toBe(true);
+                    getPasswordInput(wrapper).invoke("toggleShowPassword")?.call(null);
+                    expect(getPasswordInput(wrapper).prop("showPassword")).toBe(false);
+                });
+            }
+        );
+        testInput("password confirmation",
+            () => getPasswordConfirmationInput(wrapper).prop("value"),
+            (value) => inputPasswordConfirmation(wrapper, value),
+            () => getPasswordValidation(wrapper),
+            [
+                {
+                    description: "shows error if confirmation doesn't match",
+                    before: () => inputPassword(wrapper, "p".repeat(passwordMinLength)),
+                    value: "test-password-confirmation",
+                    text: "Password does not match confirmation.",
+                },{
+                    description: "shows no error if valid",
+                    before: () => inputPassword(wrapper, "p".repeat(passwordMinLength)),
+                    value: "p".repeat(passwordMinLength),
+                    text: null,
+                }
+            ],
+            () => {
+                it("is hidden by default", () => {
+                    expect(getPasswordConfirmationInput(wrapper).prop("showPassword")).toBe(false);
+                });
+                it("doesn't have toggle show button", () => {
+                    expect(typeof getPasswordConfirmationInput(wrapper).prop("toggleShowPassword")).toBe("undefined");
+                });
+                it("can toggle show", () => {
+                    getPasswordInput(wrapper).invoke("toggleShowPassword")?.call(null);
+                    expect(getPasswordConfirmationInput(wrapper).prop("showPassword")).toBe(true);
+                    getPasswordInput(wrapper).invoke("toggleShowPassword")?.call(null);
+                    expect(getPasswordConfirmationInput(wrapper).prop("showPassword")).toBe(false);
+                });
+            }
+        );
+        testInput(
+            "verification code",
+            () => getVerificationCodeInput(wrapper).prop("value"),
+            (value) => inputVerificationCode(wrapper, value),
+            () => getVerificationCodeValidation(wrapper),
+            [
+                {
+                    description: "shows error if it isn't given",
+                    value: "",
+                    type: "standard",
+                    text: "Verification code is required.",
+                },{
+                    description: "shows error if it has spaces",
+                    value: "has space",
+                    text: "Verification code cannot contain spaces.",
+                },{
+                    description: "shows error if it's too short",
+                    value: "v".repeat(securityCodeMinLength-1),
+                    text: `Verification code must be at least ${securityCodeMinLength} characters.`,
+                },{
+                    description: "shows no error if it's valid",
+                    value: "v".repeat(securityCodeMinLength),
+                    text: null,
+                }
+            ],
+        );
 
         describe("submit", () => {
             it.todo("is disabled if invalid username ");

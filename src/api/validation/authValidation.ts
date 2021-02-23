@@ -118,6 +118,10 @@ export function validateForgotPasswordCode(code: string): AuthValidation {
         valid: false,
         reason: `Verification code is required.`,
     };
+    if (code.match(/\s/)) return {
+        valid: false,
+        reason: `Verification code cannot contain spaces.`,
+    };
     if (code.length < securityCodeMinLength) return {
         valid: false,
         reason: `Verification code must be at least ${securityCodeMinLength} characters.`,
