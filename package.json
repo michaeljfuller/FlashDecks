@@ -5,7 +5,8 @@
     "start:prod": "expo start --web --no-dev --minify",
     "expo:eject": "expo eject",
     "setup": "react-native link",
-    "test:reports": "node test/output/servers/run-all.js",
+    "test:reports": "gulp reports -f gulpfile.testing.js",
+    "test:dev": "gulp test:dev -f gulpfile.testing.js",
     "amplify:console": "amplify console"
   },
   "dependencies": {
