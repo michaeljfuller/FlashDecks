@@ -1,6 +1,9 @@
-export const usernameMinLength = 1;
-export const passwordMinLength = 8;
-export const securityCodeMinLength = 6;
+import {
+    usernameMinLength,
+    passwordMinLength,
+    securityCodeMinLength
+} from "./authValidation.values";
+export * from "./authValidation.values";
 
 export interface AuthValidation {
     valid: boolean;

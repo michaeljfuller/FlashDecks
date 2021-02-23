@@ -12,7 +12,6 @@ import {
     validateForgotPasswordCode,
     flattenValidation
 } from "../../../api/validation/authValidation";
-import {Visibility} from "../../../components/layout/Visibility";
 import {FormPasswordInput} from "../../../components/ui/form/FormPasswordInput";
 import authApi from "../../../api/AuthApi";
 import {getErrorText} from "../../../utils/string";
@@ -115,7 +114,7 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
                 this.setState({ enterCode: true });
             },
             e => this.props.onError(
-                getErrorText(e?.message, 'Error')
+                getErrorText(e, 'Error')
             ),
         ).finally(() => this.setState({ processing: false }));
     }
@@ -171,7 +170,7 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
                 text={usernameValidation.reason}
             />
 
-            <Visibility render={this.state.enterCode}>
+            {!this.state.enterCode ? null : <React.Fragment>
 
                 <Text>Password</Text>
                 <FormPasswordInput
@@ -210,7 +209,7 @@ export class ForgotPassword extends React.PureComponent<ForgotPasswordProps, For
                     text={codeValidation.reason}
                 />
 
-            </Visibility>
+            </React.Fragment>}
 
             <Button
                 title="Submit"
