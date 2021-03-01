@@ -11,12 +11,13 @@ export interface FormPasswordInputProps extends FormTextInputProps {
 }
 
 export const FormPasswordInput = React.memo(function FormPasswordInput(props: FormPasswordInputProps) {
-    const {style, existingPassword, showPassword, toggleShowPassword, ...otherProps} = props;
-    return <Row style={style}>
+    const {style, existingPassword, showPassword, toggleShowPassword, testID, ...otherProps} = props;
+    return <Row style={style} testID={testID}>
         <FormTextInput
             secureTextEntry={!showPassword}
             textContentType={existingPassword ? "password" : "newPassword"}
             {...otherProps}
+            testID={testID && (testID+'-input')}
         />
         <Button
             title={showPassword ? 'hide' : 'show'}
@@ -24,6 +25,7 @@ export const FormPasswordInput = React.memo(function FormPasswordInput(props: Fo
             square flat
             width={70}
             style={[styles.toggle, !toggleShowPassword && styles.hidden]}
+            testID={testID && (testID+'-toggle')}
         />
     </Row>;
 });

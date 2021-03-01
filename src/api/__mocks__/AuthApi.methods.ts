@@ -50,6 +50,11 @@ export const AuthApi_signIn = {
         }));
     } as AuthApi["signIn"],
 
+    /** Resolves along with the passed promise (or never). */
+    wait: (promise?: Promise<CognitoUserModel|undefined>) => function(..._rest) {
+        return toPromiseAndSubscription(promise || new Promise(_ => {}));
+    } as AuthApi["signIn"],
+
     failure: (error: any = 'mock-error') => function(..._rest) {
         return toPromiseAndSubscription(Promise.reject(error));
     } as AuthApi["signIn"],

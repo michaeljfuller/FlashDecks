@@ -23,6 +23,13 @@ interface SignInState {
     processing: boolean;
 }
 
+export const TestIDs = Object.freeze({
+    Username: "SignIn-Username",
+    Password: "SignIn-Password",
+    Submit: "SignIn-Submit",
+    ProgressBar: "SignIn-ProgressBar",
+});
+
 /**
  * @link https://docs.amplify.aws/lib/auth/customui/q/platform/js#composing-your-own-authenticator
  */
@@ -59,7 +66,7 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
         promise.catch(
             (e: SignInError) => {
                 this.props.onError(
-                    getErrorText(e?.message, 'Error signing in.')
+                    getErrorText(e?.message || e, 'Error signing in.')
                 );
                 this.setState({ processing: false });
             },
@@ -78,6 +85,7 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
 
             <Text>Username</Text>
             <FormTextInput
+                testID={TestIDs.Username}
                 value={this.username}
                 onChangeText={this.onInputUsername}
                 disabled={processing}
@@ -86,6 +94,7 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
 
             <Text>Password</Text>
             <FormPasswordInput
+                testID={TestIDs.Password}
                 value={this.password}
                 onChangeText={this.onInputPassword}
                 existingPassword={true}
@@ -95,13 +104,14 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
             />
 
             <Button
+                testID={TestIDs.Submit}
                 title="Submit"
                 onClick={this.signIn}
                 disabled={processing || !this.username || !this.password}
                 square style={styles.submit}
             />
 
-            <ProgressBar visible={processing} style={styles.progress} />
+            <ProgressBar testID={TestIDs.ProgressBar} visible={processing} style={styles.progress} />
 
             {/*<Button title="Continue as Guest (TODO)" flat square disabled style={{marginVertical: 10}} color="Green" />*/}
 
