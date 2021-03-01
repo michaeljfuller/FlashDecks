@@ -26,6 +26,8 @@ interface SignInState {
 export const TestIDs = Object.freeze({
     Username: "SignIn-Username",
     Password: "SignIn-Password",
+    PasswordInput: "SignIn-Password-input",
+    PasswordToggle: "SignIn-Password-toggle",
     Submit: "SignIn-Submit",
     ProgressBar: "SignIn-ProgressBar",
 });
