@@ -22,6 +22,8 @@ export type RowProps = React.PropsWithChildren<{
     style?: StyleProp<ViewStyle>;
     /** Inner style if scroll=true */
     innerStyle?: StyleProp<ViewStyle>;
+    /** Attribute added to element help identify an element in tests. */
+    testID?: string;
 }>;
 
 /**
@@ -39,6 +41,7 @@ export const Row = React.memo<RowProps>(function Row(props: RowProps) {
         flex=false,
         right=false,
         reverse=false,
+        testID,
     } = props;
 
     const viewStyles: StyleProp<ViewStyle> = [styles.base];
@@ -55,14 +58,14 @@ export const Row = React.memo<RowProps>(function Row(props: RowProps) {
     if (scroll) {
         viewStyles.push(styles.scrollContent);
         if (innerStyle) Array.isArray(innerStyle) ? viewStyles.push(...innerStyle) : viewStyles.push(innerStyle);
-        return <ScrollView horizontal style={[style]} contentContainerStyle={viewStyles}>
+        return <ScrollView horizontal style={[style]} contentContainerStyle={viewStyles} testID={testID}>
             {props.children}
         </ScrollView>;
     }
 
     if (style) Array.isArray(style) ? viewStyles.push(...style) : viewStyles.push(style);
 
-    return <View style={viewStyles}>
+    return <View style={viewStyles} testID={testID}>
         {props.children}
     </View>;
 });

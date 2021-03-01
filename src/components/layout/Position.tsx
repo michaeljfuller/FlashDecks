@@ -16,6 +16,7 @@ export type PositionProps = React.PropsWithChildren<{
 
     flex?: boolean;
     style?: ViewStyle;
+    testID?: string;
 }>;
 type PositionVertical = "top"|"bottom"|"center";
 type PositionHorizontal = "left"|"right"|"center";
@@ -33,8 +34,9 @@ export const Position: ComponentUnion<PositionProps> = React.memo(function Posit
         horizontalOptions,
         flex,
         style,
+        testID,
     } = props;
-    return <Row {...(horizontalOptions||{})} center={horizontal==="center"} right={horizontal==="right"} scroll={horizontalScroll} flex={flex} style={style}>
+    return <Row {...(horizontalOptions||{})} center={horizontal==="center"} right={horizontal==="right"} scroll={horizontalScroll} flex={flex} style={style} testID={testID}>
         <Column {...(verticalOptions  ||{})} center={vertical  ==="center"} bottom={vertical==="bottom"} scroll={verticalScroll}>
             {props.children}
         </Column>
@@ -52,6 +54,7 @@ Position.propTypes = {
 
     flex: PropTypes.bool,
     style: PropTypes.object,
+    testID: PropTypes.string,
 
     children: PropTypes.node,
 } as PropTypesMap<PositionProps>;
