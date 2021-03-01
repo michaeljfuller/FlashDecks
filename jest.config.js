@@ -66,6 +66,7 @@ module.exports = {
     ]),
     setupFilesAfterEnv: extendPreset('setupFilesAfterEnv', [
         "@testing-library/jest-native/extend-expect",
+        './test/jest/setupJestAfterEnv.ts'
     ]),
     globals: Object.assign({
             window: {}
