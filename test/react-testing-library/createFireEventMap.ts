@@ -1,6 +1,7 @@
 import {fireEvent, EventType, Matcher} from "@testing-library/react";
-import type {OmitFirst} from "../../src/utils/type";
+import type {OmitFirst, RecordValue} from "../../src/utils/type";
 import {mapToObject} from "../../src/utils/object";
+import {MatchOptions, applyMatchOptions} from "./matcherOptions";
 
 /**
  * Create a helper object that wraps `fireEvent[eventName](element, event)` around the keys of the matcherMap.
@@ -9,36 +10,46 @@ import {mapToObject} from "../../src/utils/object";
  *  input.Username({value: "Hello"});
  */
 export function createFireEventMap<
-    Match extends Matcher,
-    Query extends (match: Match, ...rest: any) => any,
-
     Map extends Record<string, Match>,
-    Key extends keyof Map,
+    Query extends (match: Match, ...rest: any) => any,
+    EventName extends EventType,
 
-    EventKey extends EventType,
-    EventInit extends EventInitFromEventType<EventKey>,
-
-    Target extends Partial<AnyHTMLElement>,
-    QueryParams extends OmitFirst<Parameters<Query>>,
-    Result extends (target?: Target, eventInit?: EventInit, ...queryParams: QueryParams) => boolean
+    Match extends Matcher = RecordValue<Map>,
+    Value extends FireEventFunction<Match, EventName, Query>
+                = FireEventFunction<Match, EventName, Query>
 >(
     matcherMap: Map,
     query: Query,
-    eventName: EventKey,
-): Record<Key, Result> {
-    return mapToObject<Map, Result>(matcherMap, (match: Match) => {
+    eventName: EventName,
+): Record<keyof Map, Value> {
+    return mapToObject<Map, Value>(matcherMap, (match: Match) => {
         const value = (
-            (target?: Target, eventInit?: EventInit, ...queryParams: QueryParams) => {
+            (target?: Partial<AnyHTMLElement>, eventInit?: EventInit, matchOptions?: MatchOptions<Match>, ...queryParams: any) => {
                 return fireEvent[eventName](
-                    query(match, ...queryParams),
+                    query(
+                        applyMatchOptions(match, matchOptions),
+                        ...queryParams
+                    ),
                     Object.assign({target}, eventInit) as EventProperties
                 );
             }
-        ) as Result;
+        ) as Value;
         return { value };
     });
 }
 export default createFireEventMap;
+
+/** Function that calls fireEvent on the passed target. */
+type FireEventFunction<
+    Match extends Matcher = any,
+    EventName extends EventType = any,
+    Query extends (match: Match, ...rest: any) => any = any,
+> = (
+    target?: Partial<AnyHTMLElement>,
+    eventInit?: EventInitFromEventType<EventName>,
+    matchOptions?: MatchOptions<Match>,
+    ...queryParams: OmitFirst<Parameters<Query>>
+) => boolean
 
 /** Union of all HTMLElements */
 type AnyHTMLElement = HTMLElementTagNameMap[keyof HTMLElementTagNameMap];

@@ -86,3 +86,8 @@ export type OmitFirst<Tuple extends any[]> = (
 ) extends (
     (first: infer First, ...rest: infer Rest) => void // Extract the Rest type
 ) ? Rest : never; // Conditional type of either Rest or never, so only Rest is returned.
+
+/** Get the value from a record */
+export type RecordValue<
+    T extends Record<any, any>
+> = T extends Record<any, infer Value> ? Value : null;
