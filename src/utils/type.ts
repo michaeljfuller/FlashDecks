@@ -76,3 +76,13 @@ export type MethodFromClassAndKey<
     Target extends object,
     Key extends MethodKey<Target>
 > = Target[Key];
+
+/**
+ * Omit the first type from a tuple. Works well with OmitFirst<Parameters<MyFunction>>
+ * @link https://stackoverflow.com/questions/55344670/remove-item-from-inferred-parameters-tuple/55344772#55344772
+ */
+export type OmitFirst<Tuple extends any[]> = (
+    (...types: Tuple) => void // Redefine Tuple as function parameters
+) extends (
+    (first: infer First, ...rest: infer Rest) => void // Extract the Rest type
+) ? Rest : never; // Conditional type of either Rest or never, so only Rest is returned.
