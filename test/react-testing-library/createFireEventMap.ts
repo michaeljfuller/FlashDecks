@@ -1,5 +1,5 @@
 import {fireEvent, EventType, Matcher} from "@testing-library/react";
-import type {OmitFirst, RecordValue} from "../../src/utils/type";
+import type {OmitFirst} from "../../src/utils/type";
 import {mapToObject} from "../../src/utils/object";
 import {MatchOptions, applyMatchOptions} from "./matcherOptions";
 
@@ -7,14 +7,13 @@ import {MatchOptions, applyMatchOptions} from "./matcherOptions";
  * Create a helper object that wraps `fireEvent[eventName](element, event)` around the keys of the matcherMap.
  * @example
  *  const input = createFireEventMap({Username: 'username-input' }, screen.getByTestId, "input");
- *  input.Username({value: "Hello"});
+ *  input.Username("Hello");
  */
 export function createFireEventMap<
     Map extends Record<string, Match>,
     Query extends (match: Match, ...rest: any) => any,
     EventName extends EventType,
-
-    Match extends Matcher = RecordValue<Map>,
+    Match extends Matcher,
     Value extends FireEventFunction<Match, EventName, Query>
                 = FireEventFunction<Match, EventName, Query>
 >(
@@ -24,7 +23,11 @@ export function createFireEventMap<
 ): Record<keyof Map, Value> {
     return mapToObject<Map, Value>(matcherMap, (match: Match) => {
         const value = (
-            (target?: Partial<AnyHTMLElement>, eventInit?: EventInit, matchOptions?: MatchOptions<Match>, ...queryParams: any) => {
+            (targetOrValue?: EventTargetOrValue, eventInit?: EventInit, matchOptions?: MatchOptions<Match>, ...queryParams: any) => {
+                let target: EventTarget|undefined = undefined;
+                if (targetOrValue !== undefined) {
+                    target = typeof targetOrValue === "object" ? targetOrValue : {value: targetOrValue};
+                }
                 return fireEvent[eventName](
                     query(
                         applyMatchOptions(match, matchOptions),
@@ -39,13 +42,16 @@ export function createFireEventMap<
 }
 export default createFireEventMap;
 
+type EventTarget = Partial<AnyHTMLElement>;
+type EventTargetOrValue = EventTarget|any;
+
 /** Function that calls fireEvent on the passed target. */
 type FireEventFunction<
     Match extends Matcher = any,
     EventName extends EventType = any,
     Query extends (match: Match, ...rest: any) => any = any,
 > = (
-    target?: Partial<AnyHTMLElement>,
+    targetOrValue?: EventTargetOrValue,
     eventInit?: EventInitFromEventType<EventName>,
     matchOptions?: MatchOptions<Match>,
     ...queryParams: OmitFirst<Parameters<Query>>
@@ -58,7 +64,7 @@ type AnyHTMLElement = HTMLElementTagNameMap[keyof HTMLElementTagNameMap];
  * The EventProperties to pass to a FireObject function.
  * @link https://testing-library.com/docs/dom-testing-library/api-events/#fireeventeventname
  */
-type EventProperties = EventInit & { target?: Partial<AnyHTMLElement> };
+type EventProperties = EventInit & { target?: EventTarget };
 
 /**
  * Get the related EventInit from the EventType.

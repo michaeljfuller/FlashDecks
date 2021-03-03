@@ -1,6 +1,5 @@
 import type {Matcher} from "@testing-library/react";
 import type {OmitFirst} from "../../src/utils/type";
-import type {RecordValue} from "../../src/utils/type";
 import {mapToObject} from "../../src/utils/object";
 import {MatchOptions, applyMatchOptions} from "./matcherOptions";
 
@@ -13,8 +12,7 @@ import {MatchOptions, applyMatchOptions} from "./matcherOptions";
 export function createQueryMap<
     Map extends Record<string, Match>,
     Query extends (match: Match, ...rest: any) => any,
-
-    Match extends Matcher = RecordValue<Map>,
+    Match extends Matcher,
     Value extends QueryFunction<Match, Query>
                 = QueryFunction<Match, Query>,
 >(
