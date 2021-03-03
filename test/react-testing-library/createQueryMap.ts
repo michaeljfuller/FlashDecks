@@ -4,29 +4,32 @@ import {mapToObject} from "../../src/utils/object";
 import {MatchOptions, applyMatchOptions} from "./matcherOptions";
 
 /**
- * Create a helper object that wraps `screen[queryName](match, ...params)` around the keys of the matcherMap.
+ * Create a helper object that wraps a callback around the keys of the matcherMap.
  * @example
- *  const get = createQueryMap({Username: 'username-input' }, screen.getByTestId);
+ *  const get = createQueryMap({Username: 'username'}, screen.getByTestId, element => element;
  *  const username = get.Username();
+ *  const expectExists = createQueryMap({Username: 'username'}, screen.queryByTestId, element => expect(element).not.toBeNull();
+ *  expectExists.Username();
  */
 export function createQueryMap<
     Map extends Record<string, Match>,
     Query extends (match: Match, ...rest: any) => any,
     Match extends Matcher,
-    Value extends QueryFunction<Match, Query>
-                = QueryFunction<Match, Query>,
+    Callback extends (element: ReturnType<Query>, key: string, match: Match) => any,
+    Value extends MatchFunction<Match, Query, ReturnType<Callback>>,
 >(
     matcherMap: Map,
     query: Query,
-    ...params: OmitFirst<Parameters<Query>>
+    callback: Callback,
 ): Record<keyof Map, Value> {
-    return mapToObject<Map, Value>(matcherMap, (match: Match) => {
+    return mapToObject<Map, Value>(matcherMap, (match: Match, key) => {
         const value = (
-            (options?: MatchOptions<Match>) => {
-                return query(
-                    applyMatchOptions(match, options),
-                    ...params
+            (matchOptions?: MatchOptions<Match>, ...queryParams: any) => {
+                const element = query(
+                    applyMatchOptions(match, matchOptions),
+                    ...queryParams
                 );
+                return callback(element, key as string, match);
             }
         ) as Value;
         return { value };
@@ -34,10 +37,12 @@ export function createQueryMap<
 }
 export default createQueryMap;
 
-/** Function that calls the query. */
-type QueryFunction<
-    Match extends Matcher,
-    Query extends (...args: any) => any,
+/** Property of map created by createQueryRunnerMap to narrow search. */
+type MatchFunction<
+    Match extends Matcher = any,
+    Query extends (match: Match, ...rest: any) => any = any,
+    Returns = any
 > = (
-    options?: MatchOptions<Match>
-) => ReturnType<Query>;
+    matchOptions?: MatchOptions<Match>,
+    ...queryParams: OmitFirst<Parameters<Query>>
+) => Returns;

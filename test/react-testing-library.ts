@@ -7,6 +7,7 @@ import createFireEventMap from "./react-testing-library/createFireEventMap";
 import {mapToObject} from "../src/utils/object";
 
 type BaseTestIDs = Record<string, string>;
+const {getByTestId, queryByTestId, findByTestId, getAllByTestId, queryAllByTestId, findAllByTestId} = screen;
 
 export function createRenderComponent<
     Component extends ComponentUnion,
@@ -22,26 +23,25 @@ export function createRenderComponent<
     ));
 }
 
-export function createTestIdHelpers<
-    TestIDs extends BaseTestIDs
->(
-    testIDs: TestIDs
-) {
+export function createTestIdHelpers<TestIDs extends BaseTestIDs>(testIDs: TestIDs) {
     return {
-        get:   createQueryMap(testIDs, screen.getByTestId),
-        query: createQueryMap(testIDs, screen.queryByTestId),
-        find:  createQueryMap(testIDs, screen.findByTestId),
+        get:   createQueryMap(testIDs, getByTestId, element => element),
+        query: createQueryMap(testIDs, queryByTestId, element => element),
+        find:  createQueryMap(testIDs, findByTestId, element => element),
 
-        getAll:   createQueryMap(testIDs, screen.getAllByTestId),
-        queryAll: createQueryMap(testIDs, screen.queryAllByTestId),
-        findAll:  createQueryMap(testIDs, screen.findAllByTestId),
+        getAll:   createQueryMap(testIDs, getAllByTestId, element => element),
+        queryAll: createQueryMap(testIDs, queryAllByTestId, element => element),
+        findAll:  createQueryMap(testIDs, findAllByTestId, element => element),
+
+        expectHas: createQueryMap(testIDs, queryByTestId, element => expect(element).toBeInTheDocument()),
+        expectMissing: createQueryMap(testIDs, queryByTestId, element => expect(element).not.toBeInTheDocument()),
 
         event: mapToObject(testIDs, testId => ({
-            value: (event) => fireEvent(screen.getByTestId(testId), event),
-        })) as Record<keyof TestIDs, (event: Event) => boolean> ,
+            value: (event) => fireEvent(getByTestId(testId), event),
+        })) as Record<keyof TestIDs, (event: Event) => boolean>,
 
-        click: createFireEventMap(testIDs, screen.getByTestId, "click"),
-        input: createFireEventMap(testIDs, screen.getByTestId, "input"),
-        change: createFireEventMap(testIDs, screen.getByTestId, "change"),
+        click: createFireEventMap(testIDs, getByTestId, "click"),
+        input: createFireEventMap(testIDs, getByTestId, "input"),
+        change: createFireEventMap(testIDs, getByTestId, "change"),
     };
 }
