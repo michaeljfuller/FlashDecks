@@ -33,8 +33,5 @@ export function applyMatchOptions<
             match = (options.wrapper as MatchWrapper)(match) as Match;
         }
     }
-    console.log("applyMatchOptions", {
-        match, options
-    });
     return match;
 }
