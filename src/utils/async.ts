@@ -114,3 +114,7 @@ export function pipeLogger<Type>(
     };
 }
 const pipeLoggerIdMap: Record<string, number> = {};
+
+export function isPromise(target: any): boolean {
+    return Object.prototype.hasOwnProperty.call(target, 'then') && typeof target.then === "function";
+}
