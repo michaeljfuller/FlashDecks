@@ -2,9 +2,10 @@ import React from "react";
 import {render, RenderResult, screen} from "@testing-library/react";
 import type {ComponentUnion, ComponentProps} from "../src/utils/component";
 
+import {BaseMap} from "./react-testing-library/rtl-types";
 import createQueryMap from "./react-testing-library/createQueryMap";
 import createEventMap from "./react-testing-library/createEventMap";
-import {BaseMap} from "./react-testing-library/rtl-types";
+import createDebugMap from "./react-testing-library/createDebugMap";
 
 const {getByTestId, queryByTestId, findByTestId, getAllByTestId, queryAllByTestId, findAllByTestId} = screen;
 
@@ -36,5 +37,15 @@ export function createTestHelpers<Map extends BaseMap>(matchers: Map) {
         expectMissing: createQueryMap(matchers, queryByTestId, ({runQuery}) => expect(runQuery()).not.toBeInTheDocument()),
 
         trigger: createEventMap(matchers, getByTestId),
+
+        debug: createDebugMap(matchers, {
+            get: getByTestId,
+            query: queryByTestId,
+            find: findByTestId,
+            getAll: getAllByTestId,
+            queryAll: queryAllByTestId,
+            findAll: findAllByTestId,
+        }),
     };
 }
+
