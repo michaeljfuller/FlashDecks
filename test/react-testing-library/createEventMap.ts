@@ -102,7 +102,7 @@ function createProperties<
         fireEvent, (func, eventType: EventType) => {
             if (typeof func !== 'function') return {skip:true};
             return {
-                value: (targetOrValue?: EventTarget|any, event?: EventProperties<any>) => {
+                value: (targetOrValue?: EvenTargetOrValue, event?: EventProperties<any>) => {
                     const selection = query(matcher, ...(queryParams||[])) as ReturnType<Query>;
                     const target: EventTarget = typeof targetOrValue === "object" ? targetOrValue : {value: targetOrValue};
                     const options = Object.assign({target}, event) as {target?: EventTarget} & EventProperties<any>;
@@ -150,7 +150,7 @@ function execute<Query extends ScreenQuery>(
 type Executor<
     Query extends ScreenQuery,
     Event extends EventType
-> = (target?: EventTarget, event?: EventProperties<Event>) => CombinedEventResult<Query>;
+> = (targetOrValue?: EvenTargetOrValue, event?: EventProperties<Event>) => CombinedEventResult<Query>;
 
 /** Output of combined events, based on the type of Query. */
 type CombinedEventResult<Query extends ScreenQuery> =
@@ -166,6 +166,7 @@ type CombinedEventResult<Query extends ScreenQuery> =
  */
 type EventProperties<Event extends EventType> = EventInitFromEventType<Event> & { target?: EventTarget };
 type EventTarget = Partial<AnyHTMLElement>;
+type EvenTargetOrValue = EventTarget|any;
 type AnyHTMLElement = HTMLElementTagNameMap[keyof HTMLElementTagNameMap];
 
 /**
