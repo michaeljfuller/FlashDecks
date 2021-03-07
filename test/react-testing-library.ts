@@ -4,8 +4,8 @@ import type {ComponentUnion, ComponentProps} from "../src/utils/component";
 
 import createQueryMap from "./react-testing-library/createQueryMap";
 import createEventMap from "./react-testing-library/createEventMap";
+import {BaseMap} from "./react-testing-library/rtl-types";
 
-type BaseTestIDs = Record<string, string>;
 const {getByTestId, queryByTestId, findByTestId, getAllByTestId, queryAllByTestId, findAllByTestId} = screen;
 
 export function createRenderComponent<
@@ -22,19 +22,19 @@ export function createRenderComponent<
     ));
 }
 
-export function createTestIdHelpers<TestIDs extends BaseTestIDs>(testIDs: TestIDs) {
+export function createTestHelpers<Map extends BaseMap>(matchers: Map) {
     return {
-        get:   createQueryMap(testIDs, getByTestId),
-        query: createQueryMap(testIDs, queryByTestId),
-        find:  createQueryMap(testIDs, findByTestId),
+        get:   createQueryMap(matchers, getByTestId),
+        query: createQueryMap(matchers, queryByTestId),
+        find:  createQueryMap(matchers, findByTestId),
 
-        getAll:   createQueryMap(testIDs, getAllByTestId),
-        queryAll: createQueryMap(testIDs, queryAllByTestId),
-        findAll:  createQueryMap(testIDs, findAllByTestId),
+        getAll:   createQueryMap(matchers, getAllByTestId),
+        queryAll: createQueryMap(matchers, queryAllByTestId),
+        findAll:  createQueryMap(matchers, findAllByTestId),
 
-        expectHas: createQueryMap(testIDs, queryByTestId, ({runQuery}) => expect(runQuery()).toBeInTheDocument()),
-        expectMissing: createQueryMap(testIDs, queryByTestId, ({runQuery}) => expect(runQuery()).not.toBeInTheDocument()),
+        expectHas: createQueryMap(matchers, queryByTestId, ({runQuery}) => expect(runQuery()).toBeInTheDocument()),
+        expectMissing: createQueryMap(matchers, queryByTestId, ({runQuery}) => expect(runQuery()).not.toBeInTheDocument()),
 
-        trigger: createEventMap(testIDs, getByTestId),
+        trigger: createEventMap(matchers, getByTestId),
     };
 }
