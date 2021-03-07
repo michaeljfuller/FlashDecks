@@ -1,9 +1,9 @@
 import React from "react";
-import {fireEvent, render, RenderResult, screen} from "@testing-library/react";
+import {render, RenderResult, screen} from "@testing-library/react";
 import type {ComponentUnion, ComponentProps} from "../src/utils/component";
 
 import createQueryMap from "./react-testing-library/createQueryMap";
-import createFireEventMap from "./react-testing-library/createFireEventMap";
+import createEventMap from "./react-testing-library/createEventMap";
 
 type BaseTestIDs = Record<string, string>;
 const {getByTestId, queryByTestId, findByTestId, getAllByTestId, queryAllByTestId, findAllByTestId} = screen;
@@ -35,10 +35,6 @@ export function createTestIdHelpers<TestIDs extends BaseTestIDs>(testIDs: TestID
         expectHas: createQueryMap(testIDs, queryByTestId, ({runQuery}) => expect(runQuery()).toBeInTheDocument()),
         expectMissing: createQueryMap(testIDs, queryByTestId, ({runQuery}) => expect(runQuery()).not.toBeInTheDocument()),
 
-        event: createQueryMap(testIDs, getByTestId, ({runQuery}, event: Event) => fireEvent(runQuery(), event)),
-
-        click: createFireEventMap(testIDs, getByTestId, "click"),
-        input: createFireEventMap(testIDs, getByTestId, "input"),
-        change: createFireEventMap(testIDs, getByTestId, "change"),
+        trigger: createEventMap(testIDs, getByTestId),
     };
 }

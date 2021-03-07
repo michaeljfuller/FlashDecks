@@ -1,5 +1,5 @@
-import {fireEvent, EventType, Matcher} from "@testing-library/react";
-import createQueryMap, {BaseMap, MatcherOptions, ScreenQuery} from "./createQueryMap";
+import {fireEvent} from "@testing-library/react";
+import type {BaseMap, EventType, Matcher, QueryParams, ScreenQuery} from "./rtl-types";
 import {isPromise} from "../../src/utils/async";
 import {addPropertiesToFunction} from "../../src/utils/function";
 import {mapToObject} from "../../src/utils/object";
@@ -8,108 +8,149 @@ import {mapToObject} from "../../src/utils/object";
     ###################################################################################################################
     #                                                     ANATOMY                                                     #
     ###################################################################################################################
-    const event = createQueryEventMap(  // `createQueryEventMap` creates the `QueryMap`.
-        {Foo:'foo'},                    // `BaseMap` containing the `Key`s and `Matcher`s.
-        screen.getByTestId              // `ScreenQuery` used to select element(s).
-    );
-                          // Use `Key` of the `BaseMap` to access `Executor` for that `Query` on the `QueryMap`.
-    event.Foo().input(    // Get the element with the "Foo" `Matcher` and trigger the `input` event.
-        {value: 'Hello World'}, {bubbles: false}    // Set the value of the element, and give properties to the event.
-    );
-    event({suggest: true}).Foo().click();           // Trigger click on the "Foo" element.
-    event({suggest: true}).Foo()(new Event('test'));           // TODO Weird. Change this.
-                                                               // TODO event.Foo.input({value: "Hello"})
-                                                               // TODO event.Foo(new Event("test"))
+    const trigger = createEventMap({Foo:''}, screen.getByTestId); // `createEventMap` creates the `EventMap`.
+    trigger.Foo.input({value: 'Hello'}, {bubbles:false});   // Call "input" event, with target value and event props.
+    trigger.Foo.input('Hello', {bubbles:false});            // Call "input" event, with target value and event props.
+    trigger.Foo({suggest:true}).click();                    // Add options for the `Query`, and call "click".
+    trigger.Foo.event(new Event("custom"));                 // Pass an `Event` object,
  */
 
 /**
  * Create a helper object that wraps `fireEvent[eventName](element, event)` around the keys of the matcherMap.
  * @example
- *  const input = createFireEventMap({Username: 'username-input' }, screen.getByTestId, "input");
- *  input.Username("Hello");
- *  input({exact:true}).Username("Hello");
+ *  const trigger = createEventMap({Foo:''}, screen.getByTestId);
+ *  trigger.Foo.input({value: 'Hello'}, {bubbles:false});
+ *  trigger.Foo({suggest:true}).click();
+ *  trigger.Foo.event(new Event("custom"));
  */
-export function createQueryEventMap<
+export function createEventMap<
     Matchers extends BaseMap<Match>,
+    Match extends Matcher,
     Query extends ScreenQuery,
     EventName extends EventType,
-    Match extends Matcher,
->(
+>(  // event.Foo.input({value: "Hello"})
     matchers: Matchers,
     query: Query,
-) {
-    return createQueryMap(
-        matchers,
-        query,
-        (matcherOptions) => {
-            return addPropertiesToFunction(
-                (event: Event) => executeRawEvent(event, matcherOptions.runQuery()),
-                createEventMapObject(matchers, matcherOptions)
-            )
-        }
-    );
-}
-export default createQueryEventMap;
-
-/** Creates the EventMapObject for createQueryMap(), with Executors bound to the keys. */
-function createEventMapObject<
-    Matchers extends BaseMap<Match>,
-    Query extends ScreenQuery,
-    Match extends Matcher,
->(
-    matchers: Matchers,
-    matcherOptions: MatcherOptions<Query>,
-): EventMapObject<Query> {
-    return mapToObject(fireEvent, (func, key) => {
-        if (typeof func !== 'function') return {skip:true};
+): EventMap<Matchers, Match, Query> {
+    return mapToObject(matchers, (matcher: Match) => { // event[Key="Foo"]
         return {
-            value: (target?: EventTarget, event?: EventProperties<any>) => executeNamedEvent<Query>(key, matcherOptions, target, event),
+            value: addPropertiesToFunction(
+                // event[Key="Foo"]({suggest:true}).input({value: "Hello"})
+                (...queryParams: QueryParams<Query>) => createProperties(matcher, query, queryParams),
+                // event[Key="Foo"].event(new Event("test"))
+                // event[Key="Foo"][eventType="input"](target={value: "Hello"})
+                createProperties(matcher, query)
+            ) as EventMapTarget<Match, Query>
         };
     });
 }
+export default createEventMap;
 
-/** Call fireEvent[eventName](element, event) on the output of a query. */
-function executeNamedEvent<Query extends ScreenQuery>(
-    key: EventType,
-    {runQuery}: MatcherOptions<Query>,
-    target?: EventTarget,
-    event?: EventProperties<any>,
-): CombinedEventResult<Query> {
-    const selection = runQuery();
-    const options = Object.assign({target}, event) as {target?: EventTarget} & EventProperties<any>;
+/**
+ * Output of `createEventMap`
+ * @example createEventMap({Target:'target'}, screen.getByTestId);
+ */
+type EventMap<
+    Matchers extends BaseMap<Match>,
+    Match extends Matcher,
+    Query extends ScreenQuery,
+> = { [K in keyof Matchers]: EventMapTarget<Match, Query> };
 
-    if (isPromise(selection)) {
-        return (selection as Promise<any>).then<any>(response => {
-            if (Array.isArray(response)) {
-                return response.map(item => fireEvent[key](item as HTMLElement, options)) as CombinedEventResult<Query>;
-            }
-            return fireEvent[key](response as HTMLElement, options) as CombinedEventResult<Query>;
-        }) as CombinedEventResult<Query>;
-    }
+/**
+ * The `EventMap` members as an object.
+ * @example createEventMap({Target:'target'}, screen.getByTestId).Target;
+ */
+type EventMapTarget<
+    Match extends Matcher,
+    Query extends ScreenQuery,
+> = EventMapTargetFunction<Match, Query> & EventMapTargetProperties<Query>;
 
-    if (Array.isArray(selection)) {
-        return selection.map(item => fireEvent[key](item as HTMLElement, options)) as CombinedEventResult<Query>;
-    }
-    return fireEvent[key](selection as HTMLElement, options) as CombinedEventResult<Query>;
+/**
+ * The `EventMap` members as a function.
+ * createEventMap({Target:'target'}, screen.getByTestId).Target({suggest:true})
+ */
+type EventMapTargetFunction<
+    Match extends Matcher,
+    Query extends ScreenQuery,
+> = (...queryParams: QueryParams<Query>) => EventMapTargetProperties<Query>;
+
+/**
+ * The event properties on the `EventMap` members.
+ * @example createEventMap({Target:'target'}, screen.getByTestId).Target.input({value: 'Hello'});
+ */
+type EventMapTargetProperties<Query extends ScreenQuery> = {
+    [Key in EventType]: Executor<Query, Key>;
+} & {
+    event: (event: Event) => CombinedEventResult<Query>;
+};
+
+/**
+ * Creates the trigger functions for `EventMapTargetProperties`.
+ * @example event.Foo.event(new Event("test"));
+ * @example event.Foo[eventType="input"](target={value:"foo"}, event={bubbles:false});
+ */
+function createProperties<
+    Match extends Matcher,
+    Query extends ScreenQuery,
+>(
+    matcher: Match,
+    query: Query,
+    queryParams?: QueryParams<Query>,
+): EventMapTargetProperties<Query> {
+    // event.Foo[eventType="input"](target={value:"foo"}, event={bubbles:false});
+    const result: EventMapTargetProperties<Query> = mapToObject(
+        fireEvent, (func, eventType: EventType) => {
+            if (typeof func !== 'function') return {skip:true};
+            return {
+                value: (targetOrValue?: EventTarget|any, event?: EventProperties<any>) => {
+                    const selection = query(matcher, ...(queryParams||[])) as ReturnType<Query>;
+                    const target: EventTarget = typeof targetOrValue === "object" ? targetOrValue : {value: targetOrValue};
+                    const options = Object.assign({target}, event) as {target?: EventTarget} & EventProperties<any>;
+                    return execute(selection, element => fireEvent[eventType](element, options));
+                },
+            };
+        }
+    );
+
+    // event.Foo.event(new Event("test"));
+    result.event = (event: Event) => {
+        const selection = query(matcher, ...(queryParams||[])) as ReturnType<Query>;
+        return execute(selection, (element => fireEvent(element, event)));
+    };
+
+    return result;
 }
 
-/** Call fireEvent(element, event) on the output of a query. */
-function executeRawEvent<Query extends ScreenQuery>(
-    event: Event,
-    selection: ReturnType<Query>
+//
+/**
+ * Call `fireEvent` or `fireEvent[name="click"] on the output(s) of a Query.
+ * @example execute(selection, (element => fireEvent(element, event)));
+ * @example execute(selection, (element => fireEvent[name="click"](element, target)));
+ */
+function execute<Query extends ScreenQuery>(
+    selection: ReturnType<Query>,
+    fire: (element: HTMLElement) => boolean,
 ): CombinedEventResult<Query> {
+    // Handle an async response
     if (isPromise(selection)) {
         return (selection as Promise<HTMLElement|HTMLElement[]>).then<boolean|boolean[]>(response => {
-            if (Array.isArray(response)) return (response as HTMLElement[]).map(item => fireEvent(item, event));
-            return fireEvent(response as HTMLElement, event);
+            if (Array.isArray(response)) return (response as HTMLElement[]).map(item => fire(item));
+            return fire(response);
         }) as CombinedEventResult<Query>;
     }
-    if (Array.isArray(selection)) return (selection as HTMLElement[]).map(item => fireEvent(item, event)) as CombinedEventResult<Query>;
-    return fireEvent(selection as HTMLElement, event) as CombinedEventResult<Query>;
+    // Handle a sync response
+    if (Array.isArray(selection)) return (selection as HTMLElement[]).map(item => fire(item)) as CombinedEventResult<Query>;
+    return fire(selection as HTMLElement) as CombinedEventResult<Query>;
 }
 
-type EventMapObject<Query extends ScreenQuery> = { [Key in EventType]: EventMapFunction<Query, Key> };
-type EventMapFunction<Query extends ScreenQuery, Event extends EventType> = (target?: EventTarget, event?: EventProperties<Event>) => CombinedEventResult<Query>;
+/**
+ * The final function in the chain, running the query and firing the event.
+ * @example createEventMap({Target:'target'}, screen.getByTestId).Target.input({value: 'Hello'});
+ */
+type Executor<
+    Query extends ScreenQuery,
+    Event extends EventType
+> = (target?: EventTarget, event?: EventProperties<Event>) => CombinedEventResult<Query>;
 
 /** Output of combined events, based on the type of Query. */
 type CombinedEventResult<Query extends ScreenQuery> =

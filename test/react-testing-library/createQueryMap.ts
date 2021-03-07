@@ -1,4 +1,4 @@
-import type {Matcher, Query, BoundFunction} from "@testing-library/react";
+import type {Matcher, BaseMap, QueryParams, ScreenQuery} from "./rtl-types";
 import type {OmitFirst} from "../../src/utils/type";
 import {mapToObject} from "../../src/utils/object";
 import {addPropertiesToFunction, OmitFirstParam} from "../../src/utils/function";
@@ -122,12 +122,6 @@ type QueryMapFunction<
     Executor extends BaseExecutor<any>,
 > = (...queryParams: QueryParams<Query>) => QueryMapObject<Matchers, Executor>;
 
-/** The map of matchers passed to createQueryMap(). */
-export type BaseMap<Match extends Matcher = Matcher> = Record<string, Matcher>;
-
-/** A query that can be passed to createQueryMap() */
-export type ScreenQuery = BoundFunction<Query>;
-
 /** The callback that triggers the Executor */
 export type BaseResultCallback<
     Query extends ScreenQuery,
@@ -148,9 +142,6 @@ export interface MatcherOptions<Query extends ScreenQuery> {
     queryParams?: QueryParams<Query>;
     runQuery: () => ReturnType<Query>;
 }
-
-/** Additional parameters that can be passed for a specific query. */
-export type QueryParams<Query extends ScreenQuery> = OmitFirst<Parameters<Query>>;
 
 /** A function produced by createQueryMap(), that triggers the ResultCallback to run the query and return processed result. */
 export type BaseExecutor<
