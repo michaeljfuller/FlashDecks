@@ -125,7 +125,7 @@ type QueryMapFunction<
 /** The callback that triggers the Executor */
 export type BaseResultCallback<
     Query extends ScreenQuery,
-> = (matcherOptions: MatcherOptions<Query>, ...rest: any[]) => any;
+> = (matcherOptions: MatcherOptions<Query>, ...rest: any[]) => ReturnType<Query>;
 
 /**
  * Query options passed to callback by createValue()
