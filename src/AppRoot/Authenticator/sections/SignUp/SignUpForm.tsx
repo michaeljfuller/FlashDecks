@@ -12,6 +12,7 @@ import {
     validatePasswordConfirm, flattenValidation
 } from "../../../../api/validation/authValidation";
 import {FormValidationText} from "../../../../components/ui/form/FormValidationText";
+import {TestIDs} from "../SignUp";
 
 export interface SignUpFormProps {
     onSubmit: (username: string, password: string, email: string) => void;
@@ -80,16 +81,18 @@ export class SignUpForm extends React.PureComponent<SignUpFormProps, SignUpFormS
         const { hidePassword, username, password1, password2, email1, email2 } = this.state;
 
         return <Column>
-            <Text style={styles.title}>Register New Account</Text>
+            <Text testID={TestIDs.Title} style={styles.title}>Register New Account</Text>
 
             <Text>Username</Text>
             <FormTextInput
+                testID={TestIDs.Username}
                 value={username}
                 onChangeText={this.onInputUsername}
                 disabled={disabled}
                 textContentType={"username"}
             />
             <FormValidationText
+                testID={TestIDs.UsernameValidation}
                 visible={!usernameValidation.valid}
                 type={username ? "error" : "standard"}
                 text={usernameValidation.reason}
@@ -97,6 +100,7 @@ export class SignUpForm extends React.PureComponent<SignUpFormProps, SignUpFormS
 
             <Text>Password</Text>
             <FormPasswordInput
+                testID={TestIDs.Password}
                 value={password1}
                 onChangeText={this.onInputPassword1}
                 existingPassword={false}
@@ -105,6 +109,7 @@ export class SignUpForm extends React.PureComponent<SignUpFormProps, SignUpFormS
                 toggleShowPassword={this.toggleHidePassword}
             />
             <FormPasswordInput
+                testID={TestIDs.PasswordConfirmation}
                 value={password2}
                 onChangeText={this.onInputPassword2}
                 existingPassword={false}
@@ -113,6 +118,7 @@ export class SignUpForm extends React.PureComponent<SignUpFormProps, SignUpFormS
                 style={styles.confirmInput}
             />
             <FormValidationText
+                testID={TestIDs.PasswordValidation}
                 visible={Boolean(!password1Validation.valid || !password2Validation.valid)}
                 type={(password1 && !password1Validation.valid) || (password2 && !password2Validation.valid) ? "error" : "standard"}
                 text={flattenValidation([password1Validation, password2Validation], 0).reason}
@@ -120,6 +126,7 @@ export class SignUpForm extends React.PureComponent<SignUpFormProps, SignUpFormS
 
             <Text>E-mail</Text>
             <FormTextInput
+                testID={TestIDs.Email}
                 value={email1}
                 onChangeText={this.onInputEmail1}
                 textContentType="newPassword"
@@ -127,6 +134,7 @@ export class SignUpForm extends React.PureComponent<SignUpFormProps, SignUpFormS
                 disabled={disabled}
             />
             <FormTextInput
+                testID={TestIDs.EmailConfirmation}
                 value={email2}
                 onChangeText={this.onInputEmail2}
                 textContentType="newPassword"
@@ -135,12 +143,14 @@ export class SignUpForm extends React.PureComponent<SignUpFormProps, SignUpFormS
                 style={styles.confirmInput}
             />
             <FormValidationText
+                testID={TestIDs.EmailValidation}
                 visible={Boolean(!email1Validation.valid || !email2Validation.valid)}
                 type={(email1 && !email1Validation.valid) || (email2 && !email2Validation.valid) ? "error" : "standard"}
                 text={flattenValidation([email1Validation, email2Validation], 0).reason}
             />
 
             <Button
+                testID={TestIDs.Submit}
                 title="Submit"
                 onClick={this.signUp}
                 disabled={disabled || !this.valid}

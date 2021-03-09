@@ -78,6 +78,11 @@ export const AuthApi_signUp = {
         }));
     } as AuthApi["signUp"],
 
+    /** Resolves along with the passed promise (or never). */
+    wait: (promise?: Promise<CognitoUserModel>) => function(..._rest) {
+        return toPromiseAndSubscription(promise || new Promise(_ => {}));
+    } as AuthApi["signUp"],
+
     failure: (error: any = 'mock-error') => function(..._rest) {
         return toPromiseAndSubscription(Promise.reject(error));
     } as AuthApi["signUp"],
@@ -94,8 +99,13 @@ export const AuthApi_confirmSignUp = {
         }));
     } as AuthApi["confirmSignUp"],
 
+    /** Resolves along with the passed promise (or never). */
+    wait: (promise?: Promise<void>) => function(..._rest) {
+        return toPromiseAndSubscription(promise || new Promise(_ => {}));
+    } as AuthApi["confirmSignUp"],
+
     failure: (error: any = 'mock-error') => function(..._rest) {
-        return toPromiseAndSubscription(Promise.resolve(error));
+        return toPromiseAndSubscription(Promise.reject(error));
     } as AuthApi["confirmSignUp"],
 
 };
