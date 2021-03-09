@@ -387,10 +387,6 @@ describe("ForgotPassword", () => {
                     type: "standard",
                     text: "Verification code is required.",
                 },{
-                    description: "shows error if it has spaces",
-                    value: "has space",
-                    text: "Verification code cannot contain spaces.",
-                },{
                     description: "shows error if it's too short",
                     value: "v".repeat(securityCodeMinLength-1),
                     text: `Verification code must be at least ${securityCodeMinLength} characters.`,
