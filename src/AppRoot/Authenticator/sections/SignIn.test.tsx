@@ -7,7 +7,7 @@ import React from "react";
 import {act} from '@testing-library/react';
 import {waitFor} from "@testing-library/react-native";
 import {SignIn, TestIDs} from "./SignIn";
-import {createRenderComponent, createTestIdHelpers} from "../../../../test/react-testing-library";
+import {createRenderComponent, createTestHelpers} from "../../../../test/react-testing-library";
 
 const render = createRenderComponent(SignIn, {
     username: "initial-username",
@@ -15,7 +15,7 @@ const render = createRenderComponent(SignIn, {
     onCredentials: jest.fn(),
     onError: jest.fn(),
 });
-const testId = createTestIdHelpers(TestIDs);
+const {get, trigger} = createTestHelpers(TestIDs);
 
 describe("SignIn", () => {
 
@@ -23,14 +23,14 @@ describe("SignIn", () => {
         it("can be passed", () => {
             const username = "test-username";
             render({ username });
-            const field = testId.get.Username();
+            const field = get.Username();
             expect(field?.getAttribute("value")).toBe(username);
         });
         it("triggers callback on change", () => {
             const onCredentials = jest.fn();
             render({ onCredentials, username: "", password: "" });
             const username = "input-username";
-            testId.input.Username(username);
+            trigger.Username.input(username);
             expect(onCredentials).toHaveBeenLastCalledWith(username, "");
         });
     });
@@ -39,30 +39,30 @@ describe("SignIn", () => {
         it("can be passed", () => {
             const password = "test-password";
             render({ password });
-            expect(testId.get.PasswordInput()).toHaveValue(password);
+            expect(get.PasswordInput()).toHaveValue(password);
         });
         it("triggers callback on change", () => {
             const onCredentials = jest.fn();
             render({ onCredentials, username: "", password: "" });
             const password = "input-password";
-            testId.input.PasswordInput(password);
+            trigger.PasswordInput.input(password);
             expect(onCredentials).toHaveBeenLastCalledWith("", password);
         });
         it("is hidden by default", () => {
             render();
-            const password = testId.get.PasswordInput();
-            const toggle = testId.get.PasswordToggle();
+            const password = get.PasswordInput();
+            const toggle = get.PasswordToggle();
             expect(password).toHaveAttribute("type", "password");
             expect(toggle).toHaveTextContent("show");
         });
         it("can toggle visibility", () => {
             render();
-            const password = testId.get.PasswordInput();
-            const toggle = testId.get.PasswordToggle();
-            testId.click.PasswordToggle();
+            const password = get.PasswordInput();
+            const toggle = get.PasswordToggle();
+            trigger.PasswordToggle.click();
             expect(password).toHaveAttribute("type", "text");
             expect(toggle).toHaveTextContent("hide");
-            testId.click.PasswordToggle();
+            trigger.PasswordToggle.click();
             expect(password).toHaveAttribute("type", "password");
             expect(toggle).toHaveTextContent("show");
         });
@@ -71,15 +71,15 @@ describe("SignIn", () => {
     describe("Submit", () => {
         it("is disabled if username isn't given", () => {
             render({username: "", password: "pass"});
-            expect(testId.get.Submit()).toBeDisabled();
+            expect(get.Submit()).toBeDisabled();
         });
         it("is disabled if password isn't given", () => {
             render({username: "user", password: ""});
-            expect(testId.get.Submit()).toBeDisabled();
+            expect(get.Submit()).toBeDisabled();
         });
         it("is enabled if username + password are give given", () => {
             render({username: "user", password: "pass"});
-            expect(testId.get.Submit()).toBeEnabled();
+            expect(get.Submit()).toBeEnabled();
         });
     });
 
@@ -89,7 +89,7 @@ describe("SignIn", () => {
             const username = "test-username", password = "test-password";
             render({username, password});
             authApi.signIn.mockImplementationOnce(AuthApi_signIn.wait());
-            testId.click.Submit();
+            trigger.Submit.click();
             expect(authApi.signIn).toHaveBeenCalledTimes(1);
             expect(authApi.signIn).toHaveBeenLastCalledWith(username, password);
         });
@@ -97,15 +97,15 @@ describe("SignIn", () => {
             const onError = jest.fn();
             render({onError});
             authApi.signIn.mockImplementationOnce(AuthApi_signIn.wait());
-            testId.click.Submit();
+            trigger.Submit.click();
             expect(onError).toHaveBeenCalledTimes(1);
             expect(onError).toHaveBeenLastCalledWith("");
         });
         it("shows the progress bar", async () => {
             render();
-            const progress = testId.get.ProgressBar();
+            const progress = get.ProgressBar();
             expect(progress).not.toBeVisible();
-            testId.click.Submit();
+            trigger.Submit.click();
             expect(progress).toBeVisible();
         });
 
@@ -115,7 +115,7 @@ describe("SignIn", () => {
                 const onError = jest.fn();
                 render({ onError });
                 authApi.signIn.mockImplementationOnce(AuthApi_signIn.failure(error));
-                testId.click.Submit();
+                trigger.Submit.click();
                 await act(async () => {
                     await waitFor(() => onError.mock.calls.length > 1);
                 });
@@ -126,11 +126,11 @@ describe("SignIn", () => {
                 const onError = jest.fn();
                 render({ onError });
                 authApi.signIn.mockImplementationOnce(AuthApi_signIn.failure(error));
-                testId.click.Submit();
+                trigger.Submit.click();
                 await act(async () => {
                     await waitFor(() => onError.mock.calls.length > 1).then(_ => null);
                 });
-                expect(testId.get.ProgressBar()).not.toBeVisible();
+                expect(get.ProgressBar()).not.toBeVisible();
             });
             it("does nothing if demounted", async () => {
                 const onError = jest.fn();
@@ -138,7 +138,7 @@ describe("SignIn", () => {
                 let reject: Function = null as any;
                 const promise = new Promise<any>((_, _reject) => reject = _reject);
                 authApi.signIn.mockImplementationOnce(AuthApi_signIn.wait(promise));
-                testId.click.Submit();
+                trigger.Submit.click();
                 const initialCallCount = onError.mock.calls.length;
                 unmount();
                 reject('error');
