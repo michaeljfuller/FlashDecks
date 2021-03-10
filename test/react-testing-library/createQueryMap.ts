@@ -47,7 +47,7 @@ export function createQueryMap<
 > (
     matchers: Matchers,
     query: Query,
-    resultCallback = ( ({runQuery}) => runQuery() ) as ResultCallback,
+    resultCallback: ResultCallback,
 ): QueryMap<Query, Matchers, Executor> {
     // Create QueryMapFunction & QueryMapObject
     return addPropertiesToFunction<
@@ -124,8 +124,8 @@ type QueryMapFunction<
 
 /** The callback that triggers the Executor */
 export type BaseResultCallback<
-    Query extends ScreenQuery,
-> = (matcherOptions: MatcherOptions<Query>, ...rest: any[]) => ReturnType<Query>;
+    Query extends ScreenQuery
+> = (matcherOptions: MatcherOptions<Query>, ...rest: any[]) => any;
 
 /**
  * Query options passed to callback by createValue()

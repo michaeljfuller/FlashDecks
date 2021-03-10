@@ -9,29 +9,36 @@ import createDebugMap from "./react-testing-library/createDebugMap";
 
 const {getByTestId, queryByTestId, findByTestId, getAllByTestId, queryAllByTestId, findAllByTestId} = screen;
 
+/** Create a function that renders a component using testing-library, while defining default properties. */
 export function createRenderComponent<
     Component extends ComponentUnion,
     Props = ComponentProps<Component>,
-    Partials = Partial<Props>
 >(
     component: Component,
-    defaultProps: ComponentProps<Component>
-): (props?: Partials) => RenderResult {
-    return (props?: Partials) => render(React.createElement(
+    defaultProps: Props
+): (props?: Partial<Props>) => RenderResult {
+    return (props?: Partial<Props>) => render(React.createElement(
         component,
         Object.assign({}, defaultProps, props)
     ));
 }
 
-export function createTestHelpers<Map extends BaseMap>(matchers: Map) {
+/**
+ * Create a series of helper functions that get elements by TestID, and/or act on them.
+ * const {get, trigger, debug} = createTestHelpers({Foo: 'foo', Bar: 'bar'});
+ * const foo = get.Foo();
+ * trigger.Bar.input("Hello world");
+ * debug.query.Bar();
+ */
+export function createTestHelpers<Map extends BaseMap>(matchers: Map) { // Todo Rename to createTestIdHelpers
     return {
-        get:   createQueryMap(matchers, getByTestId),
-        query: createQueryMap(matchers, queryByTestId),
-        find:  createQueryMap(matchers, findByTestId),
+        get:   createQueryMap(matchers, getByTestId, ({runQuery}) => runQuery()),
+        query: createQueryMap(matchers, queryByTestId, ({runQuery}) => runQuery()),
+        find:  createQueryMap(matchers, findByTestId, ({runQuery}) => runQuery()),
 
-        getAll:   createQueryMap(matchers, getAllByTestId),
-        queryAll: createQueryMap(matchers, queryAllByTestId),
-        findAll:  createQueryMap(matchers, findAllByTestId),
+        getAll:   createQueryMap(matchers, getAllByTestId, ({runQuery}) => runQuery()),
+        queryAll: createQueryMap(matchers, queryAllByTestId, ({runQuery}) => runQuery()),
+        findAll:  createQueryMap(matchers, findAllByTestId, ({runQuery}) => runQuery()),
 
         expectHas: createQueryMap(matchers, queryByTestId, ({runQuery}) => expect(runQuery()).toBeInTheDocument()),
         expectMissing: createQueryMap(matchers, queryByTestId, ({runQuery}) => expect(runQuery()).not.toBeInTheDocument()),
@@ -48,4 +55,3 @@ export function createTestHelpers<Map extends BaseMap>(matchers: Map) {
         }),
     };
 }
-
