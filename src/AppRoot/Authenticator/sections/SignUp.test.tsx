@@ -325,7 +325,7 @@ describe("SignUp", () => {
     }); // Sign-Up Form
 
     describe("Sign-Up Confirmation", () => {
-        function renderOnConfirmation(props?: Partial<SignUpProps>, username?: string, code?: string) {
+        function renderOnConfirmation(props?: Parameters<typeof render>[0], username?: string, code?: string) {
             render(props);
             trigger.SkipButton.click();
             if (username) trigger.Username.input(username);
