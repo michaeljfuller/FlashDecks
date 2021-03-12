@@ -8,6 +8,7 @@
     "test:reports": "gulp reports -f gulpfile.testing.js",
     "test": "gulp test -f gulpfile.testing.js",
     "test:dev": "gulp test:dev -f gulpfile.testing.js",
+    "test:debug": "gulp debug:test -f gulpfile.testing.js",
     "amplify:console": "amplify console"
   },
   "dependencies": {
@@ -79,6 +80,7 @@
     "jest": "^26.6.3",
     "jest-expo": "^38.0.0",
     "jest-html-reporter": "^3.1.0",
+    "mockdate": "^3.0.2",
     "open": "^7.0.4",
     "react-test-renderer": "^16.13.1",
     "redux-mock-store": "^1.5.4",
