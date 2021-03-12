@@ -1,5 +1,5 @@
-import {createStore, combineReducers} from 'redux';
-import {reducerMap} from './store_manifest';
+import {createStore, combineReducers, Store} from 'redux';
+import {reducerMap, StoreState} from './store_manifest';
 import {isProduction} from "../env";
 
 const useReduxDevTools = !isProduction;
@@ -7,12 +7,12 @@ const useReduxDevTools = !isProduction;
 // Create Store
 const rootReducer = combineReducers(reducerMap);
 const reduxDevToolsExtension: Function = useReduxDevTools && window['__REDUX_DEVTOOLS_EXTENSION__' as any] as any;
-export const store = createStore(
+export const store: AppStore = createStore(
     rootReducer,
     /* preloadedState, */
     reduxDevToolsExtension && reduxDevToolsExtension()
 );
-export type AppStore = typeof store;
+export type AppStore = Store<StoreState>;
 export default store;
 
 // Barrel

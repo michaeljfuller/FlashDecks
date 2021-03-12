@@ -1,27 +1,12 @@
-import React from "react";
-import {render, RenderResult, screen} from "@testing-library/react";
-import type {ComponentUnion, ComponentProps} from "../src/utils/component";
-
+import {screen} from "@testing-library/react";
 import {BaseMap} from "./react-testing-library/rtl-types";
 import createQueryMap from "./react-testing-library/createQueryMap";
 import createEventMap from "./react-testing-library/createEventMap";
 import createDebugMap from "./react-testing-library/createDebugMap";
 
-const {getByTestId, queryByTestId, findByTestId, getAllByTestId, queryAllByTestId, findAllByTestId} = screen;
+export * from "./react-testing-library/createRenderComponent";
 
-/** Create a function that renders a component using testing-library, while defining default properties. */
-export function createRenderComponent<
-    Component extends ComponentUnion,
-    Props = ComponentProps<Component>,
->(
-    component: Component,
-    defaultProps: Props
-): (props?: Partial<Props>) => RenderResult {
-    return (props?: Partial<Props>) => render(React.createElement(
-        component,
-        Object.assign({}, defaultProps, props)
-    ));
-}
+const {getByTestId, queryByTestId, findByTestId, getAllByTestId, queryAllByTestId, findAllByTestId} = screen;
 
 /**
  * Create a series of helper functions that get elements by TestID, and/or act on them.
