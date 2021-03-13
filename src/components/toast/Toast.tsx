@@ -5,6 +5,14 @@ import {GetUIColorThemeInput} from "../../styles/UIColorTheme";
 import FullScreen from "../fullscreen/FullScreen";
 import Button from "../button/Button";
 
+export const TestIDs = {
+    Root: 'toast-root',
+    Title: 'toast-title',
+    Text: 'toast-text',
+    Button: 'toast-button',
+}
+export const ANIMATE_IN_DURATION = 500;
+
 export class Toast extends ToastBase {
     opacityAnim = new Animated.Value(0.01);
     bottomAnim = new Animated.Value(-80);
@@ -12,7 +20,7 @@ export class Toast extends ToastBase {
     onShow() {
         super.onShow();
         this.setState({ enabled: false });
-        const duration = 500;
+        const duration = ANIMATE_IN_DURATION;
 
         Animated.timing(this.bottomAnim, {
             toValue: 0, duration, useNativeDriver: false, easing: Easing.out(Easing.cubic)
@@ -26,11 +34,17 @@ export class Toast extends ToastBase {
         if (!this.props.show) return null;
         const {text, title, actionText = 'OK', type} = this.props;
 
-        return <FullScreen style={styles.backdrop} contentStyle={styles.placement} onPress={this.onDismiss}>
+        return <FullScreen
+            testID={TestIDs.Root}
+            style={styles.backdrop}
+            contentStyle={styles.placement}
+            onPress={this.onDismiss}
+        >
             <Animated.View style={[ backgroundStyle(type), { opacity: this.opacityAnim, bottom: this.bottomAnim } ]}>
-                {title ? <Text style={styles.title}>{title}</Text> : null}
-                <Text style={styles.text}>{text}</Text>
+                {title ? <Text testID={TestIDs.Title} style={styles.title}>{title}</Text> : null}
+                <Text testID={TestIDs.Text} style={styles.text}>{text}</Text>
                 <Button
+                    testID={TestIDs.Button}
                     title={actionText}
                     onClick={this.onAction}
                     style={styles.button}

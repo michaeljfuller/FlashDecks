@@ -4,4 +4,5 @@ export interface FullScreenProps {
     style?: ViewStyle;
     contentStyle?: ViewStyle;
     onPress?: () => void;
+    testID?: string;
 }
