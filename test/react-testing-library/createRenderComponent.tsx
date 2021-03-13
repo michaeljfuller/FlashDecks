@@ -42,7 +42,7 @@ function _createRenderReduxComponent<
     Props = ComponentProps<Component>,
 >(
     component: Component,
-    defaultProps: Props,
+    defaultProps?: Props,
     defaultStoreState?: Partial<PreloadedState<StoreState>>,
     defaultOptions?: RenderOptions,
 ) {
