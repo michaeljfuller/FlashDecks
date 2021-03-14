@@ -21,7 +21,7 @@ const authApi = asMockAuthApi(_authApi);
 
 import React from "react";
 import {createRenderComponent, createTestHelpers} from "../../../../test/react-testing-library";
-import {SignUp, SignUpProps, TestIDs} from "./SignUp";
+import {SignUp, TestIDs} from "./SignUp";
 
 //</editor-fold>
 //<editor-fold desc="Helpers">
@@ -31,7 +31,7 @@ const render = createRenderComponent(SignUp, {
     onSuccess: jest.fn(),
     onError: jest.fn(),
 });
-const {get, query, expectHas, expectMissing, trigger, debug} = createTestHelpers(TestIDs);
+const {get, query, expectHas, expectMissing, trigger} = createTestHelpers(TestIDs);
 
 const username = "test-username";
 const password = "test-password";
@@ -352,15 +352,8 @@ describe("SignUp", () => {
             beforeEach(() => renderOnConfirmation());
 
             it("can be given input", () => {
-                console.log("Initial Username");
-                debug.get.Username();
-
                 expect(get.Username()).not.toHaveValue();
                 trigger.Username.input({value:"test-username"});
-
-                console.log("Username after input");
-                debug.get.Username();
-
                 expect(get.Username()).toHaveValue("test-username");
             });
 
