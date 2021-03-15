@@ -118,3 +118,8 @@ const pipeLoggerIdMap: Record<string, number> = {};
 export function isPromise(target: any): boolean {
     return target && (target instanceof Promise || typeof target.then === "function");
 }
+
+export type PromiseType<Promise> = Promise extends PromiseLike<infer Type> ? Type : never;
+export type AsyncResult<
+    Func extends (...args: any[]) => any
+> = PromiseType<ReturnType<Func>>;
