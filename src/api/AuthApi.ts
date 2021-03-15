@@ -28,7 +28,7 @@ export class AuthApi {
             this.eventSubject.next(capsule.payload);
             const {event, message, data} = capsule.payload;
 
-            this.log(event, message, data);
+            this.log(event, message, {data});
             switch(event) {
                 case AuthEventType.SIGN_IN:                 return this.signInSubject.next();
                 case AuthEventType.SIGN_UP:                 return;
@@ -63,7 +63,7 @@ export class AuthApi {
     signIn(username: string, password: string): PromiseAndSubscription<CognitoUserModel> {
         return toPromiseAndSubscription(new Observable<CognitoUserModel>(sub => {
             Auth.signIn(username, password).then(
-                data => sub.next(data),
+                data => sub.next(CognitoUserModel.fromApi(data)),
                 error => {
                     this.log('AuthApi.signIn Error', error);
                     sub.error(error);

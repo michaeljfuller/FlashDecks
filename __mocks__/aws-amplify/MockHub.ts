@@ -1,35 +1,33 @@
-import type {HubClass, HubCapsule} from '@aws-amplify/core/src/Hub';
+import type {HubClass} from '@aws-amplify/core/src/Hub';
 import type {PublicMembers} from "../../src/utils/class";
-import {AuthEventType} from "../../src/api/AuthApi.types";
+import {JestMockManager} from "../../test/mocks/JestMockManager";
+import {createMock} from "../../test/mocks/mock-utils";
+import {HubPayload} from "aws-amplify-react-native/types";
 
 export class MockHub implements PublicMembers<HubClass> {
+    mocks = new JestMockManager(this);
+
     name = "mock";
     protectedChannels = [];
 
-    dispatch: HubClass['dispatch'] = jest.fn();
-    listen: HubClass['listen'] = jest.fn();
-    remove: HubClass['remove'] = jest.fn();
+    dispatch = createMock<HubClass['dispatch']>();
+    listen = createMock<HubClass['listen']>();
+    remove = createMock<HubClass['remove']>();
 }
 
-export const AmplifyHub_listen = {
-    signIn: (promise: Promise<void>) => listen(promise, AuthEventType.SIGN_IN),
-    signUp: (promise: Promise<void>) => listen(promise, AuthEventType.SIGN_UP),
-    signOut: (promise: Promise<void>) => listen(promise, AuthEventType.SIGN_OUT),
-    signInFailed: (promise: Promise<void>) => listen(promise, AuthEventType.SIGN_IN_FAILED),
-    forgotPassword: (promise: Promise<void>) => listen(promise, AuthEventType.FORGOT_PASSWORD),
-    forgotPasswordFailed: (promise: Promise<void>) => listen(promise, AuthEventType.FORGOT_PASSWORD_FAILED),
-    forgotPasswordSubmit: (promise: Promise<void>) => listen(promise, AuthEventType.FORGOT_PASSWORD_SUBMIT),
-    configured: (promise: Promise<void>) => listen(promise, AuthEventType.CONFIGURED),
-};
-
-function listen(promise: Promise<void>, event: AuthEventType) {
-    return function(channel, callback) {
-        if (typeof callback === "function") promise.then(
-            data => callback({
-                channel: "mock-channel",
-                source: "mock-source",
-                payload: { event, data, message: "mock-payload" }
-            }),
-        );
-    } as HubClass['listen'];
+export const mockHubMethods = {
+    listen: {
+        wait: (promise: Promise<HubPayload>) => {
+            return function(channel, callback) {
+                if (typeof callback === "function") promise.then(
+                    payload => callback({
+                        source: "mock-source",
+                        channel: "auth",
+                        patternInfo: undefined,
+                        payload,
+                    })
+                );
+            } as HubClass['listen']
+        },
+    },
 }

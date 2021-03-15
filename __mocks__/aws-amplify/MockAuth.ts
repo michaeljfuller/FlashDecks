@@ -1,90 +1,86 @@
 import type {AuthClass} from '@aws-amplify/auth/src/Auth';
-import type {ISignUpResult} from "amazon-cognito-identity-js";
 import type {PublicMembers} from "../../src/utils/class";
-import type {ApiCognitoUser} from "../../src/models";
+import {JestMockManager} from "../../test/mocks/JestMockManager";
+import {createMock, mockImplementation} from "../../test/mocks/mock-utils";
 
 export class MockAuth implements PublicMembers<AuthClass> {
-    changePassword = jest.fn();
-    completeNewPassword = jest.fn();
-    configure = jest.fn();
-    confirmSignIn = jest.fn();
-    confirmSignUp = jest.fn();
-    currentAuthenticatedUser = jest.fn();
-    currentCredentials = jest.fn();
-    currentSession = jest.fn();
-    currentUserCredentials = jest.fn();
-    currentUserInfo = jest.fn();
-    currentUserPoolUser = jest.fn();
-    disableSMS = jest.fn();
-    enableSMS = jest.fn();
-    essentialCredentials = jest.fn();
+    mocks = new JestMockManager(this);
+
+    changePassword = mock<'changePassword'>();
+    completeNewPassword = mock<'completeNewPassword'>();
+    configure = mock<'configure'>();
+    confirmSignIn = mock<'confirmSignIn'>();
+    confirmSignUp = mock<'confirmSignUp'>();
+    currentAuthenticatedUser = mock<'currentAuthenticatedUser'>();
+    currentCredentials = mock<'currentCredentials'>();
+    currentSession = mock<'currentSession'>();
+    currentUserCredentials = mock<'currentUserCredentials'>();
+    currentUserInfo = mock<'currentUserInfo'>();
+    currentUserPoolUser = mock<'currentUserPoolUser'>();
+    disableSMS = mock<'disableSMS'>();
+    enableSMS = mock<'enableSMS'>();
+    essentialCredentials = mock<'essentialCredentials'>();
     federatedSignIn = jest.fn();
-    forgotPassword = jest.fn();
-    forgotPasswordSubmit = jest.fn();
-    getMFAOptions = jest.fn();
-    getModuleName = jest.fn();
-    getPreferredMFA = jest.fn();
-    resendSignUp = jest.fn();
-    sendCustomChallengeAnswer = jest.fn();
-    setPreferredMFA = jest.fn();
-    setupTOTP = jest.fn();
-    signIn = jest.fn();
-    signOut = jest.fn();
-    signUp = jest.fn();
-    updateUserAttributes = jest.fn();
-    userAttributes = jest.fn();
-    userSession = jest.fn();
-    verifiedContact = jest.fn();
-    verifyCurrentUserAttribute = jest.fn();
-    verifyCurrentUserAttributeSubmit = jest.fn();
-    verifyTotpToken = jest.fn();
-    verifyUserAttribute = jest.fn();
-    verifyUserAttributeSubmit = jest.fn();
+    forgotPassword = mock<'forgotPassword'>();
+    forgotPasswordSubmit = mock<'forgotPasswordSubmit'>();
+    getMFAOptions = mock<'getMFAOptions'>();
+    getModuleName = mock<'getModuleName'>();
+    getPreferredMFA = mock<'getPreferredMFA'>();
+    resendSignUp = mock<'resendSignUp'>();
+    sendCustomChallengeAnswer = mock<'sendCustomChallengeAnswer'>();
+    setPreferredMFA = mock<'setPreferredMFA'>();
+    setupTOTP = mock<'setupTOTP'>();
+    signIn = mock<'signIn'>();
+    signOut = mock<'signOut'>();
+    signUp = mock<'signUp'>();
+    updateUserAttributes = mock<'updateUserAttributes'>();
+    userAttributes = mock<'userAttributes'>();
+    userSession = mock<'userSession'>();
+    verifiedContact = mock<'verifiedContact'>();
+    verifyCurrentUserAttribute = mock<'verifyCurrentUserAttribute'>();
+    verifyCurrentUserAttributeSubmit = mock<'verifyCurrentUserAttributeSubmit'>();
+    verifyTotpToken = mock<'verifyTotpToken'>();
+    verifyUserAttribute = mock<'verifyUserAttribute'>();
+    verifyUserAttributeSubmit = mock<'verifyUserAttributeSubmit'>();
 }
 
-function resolveUser<Key extends keyof AuthClass>() {
-    return function(user: ApiCognitoUser): AuthClass[Key] {
-        return (() => Promise.resolve(user)) as any;
-    }
+function mock<Key extends keyof AuthClass>() {
+    return createMock<AuthClass[Key]>();
 }
-function resolveUndefined<Key extends keyof AuthClass>() {
-    return function(): AuthClass[Key] {
-        return (() => Promise.resolve(undefined)) as any;
-    }
+function resolve<Key extends keyof AuthClass>() {
+    return mockImplementation.resolve<AuthClass[Key]>();
 }
-function rejectError<Key extends keyof AuthClass>() {
-    return function(e: any): AuthClass[Key] {
-        return (() => Promise.reject(e)) as any;
-    }
+function reject<Key extends keyof AuthClass>() {
+    return mockImplementation.reject<AuthClass[Key]>();
 }
 
-export const AmplifyAuth_currentAuthenticatedUser = {
-    signedIn: resolveUser<'currentAuthenticatedUser'>(),
-    signedOut: resolveUndefined<'currentAuthenticatedUser'>(),
-};
-export const AmplifyAuth_signIn = {
-    success: resolveUser<'signIn'>(),
-    error: rejectError<'signIn'>(),
-};
-export const AmplifyAuth_signUp = {
-    success: (result: ISignUpResult) => function() {
-        return Promise.resolve(result);
-    } as AuthClass['signUp'],
-    error: rejectError<'signUp'>(),
-};
-export const AmplifyAuth_confirmSignUp = {
-    success: resolveUndefined<'confirmSignUp'>(),
-    error: rejectError<'confirmSignUp'>(),
-};
-export const AmplifyAuth_forgotPassword = {
-    success: resolveUndefined<'forgotPassword'>(),
-    error: rejectError<'forgotPassword'>(),
-};
-export const AmplifyAuth_forgotPasswordSubmit = {
-    success: resolveUndefined<'forgotPasswordSubmit'>(),
-    error: rejectError<'forgotPasswordSubmit'>(),
-};
-export const AmplifyAuth_signOut = {
-    success: resolveUndefined<'signOut'>(),
-    error: rejectError<'signOut'>(),
+export const mockAuthMethods = {
+    currentAuthenticatedUser: {
+        signedIn: resolve<'currentAuthenticatedUser'>(),
+        signedOut: resolve<'currentAuthenticatedUser'>(),
+    },
+    signIn: {
+        success: resolve<'signIn'>(),
+        error: reject<'signIn'>(),
+    },
+    signUp: {
+        success: resolve<'signUp'>(),
+        error: reject<'signUp'>(),
+    },
+    confirmSignUp: {
+        success: resolve<'confirmSignUp'>(),
+        error: reject<'confirmSignUp'>(),
+    },
+    forgotPassword: {
+        success: resolve<'forgotPassword'>(),
+        error: reject<'forgotPassword'>(),
+    },
+    forgotPasswordSubmit: {
+        success: resolve<'forgotPasswordSubmit'>(),
+        error: reject<'forgotPasswordSubmit'>(),
+    },
+    signOut: {
+        success: resolve<'signOut'>(),
+        error: reject<'signOut'>(),
+    },
 };
