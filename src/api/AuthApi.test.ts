@@ -58,7 +58,7 @@ describe("AuthApi", () => {
     describe("actions", () => {
         let api: AuthApi;
         beforeEach(() => api = new AuthApi());
-        afterEach(() => Auth.mocks.mockResetAll());
+        afterEach(() => Auth.mocks.resetAll());
 
         describe("#getUser", () => {
 
@@ -215,7 +215,7 @@ describe("AuthApi", () => {
             );
             api = new AuthApi();
         });
-        afterEach(() => Hub.mocks.mockResetAll());
+        afterEach(() => Hub.mocks.resetAll());
 
         it("forwards events", async () => {
             const spy = jest.fn();

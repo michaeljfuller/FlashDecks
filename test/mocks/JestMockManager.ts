@@ -21,7 +21,7 @@ export class JestMockManager {
      *
      * @link https://jestjs.io/docs/mock-function-api#mockfnmockclear
      */
-    public mockClearAll() {
+    public clearAll() {
         this.mocks.forEach(mock => mock.mockClear());
     }
 
@@ -37,7 +37,7 @@ export class JestMockManager {
      *
      * @link https://jestjs.io/docs/mock-function-api#mockfnmockreset
      */
-    public mockResetAll() {
+    public resetAll() {
         this.mocks.forEach(mock => mock.mockReset());
     }
 
