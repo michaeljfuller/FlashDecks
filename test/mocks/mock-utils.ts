@@ -17,7 +17,7 @@ export const mockImplementation = Object.freeze({
 
 /** Create an implementation for an async mock method. */
 function createMockResolveImplementation<Func extends GenericFunction>() {
-    return function(response: AsyncResult<Func>): Func {
+    return function(response?: AsyncResult<Func>): Func {
         return (() => {
             return Promise.resolve(response);
         }) as any;

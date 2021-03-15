@@ -226,7 +226,7 @@ describe("AuthApi", () => {
             expect(spy).toHaveBeenCalledWith(payload);
         });
 
-        it("forwards SignIn", async () => {
+        it(`forwards "SignIn"`, async () => {
             const spy = jest.fn();
             api.onSignIn.subscribe(spy);
             resolve({ event: AuthEventType.SIGN_IN });
@@ -234,12 +234,46 @@ describe("AuthApi", () => {
             expect(spy).toHaveBeenCalled();
         });
 
-        it("forwards SignOut", async () => {
+        it(`forwards "SignOut"`, async () => {
             const spy = jest.fn();
             api.onSignOut.subscribe(spy);
             resolve({ event: AuthEventType.SIGN_OUT });
             await promise;
             expect(spy).toHaveBeenCalled();
+        });
+
+        describe("other", () => {
+
+            Object.values(AuthEventType).filter(event => ![
+                AuthEventType.SIGN_IN,
+                AuthEventType.SIGN_OUT,
+            ].includes(event)).forEach(event => {
+                const doNothing = [
+                    AuthEventType.SIGN_UP,
+                    AuthEventType.SIGN_IN_FAILED,
+                    AuthEventType.FORGOT_PASSWORD,
+                    AuthEventType.FORGOT_PASSWORD_FAILED,
+                    AuthEventType.FORGOT_PASSWORD_SUBMIT,
+                    AuthEventType.CONFIGURED,
+                ].includes(event);
+
+                if (doNothing) {
+                    test(`"${event}" does nothing`, async () => {
+                        const warnSpy = jest.spyOn(api, "warn" as any);
+                        resolve({ event });
+                        await promise;
+                        expect(warnSpy).not.toHaveBeenCalled();
+                    });
+                } else {
+                    test(`"${event}" logs error`, async () => {
+                        const warnSpy = jest.spyOn(api, "warn" as any);
+                        resolve({ event });
+                        await promise;
+                        expect(warnSpy).toHaveBeenCalled();
+                    });
+                }
+            });
+
         });
 
     });
