@@ -54,6 +54,15 @@ describe("UserApi", () => {
             ).rejects.toThrow("test-error");
         });
 
+        it("handles no data", () => {
+            API.graphql.mockImplementationOnce(
+                mockApiMethods.graphql.success({ data: { getUser: undefined } })
+            );
+            return expect(
+                api.getUser("id").toPromise()
+            ).rejects.toThrow("No response object.");
+        });
+
     });
 
 });

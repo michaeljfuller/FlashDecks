@@ -13,9 +13,7 @@ export class UserApi {
         const promise = request.then(response => {
             const apiUser = response?.data?.getUser;
             if (!apiUser) throw new Error('No response object.');
-            const user = apiUser ? UserModel.fromApi(apiUser) : undefined;
-            if (!user) throw new Error("Failed to parse User.");
-            return user;
+            return UserModel.fromApi(apiUser);
         });
         return new ApiRequest(promise, {id});
     }
