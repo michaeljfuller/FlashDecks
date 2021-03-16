@@ -37,10 +37,10 @@ function createMockRejectImplementation<Func extends GenericFunction>(
 }
 
 /** Create an implementation for an async mock method that returns passed promise. */
-function createMockWaitImplementation<Func extends GenericFunction>(
-    promise: ReturnType<Func>
-) {
-    return function(): Func {
-        return (() => promise) as any;
+function createMockWaitImplementation<Func extends GenericFunction>() {
+    return function(promise?: ReturnType<Func>): Func {
+        return (() => {
+            return promise || new Promise(() => {});
+        }) as any;
     }
 }
