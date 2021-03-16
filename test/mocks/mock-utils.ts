@@ -13,6 +13,7 @@ export function createMock<
 export const mockImplementation = Object.freeze({
     resolve: createMockResolveImplementation,
     reject: createMockRejectImplementation,
+    wait: createMockWaitImplementation,
 });
 
 /** Create an implementation for an async mock method. */
@@ -32,5 +33,14 @@ function createMockRejectImplementation<Func extends GenericFunction>(
         return (() => {
             return Promise.reject(error);
         }) as any;
+    }
+}
+
+/** Create an implementation for an async mock method that returns passed promise. */
+function createMockWaitImplementation<Func extends GenericFunction>(
+    promise: ReturnType<Func>
+) {
+    return function(): Func {
+        return (() => promise) as any;
     }
 }
