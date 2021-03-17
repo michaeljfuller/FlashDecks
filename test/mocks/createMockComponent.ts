@@ -1,5 +1,6 @@
 import React from "react";
-import {toKebabCase} from "../../src/utils/string";
+import {capitalise, toKebabCase} from "../../src/utils/string";
+import {mapToObject} from "../../src/utils/object";
 
 /**
  * Create a mock component that has no implementation.
@@ -10,10 +11,16 @@ import {toKebabCase} from "../../src/utils/string";
  */
 export function createMockComponent(name: string, options?: CreateMockComponentOptions) {
     options = options || {};
-    let tag = options.tag || toKebabCase(name);
+    let tag = capitalise(options.tag || toKebabCase(name));
     if (options.tagPrefix) tag = options.tagPrefix + '-' + tag;
 
     const component: React.FunctionComponent = function MockComponent(props: object) {
+        props = mapToObject(
+            props, (value, key) => ({
+                value,
+                key: key === "testID" ? "data-testid" : key, // Rename testID to data-testid
+            })
+        );
         return React.createElement(tag, props);
     };
     component.displayName = name;
