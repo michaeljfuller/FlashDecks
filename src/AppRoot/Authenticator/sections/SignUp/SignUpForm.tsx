@@ -12,7 +12,7 @@ import {
     validatePasswordConfirm, flattenValidation
 } from "../../../../api/validation/authValidation";
 import {FormValidationText} from "../../../../components/ui/form/FormValidationText";
-import {TestIDs} from "../SignUp";
+import TestIDs from "./signUpTestIDs";
 
 export interface SignUpFormProps {
     onSubmit: (username: string, password: string, email: string) => void;

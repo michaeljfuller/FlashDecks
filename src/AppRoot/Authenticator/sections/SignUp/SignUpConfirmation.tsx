@@ -6,7 +6,7 @@ import Button from "../../../../components/button/Button";
 import {FormTextInput} from "../../../../components/ui/form/FormTextInput";
 import {FormValidationText} from "../../../../components/ui/form/FormValidationText";
 import {validateRegistrationCode, validateUsername} from "../../../../api/validation/authValidation";
-import {TestIDs} from "../SignUp";
+import TestIDs from "./signUpTestIDs";
 
 export interface SignUpConfirmationProps {
     username?: string;

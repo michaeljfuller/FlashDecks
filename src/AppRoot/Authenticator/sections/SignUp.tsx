@@ -7,9 +7,11 @@ import {ConfirmSignUpError, SignUpError} from "../../../api/AuthApi.types";
 import {getErrorText} from "../../../utils/string";
 import ProgressBar from "../../../components/progress/ProgressBar";
 import Button from "../../../components/button/Button";
+import signUpTestIDs from "./SignUp/signUpTestIDs";
 import {SignUpForm} from "./SignUp/SignUpForm";
 import {SignUpConfirmation} from "./SignUp/SignUpConfirmation";
 
+export const TestIDs = signUpTestIDs;
 export interface SignUpProps {
     onSuccess: (message: string) => void;
     onError: (message: string) => void;
@@ -19,26 +21,6 @@ interface SignUpState {
     enterCode: boolean;
     processing: boolean;
 }
-
-export const TestIDs = Object.freeze({
-    Title: "SignIn-Title",
-    Username: "SignIn-Username",
-    UsernameValidation: "SignIn-UsernameValidation",
-    Password: "SignIn-Password",
-    PasswordInput: "SignIn-Password-input",
-    PasswordToggle: "SignIn-Password-toggle",
-    PasswordConfirmation: "SignIn-PasswordConfirmation",
-    PasswordConfirmationInput: "SignIn-PasswordConfirmation-input",
-    PasswordValidation: "SignIn-PasswordValidation",
-    Email: "SignIn-Email",
-    EmailConfirmation: "SignIn-EmailConfirmation",
-    EmailValidation: "SignIn-EmailValidation",
-    VerificationCode: "SignIn-VerificationCode",
-    VerificationCodeValidation: "SignIn-VerificationCodeValidation",
-    SkipButton: "SignIn-SkipButton",
-    Submit: "SignIn-Submit",
-    ProgressBar: "SignIn-ProgressBar",
-});
 
 /**
  * @link https://docs.amplify.aws/lib/auth/customui/q/platform/js#composing-your-own-authenticator
