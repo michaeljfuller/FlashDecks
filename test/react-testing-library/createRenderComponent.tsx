@@ -1,4 +1,4 @@
-import React, {PropsWithChildren} from "react";
+import React, {Attributes, ComponentClass, FunctionComponent, PropsWithChildren} from "react";
 import {combineReducers, createStore, PreloadedState} from "redux";
 import {Provider} from "react-redux";
 import {render} from "@testing-library/react";
@@ -18,20 +18,18 @@ type RenderOptions = Parameters<typeof render>[1];
 
 /** Create a function that renders a component using testing-library, while defining default properties. */
 function _createRenderComponent<
-    Component extends ComponentUnion,
-    Props = ComponentProps<Component>,
+    P extends {}
 >(
-    component: Component,
-    defaultProps: Props,
+    component: FunctionComponent<P> | ComponentClass<P>,
+    defaultProps: P,
     defaultOptions?: RenderOptions,
 ) {
     return (
-        props?: Partial<Props>,
+        props?: Partial<P>,
         options?: RenderOptions
     ) => {
-        props = Object.assign({}, defaultProps, props);
         options = Object.assign({}, defaultOptions, options);
-        const element = React.createElement(component, props);
+        const element = React.createElement(component, Object.assign({}, defaultProps, props));
         return render(element, options);
     }
 }
