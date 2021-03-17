@@ -20,11 +20,15 @@ export function createDebugMap<
     Queries extends Record<string, ScreenQuery>,
     Executor extends OmitFirstParam<typeof debugCallback>
 >(matchers: Matchers, queries: Queries): {
+    screen: typeof screen.debug,
+} & {
     [K in keyof Queries]: QueryMap<Queries[K], Matchers, any>
 } {
-    return mapToObject(queries, query => ({
+    return Object.assign({
+        screen: screen.debug,
+    }, mapToObject(queries, query => ({
         value: createQueryMap(matchers, query, debugCallback),
-    }));
+    })));
 }
 export default createDebugMap;
 
