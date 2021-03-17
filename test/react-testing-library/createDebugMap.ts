@@ -12,18 +12,15 @@ import {OmitFirstParam} from "../../src/utils/function";
  *      {Foo: 'foo'},                                               // Define matchers against keys
  *      {get: screen.getByTestId, getAll: screen.getAllByTestId}    // Define queries against keys
  *  );
- *  debug.get().Foo()                               // Run the matcher against the query and pass to screen.debug().
- *  debug.getAll({suggest:true}).Foo(10000)         // Add query options and specify maxLength of screen.debug().
+ *  debug.get().Foo()                       // Run the matcher against the query and pass to screen.debug().
+ *  debug.getAll({suggest:true}).Foo(10000) // Add query options and specify maxLength of screen.debug().
+ *  debug.screen()                          // Run on the whole screen.
  */
 export function createDebugMap<
     Matchers extends BaseMap,
     Queries extends Record<string, ScreenQuery>,
     Executor extends OmitFirstParam<typeof debugCallback>
->(matchers: Matchers, queries: Queries): {
-    screen: typeof screen.debug,
-} & {
-    [K in keyof Queries]: QueryMap<Queries[K], Matchers, any>
-} {
+>(matchers: Matchers, queries: Queries): DebugMap<Matchers, Queries> {
     return Object.assign({
         screen: screen.debug,
     }, mapToObject(queries, query => ({
@@ -31,6 +28,14 @@ export function createDebugMap<
     })));
 }
 export default createDebugMap;
+type DebugMap<
+    Matchers extends BaseMap,
+    Queries extends Record<string, ScreenQuery>,
+> = {
+    screen: typeof screen.debug;
+} & {
+    [K in keyof Queries]: QueryMap<Queries[K], Matchers, any>;
+}
 
 function debugCallback({runQuery}: MatcherOptions<any>, maxLength?: number) {
     const selection = runQuery();
