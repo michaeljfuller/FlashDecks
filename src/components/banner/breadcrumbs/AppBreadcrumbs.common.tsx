@@ -8,6 +8,7 @@ import {getBaseRouteFromName} from '../../../routes';
 import {AppBreadcrumbsStoreProps} from "./AppBreadcrumbs_redux";
 
 export interface AppBreadcrumbsProps {
+    testID?: string;
     routerDetails: NavigationRouterDetails;
 }
 
