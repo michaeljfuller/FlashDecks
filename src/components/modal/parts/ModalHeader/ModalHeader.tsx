@@ -12,6 +12,7 @@ export interface ModalHeaderProps {
     title?: string;
     user?: UserModel|null;
     style?: ViewStyle;
+    testID?: string;
 }
 
 export function ModalHeader(props: PropsWithChildren<ModalHeaderProps>) {
@@ -24,7 +25,7 @@ export function ModalHeader(props: PropsWithChildren<ModalHeaderProps>) {
         lineHeight: userAvatar ? avatarSize : undefined
     };
 
-    return <View style={[styles.root, viewStyle, props.style]}>
+    return <View testID={props.testID} style={[styles.root, viewStyle, props.style]}>
         <Text style={[styles.title, titleStyle]}>{props.title}</Text>
         {userAvatar}
         {props.children}

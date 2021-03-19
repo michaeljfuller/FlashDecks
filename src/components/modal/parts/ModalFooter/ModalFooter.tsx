@@ -3,10 +3,11 @@ import {View, StyleSheet, ViewStyle} from 'react-native';
 
 export interface ModalFooterProps {
     style?: ViewStyle;
+    testID?: string;
 }
 
 export function ModalFooter(props: PropsWithChildren<ModalFooterProps>) {
-    return <View style={[styles.root, props.style]}>
+    return <View testID={props.testID} style={[styles.root, props.style]}>
         {props.children}
     </View>;
 }

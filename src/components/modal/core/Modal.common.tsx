@@ -4,6 +4,7 @@ import {ViewStyle} from "react-native";
 export const modalPortalId = "_MODALS_";
 
 export interface ModalProps {
+    testID?: string;
     /** If the Modal is open */
     open: boolean;
     /** Callback when the Modal is opened */
@@ -20,8 +21,8 @@ export interface ModalProps {
 
 /** Pull only ModalProps members from an object that may have others. */
 export function extractModalProps(props: ModalProps): ModalProps {
-    const {open, onOpen, onClose, style, width, height} = props;
-    return {open, onOpen, onClose, style, width, height};
+    const {open, onOpen, onClose, style, width, height, testID} = props;
+    return {open, onOpen, onClose, style, width, height, testID};
 }
 
 export abstract class ModalBase extends React.PureComponent<ModalProps> {
