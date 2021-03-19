@@ -2,6 +2,8 @@ import {ShallowWrapper} from "enzyme";
 import {mapToObject} from "../src/utils/object";
 import {getType, getTypeOrValue} from "../src/utils/type";
 
+export * from "./test-utils/css-helpers";
+
 export function findByTestId(wrapper: ShallowWrapper, testId: string) {
     // return wrapper.findWhere((item) => {
     //     const props = item.props();
