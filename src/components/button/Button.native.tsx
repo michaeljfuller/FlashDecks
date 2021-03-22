@@ -13,13 +13,14 @@ export * from './Button.common';
 export const Button = React.memo<ButtonProps>(function Button(props: ButtonProps) {
     const allProps = buttonPropsWithDefaults(props);
     const {
-        onClick, disabled, title, icon, iconPosition, flat, transparent, square, style, width, height, flex
+        onClick, disabled, title, icon, iconPosition, flat, transparent, square, style, width, height, flex, testID
     } = allProps;
 
     const iconElement = icon ? <Icon type={icon} flat={flat || !transparent} style={getIconStyle(allProps)} /> : null;
 
     return <ButtonWrapper style={style} width={width} height={height} flex={flex}>
         <NativeBaseButton
+            testID={testID}
             onPress={onClick}
             disabled={disabled}
             style={[styles.background, getBackgroundStyle(allProps)]}
