@@ -1,10 +1,8 @@
 import {Observable} from "rxjs";
 import {CardContentModel, DeckModel} from "../models";
 import ApiRequest from "./util/ApiRequest";
-import {logClass} from "../utils/debugging/decorators/logClass";
 import s3, {StoragePutProgress, StoragePutProgressCallback} from "./MediaApi.s3";
 
-@logClass({ enabled: true })
 export class MediaApi {
 
     /** Get files from content, upload them, and return an updated deck. */
@@ -41,11 +39,11 @@ export class MediaApi {
                             const {cardIndex, sideIndex, contentIndex} = currentContent;
                             draft.cards[cardIndex].sides[sideIndex].content[contentIndex].value = uploadResult.key;
                             draft.cards[cardIndex].sides[sideIndex].content[contentIndex].format = "S3Key";
-                        });
-                        uploadNext(contentIndex+1, updatedDeck); // Next item
-                    }
-                )
-
+                        }, false);
+                        uploadNext(contentIndex + 1, updatedDeck); // Next item
+                    },
+                    error => subscribe.error(error)
+                );
             };
 
             uploadNext(0, deck); // Kick off the process

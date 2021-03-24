@@ -8,28 +8,39 @@ import AppBreadcrumbs from "./breadcrumbs/AppBreadcrumbs";
 import Avatar from "../avatar/Avatar";
 import {UserModel} from "../../models";
 import Row from "../layout/Row";
-import {AppBannerStoreProps} from "./AppBanner_redux";
+import {AppBannerStoreProps, reduxConnector} from "./AppBanner_redux";
 
 export {AppBannerProps} from "./AppBanner.common";
 
 // const color = Color.White;
 const backgroundColor = Color.Blue;
 
-export const AppBanner = React.memo(function AppBanner(props: AppBannerProps & AppBannerStoreProps) {
+export const TestIDs = {
+    Root: "AppBanner-Root",
+    SidebarButton: "AppBanner-SidebarButton",
+    Breadcrumbs: "AppBanner-Breadcrumbs",
+    SignOut: "AppBanner-SignOut",
+}
+
+export const AppBanner: React.FunctionComponent<AppBannerProps> = React.memo(reduxConnector(function AppBanner(
+    props: AppBannerProps & AppBannerStoreProps
+) {
     const {
         loggedInUser, onToggleSidebar, onSignOutClick, routerDetails
     } = props;
 
-    return <Header androidStatusBarColor={backgroundColor} style={styles.header}>
+    return <Header testID={TestIDs.Root} androidStatusBarColor={backgroundColor} style={styles.header}>
         <Left style={styles.left}>
-            <IconButton icon={IconType.Menu} onClick={onToggleSidebar} transparent size={32} square color="White" />
+            <IconButton testID={TestIDs.SidebarButton}
+                icon={IconType.Menu} onClick={onToggleSidebar} transparent size={32} square color="White"
+            />
         </Left>
-        <AppBreadcrumbs routerDetails={routerDetails} />
+        <AppBreadcrumbs testID={TestIDs.Breadcrumbs} routerDetails={routerDetails} />
         <Right>
             <AppBannerUserDisplay user={loggedInUser} onSignOutClick={onSignOutClick} />
         </Right>
     </Header>;
-});
+}));
 export default AppBanner;
 
 interface AppBannerUserDisplayProps {
@@ -46,7 +57,9 @@ function AppBannerUserDisplay(props: AppBannerUserDisplayProps) {
     />;
     return <Row>
         <Body style={styles.body}>{avatar}</Body>
-        <IconButton icon={IconType.Exit} onClick={onSignOutClick} transparent width={50} height={32} color="White" />
+        <IconButton testID={TestIDs.SignOut}
+            icon={IconType.Exit} onClick={onSignOutClick} transparent width={50} height={32} color="White"
+        />
     </Row>;
 }
 

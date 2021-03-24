@@ -31,9 +31,8 @@ export class DeckApi {
             sendGet(getDeck, variables).then(response => {
                 const apiModel = response.data?.getDeck;
                 if (!apiModel) throw new Error('No response object.');
-                const deck = apiModel ? DeckModel.createFromApi(apiModel) : undefined;
-                if (deck) decksStore.add(deck);
-                else throw new Error("Failed to parse Deck.");
+                const deck = DeckModel.createFromApi(apiModel);
+                decksStore.add(deck);
                 return deck;
             }),
             variables

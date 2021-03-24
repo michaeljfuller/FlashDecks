@@ -34,7 +34,7 @@ export const AppBreadcrumbs = React.memo(function AppBreadcrumbs(props: AppBread
         />)
     }
 
-    return <StyledBreadcrumbs maxItems={3}>{items}</StyledBreadcrumbs>;
+    return <StyledBreadcrumbs data-testid={props.testID} maxItems={3}>{items}</StyledBreadcrumbs>;
 });
 export default reduxConnector(AppBreadcrumbs);
 

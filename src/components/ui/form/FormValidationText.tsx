@@ -8,11 +8,12 @@ export interface ValidationTextProps {
     visible?: boolean;
     type?: "standard"|"error"|"success";
     style?: StyleProp<ViewStyle>;
+    testID?: string;
 }
 export const FormValidationText = React.memo(function FormValidationText ({
-    text, visible=true, type, style
+    text, visible=true, type, style, testID
 }: ValidationTextProps) {
-    return <Visibility visible={visible} style={style}>
+    return <Visibility visible={visible} style={style} testID={testID}>
         <Text style={[
             styles.base,
             type === "success" && styles.success,

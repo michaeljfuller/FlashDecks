@@ -30,9 +30,12 @@ export function mapToObject<
 
     keys.forEach((originalKey, index) => {
         const originalValue: ValuesIn = obj[originalKey] as any;
-        const {value, key, skip} = callback(originalValue, originalKey, index);
+        const {value, key, skip, descriptor} = callback(originalValue, originalKey, index);
         const keyOut: KeysOut = (key || originalKey) as any;
-        if (!skip) result[keyOut] = value;
+        if (!skip) {
+            result[keyOut] = value;
+            if (descriptor) Object.defineProperty(result, keyOut, descriptor);
+        }
     });
 
     return result as Result;
@@ -45,11 +48,12 @@ export type MapToObjectCallback<
 > = (
     value: ValuesIn,
     key: keyof Target,
-    index: number
+    index: number,
 ) => {
     value?: ValuesOut;
     key?: KeysOut;
     skip?: boolean;
+    descriptor?: PropertyDescriptor;
 };
 
 /** A safe way of calling hasOwnProperty, now objects can have a different prototype via Object.create(). */

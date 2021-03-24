@@ -17,7 +17,7 @@ export class Modal extends ModalBase {
                 this.isClosed
                 ? <View />
                 : <DialogContent>
-                    <View style={styles.modalParent}>
+                    <View testID={this.props.testID} style={styles.modalParent}>
                         <View style={styles.modalWrapper}>
                             <View style={[
                                 styles.modalContents,

@@ -10,6 +10,24 @@ export type LinkModalProps = {
     url: string;
 } & ModalProps;
 
+//<editor-fold desc="TestID">
+export function getModalHeaderTestID(testID?: string): string|undefined {
+    return testID ? (testID+":header") : undefined;
+}
+export function getModalBodyTestID(testID?: string): string|undefined {
+    return testID ? (testID+":body") : undefined;
+}
+export function getModalFooterTestID(testID?: string): string|undefined {
+    return testID ? (testID+":footer") : undefined;
+}
+export function getModalOkButtonTestID(testID?: string): string|undefined {
+    return testID ? (testID+":ok") : undefined;
+}
+export function getModalCancelButtonTestID(testID?: string): string|undefined {
+    return testID ? (testID+":cancel") : undefined;
+}
+//</editor-fold>
+
 /**
  * Prompt the user to follow a link.
  */
@@ -29,13 +47,13 @@ export class LinkModal extends React.PureComponent<LinkModalProps> {
     }
 
     render() {
-        const {url, children, onClose} = this.props;
+        const {url, children, onClose, testID} = this.props;
 
         return <Modal {...extractModalProps(this.props)}>
 
-            <ModalHeader title="Open Link" />
+            <ModalHeader testID={getModalHeaderTestID(testID)} title="Open Link" />
 
-            <ModalBody style={styles.body}>
+            <ModalBody testID={getModalBodyTestID(testID)} style={styles.body}>
                 <Text>{
                     isPlatformWeb ?
                     "You are about to open a new tab to the following page:" :
@@ -45,9 +63,13 @@ export class LinkModal extends React.PureComponent<LinkModalProps> {
                 {children && <View>{children}</View>}
             </ModalBody>
 
-            <ModalFooter style={styles.footer}>
-                <Button title="OK" style={styles.footerButton} onClick={this.goToUrl} square />
-                <Button title="Cancel" style={styles.footerButton} onClick={onClose} square />
+            <ModalFooter testID={getModalFooterTestID(testID)} style={styles.footer}>
+                <Button testID={getModalOkButtonTestID(testID)}
+                    title="OK" style={styles.footerButton} onClick={this.goToUrl} square
+                />
+                <Button testID={getModalCancelButtonTestID(testID)}
+                    title="Cancel" style={styles.footerButton} onClick={onClose} square
+                />
             </ModalFooter>
 
         </Modal>;

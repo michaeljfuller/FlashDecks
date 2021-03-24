@@ -13,9 +13,9 @@ export interface ProgressBarProps extends CommonProgressProps {
 
 export class ProgressBar extends ProgressBase<ProgressBarProps> {
     render() {
-        const {color="Blue", visible=true, render=true} = this.props;
+        const {color="Blue", visible=true, render=true, testID} = this.props;
 
-        return <Visibility style={this.props.style} visible={visible} render={render}>
+        return <Visibility style={this.props.style} visible={visible} render={render} testID={testID}>
             <IndicatorBar
                 key={'ProgressBar_'+this.state.iteration /*Create new instance if changes to reset animation*/}
                 visible

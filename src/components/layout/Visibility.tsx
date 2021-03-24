@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleProp, StyleSheet, View, ViewProps, ViewStyle} from "react-native";
+import {StyleProp, View, ViewProps, ViewStyle} from "react-native";
 
 export interface VisibilityProps extends ViewProps {
     render?: boolean; // Keep size while not displaying
@@ -13,15 +13,9 @@ export function Visibility(props: React.PropsWithChildren<VisibilityProps>) {
 
     const viewStyles: StyleProp<ViewStyle> = [];
     if (props.style) Array.isArray(style) ? viewStyles.push(...style) : viewStyles.push(style);
-    if (!visible) viewStyles.push(styles.invisible);
+    if (!visible) viewStyles.push({ opacity: 0 });
 
     return <View {...viewProps} style={viewStyles}>
         {props.children}
     </View>;
 }
-
-const styles = StyleSheet.create({
-    invisible: {
-        opacity: 0,
-    },
-});

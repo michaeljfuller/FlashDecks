@@ -47,3 +47,5 @@ Decks would only need a `file-key`, rather than an `S3Object`, since the bucket'
 
 # Testing
 * Update unit tests.
+* Use native tests too.
+  * Use `@testing-library/react-native` rather than `@testing-library/react`.

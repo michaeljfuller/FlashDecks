@@ -10,7 +10,7 @@ export const FormTextInput = React.memo(function FormTextInput(props: FormTextIn
     if (props.disabled) style.push(styles.disabled);
     if (props.style) Array.isArray(props.style) ? style.push(...props.style) : style.push(props.style);
 
-    return <TextInput {...props} style={style} />;
+    return <TextInput {...props} style={style} data-testid={props.testID} />;
 });
 
 const styles = StyleSheet.create({

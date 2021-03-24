@@ -15,7 +15,7 @@ export * from './Button.common';
 export const Button = React.memo(function Button(props: ButtonProps) {
     const allProps = buttonPropsWithDefaults(props);
     const {
-        onClick, disabled, title, icon, iconPosition, flat, transparent, square, color, invertColor, style, width, height, flex
+        onClick, disabled, title, icon, iconPosition, flat, transparent, square, color, invertColor, style, width, height, flex, testID
     } = allProps;
     const theme = getUIColorTheme(color, invertColor);
     const iconThreshold = iconStandardSize + iconPadding*2;
@@ -35,6 +35,7 @@ export const Button = React.memo(function Button(props: ButtonProps) {
             onClick={onClick}
             disabled={disabled}
             disableElevation={flat}
+            data-testid={testID}
         >
             {/* Icon left of text */
                 icon && title && iconPosition !== "right" ?

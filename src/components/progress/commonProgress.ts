@@ -6,6 +6,7 @@ export interface CommonProgressProps {
     render?: boolean;
     value?: number; // Range 0-maxValue
     maxValue?: number;
+    testID?: string;
 }
 
 export interface CommonProgressState {

@@ -1,6 +1,9 @@
-export const usernameMinLength = 1;
-export const passwordMinLength = 8;
-export const securityCodeMinLength = 6;
+import {
+    usernameMinLength,
+    passwordMinLength,
+    securityCodeMinLength
+} from "./authValidation.values";
+export * from "./authValidation.values";
 
 export interface AuthValidation {
     valid: boolean;
@@ -83,7 +86,16 @@ export function validateEmail(email: string): AuthValidation {
         valid: false,
         reason: `Email is required.`,
     };
+    if (!isEmail(email)) return {
+        valid: false,
+        reason: `Email isn't valid.`,
+    }
     return { valid: true, reason: 'Email valid.' };
+}
+/** @link https://stackoverflow.com/a/46181/15316701 */
+function isEmail(email: string) {
+    const regExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return regExp.test(email.toLowerCase());
 }
 
 export function validateEmailConfirm(email: string, confirmEmail: string): AuthValidation {

@@ -1,0 +1,20 @@
+const TestIDs = Object.freeze({
+    Title: "SignIn-Title",
+    Username: "SignIn-Username",
+    UsernameValidation: "SignIn-UsernameValidation",
+    Password: "SignIn-Password",
+    PasswordInput: "SignIn-Password-input",
+    PasswordToggle: "SignIn-Password-toggle",
+    PasswordConfirmation: "SignIn-PasswordConfirmation",
+    PasswordConfirmationInput: "SignIn-PasswordConfirmation-input",
+    PasswordValidation: "SignIn-PasswordValidation",
+    Email: "SignIn-Email",
+    EmailConfirmation: "SignIn-EmailConfirmation",
+    EmailValidation: "SignIn-EmailValidation",
+    VerificationCode: "SignIn-VerificationCode",
+    VerificationCodeValidation: "SignIn-VerificationCodeValidation",
+    SkipButton: "SignIn-SkipButton",
+    Submit: "SignIn-Submit",
+    ProgressBar: "SignIn-ProgressBar",
+});
+export default TestIDs;

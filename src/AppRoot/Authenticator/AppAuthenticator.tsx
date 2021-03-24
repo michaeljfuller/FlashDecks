@@ -13,7 +13,7 @@ import {isProduction, testPassword, testUsername} from "../../env";
 import {FormValidationText} from "../../components/ui/form/FormValidationText";
 
 export interface AppAuthenticatorProps {}
-interface AppAuthenticatorState {
+export interface AppAuthenticatorState {
     tab: "SignIn"|"SignUp"|"Forgot"|"Amazon";
     username?: string;
     password?: string;
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     },
 });
 
-const TabButton = React.memo(function TabButton(props: ButtonProps) {
+export const TabButton = React.memo(function TabButton(props: ButtonProps) {
     return <View style={styles.tabButtonWrapper}>
         <Button square flat {...props} />
     </View>;

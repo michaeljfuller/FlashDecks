@@ -16,6 +16,9 @@ gulp.task('coverage',           shellTask(`jest --coverage --silent --reporters=
 gulp.task('coverage:verbose',   shellTask(`jest --coverage --verbose`));
 gulp.task('coverage:universal', shellTask(`jest --coverage --config="jest.config.universal.js"`));
 
+gulp.task('debug:config', shellTask(`jest --showConfig`));
+gulp.task('debug:test',   shellTask(`jest --runInBand --verbose --bail=1`));
+
 function shellTask(command) {
     return () => {
         const task = shell.task(command);

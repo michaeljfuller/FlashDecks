@@ -16,7 +16,16 @@ import {reduxConnector, AppBannerStoreProps} from "./AppBanner_redux";
 
 export {AppBannerProps} from "./AppBanner.common";
 
-export const AppBanner = React.memo(reduxConnector(function AppBanner(props: AppBannerProps & AppBannerStoreProps) {
+export const TestIDs = {
+    Root: "AppBanner-Root",
+    SidebarButton: "AppBanner-SidebarButton",
+    Breadcrumbs: "AppBanner-Breadcrumbs",
+    SignOut: "AppBanner-SignOut",
+}
+
+export const AppBanner: React.FunctionComponent<AppBannerProps> = React.memo(reduxConnector(function AppBanner(
+    props: AppBannerProps & AppBannerStoreProps
+) {
     const {
         loggedInUser, onToggleSidebar, onSignOutClick, routerDetails
     } = props;
@@ -24,15 +33,17 @@ export const AppBanner = React.memo(reduxConnector(function AppBanner(props: App
     const bannerHeight = 36;
     const bannerSizeStyle = { maxHeight: bannerHeight, minHeight: bannerHeight, lineHeight: bannerHeight };
 
-    return <div style={bannerSizeStyle}>
+    return <div data-testid={TestIDs.Root} style={bannerSizeStyle}>
         <CssBaseline />
         <HideOnScroll>
             <AppBar style={bannerSizeStyle}>
                 <Toolbar style={bannerSizeStyle}>
 
-                    <IconButton icon={IconType.Menu} onClick={onToggleSidebar} transparent square color="White" />
+                    <IconButton testID={TestIDs.SidebarButton}
+                        icon={IconType.Menu} onClick={onToggleSidebar} transparent square color="White"
+                    />
                     <View style={styles.breadcrumbs}>
-                        <AppBreadcrumbs routerDetails={routerDetails} />
+                        <AppBreadcrumbs testID={TestIDs.Breadcrumbs} routerDetails={routerDetails} />
                     </View>
                     <Avatar
                         user={loggedInUser}
@@ -40,7 +51,11 @@ export const AppBanner = React.memo(reduxConnector(function AppBanner(props: App
                         label={loggedInUser ? loggedInUser.displayName : 'guest'}
                         labelPlacement="right"
                     />
-                    <Button title="Sign Out" icon={IconType.Exit} onClick={onSignOutClick} style={styles.signOut} transparent square color="White" />
+                    <Button
+                        testID={TestIDs.SignOut}
+                        title="Sign Out" icon={IconType.Exit} onClick={onSignOutClick}
+                        style={styles.signOut} transparent square color="White"
+                    />
 
                 </Toolbar>
             </AppBar>

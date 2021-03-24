@@ -15,9 +15,9 @@ export interface ProgressCircleProps extends CommonProgressProps {
 
 export class ProgressCircle extends ProgressBase<ProgressCircleProps> {
     render() {
-        const {size=40, thickness=4, color="Blue", visible=true, render=true} = this.props;
+        const {size=40, thickness=4, color="Blue", visible=true, render=true, testID} = this.props;
 
-        return <Visibility style={this.props.style} visible={visible} render={render}>
+        return <Visibility style={this.props.style} visible={visible} render={render} testID={testID}>
             <IndicatorCircle
                 key={'ProgressCircle_'+this.state.iteration /*Create new instance if changes to reset animation*/}
                 visible

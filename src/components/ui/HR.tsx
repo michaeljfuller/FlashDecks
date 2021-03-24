@@ -1,7 +1,7 @@
 import {StyleSheet, View, ViewStyle} from "react-native";
 import React from "react";
 
-interface HRProps {
+export interface HRProps {
     thickness?: number;
     spacing?: number;
     color?: string;

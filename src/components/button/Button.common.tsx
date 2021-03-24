@@ -22,6 +22,7 @@ export interface ButtonProps {
     width?: number;
     height?: number;
     flex?: boolean|number;
+    testID?: string|undefined;
 }
 
 const noop = () => {};
@@ -41,9 +42,10 @@ export function buttonPropsWithDefaults(props: ButtonProps): Required<ButtonProp
         width = Number.NaN,
         height = Number.NaN,
         flex = false,
+        testID
     } = props;
     return {
-        onClick, title, icon, iconPosition, flat, transparent, style, color, square, invertColor, width, height, flex,
+        onClick, title, icon, iconPosition, flat, transparent, style, color, square, invertColor, width, height, flex, testID,
         disabled: disabled || !props.onClick,
     };
 }

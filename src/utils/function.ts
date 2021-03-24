@@ -42,3 +42,18 @@ export function getStack(): string[] {
     }
     return [];
 }
+
+/** Add the passed properties to the target function. */
+export function addPropertiesToFunction<
+    Target extends GenericFunction,
+    Properties extends object,
+>(target: Target, properties: Properties): Target & Properties {
+    return Object.assign(target, properties);
+}
+
+/** Return the function without the first parameter. */
+export type OmitFirstParam<
+    Func extends (first: any, ...args: any[]) => any
+> = Func extends (first: any, ...args: infer Args) => infer Result
+    ? (...args: Args) => Result
+    : never;

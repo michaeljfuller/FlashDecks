@@ -6,6 +6,7 @@ import Button from "../../../../components/button/Button";
 import {FormTextInput} from "../../../../components/ui/form/FormTextInput";
 import {FormValidationText} from "../../../../components/ui/form/FormValidationText";
 import {validateRegistrationCode, validateUsername} from "../../../../api/validation/authValidation";
+import TestIDs from "./signUpTestIDs";
 
 export interface SignUpConfirmationProps {
     username?: string;
@@ -48,27 +49,40 @@ export class SignUpConfirmation extends React.PureComponent<SignUpConfirmationPr
         const codeValidation = validateRegistrationCode(code);
 
         return <Column>
-            <Text style={styles.title}>Enter Confirmation Code</Text>
+            <Text testID={TestIDs.Title} style={styles.title}>Enter Confirmation Code</Text>
 
             <Text>Username</Text>
             <FormTextInput
+                testID={TestIDs.Username}
                 value={username}
                 onChangeText={this.onInputUsername}
                 disabled={this.props.disabled}
             />
-            <FormValidationText visible={!usernameValidation.valid} type={username ? "error" : "standard"} text={usernameValidation.reason} />
+            <FormValidationText
+                testID={TestIDs.UsernameValidation}
+                visible={!usernameValidation.valid}
+                type={username ? "error" : "standard"}
+                text={usernameValidation.reason}
+            />
 
             <Text>Code</Text>
             <FormTextInput
+                testID={TestIDs.VerificationCode}
                 value={code}
                 onChangeText={this.onInputCode}
                 disabled={this.props.disabled}
                 textContentType={"oneTimeCode"}
                 keyboardType={"number-pad"}
             />
-            <FormValidationText visible={!codeValidation.valid} type={code ? "error" : "standard"} text={codeValidation.reason} />
+            <FormValidationText
+                testID={TestIDs.VerificationCodeValidation}
+                visible={!codeValidation.valid}
+                type={code ? "error" : "standard"}
+                text={codeValidation.reason}
+            />
 
             <Button
+                testID={TestIDs.Submit}
                 title="Submit"
                 onClick={this.onSubmit}
                 disabled={this.props.disabled || !usernameValidation.valid || !codeValidation.valid}

@@ -3,6 +3,8 @@ export interface GenericClass<T extends {} = {}> extends Function {
     prototype: T;
 }
 
+export type PublicMembers<T> = {[K in keyof T]: T[K]}
+
 //<editor-fold desc="renameClass">
 
 /** Function to rename the passed class */

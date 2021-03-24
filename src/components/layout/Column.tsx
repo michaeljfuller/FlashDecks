@@ -20,6 +20,8 @@ export type ColumnProps = React.PropsWithChildren<{
     style?: StyleProp<ViewStyle>;
     /** Inner style */
     innerStyle?: StyleProp<ViewStyle>;
+    /** Attribute added to element help identify an element in tests. */
+    testID?: string;
 }>;
 
 /**
@@ -36,6 +38,7 @@ export const Column = React.memo<ColumnProps>(function Column(props: ColumnProps
         flex=false,
         bottom=false,
         reverse=false,
+        testID,
     } = props;
 
     const parentStyles: StyleProp<ViewStyle> = [styles.parent];
@@ -52,7 +55,7 @@ export const Column = React.memo<ColumnProps>(function Column(props: ColumnProps
 
     if (scroll) {
         parentStyles.push(styles.scrollContent);
-        return <ScrollView style={style} contentContainerStyle={parentStyles} nestedScrollEnabled>
+        return <ScrollView style={style} contentContainerStyle={parentStyles} nestedScrollEnabled testID={testID}>
             <View style={childStyles}>
                 {props.children}
             </View>
@@ -60,7 +63,7 @@ export const Column = React.memo<ColumnProps>(function Column(props: ColumnProps
     }
 
     if (style) Array.isArray(style) ? parentStyles.push(...style) : parentStyles.push(style);
-    return <View style={parentStyles}>
+    return <View style={parentStyles} testID={testID}>
         <View style={childStyles}>
             {props.children}
         </View>

@@ -14,7 +14,11 @@ const Tooltip = withStyles({
     }
 })(MaterialTooltip) as typeof MaterialTooltip;
 
-export const Avatar: React.ComponentType<AvatarProps> = React.memo(function Avatar(props: AvatarProps) {
+export const TestIDs = {
+    Root: "Avatar-Root",
+}
+
+export const Avatar: React.FunctionComponent<AvatarProps> = React.memo(function Avatar(props: AvatarProps) {
     const {user, style, size=40, labelStyle, labelPlacement} = props;
     const label = props.label || (user && user.displayName) || 'Unknown';
 
@@ -26,19 +30,19 @@ export const Avatar: React.ComponentType<AvatarProps> = React.memo(function Avat
 
     switch (labelPlacement) {
         case "left":
-            return <View style={[styles.row, style]}>
+            return <View testID={TestIDs.Root} style={[styles.row, style]}>
                 <Text style={[styles.labelLeft, ...labelStyles]}>{label}</Text>
                 {icon}
             </View>;
         case "right":
-            return <View style={[styles.row, style]}>
+            return <View testID={TestIDs.Root} style={[styles.row, style]}>
                 {icon}
                 <Text style={[styles.labelRight, ...labelStyles]}>{label}</Text>
             </View>;
     }
 
     return <Tooltip arrow title={label}>
-        <View style={style}>{icon}</View>
+        <View testID={TestIDs.Root} style={style}>{icon}</View>
     </Tooltip>;
 });
 Avatar.propTypes = AvatarPropTypes;

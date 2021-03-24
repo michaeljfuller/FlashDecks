@@ -52,6 +52,17 @@ export function padNumber(number: number, integers = 4, decimals = 0, padding='0
     return !decimalStr ? integerStr : integerStr + '.' + decimalStr;
 }
 
+/** Convert a string to kebab-case. */
+export function toKebabCase(string: string): string {
+    return string.replace(
+        /\s+/g,  // Replace whitespace
+        '-'      // with a dash.
+    ).replace(
+        /([a-z])([A-Z])/g,  // Replace a lower case character going to an upper case character
+        "$1-$2"             // with both the characters with a dash between them.
+    ).toLowerCase();
+}
+
 // /** Split a string in two, at the given index. */
 // export function divideString(str: string, index: number): [string, string] {
 //     return [str.slice(0, index), str.slice(index)];

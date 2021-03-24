@@ -6,10 +6,12 @@ import authApi from "../../../api/AuthApi";
 import {ConfirmSignUpError, SignUpError} from "../../../api/AuthApi.types";
 import {getErrorText} from "../../../utils/string";
 import ProgressBar from "../../../components/progress/ProgressBar";
-import {SignUpForm} from "./SignUp/SignUpForm";
 import Button from "../../../components/button/Button";
+import signUpTestIDs from "./SignUp/signUpTestIDs";
+import {SignUpForm} from "./SignUp/SignUpForm";
 import {SignUpConfirmation} from "./SignUp/SignUpConfirmation";
 
+export const TestIDs = signUpTestIDs;
 export interface SignUpProps {
     onSuccess: (message: string) => void;
     onError: (message: string) => void;
@@ -64,7 +66,7 @@ export class SignUp extends React.PureComponent<SignUpProps, SignUpState> {
                 this.setState({ enterCode: true });
             },
             (e: SignUpError) => this.props.onError(
-                getErrorText(e?.message, 'Error signing up.')
+                getErrorText(e?.message || e, 'Error signing up.')
             ),
         ).finally(() => this.setState({ processing: false }));
     };
@@ -85,7 +87,7 @@ export class SignUp extends React.PureComponent<SignUpProps, SignUpState> {
                 password
             ),
             (e: ConfirmSignUpError) => this.props.onError(
-                getErrorText(e?.message, 'Error confirming registration.')
+                getErrorText(e?.message || e, 'Error confirming registration.')
             ),
         ).finally(() => this.setState({ processing: false }));
     }
@@ -107,13 +109,14 @@ export class SignUp extends React.PureComponent<SignUpProps, SignUpState> {
             }
 
             {!this.state.enterCode ? <Button
+                testID={TestIDs.SkipButton}
                 title="Enter Confirmation Code"
                 onClick={this.onEnterCode}
                 disabled={processing}
                 square transparent
             /> : null}
 
-            <ProgressBar visible={processing} style={styles.progress} />
+            <ProgressBar testID={TestIDs.ProgressBar} visible={processing} style={styles.progress} />
 
         </Column>;
     }

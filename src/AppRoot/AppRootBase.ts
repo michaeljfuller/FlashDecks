@@ -8,7 +8,9 @@ import {getErrorText} from "../utils/string";
 import logger from "../utils/Logger";
 import {Subscription} from "rxjs";
 
-export interface AppRootProps {}
+export interface AppRootProps {
+    manualStart?: boolean;
+}
 export interface AppRootState {
     user?: UserModel;
     cognitoUser?: CognitoUserModel;
@@ -28,16 +30,16 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
     signOutSub?: Subscription;
 
     componentDidMount() {
-        this.start(); // Comment out to show "Start" button
+        if (!this.props.manualStart) this.start();
     }
 
-    start() {
+    async start() {
         this.setState({started:true});
         this.signInSub?.unsubscribe();
         this.signOutSub?.unsubscribe();
         this.signInSub = auth.onSignIn.subscribe(() => this.fetchUserData());
         this.signOutSub = auth.onSignOut.subscribe(() => this.clearUser());
-        this.fetchUserData(false);
+        await this.fetchUserData(false);
     }
 
     componentWillUnmount() {
@@ -47,7 +49,7 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
     }
 
     onErrorMessage(message: string, details?: string) { // TODO Child implementations to use Toast
-        console.warn('AppRoot Auth Error:', message, details);
+        logger.warning('AppRoot Auth Error:', message, details)
         this.toast.add({ title: 'Auth Error', text: message, type: "warning", duration: 3000 });
     }
 
@@ -82,10 +84,10 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
         // Update state
         if (cognitoUser && user) {
             LoggedInUserStore.update(user);
-            logger.green.log(` Logged in as "${user.displayName}" `, LoggedInUserStore.state.value);
+            logger.green.log(`Logged in as "${user.displayName}"`, LoggedInUserStore.state.value);
             this.setState({ cognitoUser, user });
         } else {
-            console.log('AppRootBase.fetchUserData() No user.');
+            logger.red.log('AppRootBase.fetchUserData() No user.');
             this.clearUser();
             this.setState({ initialized: true });
         }

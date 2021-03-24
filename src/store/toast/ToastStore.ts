@@ -1,5 +1,5 @@
 import AStoreHelper from "../AStoreHelper";
-import {ActionType, ToastAdd, ToastShift, ToastQueueItem, ToastRemoveByRef} from "../store";
+import {ActionType, ToastAdd, ToastShift, ToastQueueItem, ToastRemoveByRef, AppStore} from "../store";
 import {ToastState} from "./toast_reducer";
 import {getErrorText, getErrorName} from "../../utils/string";
 
@@ -10,9 +10,10 @@ import {getErrorText, getErrorName} from "../../utils/string";
 export class ToastStore extends AStoreHelper<ToastState> {
     /**
      * @param defaultRef - The default ref to pass to `removeByRef()`. If not set, it uses the ToastStore instance.
+     * @param store - The store to use.
      */
-    constructor(readonly defaultRef?: ToastQueueItem['ref']) {
-        super('toast');
+    constructor(readonly defaultRef?: ToastQueueItem['ref'], store?: AppStore) {
+        super('toast', store);
         this.defaultRef = defaultRef || this;
     }
 
