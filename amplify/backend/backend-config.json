@@ -1,6 +1,6 @@
 {
   "auth": {
-    "FlashDecksAmplifyAuth": {
+    "FlashDecksAuth": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
@@ -8,7 +8,7 @@
     }
   },
   "api": {
-    "FlashDecksAmplifyApi": {
+    "FlashDecksAPI": {
       "service": "AppSync",
       "providerPlugin": "awscloudformation",
       "output": {
@@ -16,7 +16,7 @@
           "defaultAuthentication": {
             "authenticationType": "AMAZON_COGNITO_USER_POOLS",
             "userPoolConfig": {
-              "userPoolId": "authFlashDecksAmplifyAuth"
+              "userPoolId": "authFlashDecksAuth"
             }
           },
           "additionalAuthenticationProviders": []
@@ -32,7 +32,7 @@
       "dependsOn": [
         {
           "category": "auth",
-          "resourceName": "FlashDecksAmplifyAuth",
+          "resourceName": "FlashDecksAuth",
           "attributes": [
             "UserPoolId"
           ]
@@ -41,7 +41,7 @@
     }
   },
   "storage": {
-    "FlashDecksMediaStore": {
+    "FlashDecksContent": {
       "service": "S3",
       "providerPlugin": "awscloudformation"
     }

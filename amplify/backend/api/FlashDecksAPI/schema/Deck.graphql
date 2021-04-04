@@ -13,7 +13,7 @@ type Deck @model
 {
     id: ID! # Required by @model
     ownerId: ID! # Auto-created. Use @function to get owner object.
-    owner: User @function(name: "FlashDecks-GetCognitoUser-${env}") # Use Lambda to get User object from ownerId.
+    owner: User @function(name: "FD-GetCognitoUser-${env}") # Use Lambda to get User object from ownerId.
     createdAt: AWSDateTime!
     updatedAt: AWSDateTime!
     title: String!

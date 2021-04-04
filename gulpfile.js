@@ -1,6 +1,9 @@
 const gulp = require('gulp');
 const shell = require('gulp-shell');
 
+const noopTask = () => Promise.resolve();
+
+gulp.task('default', noopTask); // Do nothing for now, so remote build doesn't fail, as this is in the Build Settings.
 gulp.task('start', shell.task('npm start'));
 gulp.task('start:prod', shell.task('npm run start:prod'));
 

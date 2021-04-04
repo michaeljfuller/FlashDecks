@@ -10,9 +10,9 @@
     "env": {
       "Type": "String"
     },
-    "authFlashDecksAmplifyAuthUserPoolId": {
+    "authFlashDecksAuthUserPoolId": {
       "Type": "String",
-      "Default": "authFlashDecksAmplifyAuthUserPoolId"
+      "Default": "authFlashDecksAuthUserPoolId"
     }
   },
   "Conditions": {
@@ -37,12 +37,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "FlashDecks-GetCognitoUser",
+            "FD-GetCognitoUser",
             {
               "Fn::Join": [
                 "",
                 [
-                  "FlashDecks-GetCognitoUser",
+                  "FD-GetCognitoUser",
                   "-",
                   {
                     "Ref": "env"
@@ -60,8 +60,8 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "AUTH_FLASHDECKSAMPLIFYAUTH_USERPOOLID": {
-              "Ref": "authFlashDecksAmplifyAuthUserPoolId"
+            "AUTH_FLASHDECKSAUTH_USERPOOLID": {
+              "Ref": "authFlashDecksAuthUserPoolId"
             }
           }
         },
@@ -75,8 +75,8 @@
         "Layers": [],
         "Timeout": "25",
         "Code": {
-          "S3Bucket": "amplify-flashdecksamplify-dev-161344-deployment",
-          "S3Key": "amplify-builds/GetCognitoUser-6c4753675a647743545a-build.zip"
+          "S3Bucket": "amplify-flashdecks-dev-225813-deployment",
+          "S3Key": "amplify-builds/GetCognitoUser-4538383768426438574d-build.zip"
         }
       }
     },
@@ -86,12 +86,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "flashdecksamplifyLambdaRole08b85d9d",
+            "flashdecksLambdaRole3ca21eb5",
             {
               "Fn::Join": [
                 "",
                 [
-                  "flashdecksamplifyLambdaRole08b85d9d",
+                  "flashdecksLambdaRole3ca21eb5",
                   "-",
                   {
                     "Ref": "env"
@@ -210,7 +210,7 @@
                       },
                       ":userpool/",
                       {
-                        "Ref": "authFlashDecksAmplifyAuthUserPoolId"
+                        "Ref": "authFlashDecksAuthUserPoolId"
                       }
                     ]
                   ]

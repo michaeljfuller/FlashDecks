@@ -328,6 +328,15 @@ export type ListDecksQuery = {
       cards:  Array< {
         __typename: "Card",
         title: string,
+        sides:  Array< {
+          __typename: "CardSide",
+          content:  Array< {
+            __typename: "CardSideContent",
+            type: CardSideContentType,
+            value: string,
+            size: number | null,
+          } > | null,
+        } > | null,
       } > | null,
     } | null > | null,
     nextToken: string | null,
@@ -364,6 +373,15 @@ export type GetDecksByOwnerQuery = {
       cards:  Array< {
         __typename: "Card",
         title: string,
+        sides:  Array< {
+          __typename: "CardSide",
+          content:  Array< {
+            __typename: "CardSideContent",
+            type: CardSideContentType,
+            value: string,
+            size: number | null,
+          } > | null,
+        } > | null,
       } > | null,
     } | null > | null,
     nextToken: string | null,

@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "FlashDecksAmplifyAuth_identitypool_553b3633",
+    "identityPoolName": "FlashDecksAuth_identitypool_d6ccf66c",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "flashd5161d449",
-    "userPoolName": "FlashDecksAmplify_UserPool",
+    "resourceNameTruncated": "flashdc1200d8f",
+    "userPoolName": "FlashDecks_UserPool",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -12,14 +12,13 @@
     ],
     "smsAuthenticationMessage": "Your authentication code is {####}",
     "smsVerificationMessage": "Your verification code is {####}",
-    "emailVerificationSubject": "Your verification code",
+    "emailVerificationSubject": "FlashDecks Verification",
     "emailVerificationMessage": "Your verification code is {####}",
-    "defaultPasswordPolicy": false,
+    "defaultPasswordPolicy": true,
     "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [],
     "requiredAttributes": [
-        "email",
-        "name"
+        "email"
     ],
     "userpoolClientGenerateSecret": true,
     "userpoolClientRefreshTokenValidity": 30,
@@ -29,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "FlashD5161d449_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "FlashDc1200d8f_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "5161d449",
-    "resourceName": "FlashDecksAmplifyAuth",
+    "sharedId": "c1200d8f",
+    "resourceName": "FlashDecksAuth",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
