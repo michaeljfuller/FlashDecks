@@ -1,11 +1,11 @@
 /* Amplify Params - DO NOT EDIT
-	AUTH_FLASHDECKSAMPLIFYAUTH_USERPOOLID
+	AUTH_FLASHDECKSAUTH_USERPOOLID
 	ENV
 	REGION
 Amplify Params - DO NOT EDIT */
 
 const CognitoService = require('./helpers/CognitoService');
-const userPoolId = getEnvVar('AUTH_FLASHDECKSAMPLIFYAUTH_USERPOOLID');
+const userPoolId = getEnvVar('AUTH_FLASHDECKSAUTH_USERPOOLID');
 const cognito = new CognitoService(userPoolId);
 
 /**
