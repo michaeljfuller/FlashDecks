@@ -61,7 +61,10 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
             )
         } else {
             this.setStateTo(draft => {
-                draft.originalDeck = castDraft(new DeckModel);
+                draft.originalDeck = castDraft(DeckModel.create({
+                    owner: this.props.loggedInUser || undefined,
+                    ownerId: this.props.loggedInUser?.id,
+                }));
                 draft.showInfoModal = true;
                 draft.loading = false;
             });
