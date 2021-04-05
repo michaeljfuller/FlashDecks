@@ -27,7 +27,7 @@ export interface ImagePickerState {
  */
 export class ImagePicker extends React.PureComponent<ImagePickerProps, ImagePickerState> {
     state: ImagePickerState = {};
-    toast = new ToastStore(this);
+    toast = new ToastStore();
 
     async requestPermission() {
         const {status} = await ExpoImagePicker.requestCameraRollPermissionsAsync();

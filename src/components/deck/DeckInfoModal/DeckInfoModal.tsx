@@ -31,7 +31,7 @@ export interface DeckInfoModalState {
 export class DeckInfoModal extends ImmutableComponent<DeckInfoModalProps, DeckInfoModalState> {
     state = { saving: false } as DeckInfoModalState;
 
-    toast = new ToastStore(this);
+    toast = new ToastStore();
     pushInfoSub?: Subscription;
 
     componentWillUnmount() {

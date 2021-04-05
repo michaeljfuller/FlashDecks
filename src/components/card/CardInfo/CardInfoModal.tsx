@@ -17,7 +17,7 @@ export interface CardInfo {
 }
 
 export class CardInfoModal extends React.PureComponent<EditCardModalProps> {
-    toast = new ToastStore(this);
+    toast = new ToastStore();
     modifiedCard?: CardModel;
 
     get card() {

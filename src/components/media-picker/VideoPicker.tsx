@@ -29,7 +29,7 @@ export interface VideoPickerData {
  */
 export class VideoPicker extends React.PureComponent<VideoPickerProps, VideoPickerState> {
     state: VideoPickerState = {};
-    toast = new ToastStore(this);
+    toast = new ToastStore();
 
     async requestPermission() {
         const {status} = await ExpoImagePicker.requestCameraRollPermissionsAsync();

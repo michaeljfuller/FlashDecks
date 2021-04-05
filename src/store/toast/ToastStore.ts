@@ -3,18 +3,17 @@ import {ActionType, ToastAdd, ToastShift, ToastQueueItem, ToastRemoveByRef, AppS
 import {ToastState} from "./toast_reducer";
 import {getErrorText, getErrorName} from "../../utils/string";
 
+let nextHelperId = 1;
+
 /**
  * Facade for adding toast to the store queue.
  * Also stores a ref to tidy up toast with.
  */
 export class ToastStore extends AStoreHelper<ToastState> {
-    /**
-     * @param defaultRef - The default ref to pass to `removeByRef()`. If not set, it uses the ToastStore instance.
-     * @param store - The store to use.
-     */
-    constructor(readonly defaultRef?: ToastQueueItem['ref'], store?: AppStore) {
+    readonly defaultRef: ToastQueueItem['ref'] = Symbol(`ToastStore#${nextHelperId++}`);
+
+    constructor(store?: AppStore) {
         super('toast', store);
-        this.defaultRef = defaultRef || this;
     }
 
     /** Add item to the queue */

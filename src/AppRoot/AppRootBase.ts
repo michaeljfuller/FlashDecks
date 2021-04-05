@@ -25,7 +25,7 @@ export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppR
         started: false,
         initialized: false,
     };
-    toast = new ToastStore(this);
+    toast = new ToastStore();
     signInSub?: Subscription;
     signOutSub?: Subscription;
 

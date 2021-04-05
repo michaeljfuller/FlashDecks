@@ -28,7 +28,7 @@ export class ApiTempScreen extends ImmutablePureComponent<
         loadingUserDecks: true,
     } as ApiTempScreenState;
 
-    toast = new ToastStore(this);
+    toast = new ToastStore();
     private userDecksRequest?: ApiRequest<DeckListItemModel[]>;
     private allDecksRequest?: ApiRequest<DeckListItemModel[]>;
 

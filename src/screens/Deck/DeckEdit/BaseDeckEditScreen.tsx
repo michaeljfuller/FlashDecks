@@ -18,7 +18,7 @@ export interface DeckEditScreenProps extends NavigationScreenProps<
 export abstract class BaseDeckEditScreen<State>
 extends ImmutablePureComponent<DeckEditScreenProps & DeckEditScreenStoreProps, State>
 {
-    toast = new ToastStore(this);
+    toast = new ToastStore();
     getDeckSub?: Subscription;
     uploadContentSub?: Subscription;
     SaveDeckSub?: Subscription;

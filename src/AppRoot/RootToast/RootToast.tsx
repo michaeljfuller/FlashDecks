@@ -18,7 +18,7 @@ export class RootToast extends React.PureComponent<RootToastStoreProps> {
     get currentToast(): ToastStateQueueItem|undefined { return this.props.toast[0]; }
 
     componentDidMount() {
-        this.toastStore = new ToastStore(this, this.storeContext.store);
+        this.toastStore = new ToastStore(this.storeContext.store);
     }
 
     componentWillUnmount() {
@@ -40,7 +40,7 @@ export class RootToast extends React.PureComponent<RootToastStoreProps> {
         const {ref, ...toastProps} = toast;
         return <Toast show
             {...toastProps}
-            key={ref+'_'+toast.id}
+            key={ref?.toString()+'_'+toast.id}
             onClose={this.onCloseCurrent}
         />;
     }

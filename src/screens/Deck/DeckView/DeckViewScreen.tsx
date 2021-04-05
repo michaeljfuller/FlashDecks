@@ -31,7 +31,7 @@ export class DeckViewScreen extends ImmutablePureComponent<DeckViewScreenProps &
         showInfoModal: false,
     } as DeckViewScreenState;
 
-    toast = new ToastStore(this);
+    toast = new ToastStore();
     getDeckSubscription?: Subscription;
 
     componentDidMount() {

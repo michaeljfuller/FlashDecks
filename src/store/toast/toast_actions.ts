@@ -15,5 +15,5 @@ export interface ToastRemoveByRef extends IAction {
 
 export interface ToastQueueItem extends Omit<ToastProps, 'show'> {
     /** A reference to identify the toast by. */
-    ref?: any;
+    ref?: string|symbol;
 }

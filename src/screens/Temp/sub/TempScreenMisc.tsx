@@ -16,7 +16,7 @@ export class TempScreenMisc extends React.PureComponent<TempScreenMiscProps, Tem
     state: TempScreenMiscState = {
         navBlocked: false,
     };
-    toastStore = new ToastStore(this);
+    toastStore = new ToastStore();
 
     componentWillUnmount() {
         this.toastStore.removeByRef();
