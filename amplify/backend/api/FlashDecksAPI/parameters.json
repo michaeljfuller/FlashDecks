@@ -1,11 +1,11 @@
 {
-    "AppSyncApiName": "FlashDecksAPI",
-    "DynamoDBBillingMode": "PAY_PER_REQUEST",
-    "DynamoDBEnableServerSideEncryption": false,
-    "AuthCognitoUserPoolId": {
-        "Fn::GetAtt": [
-            "authFlashDecksAuth",
-            "Outputs.UserPoolId"
-        ]
-    }
+  "AppSyncApiName": "FlashDecksAPI",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authFlashDecksAuth",
+      "Outputs.UserPoolId"
+    ]
+  }
 }

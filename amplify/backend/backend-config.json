@@ -7,23 +7,6 @@
       "customAuth": false
     }
   },
-  "api": {
-    "FlashDecksAPI": {
-      "service": "AppSync",
-      "providerPlugin": "awscloudformation",
-      "output": {
-        "authConfig": {
-          "defaultAuthentication": {
-            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-            "userPoolConfig": {
-              "userPoolId": "authFlashDecksAuth"
-            }
-          },
-          "additionalAuthenticationProviders": []
-        }
-      }
-    }
-  },
   "function": {
     "GetCognitoUser": {
       "build": true,
@@ -44,6 +27,23 @@
     "FlashDecksContent": {
       "service": "S3",
       "providerPlugin": "awscloudformation"
+    }
+  },
+  "api": {
+    "FlashDecksAPI": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authFlashDecksAuth"
+            }
+          },
+          "additionalAuthenticationProviders": []
+        }
+      }
     }
   }
 }
