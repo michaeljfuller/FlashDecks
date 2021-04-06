@@ -136,8 +136,6 @@ export class DeckListScreen extends ImmutablePureComponent<
     render() {
         return (
             <ScreenContainer>
-                <Text style={styles.title}>{this.constructor.name}: {this.selection}</Text>
-
                 <Row style={styles.actionsRow}>
                     <ActionsButton title="Own Decks" onClick={this.selectOwnDecks} disabled={this.selection==="own"} />
                     <ActionsButton title="All Decks" onClick={this.selectAllDecks} disabled={this.selection==="all"} />
