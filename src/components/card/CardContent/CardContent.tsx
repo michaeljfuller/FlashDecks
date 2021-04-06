@@ -95,7 +95,7 @@ export class CardContentView extends ImmutablePureComponent<CardContentProps, Ca
     };
 
     render() {
-        const media = <CardContentMedia content={this.props.content} height={this.currentHeight} />;
+        const media = <CardContentMedia content={this.props.content} height={this.currentHeight} minHeight={30} />;
 
         if (!this.props.editable) {
             return <View>{media}</View>;

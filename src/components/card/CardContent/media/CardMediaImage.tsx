@@ -58,6 +58,7 @@ export class CardMediaImage extends BaseCardMedia<BaseCardMediaProps, CardMediaI
 
     render() {
         const {error, imageSize} = this.state;
+        const {minHeight, maxHeight} = this.props;
         const height = this.props.height || imageSize?.height || undefined;
         const imageReady = this.state.imageSize !== undefined;
 
@@ -65,7 +66,7 @@ export class CardMediaImage extends BaseCardMedia<BaseCardMediaProps, CardMediaI
             return <CardMediaError message={error} height={height} />;
         }
 
-        return <View style={[styles.root, { height }]}>
+        return <View style={[styles.root, { height, minHeight, maxHeight }]}>
             {imageReady ? null : <Center><ProgressCircle /></Center>}
             <Visibility render={!!this.mediaUri} style={[styles.fullSize]}>
                 <Image

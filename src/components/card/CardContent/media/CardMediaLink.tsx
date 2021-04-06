@@ -1,13 +1,16 @@
 import React from "react";
 import {LinkButton} from "../../../button/LinkButton";
-import {CardContentModel} from "../../../../models";
+import {BaseCardMediaProps} from "./core/BaseCardMedia";
 
-export interface CardMediaLinkProps {
-    content: CardContentModel;
-    height?: number;
-}
+export type CardMediaLinkProps = BaseCardMediaProps;
 
 export const CardMediaLink = React.memo(function CardMediaLink(props: CardMediaLinkProps) {
-    return <LinkButton url={props.content.value} height={props.height} />;
+    let {height} = props;
+    const {minHeight, maxHeight} = props;
+    if (height !== undefined) {
+        if (minHeight) height = Math.max(height, minHeight);
+        if (maxHeight) height = Math.min(height, maxHeight);
+    }
+    return <LinkButton url={props.content.value} height={height} />;
 });
 export default CardMediaLink;

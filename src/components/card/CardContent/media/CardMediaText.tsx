@@ -1,16 +1,20 @@
 import React from "react";
 import {Text, View, StyleSheet} from "react-native";
 import {Color} from "../../../../styles/Color";
-import {CardContentModel} from "../../../../models";
+import {BaseCardMediaProps} from "./core/BaseCardMedia";
 
-export interface CardMediaTextProps {
-    content: CardContentModel;
-    height?: number;
-}
+export type CardMediaTextProps = BaseCardMediaProps;
 
 export const CardMediaText = React.memo(function CardMediaText(props: CardMediaTextProps) {
-    const { content, height } = props;
-    return <View style={{minHeight: height}}>
+    let {height} = props;
+    const { content, minHeight, maxHeight } = props;
+    if (height !== undefined) {
+        if (minHeight) height = Math.max(height, minHeight);
+        if (maxHeight) height = Math.min(height, maxHeight);
+    }
+    console.log("CardMediaText", {height, minHeight, maxHeight, props});
+
+    return <View style={{minHeight: height || minHeight, maxHeight}}>
         <Text style={styles.text} selectable={false}>{content.value}</Text>
     </View>;
 });

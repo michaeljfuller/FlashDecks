@@ -8,6 +8,8 @@ import {Observable, Subscription} from "rxjs";
 export interface BaseCardMediaProps {
     content: CardContentModel;
     height?: number;
+    minHeight?: number;
+    maxHeight?: number;
 }
 export interface BaseCardMediaState {
     mediaUrl?: string;

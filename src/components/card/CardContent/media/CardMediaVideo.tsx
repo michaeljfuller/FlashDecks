@@ -24,13 +24,14 @@ export class CardMediaVideo extends BaseCardMedia {
 
     render() {
         const {error} = this.state;
+        const {minHeight, maxHeight} = this.props;
         const height = this.props.height || 200;
 
         if (error) {
             return <CardMediaError message={error} />;
         }
 
-        return <View style={[styles.root, {height}]}>
+        return <View style={[styles.root, {height, minHeight, maxHeight}]}>
             {!this.mediaUri
             ?   <Center><ProgressCircle /></Center>
             :   <CardVideoPlayer sourceUri={this.mediaUri} onError={this.onError} />
