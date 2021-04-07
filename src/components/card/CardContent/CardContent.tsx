@@ -1,5 +1,5 @@
 import React from "react";
-import {View} from "react-native";
+import {View, LayoutChangeEvent, LayoutRectangle} from "react-native";
 import CardContentActions from "./CardContentActions";
 import CardContentMedia from "./CardContentMedia";
 import CardContentResizer from "./CardContentResizer";
@@ -30,8 +30,12 @@ export interface CardContentProps {
     onChange?: (content: CardContentModel, contentIndex: number) => void;
     /** The height of the parent, to calculate the proportional height of the content. */
     parentHeight: number;
+    parentWidth?: number;
 }
 export interface CardContentState {
+    measuredMediaLayout?: LayoutRectangle;
+    /** The height recorded at the start of resizing. */
+    resizeInitialHeight: number|null;
     /** The height assigned while resizing. */
     resizePreviewHeight: number|null;
 }
@@ -39,22 +43,21 @@ export interface CardContentState {
 /** A view representing a content item on a card. */
 export class CardContentView extends ImmutablePureComponent<CardContentProps, CardContentState> {
     readonly state = {
+        resizeInitialHeight: null,
         resizePreviewHeight: null,
     } as Readonly<CardContentState>;
 
-    /** The absolute height, calculated off the recorded content size and the parent height.  */
-    get calculatedHeight() {
+    /** The current height, while resizing or otherwise. */
+    get currentHeight() {
+        if (this.state.resizePreviewHeight) {
+            return this.state.resizePreviewHeight;
+        }
+        // The absolute height, calculated off the recorded content size and the parent height.
         if (this.props.content.size && this.props.parentHeight) {
             const calculated = Math.floor(this.props.content.size * this.props.parentHeight);
             return calculated ? Math.max(calculated, MIN_HEIGHT) : undefined;
         }
         return undefined;
-    }
-
-    /** The current height, while resizing or otherwise. */
-    get currentHeight() {
-        if (this.state.resizePreviewHeight !== null) return this.state.resizePreviewHeight;
-        return this.calculatedHeight;
     }
 
     /** Notify parent that the user wants to edit this. */
@@ -77,9 +80,11 @@ export class CardContentView extends ImmutablePureComponent<CardContentProps, Ca
     }
 
     /** Update the resize height. */
-    onResize = (offsetY: number) => this.setStateTo({
-        resizePreviewHeight: Math.max(MIN_HEIGHT, (this.calculatedHeight || 0) + offsetY), // TODO Replace 0 with measured size?
-    });
+    onResize = (offsetY: number) => {
+        const resizeInitialHeight = this.state.resizeInitialHeight || this.state.measuredMediaLayout?.height || 0;
+        const resizePreviewHeight = Math.max(MIN_HEIGHT, resizeInitialHeight + offsetY);
+        this.setStateTo({ resizePreviewHeight, resizeInitialHeight });
+    }
 
     /** Finish resizing and notify changes. */
     onResizeDone = (canceled: boolean) => {
@@ -91,21 +96,32 @@ export class CardContentView extends ImmutablePureComponent<CardContentProps, Ca
                 this.props.contentIndex || 0
             );
         }
-        this.setStateTo({ resizePreviewHeight: null });
+        this.setStateTo({ resizePreviewHeight: null, resizeInitialHeight: null });
     };
 
-    render() {
-        const media = <CardContentMedia content={this.props.content} height={this.currentHeight} minHeight={30} />;
+    onLayout = ({nativeEvent}: LayoutChangeEvent) => {
+        this.setStateTo(draft => draft.measuredMediaLayout = nativeEvent.layout);
+    }
 
-        if (!this.props.editable) {
-            return <View>{media}</View>;
-        }
+    render() {
+        const currentHeight = this.currentHeight;
+
+        const media = <View onLayout={this.onLayout}>
+            <CardContentMedia
+                content={this.props.content}
+                height={currentHeight}
+                width={this.state.measuredMediaLayout?.width}
+                minHeight={MIN_HEIGHT}
+                maxHeight={this.props.parentHeight}
+            />
+        </View>;
+        if (!this.props.editable) return media;
 
         return <View>
             {media}
             <CardContentResizer
                 editing={this.props.resizing || false}
-                text={this.currentHeight ? `${Math.floor((this.currentHeight / this.props.parentHeight) * 100)}%` : `auto`}
+                text={currentHeight ? `${Math.floor((currentHeight / this.props.parentHeight) * 100)}%` : `auto`}
                 onMove={this.onResize}
                 onFinished={this.onResizeDone}
             />

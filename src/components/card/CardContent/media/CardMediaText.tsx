@@ -12,7 +12,6 @@ export const CardMediaText = React.memo(function CardMediaText(props: CardMediaT
         if (minHeight) height = Math.max(height, minHeight);
         if (maxHeight) height = Math.min(height, maxHeight);
     }
-    console.log("CardMediaText", {height, minHeight, maxHeight, props});
 
     return <View style={{minHeight: height || minHeight, maxHeight}}>
         <Text style={styles.text} selectable={false}>{content.value}</Text>

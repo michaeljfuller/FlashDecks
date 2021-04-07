@@ -7,6 +7,7 @@ import {Observable, Subscription} from "rxjs";
 
 export interface BaseCardMediaProps {
     content: CardContentModel;
+    width?: number;
     height?: number;
     minHeight?: number;
     maxHeight?: number;

@@ -8,6 +8,7 @@ import ProgressCircle from "../../../progress/ProgressCircle";
 import {Visibility} from "../../../layout/Visibility";
 import Center from "../../../layout/Center";
 import {BaseCardMedia, BaseCardMediaProps, BaseCardMediaState} from "./core/BaseCardMedia";
+import {fitAspectRatio} from "../../../../utils/math";
 
 export interface CardMediaImageState extends BaseCardMediaState {
     imageSize?: ImageSize;
@@ -58,8 +59,12 @@ export class CardMediaImage extends BaseCardMedia<BaseCardMediaProps, CardMediaI
 
     render() {
         const {error, imageSize} = this.state;
-        const {minHeight, maxHeight} = this.props;
-        const height = this.props.height || imageSize?.height || undefined;
+        const {width, minHeight, maxHeight} = this.props;
+        let height = this.props.height || undefined;
+        if (!height && imageSize) {
+            const aspectRatio = (imageSize?.width||1) / (imageSize?.height||1);
+            height = fitAspectRatio(width || 0, imageSize.height, aspectRatio).height;
+        }
         const imageReady = this.state.imageSize !== undefined;
 
         if (error) {

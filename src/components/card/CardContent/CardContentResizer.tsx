@@ -59,6 +59,10 @@ export const CardContentResizer: React.ComponentType<CardContentResizerProps> = 
                 setIsDragging(false);
                 props.onFinished && props.onFinished(true);
             },
+            onPanResponderTerminationRequest: (/*event*/) => {
+                // False, so the cursor moving off the bar due to reducing size while scrolled down, doesn't cancel resize.
+                return false;
+            }
         })
     ).current;
 
@@ -80,7 +84,7 @@ export const CardContentResizer: React.ComponentType<CardContentResizerProps> = 
         return null;
     }
 });
-CardContentResizer.propTypes = CardContentResizerPropTypes;
+CardContentResizer.propTypes = CardContentResizerPropTypes as any;
 export default CardContentResizer;
 
 const height = isPlatformWeb ? 20 : 35;
