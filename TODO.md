@@ -4,6 +4,9 @@ https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html
   * @typescript-eslint/parser
   * IDE
   * Any other dependencies?
+  
+# Server-Side Rendering
+* [SSR Support for AWS Amplify JavaScript Libraries](https://aws.amazon.com/blogs/mobile/ssr-support-for-aws-amplify-javascript-libraries/)
 
 # Server API (+ Client)
 * Deck search
