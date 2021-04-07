@@ -183,7 +183,7 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
         const canSave = !validation.invalid && editable && hasChanges;
         const card = this.deck.cards[this.cardIndex];
 
-        let saveButtonText = 'Save Cards';
+        let saveButtonText = 'Save Deck';
         if (!this.state.modifiedDeck) saveButtonText = 'Save: No changes';
         else if (validation.invalid) saveButtonText = `Save: ${validation.reasons[0]}`
 
