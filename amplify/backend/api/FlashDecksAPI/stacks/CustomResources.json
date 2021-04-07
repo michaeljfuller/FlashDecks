@@ -43,7 +43,7 @@
         "LambdaConfig": {
           "LambdaFunctionArn": {
             "Fn::Sub": [
-              "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:FlashDecks-GetCognitoUser-${env}",
+              "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:FD-GetCognitoUser-${env}",
               { "env": { "Ref": "env" } }
             ]
           }
@@ -55,7 +55,7 @@
       "Properties": {
         "RoleName": {
           "Fn::Sub": [
-            "FlashDecks-GetCognitoUserLambdaDataSourceRole-${env}",
+            "FD-GetCognitoUserLambdaDataSourceRole-${env}",
             { "env": { "Ref": "env" } }
           ]
         },
@@ -76,7 +76,7 @@
               "Action": [ "lambda:invokeFunction" ],
               "Resource": [{
                 "Fn::Sub": [
-                  "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:FlashDecks-GetCognitoUser-${env}",
+                  "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:FD-GetCognitoUser-${env}",
                   { "env": { "Ref": "env" } }
                 ]
               }]
@@ -88,9 +88,14 @@
     "GetUserQueryResolver": {
       "Type": "AWS::AppSync::Resolver",
       "Properties": {
-        "ApiId": { "Ref": "AppSyncApiId" },
+        "ApiId": {
+          "Ref": "AppSyncApiId"
+        },
         "DataSourceName": {
-          "Fn::GetAtt": [ "GetUserLambdaDataSource", "Name" ]
+          "Fn::GetAtt": [
+            "GetUserLambdaDataSource",
+            "Name"
+          ]
         },
         "TypeName": "Query",
         "FieldName": "getUser",
@@ -98,8 +103,12 @@
           "Fn::Sub": [
             "s3://${S3DeploymentBucket}/${S3DeploymentRootKey}/resolvers/Query.getUser.req.vtl",
             {
-              "S3DeploymentBucket": { "Ref": "S3DeploymentBucket" },
-              "S3DeploymentRootKey": { "Ref": "S3DeploymentRootKey" }
+              "S3DeploymentBucket": {
+                "Ref": "S3DeploymentBucket"
+              },
+              "S3DeploymentRootKey": {
+                "Ref": "S3DeploymentRootKey"
+              }
             }
           ]
         },
@@ -107,8 +116,12 @@
           "Fn::Sub": [
             "s3://${S3DeploymentBucket}/${S3DeploymentRootKey}/resolvers/Query.getUser.res.vtl",
             {
-              "S3DeploymentBucket": { "Ref": "S3DeploymentBucket" },
-              "S3DeploymentRootKey": { "Ref": "S3DeploymentRootKey" }
+              "S3DeploymentBucket": {
+                "Ref": "S3DeploymentBucket"
+              },
+              "S3DeploymentRootKey": {
+                "Ref": "S3DeploymentRootKey"
+              }
             }
           ]
         }

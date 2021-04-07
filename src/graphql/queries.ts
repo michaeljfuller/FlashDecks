@@ -61,6 +61,13 @@ export const listDecks = /* GraphQL */ `
         tags
         cards {
           title
+          sides {
+            content {
+              type
+              value
+              size
+            }
+          }
         }
       }
       nextToken
@@ -99,6 +106,13 @@ export const getDecksByOwner = /* GraphQL */ `
         tags
         cards {
           title
+          sides {
+            content {
+              type
+              value
+              size
+            }
+          }
         }
       }
       nextToken
