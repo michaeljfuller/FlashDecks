@@ -5,7 +5,6 @@
 export enum AppRoutes {
     Home = 'home',
     Temp = 'temp',
-    ApiTemp = 'api-temp',
     Decks = 'decks',
 }
 export default AppRoutes;

@@ -7,7 +7,6 @@ export const AppRoutesTree = {
     children: {
         [AppRoutes.Home]: null,
         [AppRoutes.Temp]: null,
-        [AppRoutes.ApiTemp]: null,
         [AppRoutes.Decks]: DeckRouteTree,
     }
 } as NavigationTree;
