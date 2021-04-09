@@ -12,7 +12,7 @@ export interface AppRouteScreenData {
 }
 export const appRouteScreens: AppRouteScreenData[] = [
     { routeName: AppRoutes.Home, component: DashboardScreen },
-    { routeName: AppRoutes.Temp, component: TempScreen },
     { routeName: AppRoutes.Decks, component: DeckRouteContainer },
+    { routeName: AppRoutes.Temp, component: TempScreen },
 ];
 export default appRouteScreens;
