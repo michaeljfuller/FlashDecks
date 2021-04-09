@@ -12,7 +12,7 @@ interface TempScreenMiscProps {}
 interface TempScreenMiscState {
     navBlocked: boolean;
 }
-export class TempScreenMisc extends React.PureComponent<TempScreenMiscProps, TempScreenMiscState> {
+export class TempScreenToast extends React.PureComponent<TempScreenMiscProps, TempScreenMiscState> {
     state: TempScreenMiscState = {
         navBlocked: false,
     };
@@ -55,7 +55,7 @@ export class TempScreenMisc extends React.PureComponent<TempScreenMiscProps, Tem
 
     render() {
         const {navBlocked} = this.state;
-        return <TempScreenSubsection title="Misc">
+        return <TempScreenSubsection title="Toast">
 
             <Text>Toast</Text>
             <Row wrap center>
@@ -87,7 +87,7 @@ export class TempScreenMisc extends React.PureComponent<TempScreenMiscProps, Tem
         </TempScreenSubsection>;
     }
 }
-export default TempScreenMisc;
+export default TempScreenToast;
 
 const styles = StyleSheet.create({
     rowButton: {
