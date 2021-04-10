@@ -1,5 +1,5 @@
 import React from "react";
-import {Text} from "react-native";
+import {Text, View} from "react-native";
 import ImmutablePureComponent from "../../components/ImmutablePureComponent";
 import ScreenContainer from "../ScreenContainer";
 import {NavigationScreenProps} from "../../navigation/navigation_types";
@@ -77,7 +77,12 @@ export class TempScreen extends ImmutablePureComponent<
                     <TempScreenToggle title="Toast"    onClick={this.toggleToast}        value={this.state.showToast} />
                 </Row>
 
-                {openSections.length ? openSections : <Text>Click one of the above buttons to view its contents.</Text>}
+                {openSections.length ? openSections : <View style={{
+                    marginTop: 8, paddingHorizontal: 5, borderWidth: 1, backgroundColor: 'white',
+                }}>
+                    <Text>This is a screen for viewing and testing components in isolation.</Text>
+                    <Text>Click one of the above buttons to view its contents.</Text>
+                </View>}
 
             </ScreenContainer>
         );
