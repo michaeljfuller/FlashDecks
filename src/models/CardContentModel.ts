@@ -3,6 +3,7 @@ import {fileFromImageData, fileFromVideoData} from "../utils/file";
 import {ApiCardSide} from "./CardSideModel";
 import {CardSideContentType} from "../graphql/API";
 import {v4 as uuid} from "uuid";
+import {validUrl} from "../utils/string";
 
 export type ApiCardContent = NonNullable<ApiCardSide["content"]>[0];
 export const ApiCardContentType = CardSideContentType;
@@ -41,6 +42,9 @@ export class CardContentModel extends Model implements Omit<ApiCardContent, '__t
     }
 
     get validValue(): boolean {
+        switch (this.type) {
+            case "Link": return validUrl(this.value);
+        }
         return this.value.length > 0;
     }
 
