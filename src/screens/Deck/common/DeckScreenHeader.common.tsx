@@ -8,6 +8,7 @@ export interface DeckScreenHeaderProps {
     saveText?: string;
     editable?: boolean;
     onOpenInfoModal?: () => void;
+    onOpenHelpModal?: () => void;
     onAddCard?: () => void;
     onRemoveCard?: () => void;
     onSave?: () => void;

@@ -20,6 +20,7 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
             onSave,
             onUndo,
             onOpenInfoModal,
+            onOpenHelpModal,
             title,
             item
         } = this.props;
@@ -31,7 +32,8 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
 
             <Row center style={styles.titleRow}>
                 <Text style={styles.titleText}>{title || item.title}</Text>
-                <IconButton style={styles.infoButton} flat icon={IconType.Info} onClick={onOpenInfoModal} />
+                <IconButton style={styles.iconButton} flat icon={IconType.Info} onClick={onOpenInfoModal} />
+                <IconButton style={styles.iconButton} flat icon={IconType.QuestionMark} onClick={onOpenHelpModal} />
             </Row>
 
             <Row style={styles.actionsRow}>
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
         fontSize: Math.floor(avatarSize*0.7),
         fontWeight: "bold",
     },
-    infoButton: {
+    iconButton: {
         marginLeft: 5,
     },
     cardCount: {

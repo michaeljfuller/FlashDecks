@@ -20,6 +20,7 @@ import ProgressCircle from "../../../components/progress/ProgressCircle";
 import {BaseDeckEditScreen, SaveDeckProgress} from "./BaseDeckEditScreen";
 import ProgressBar from "../../../components/progress/ProgressBar";
 import {Visibility} from "../../../components/layout/Visibility";
+import DeckEditScreenHelpModal from "./DeckEditScreenHelpModal";
 
 export interface DeckEditScreenState {
     originalDeck?: DeckModel;
@@ -27,6 +28,7 @@ export interface DeckEditScreenState {
     loading: boolean;
     saving?: SaveDeckProgress;
     showInfoModal: boolean;
+    showHelpModal: boolean;
     showDeleteCardPrompt: boolean;
     showCreateCardModal: boolean;
     error?: string;
@@ -37,6 +39,7 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
     state = {
         loading: true,
         showInfoModal: false,
+        showHelpModal: false,
         showDeleteCardPrompt: false,
         showCreateCardModal: false,
     } as DeckEditScreenState;
@@ -162,6 +165,9 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
         );
     }
 
+    onOpenHelpModal = () => this.setStateTo({ showHelpModal: true });
+    onCloseHelpModal = () => this.setStateTo({ showHelpModal: false });
+
     render() {
         return (
             <ScreenContainer>
@@ -196,6 +202,7 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
                 editable={editable}
                 item={this.deck}
                 onOpenInfoModal={this.onOpenInfoModal}
+                onOpenHelpModal={this.onOpenHelpModal}
                 onAddCard={this.onShowCreateCardModal}
                 onRemoveCard={this.onOpenDeleteCardPrompt}
                 title={title}
@@ -248,6 +255,9 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
                     {saving?.currentProgress?.total && <ProgressBar value={saving.currentProgress?.loaded} maxValue={saving.currentProgress.total} /> }
                 </Visibility>
             </ProgressModal>
+
+            <DeckEditScreenHelpModal open={this.state.showHelpModal} onClose={this.onCloseHelpModal} />
+
         </React.Fragment>
     }
 

@@ -6,7 +6,7 @@ import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
 import ScreenContainer from "../../ScreenContainer";
 import DeckView from "../../../components/deck/DeckView/DeckView";
 import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
-import {reduxConnector, DeckViewScreenStoreProps} from "./DeckViewScreen_redux";
+import {DeckViewScreenStoreProps, reduxConnector} from "./DeckViewScreen_redux";
 import DeckScreenHeader from "../common/DeckScreenHeader";
 import {DeckModel} from "../../../models";
 import deckApi from "../../../api/DeckApi";
@@ -14,6 +14,7 @@ import ToastStore from "../../../store/toast/ToastStore";
 import {DeckInfoModal} from "../../../components/deck/DeckInfoModal/DeckInfoModal";
 import Center from "../../../components/layout/Center";
 import ProgressCircle from "../../../components/progress/ProgressCircle";
+import DeckViewScreenHelpModal from "./DeckViewScreenHelpModal";
 
 export interface DeckViewScreenProps extends NavigationScreenProps<
     NavigationScreenState, { deckId: string }
@@ -22,6 +23,7 @@ export interface DeckViewScreenState {
     deck?: DeckModel;
     loading: boolean;
     showInfoModal: boolean;
+    showHelpModal: boolean;
     error?: string;
 }
 export class DeckViewScreen extends ImmutablePureComponent<DeckViewScreenProps & DeckViewScreenStoreProps, DeckViewScreenState>
@@ -29,6 +31,7 @@ export class DeckViewScreen extends ImmutablePureComponent<DeckViewScreenProps &
     state = {
         loading: false,
         showInfoModal: false,
+        showHelpModal: false,
     } as DeckViewScreenState;
 
     toast = new ToastStore();
@@ -71,6 +74,9 @@ export class DeckViewScreen extends ImmutablePureComponent<DeckViewScreenProps &
     onOpenInfoModal = () => this.setStateTo({ showInfoModal: true });
     onCloseInfoModal = () => this.setStateTo({ showInfoModal: false });
 
+    onOpenHelpModal = () => this.setStateTo({ showHelpModal: true });
+    onCloseHelpModal = () => this.setStateTo({ showHelpModal: false });
+
     render() {
         return (
             <ScreenContainer>
@@ -88,6 +94,7 @@ export class DeckViewScreen extends ImmutablePureComponent<DeckViewScreenProps &
             <DeckScreenHeader
                 item={this.state.deck}
                 onOpenInfoModal={this.onOpenInfoModal}
+                onOpenHelpModal={this.onOpenHelpModal}
             />
             <DeckView
                 item={this.state.deck}
@@ -97,6 +104,7 @@ export class DeckViewScreen extends ImmutablePureComponent<DeckViewScreenProps &
                 open={this.state.showInfoModal}
                 onClose={this.onCloseInfoModal}
             />
+            <DeckViewScreenHelpModal open={this.state.showHelpModal} onClose={this.onCloseHelpModal} />
         </React.Fragment>;
     }
 

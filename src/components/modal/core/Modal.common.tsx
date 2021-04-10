@@ -1,5 +1,5 @@
 import React from 'react';
-import {ViewStyle} from "react-native";
+import {StyleProp, ViewStyle} from "react-native";
 
 export const modalPortalId = "_MODALS_";
 
@@ -12,7 +12,7 @@ export interface ModalProps {
     /** Callback when the Modal is closed */
     onClose: () => void;
     /** Style contents */
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle>;
     /** Width when not full-page */
     width?: number;
     /** Height when not full-page */

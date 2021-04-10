@@ -1,5 +1,5 @@
 import React, {PropsWithChildren} from "react";
-import {Text, View, ViewStyle} from "react-native";
+import {StyleProp, Text, View, ViewStyle} from "react-native";
 import Button from "../../button/Button";
 import Modal, {ModalProps, extractModalProps} from "../core/Modal";
 import {ModalHeader, ModalBody, ModalFooter} from "../parts";
@@ -13,8 +13,8 @@ export type AlertModalProps = {
     closeButton?: boolean;
     /** Text on the close button. */
     closeButtonText?: string;
-
-    bodyStyle?: ViewStyle;
+    /** ViewStyle applied to the body. */
+    bodyStyle?: StyleProp<ViewStyle>;
 } & ModalProps;
 export type AlertModalPropsWithChildren = PropsWithChildren<AlertModalProps>;
 

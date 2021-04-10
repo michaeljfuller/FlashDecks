@@ -1,13 +1,13 @@
 import React from "react";
-import {Text, View, StyleSheet} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import {Subscription} from "rxjs";
 
 import ImmutablePureComponent from "../../../components/ImmutablePureComponent";
 import ScreenContainer from "../../ScreenContainer";
 import {NavigationScreenProps, NavigationScreenState} from "../../../navigation/navigation_types";
 import DeckList from "../../../components/deck/DeckList/DeckList";
-import Button from "../../../components/button/Button";
-import {reduxConnector, DeckListScreenStoreProps} from "./DeckListScreen_redux";
+import Button, {IconType} from "../../../components/button/Button";
+import {DeckListScreenStoreProps, reduxConnector} from "./DeckListScreen_redux";
 import DeckRoutes from "../DeckRoutes";
 import {DeckListItemModel} from "../../../models";
 import deckApi from "../../../api/DeckApi";
@@ -17,6 +17,8 @@ import Center from "../../../components/layout/Center";
 import ProgressCircle from "../../../components/progress/ProgressCircle";
 import withDefaultProps from "../../../utils/hoc/withDefaultProps/withDefaultProps";
 import ProgressBar from "../../../components/progress/ProgressBar";
+import IconButton from "../../../components/button/IconButton";
+import DeckListScreenHelpModal from "./DeckListScreenHelpModal";
 
 export interface DeckListScreenNavigationProps {
     s?: DeckSelection;
@@ -27,6 +29,7 @@ export interface DeckListScreenProps extends NavigationScreenProps<
 export interface DeckListScreenState {
     loading: boolean;
     decks: DeckListItemModel[];
+    helpOpen?: boolean;
 }
 type DeckSelection = "all"|"own";
 
@@ -133,9 +136,18 @@ export class DeckListScreen extends ImmutablePureComponent<
     goToView = (deck: DeckListItemModel) => this.goTo(DeckRoutes.View, deck);
     handleDelete = (deck: DeckListItemModel) => this.deleteDeck(deck);
 
+    openHelp = () => this.setStateTo({helpOpen: true});
+    closeHelp = () => this.setStateTo({helpOpen: false});
+
     render() {
         return (
-            <ScreenContainer>
+            <ScreenContainer style={styles.root}>
+
+                <Row right>
+                    <IconButton icon={IconType.QuestionMark} onClick={this.openHelp} flat />
+                    <DeckListScreenHelpModal open={this.state.helpOpen||false} onClose={this.closeHelp} />
+                </Row>
+
                 <Row style={styles.actionsRow}>
                     <ActionsButton title="Own Decks" onClick={this.selectOwnDecks} disabled={this.selection==="own"} />
                     <ActionsButton title="All Decks" onClick={this.selectAllDecks} disabled={this.selection==="all"} />
@@ -187,12 +199,15 @@ export class DeckListScreen extends ImmutablePureComponent<
 export default reduxConnector(DeckListScreen);
 
 const styles = StyleSheet.create({
+    root: {
+        padding: 5,
+    },
     title: {
         fontWeight: 'bold',
         textAlign: 'center',
     },
     actionsRow: {
-        padding: 5,
+        paddingVertical: 5,
     },
     body: {
         padding: 5,

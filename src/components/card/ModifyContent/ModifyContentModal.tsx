@@ -1,14 +1,15 @@
 import React from "react";
-import {Text, StyleSheet} from "react-native";
+import {StyleSheet, Text} from "react-native";
 
-import Button from "../../button/Button";
-import Modal, {ModalProps, extractModalProps} from "../../modal/core/Modal";
-import {ModalHeader, ModalBody} from "../../modal/parts";
-import {ModalFooter} from "../../modal/parts";
+import Button, {IconType} from "../../button/Button";
+import Modal, {extractModalProps, ModalProps} from "../../modal/core/Modal";
+import {ModalBody, ModalFooter, ModalHeader} from "../../modal/parts";
 import {CardContentModel, CardContentType, cardContentTypes} from "../../../models";
 import {CardContentForm} from "./CardContentForm";
 import Row from "../../layout/Row";
 import Column from "../../layout/Column";
+import IconButton from "../../button/IconButton";
+import ModifyContentHelpModal from "./ModifyContentHelpModal";
 
 export type ModifyContentModalProps = {
     title?: string;
@@ -19,10 +20,17 @@ export type ModifyContentModalProps = {
     onClose: () => void;
 } & ModalProps;
 
+export interface ModifyContentModalState {
+    showHelpModal: boolean;
+}
+
 /**
  * A simple modal with "OK and "Cancel" buttons.
  */
-export class ModifyContentModal extends React.PureComponent<ModifyContentModalProps> {
+export class ModifyContentModal extends React.PureComponent<ModifyContentModalProps, ModifyContentModalState> {
+    state = {
+        showHelpModal: false,
+    } as ModifyContentModalState;
 
     onPressOk = () => {
         const close = this.props.onOk() !== false;
@@ -44,22 +52,28 @@ export class ModifyContentModal extends React.PureComponent<ModifyContentModalPr
         );
     }
 
+    onOpenHelpModal = () => this.setState({ showHelpModal: true });
+    onCloseHelpModal = () => this.setState({ showHelpModal: false });
+
     render(): JSX.Element {
         return <Modal {...extractModalProps(this.props)}>
             <ModalHeader title={this.props.title || "Modify Content"} />
 
             <ModalBody style={styles.body} center={false}>
-                <Row overflow center style={styles.typeButtonRow}>{ // Type Buttons
-                    cardContentTypes.map(
-                        contentType => <Button square
-                            key={contentType}
-                            title={contentType}
-                            onClick={() => this.setType(contentType)}
-                            disabled={this.props.content.type === contentType}
-                            style={styles.typeButton}
-                        />
-                    )
-                }</Row>
+                <Row overflow center style={styles.typeButtonRow}>
+                    { // Type Buttons
+                        cardContentTypes.map(
+                            contentType => <Button square
+                                key={contentType}
+                                title={contentType}
+                                onClick={() => this.setType(contentType)}
+                                disabled={this.props.content.type === contentType}
+                                style={styles.typeButton}
+                            />
+                        )
+                    }
+                    <IconButton icon={IconType.QuestionMark} onClick={this.onOpenHelpModal} />
+                </Row>
                 <Column center flex>
                 {   // Form
                     this.props.content.validType
@@ -73,6 +87,13 @@ export class ModifyContentModal extends React.PureComponent<ModifyContentModalPr
                 <Button title="OK"     style={styles.footerItem} onClick={this.onPressOk}     square disabled={!this.props.content.valid} />
                 <Button title="Cancel" style={styles.footerItem} onClick={this.onPressCancel} square />
             </ModalFooter>
+
+            <ModifyContentHelpModal
+                title={`${this.props.content ? "Modifying" : "Creating"} Content`}
+                open={this.state.showHelpModal}
+                onClose={this.onCloseHelpModal}
+            />
+
         </Modal>;
     }
 
