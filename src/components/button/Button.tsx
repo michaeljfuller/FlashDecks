@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 
-import {ButtonProps, buttonPropsWithDefaults} from './Button.common';
+import {ButtonProps, buttonPropsWithDefaults, IconType} from './Button.common';
 import {getStyledButtonBase} from "./material-ui/StyledButtonBase";
 import {getUIColorTheme} from "../../styles/UIColorTheme";
 import Icon, {iconStandardSize} from "../icon/Icon";
@@ -19,6 +19,7 @@ export const Button = React.memo(function Button(props: ButtonProps) {
     } = allProps;
     const theme = getUIColorTheme(color, invertColor);
     const iconThreshold = iconStandardSize + iconPadding*2;
+    const hasIcon = typeof icon === "number";
     const StyledButton = getStyledButtonBase(
         theme,
         square,
@@ -38,20 +39,20 @@ export const Button = React.memo(function Button(props: ButtonProps) {
             data-testid={testID}
         >
             {/* Icon left of text */
-                icon && title && iconPosition !== "right" ?
-                <View style={styles.iconLeft}><Icon type={icon} flat={flat || !transparent} /></View> : null
+                hasIcon && title && iconPosition !== "right" ?
+                <View style={styles.iconLeft}><Icon type={icon as IconType} flat={flat || !transparent} /></View> : null
             }
 
             {title}
 
             {/* Icon right of text */
-                icon && title && iconPosition === "right" ?
-                <View style={styles.iconRight}><Icon type={icon} flat={flat || !transparent} /></View> : null
+                hasIcon && title && iconPosition === "right" ?
+                <View style={styles.iconRight}><Icon type={icon as IconType} flat={flat || !transparent} /></View> : null
             }
 
             {/* Icon centered without text */
-                icon && !title ?
-                <Icon type={icon} flat={flat || !transparent} /> : null
+                hasIcon && !title ?
+                <Icon type={icon as IconType} flat={flat || !transparent} /> : null
             }
 
         </StyledButton>

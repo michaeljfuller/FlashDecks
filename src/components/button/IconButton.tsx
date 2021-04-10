@@ -5,7 +5,7 @@ import {iconStandardSize} from '../icon/Icon';
 
 export {IconType} from '../icon/Icon';
 
-export interface IconButtonProps extends Omit<ButtonProps, 'title'> {
+export interface IconButtonProps extends Omit<ButtonProps, 'title'|'iconPosition'> {
     size?: number;
 }
 
