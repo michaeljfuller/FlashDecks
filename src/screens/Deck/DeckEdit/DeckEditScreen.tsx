@@ -29,6 +29,8 @@ export interface DeckEditScreenState {
     saving?: SaveDeckProgress;
     showInfoModal: boolean;
     showHelpModal: boolean;
+    showSaveModal: boolean;
+    showUndoModal: boolean;
     showDeleteCardPrompt: boolean;
     showCreateCardModal: boolean;
     error?: string;
@@ -40,6 +42,8 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
         loading: true,
         showInfoModal: false,
         showHelpModal: false,
+        showSaveModal: false,
+        showUndoModal: false,
         showDeleteCardPrompt: false,
         showCreateCardModal: false,
     } as DeckEditScreenState;
@@ -139,7 +143,13 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
     onShowCreateCardModal = () => this.setStateTo({ showCreateCardModal: true });
     onHideCreateCardModal = () => this.setStateTo({ showCreateCardModal: false });
 
-    onSavePressed = () => {
+    onOpenSaveConfirm = () => this.setStateTo({ showSaveModal: true });
+    onCloseSaveConfirm = () => this.setStateTo({ showSaveModal: false });
+
+    onOpenUndoConfirm = () => this.setStateTo({ showUndoModal: true });
+    onCloseUndoConfirm = () => this.setStateTo({ showUndoModal: false });
+
+    onConfirmSave = () => {
         const {modifiedDeck} = this.state;
         if (!modifiedDeck) {
             this.toast.add({type: "warning", text: `No changes to save.`});
@@ -207,8 +217,8 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
                 onRemoveCard={this.onOpenDeleteCardPrompt}
                 title={title}
                 saveText={saveButtonText}
-                onSave={canSave ? this.onSavePressed : undefined}
-                onUndo={hasChanges ? this.clearChanges : undefined}
+                onSave={canSave ? this.onOpenSaveConfirm : undefined}
+                onUndo={hasChanges ? this.onOpenUndoConfirm : undefined}
             />
             <DeckView
                 editable={editable}
@@ -257,6 +267,18 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
             </ProgressModal>
 
             <DeckEditScreenHelpModal open={this.state.showHelpModal} onClose={this.onCloseHelpModal} />
+
+            <PromptModal title="Save Changes?"
+                open={this.state.showSaveModal} onClose={this.onCloseSaveConfirm} onOk={this.onConfirmSave}
+            >
+                <Text style={styles.centerText}>{`Are you sure you'd like to save your changes to "${this.deck.title}"?`}</Text>
+            </PromptModal>
+
+            <PromptModal title="Undo Changes?"
+                open={this.state.showUndoModal} onClose={this.onCloseUndoConfirm} onOk={this.clearChanges}
+            >
+                <Text style={styles.centerText}>{`Are you sure you'd like to undo your changes to "${this.deck.title}"?`}</Text>
+            </PromptModal>
 
         </React.Fragment>
     }

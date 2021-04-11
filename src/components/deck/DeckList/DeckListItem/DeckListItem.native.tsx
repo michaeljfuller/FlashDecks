@@ -38,7 +38,7 @@ export const DeckListItem = React.memo(function DeckListItem(props: DeckListItem
 
             <UICardItem style={styles.itemOwner}>
                 <Text style={styles.itemOwnerText}>{owner?.displayName || '?'}</Text>
-                <Avatar user={owner} size={30} style={{borderWidth:1, borderColor:'red', margin:0, padding:0}} />
+                <Avatar user={owner} size={30} />
             </UICardItem>
 
             {showActions && <IconButton

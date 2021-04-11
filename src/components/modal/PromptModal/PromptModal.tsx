@@ -13,7 +13,7 @@ export type PromptModalProps = {
     onCancel?: () => boolean|void;
     onClose: () => void;
     enabledOk?: boolean;
-    style?: ViewStyle;
+    bodyStyle?: ViewStyle;
 } & ModalProps;
 
 /**
@@ -36,13 +36,13 @@ export class PromptModal extends React.PureComponent<PromptModalProps> {
     };
 
     render() {
-        const {title, message, children, enabledOk=true} = this.props;
+        const {title, message, children, bodyStyle, enabledOk=true} = this.props;
 
         return <Modal {...extractModalProps(this.props)}>
 
             <ModalHeader title={title || 'Alert'} />
 
-            <ModalBody>
+            <ModalBody style={bodyStyle}>
                 {message && <Text>{message}</Text>}
                 {children && <View>{children}</View>}
             </ModalBody>

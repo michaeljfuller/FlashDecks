@@ -62,7 +62,7 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
             <Visibility render={!!saveText}>
                 <Row>
                     <Button title={saveText} onClick={onSave} square height={30} style={styles.saveButton} />
-                    <Button title="Undo"     onClick={onUndo} square height={30} width={70}/>
+                    <Button title="Undo"     onClick={onUndo} square height={30} style={styles.undoButton} />
                 </Row>
             </Visibility>
 
@@ -108,6 +108,9 @@ const styles = StyleSheet.create({
     },
     saveButton: {
         marginRight: 1,
+        flex: 1,
+    },
+    undoButton: {
         flex: 1,
     },
 });
