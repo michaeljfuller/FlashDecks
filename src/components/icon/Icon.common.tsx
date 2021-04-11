@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import {StyleProp, ViewStyle} from "react-native";
 
 export enum IconType {
     QuestionMark,
@@ -18,19 +19,17 @@ export enum IconType {
 }
 export interface IconProps {
     type: IconType;
-    style?: IconStyles;
+    size?: number;
+    color?: string;
     flat?: boolean;
+    style?: StyleProp<ViewStyle>;
 }
 export const IconPropTypes: Record<keyof IconProps, any> = {
     type: PropTypes.number.isRequired,
-    style: PropTypes.object,
+    size: PropTypes.number,
+    color: PropTypes.string,
     flat: PropTypes.bool,
+    style: PropTypes.object,
 };
 
-export interface IconStyles {
-    width?: number;
-    height?: number;
-    color?: string;
-    padding?: number;
-}
 export const iconStandardSize = 24;

@@ -1,6 +1,7 @@
 import React from 'react';
+import {View} from 'react-native';
 
-import {IconType, IconProps, IconPropTypes} from './Icon.common';
+import {IconType, IconProps, IconPropTypes, iconStandardSize} from './Icon.common';
 export * from './Icon.common';
 
 // https://material-ui.com/components/material-icons/
@@ -42,20 +43,22 @@ const componentMap = {
  */
 export const Icon: React.ComponentType<IconProps> = React.memo(function Icon(props: IconProps) {
     const {
-        style = {},
-        flat = true
+        size = iconStandardSize,
+        color,
+        flat = true,
+        style,
     } = props;
     const component = componentMap[props.type];
     if (component) {
-        return React.createElement(component, {
+        const icon = React.createElement(component, {
             style: {
-                width: style.width,
-                height: style.height,
-                color: style.color,
-                padding: style.padding,
+                width: size,
+                height: size,
+                color: color,
                 filter: !flat ? `drop-shadow(1px 1px 2px rgba(0,0,0,0.3))` : undefined,
             }
         } as SvgIconProps);
+        return <View style={style}>{icon}</View>;
     }
     return null;
 });

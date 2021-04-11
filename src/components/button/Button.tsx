@@ -20,6 +20,8 @@ export const Button = React.memo(function Button(props: ButtonProps) {
     const theme = getUIColorTheme(color, invertColor);
     const iconThreshold = iconStandardSize + iconPadding*2;
     const hasIcon = typeof icon === "number";
+    const colorSet = transparent ? theme.primary : theme.secondary;
+
     const StyledButton = getStyledButtonBase(
         theme,
         square,
@@ -40,19 +42,19 @@ export const Button = React.memo(function Button(props: ButtonProps) {
         >
             {/* Icon left of text */
                 hasIcon && title && iconPosition !== "right" ?
-                <View style={styles.iconLeft}><Icon type={icon as IconType} flat={flat || !transparent} /></View> : null
+                <View style={styles.iconLeft}><Icon type={icon as IconType} flat={flat || !transparent} color={colorSet.base} /></View> : null
             }
 
             {title}
 
             {/* Icon right of text */
                 hasIcon && title && iconPosition === "right" ?
-                <View style={styles.iconRight}><Icon type={icon as IconType} flat={flat || !transparent} /></View> : null
+                <View style={styles.iconRight}><Icon type={icon as IconType} flat={flat || !transparent} color={colorSet.base} /></View> : null
             }
 
             {/* Icon centered without text */
                 hasIcon && !title ?
-                <Icon type={icon as IconType} flat={flat || !transparent} /> : null
+                <Icon style={styles.iconCenter} type={icon as IconType} flat={flat || !transparent} color={colorSet.base} /> : null
             }
 
         </StyledButton>
@@ -60,8 +62,9 @@ export const Button = React.memo(function Button(props: ButtonProps) {
 });
 export default Button;
 
-const iconPadding = 2;
+const iconPadding = 6;
 const styles = StyleSheet.create({
+    iconCenter: { paddingHorizontal: iconPadding },
     iconLeft: { paddingRight: iconPadding },
     iconRight: { paddingLeft: iconPadding },
 });

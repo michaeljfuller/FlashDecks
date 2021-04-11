@@ -5,7 +5,7 @@ import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} fro
 import ButtonWrapper from "./core/ButtonWrapper";
 import {ButtonProps, buttonPropsWithDefaults} from './Button.common';
 import {getUIColorTheme} from "../../styles/UIColorTheme";
-import Icon, {IconStyles, iconStandardSize} from "../icon/Icon";
+import Icon, {iconStandardSize} from "../icon/Icon";
 import Row from "../layout/Row";
 
 export * from './Button.common';
@@ -16,7 +16,7 @@ export const Button = React.memo<ButtonProps>(function Button(props: ButtonProps
         onClick, disabled, title, icon, iconPosition, flat, transparent, square, style, width, height, flex, testID
     } = allProps;
 
-    const iconElement = icon ? <Icon type={icon} flat={flat || !transparent} style={getIconStyle(allProps)} /> : null;
+    const iconElement = icon ? <Icon type={icon} flat={flat || !transparent} color={getIconColor(allProps)} /> : null;
 
     return <ButtonWrapper style={style} width={width} height={height} flex={flex}>
         <NativeBaseButton
@@ -88,12 +88,12 @@ function getIconViewStyle(
     return styles.iconCenter;
 }
 
-function getIconStyle(
+function getIconColor(
     {color, invertColor, transparent}: Required<ButtonProps>
-): IconStyles {
+): string {
     const theme = getUIColorTheme(color, invertColor);
     const colorSet = transparent ? theme.primary : theme.secondary;
-    return { color: colorSet.base };
+    return colorSet.base;
 }
 
 const iconPadding = 10, textPadding = 6;

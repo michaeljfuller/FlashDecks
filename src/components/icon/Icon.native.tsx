@@ -1,4 +1,5 @@
 import React from 'react';
+import {View} from 'react-native';
 import {Icon as NativeBaseIcon, NativeBase} from 'native-base';
 
 import {IconType, IconProps, IconPropTypes, iconStandardSize} from './Icon.common';
@@ -27,20 +28,22 @@ const nameMap = {
  */
 export const Icon: React.ComponentType<IconProps> = React.memo(function Icon(props: IconProps) {
     const {
-        style = {},
-        flat = true
+        size = iconStandardSize,
+        color,
+        flat = true,
+        style,
     } = props;
     const name = nameMap[props.type];
     if (name) {
-        return React.createElement(NativeBaseIcon, {
+        const icon = React.createElement(NativeBaseIcon, {
             name,
             style: Object.assign({
-                color: style.color,
+                color: color,
                 textAlign: "center",
-                minWidth: iconStandardSize,
                 marginLeft: 0,
                 marginRight: 0,
                 padding: 0,
+                fontSize: size,
             }, !flat ? {
                 textShadowOffset: { width: 1, height: 1 },
                 textShadowRadius: 3,
@@ -50,6 +53,7 @@ export const Icon: React.ComponentType<IconProps> = React.memo(function Icon(pro
                 borderColor: 'transparent',
             } : undefined)
         } as NativeBase.Icon);
+        return <View style={style}>{icon}</View>
     }
     return null;
 });
