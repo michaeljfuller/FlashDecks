@@ -15,7 +15,7 @@ export const Button = React.memo<ButtonProps>(function Button(props: ButtonProps
         onClick, disabled, title, icon, iconPosition, flat, transparent, square, style, width, height, flex, testID
     } = allProps;
 
-    const iconElement = icon ? <Icon
+    const iconElement = typeof icon === "number" ? <Icon
         type={icon}
         flat={flat || !transparent}
         color={getIconColor(allProps)}
@@ -31,13 +31,13 @@ export const Button = React.memo<ButtonProps>(function Button(props: ButtonProps
             rounded={!square}
             transparent={transparent}
         >
-            {/* Icon left of text */ icon && title && iconPosition === "left" ? iconElement : null }
+            {/* Icon left of text */ title && iconPosition === "left" ? iconElement : null }
 
             {title ? <NativeBaseText style={getTextStyle(allProps)} uppercase={false}>{title}</NativeBaseText> : null}
 
-            {/* Icon right of text */ icon && title && iconPosition === "right" ? iconElement : null }
+            {/* Icon right of text */ title && iconPosition === "right" ? iconElement : null }
 
-            {/* Icon centered without text */ icon && !title ? iconElement : null}
+            {/* Icon centered without text */ !title ? iconElement : null}
 
         </NativeBaseButton>
     </ButtonWrapper>;
