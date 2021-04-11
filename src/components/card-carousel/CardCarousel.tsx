@@ -125,6 +125,7 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
                 }}>
                     <CardView
                         item={cards[index]}
+                        itemIndex={index}
                         style={[styles.cardView, { width: cardWidth, height: cardHeight }]}
                         editable={this.props.editable}
                         onUpdate={this.onSetCard}

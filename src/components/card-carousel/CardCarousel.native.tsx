@@ -73,6 +73,7 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
                     return <View style={styles.cardContainer}>
                         <CardView
                             item={item}
+                            itemIndex={index}
                             style={[styles.cardView, cardStyle]}
                             editable={this.props.editable}
                             onUpdate={this.onSetCard}
