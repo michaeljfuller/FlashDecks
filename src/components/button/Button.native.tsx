@@ -6,7 +6,6 @@ import ButtonWrapper from "./core/ButtonWrapper";
 import {ButtonProps, buttonPropsWithDefaults} from './Button.common';
 import {getUIColorTheme} from "../../styles/UIColorTheme";
 import Icon, {iconStandardSize} from "../icon/Icon";
-import Row from "../layout/Row";
 
 export * from './Button.common';
 
@@ -16,7 +15,12 @@ export const Button = React.memo<ButtonProps>(function Button(props: ButtonProps
         onClick, disabled, title, icon, iconPosition, flat, transparent, square, style, width, height, flex, testID
     } = allProps;
 
-    const iconElement = icon ? <Icon type={icon} flat={flat || !transparent} color={getIconColor(allProps)} /> : null;
+    const iconElement = icon ? <Icon
+        type={icon}
+        flat={flat || !transparent}
+        color={getIconColor(allProps)}
+        style={getIconViewStyle(allProps)}
+    /> : null;
 
     return <ButtonWrapper style={style} width={width} height={height} flex={flex}>
         <NativeBaseButton
@@ -27,22 +31,13 @@ export const Button = React.memo<ButtonProps>(function Button(props: ButtonProps
             rounded={!square}
             transparent={transparent}
         >
-            {/* Icon left of text */
-                icon && title && iconPosition === "left" ?
-                <View style={getIconViewStyle(allProps)}>{iconElement}</View> : null
-            }
+            {/* Icon left of text */ icon && title && iconPosition === "left" ? iconElement : null }
 
             {title ? <NativeBaseText style={getTextStyle(allProps)} uppercase={false}>{title}</NativeBaseText> : null}
 
-            {/* Icon right of text */
-                icon && title && iconPosition === "right" ?
-                <View style={getIconViewStyle(allProps)}>{iconElement}</View> : null
-            }
+            {/* Icon right of text */ icon && title && iconPosition === "right" ? iconElement : null }
 
-            {/* Icon centered without text */
-                icon && !title ?
-                <Row center flex style={getIconViewStyle(allProps)}>{iconElement}</Row> : null
-            }
+            {/* Icon centered without text */ icon && !title ? iconElement : null}
 
         </NativeBaseButton>
     </ButtonWrapper>;
@@ -127,10 +122,10 @@ const styles = StyleSheet.create({
     },
     textWithIconLeft: { paddingLeft: textPadding },
     textWithIconRight: { paddingRight: textPadding },
-    iconLeft:   { paddingLeft: iconPadding },
-    iconRight:  { paddingRight: iconPadding },
-    iconCenter: { paddingHorizontal: iconPadding },
-    iconSmall:  { paddingHorizontal: 0 },
+    iconLeft:   { marginLeft: iconPadding },
+    iconRight:  { marginRight: iconPadding },
+    iconCenter: { marginHorizontal: iconPadding },
+    iconSmall:  { marginHorizontal: 4 },
 });
 
 //</editor-fold>
