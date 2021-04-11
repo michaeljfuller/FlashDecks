@@ -3,6 +3,8 @@ import {StyleSheet, Text, View} from "react-native";
 import ScreenContainer from "../ScreenContainer";
 import {NavigationScreenProps} from "../../navigation/navigation_types";
 import Icon, {IconType} from "../../components/icon/Icon";
+import Heading from "../../components/ui/Heading";
+import Paragraph from "../../components/ui/Paragraph";
 
 export default class DashboardScreen extends PureComponent<NavigationScreenProps>
 {
@@ -10,25 +12,25 @@ export default class DashboardScreen extends PureComponent<NavigationScreenProps
         return (
             <ScreenContainer style={styles.root}>
 
-                <Text style={styles.title}>Welcome to FlashDecks</Text>
+                <Heading style={styles.title}>Welcome to FlashDecks</Heading>
                 <View style={styles.box}>
 
-                    <View style={styles.paragraph}>
+                    <Paragraph>
                         <Text>This is a purely technical exercise, so there's room for the UX to be improved.</Text>
                         <View style={styles.row}>
-                            <Text>In lieu of a better UX design, you can use the</Text>
-                            <Icon type={IconType.QuestionMark} style={{height: 20}} />
-                            <Text>buttons for guidance.</Text>
+                            <Text style={styles.iconText}>In lieu of a better UX design, you can use the</Text>
+                            <Icon style={styles.icon} size={iconSize} type={IconType.QuestionMark} />
+                            <Text style={styles.iconText}>buttons for guidance.</Text>
                         </View>
-                    </View>
+                    </Paragraph>
 
-                    <View style={styles.paragraph}>
+                    <Paragraph>
                         <View style={styles.row}>
-                            <Text>To begin, open the sidebar with the</Text>
-                            <Icon type={IconType.Menu} style={{height: 20}} />
-                            <Text>button in the banner.</Text>
+                            <Text style={styles.iconText}>To begin, open the sidebar with the</Text>
+                            <Icon style={styles.icon} size={iconSize} type={IconType.Menu} />
+                            <Text style={styles.iconText}>button in the banner.</Text>
                         </View>
-                    </View>
+                    </Paragraph>
 
                 </View>
 
@@ -37,28 +39,32 @@ export default class DashboardScreen extends PureComponent<NavigationScreenProps
     }
 }
 
+const iconSize = 20;
 const styles = StyleSheet.create({
     root: {
         padding: 5,
     },
     title: {
-        fontWeight: "bold",
         textAlign: "center",
         fontSize: 26,
-    },
-    heading: {
-        fontWeight: "bold",
     },
     box: {
         padding: 4,
         margin: 5,
         borderWidth: 1,
         backgroundColor: 'white',
-    },
-    paragraph: {
-        marginVertical: 4,
+        overflow: "hidden",
     },
     row: {
         flexDirection: "row",
+        flexWrap: "wrap",
+        flexShrink: 1
+    },
+    icon: {
+        marginHorizontal: 2,
+    },
+    iconText: {
+        lineHeight: iconSize,
+        flexWrap: "wrap",
     },
 });
