@@ -52,7 +52,7 @@ function getBackgroundStyle(
     const result: RnViewStyleProp = [];
     if (!transparent) {
         const theme = getUIColorTheme(color, invertColor);
-        result.push({ backgroundColor: disabled ? theme.primary.disabled : theme.primary.base });
+        result.push({ backgroundColor: disabled ? theme.primary.disabled : theme.primary.base, minWidth: iconStandardSize });
     }
     if (!flat && !transparent) result.push(styles.backgroundShadow);
     if (square) result.push(styles.backgroundSquare);
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     iconLeft:   { marginLeft: iconPadding },
     iconRight:  { marginRight: iconPadding },
     iconCenter: { marginHorizontal: iconPadding },
-    iconSmall:  { marginHorizontal: 4 },
+    iconSmall:  { marginHorizontal: 0 },
 });
 
 //</editor-fold>
