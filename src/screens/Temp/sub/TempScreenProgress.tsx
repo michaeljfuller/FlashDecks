@@ -43,7 +43,7 @@ export function TempScreenProgress() {
         setAutoMode(true);
     }, []);
 
-    return <TempScreenSubsection title="Progress">
+    return <TempScreenSubsection title="Progress" description="Progress indicators with controls to change value.">
 
         <Row>
             <Row style={{ marginBottom: 2 }}>

@@ -56,13 +56,13 @@ export class TempScreen extends ImmutablePureComponent<
 
     render() {
         const openSections = [
-            this.state.showLayout ? <TempScreenLayout /> : null,
-            this.state.showProgress ? <TempScreenProgress /> : null,
-            this.state.showMediaPickers ? <TempScreenMediaPickers /> : null,
-            this.state.showPortals ? <TempScreenPortals /> : null,
-            this.state.showButtons ? <TempScreenButtons /> : null,
-            this.state.showModals ? <TempScreenModals /> : null,
-            this.state.showToast ? <TempScreenToast /> : null,
+            this.state.showLayout ? <TempScreenLayout key="Layout" /> : null,
+            this.state.showProgress ? <TempScreenProgress key="Progress" /> : null,
+            this.state.showMediaPickers ? <TempScreenMediaPickers key="MediaPickers" /> : null,
+            this.state.showPortals ? <TempScreenPortals key="Portals" /> : null,
+            this.state.showButtons ? <TempScreenButtons key="Buttons" /> : null,
+            this.state.showModals ? <TempScreenModals key="Modals" /> : null,
+            this.state.showToast ? <TempScreenToast key="Toast" /> : null,
         ].filter(v => v);
 
         return (
@@ -77,7 +77,7 @@ export class TempScreen extends ImmutablePureComponent<
                     <TempScreenToggle title="Toast"    onClick={this.toggleToast}        value={this.state.showToast} />
                 </Row>
 
-                {openSections.length ? openSections : <View style={{
+                {openSections.length ? <View style={{marginBottom: 10}}>{openSections}</View> : <View style={{
                     marginTop: 8, paddingHorizontal: 5, borderWidth: 1, backgroundColor: 'white',
                 }}>
                     <Text>This is a screen for viewing and testing components in isolation.</Text>

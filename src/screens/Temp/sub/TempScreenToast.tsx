@@ -7,14 +7,17 @@ import {ToastQueueItem} from "../../../store/toast/toast_actions";
 import {randomIntString} from "../../../utils/math";
 import TempScreenSubsection from "../ui/TempScreenSubsection";
 import Row from "../../../components/layout/Row";
+import {ToastProps} from "../../../components/toast/Toast.common";
 
 interface TempScreenMiscProps {}
 interface TempScreenMiscState {
     navBlocked: boolean;
+    actionCount: number;
 }
 export class TempScreenToast extends React.PureComponent<TempScreenMiscProps, TempScreenMiscState> {
     state: TempScreenMiscState = {
         navBlocked: false,
+        actionCount: 0,
     };
     toastStore = new ToastStore();
 
@@ -40,46 +43,53 @@ export class TempScreenToast extends React.PureComponent<TempScreenMiscProps, Te
         this.setState({navBlocked: false});
     }
 
-    addToast(type: ToastQueueItem['type'], duration = 500, text = '', title = type?.toUpperCase()) {
+    addToast(item: Partial<ToastQueueItem>) {
+        const {text, type, onClose, ...props} = item;
         this.toastStore.add({
             text: text || `Example ${type} Toast. #${randomIntString(5)}`,
-            title,
-            actionText: 'Close',
             onClose: (action: boolean, timeout: boolean) => {
                 console.log('onCloseToast', JSON.stringify({ action, timeout }));
+                onClose && onClose(action, timeout);
             },
-            duration,
             type,
+            ...props
         });
     }
 
     render() {
         const {navBlocked} = this.state;
-        return <TempScreenSubsection title="Toast">
+        return <TempScreenSubsection title="Toast" description="Pop some toast, including one that appears when navigating away.">
 
-            <Text>Toast</Text>
             <Row wrap center>
                 <Button square style={styles.rowButton}
                         title="Pop Toast"
-                        onClick={() => this.addToast(
-                            "default",
-                            0,
-                            "Example toast with a longer message to see how it looks and if it wraps onto multiple lines on "+
-                            "a smaller screen, such as on a phone, tablet, or another mobile device.",
-                            ''
-                        )}
+                        onClick={() => this.addToast({
+                            duration: 3000,
+                            text: "Example toast with a longer message to see how it looks and if it wraps onto multiple lines on "+
+                                "a smaller screen, such as on a phone, tablet, or another mobile device.",
+                        })}
+                />
+                <Button square style={styles.rowButton}
+                        title={"Action Toast: " + this.state.actionCount}
+                        onClick={() => this.addToast({
+                            duration: 0,
+                            title: "Action Toast",
+                            text: "Click 'Increment' to increase count, or click outside to discard.",
+                            actionText: "Increment",
+                            onClose: (action/*, timeout*/) => action && this.setState({actionCount: this.state.actionCount+1})
+                        })}
                 />
                 <Button square style={styles.rowButton}
                         title="Pop Multiple Toast"
                         onClick={() => {
-                            this.addToast("success");
-                            this.addToast("warning");
-                            this.addToast("error");
-                            this.addToast("default", 0);
+                            this.addToast({duration: 500, type: "success"});
+                            this.addToast({duration: 500, type: "warning"});
+                            this.addToast({duration: 500, type: "error"});
+                            this.addToast({duration: 0,   type: "default"});
                         }}
                 />
                 <Button square style={styles.rowButton}
-                        title={navBlocked ? "Unblock Navigation" : "Block Navigation"}
+                        title={navBlocked ? "Unblock Navigation" : "Block Navigation Toast"}
                         onClick={navBlocked ? this.onUnblockNav : this.onBlockNav}
                 />
             </Row>

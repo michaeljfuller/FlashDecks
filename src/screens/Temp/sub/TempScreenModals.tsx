@@ -26,9 +26,9 @@ export function TempScreenModals() {
     const [promptCounter, setPromptCounter] = React.useState(0);
     const incPromptCounter = React.useCallback(() => setPromptCounter(promptCounter+1), [promptCounter]);
 
-    return <TempScreenSubsection title="Modals">
+    return <TempScreenSubsection title="Modals" description="Various Modal types to open.">
 
-            <TextButton title={'showDebugModal ' + showDebugModal} onClick={toggleDebugModal} />
+            <TextButton title="showDebugModal" onClick={toggleDebugModal} />
             <DebugModal
                 open={showDebugModal}
                 onClose={hideDebugModal}
@@ -38,7 +38,7 @@ export function TempScreenModals() {
                 <Text>Character Codes</Text>
             </DebugModal>
 
-            <TextButton title={'showAlertModal ' + showAlertModal} onClick={toggleAlertModal} />
+            <TextButton title="showAlertModal" onClick={toggleAlertModal} />
             <AlertModal
                 open={showAlertModal}
                 onClose={hideAlertModal}
@@ -49,10 +49,10 @@ export function TempScreenModals() {
                 <View style={{ borderWidth: 1, paddingHorizontal: 1 }}>
                     <TextInput multiline />
                 </View>
-                <TextButton title={'showDebugModal ' + showDebugModal} onClick={toggleDebugModal} />
+                <TextButton title="showDebugModal" onClick={toggleDebugModal} />
             </AlertModal>
 
-            <TextButton title={'showPromptModal ' + showPromptModal + ' | Count: ' + promptCounter} onClick={togglePromptModal} />
+            <TextButton title={'showPromptModal | Count: ' + promptCounter} onClick={togglePromptModal} />
             <PromptModal
                 open={showPromptModal}
                 onOk={incPromptCounter}
@@ -92,7 +92,7 @@ function TempScreenProgressModal({type}: {type: ProgressModalProps['type']}) {
     const title = `ProgressModal (${type})`;
 
     return <React.Fragment>
-        <TextButton title={title+' '+showModal} onClick={toggleModal} />
+        <TextButton title={title} onClick={toggleModal} />
         <ProgressModal
             open={showModal}
             onClose={hideModal}

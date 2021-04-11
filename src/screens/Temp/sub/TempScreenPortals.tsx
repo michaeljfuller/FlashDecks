@@ -17,7 +17,7 @@ export function TempScreenPortals() {
         [portalValue]
     );
 
-    return <TempScreenSubsection title="Portals">
+    return <TempScreenSubsection title="Portals" description="Contents added to Entrance displayed in Exit. Increment value to show updates.">
         <Row>
             <Button title="Inc Portal Value" onClick={incValue} square style={{flex:1}} />
             <View style={{ borderWidth: 1, borderColor: 'red', backgroundColor: 'pink', padding: 2 }}>

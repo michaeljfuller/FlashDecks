@@ -25,7 +25,7 @@ export class TempScreenLayout extends React.PureComponent<TempScreenLayoutProps,
     toggleRenderUpdateLogger = () => this.setState({ renderUpdateLogger: !this.state.renderUpdateLogger });
 
     render() {
-        return <TempScreenSubsection title="Layout">
+        return <TempScreenSubsection title="Layout" description="Various Layout component arrangements.">
 
             <Text>Visibility Component</Text>
             <Row style={{height: 50}}>

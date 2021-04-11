@@ -3,10 +3,12 @@ import {StyleSheet, Text, View} from "react-native";
 
 export interface TempScreenSubsectionProps {
     title: string;
+    description?: string;
 }
 export function TempScreenSubsection(props: React.PropsWithChildren<TempScreenSubsectionProps>) {
     return <View>
         <Text style={styles.title}>{props.title}</Text>
+        { props.description ? <Text style={styles.description}>{props.description}</Text> : null }
         <View style={styles.view}>
             {props.children}
         </View>
@@ -23,7 +25,11 @@ const styles = StyleSheet.create({
     title: {
         textAlign: "center",
         fontWeight: "bold",
-        lineHeight: 45,
+        marginVertical: 5,
         fontSize: 25,
-    }
-})
+    },
+    description: {
+        textAlign: "center",
+        marginBottom: 5,
+    },
+});

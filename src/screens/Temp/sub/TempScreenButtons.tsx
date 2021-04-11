@@ -26,8 +26,7 @@ export function TempScreenButtons() {
     const incClicks6 = React.useCallback(() => setClicks6(clicks6 + 1), [clicks6]);
     const incClicks7 = React.useCallback(() => setClicks7(clicks7 + 1), [clicks7]);
 
-    return <TempScreenSubsection title="Buttons">
-
+    return <TempScreenSubsection title="Buttons" description="Various Button configurations.">
         <TitleButton title={`Button [${clicks1}]`} onClick={incClicks1} />
         <ScrollRow>
             <Button onClick={incClicks1} title="Standard" />
