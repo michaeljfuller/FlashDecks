@@ -59,11 +59,15 @@ export abstract class CardViewBase<
     }
 
     componentDidUpdate(prevProps: Readonly<CardViewProps>/*, prevState: Readonly<CardViewState>, snapshot?: any*/) {
-        if (prevProps.item?.transientKey !== this.props.item?.transientKey) { // Card changed TODO Not rely on just key?
+        if (prevProps.item.transientKey !== this.props.item.transientKey) { // Card changed TODO Not rely on just key?
             this.setStateTo({
                 sideIndex: 0,
                 modifiedCard: null,
             });
+        }
+        const currSides = this.card.sides.length;
+        if (this.state.sideIndex >= currSides) {
+            this.setStateTo({ sideIndex: currSides-1 });
         }
     }
 
