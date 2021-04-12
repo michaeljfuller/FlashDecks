@@ -29,7 +29,7 @@ export const IconPropTypes: Record<keyof IconProps, any> = {
     size: PropTypes.number,
     color: PropTypes.string,
     flat: PropTypes.bool,
-    style: PropTypes.object,
+    style: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
 };
 
 export const iconStandardSize = 24;
