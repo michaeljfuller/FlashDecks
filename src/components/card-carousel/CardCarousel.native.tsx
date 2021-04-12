@@ -2,7 +2,7 @@ import React from 'react';
 import {View, StyleSheet, Text, FlatList, LayoutChangeEvent, ViewStyle} from 'react-native';
 import CardView from "../card/CardView";
 import {preloadCards} from "../../utils/media/card";
-import {CardCarouselBase, CardCarouselBaseState, resizeCard} from "./CardCarousel.common";
+import {CardCarouselBase, CardCarouselBaseState, CardCarouselProps, resizeCard} from "./CardCarousel.common";
 import {CardModel} from "../../models";
 import Button, {IconType} from "../button/Button";
 import {Visibility} from "../layout/Visibility";
@@ -37,6 +37,16 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
     componentDidMount() {
         preloadCards(this.props.cards || []);
         this.index = 0;
+    }
+
+    componentDidUpdate(prevProps: Readonly<CardCarouselProps>/*, prevState: Readonly<CardCarouselState>, snapshot?: {}*/) {
+        const currCards = this.props.cards?.length || 0;
+        const prevCards = prevProps.cards?.length || 0;
+
+        // If card was added, or index out-of-range, go to last card
+        if (currCards > prevCards || this.index >= currCards) {
+            this.index = currCards-1;
+        }
     }
 
     onLayout = (event: LayoutChangeEvent) => {

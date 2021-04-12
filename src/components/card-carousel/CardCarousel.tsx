@@ -2,7 +2,7 @@ import React from 'react';
 import {Animated, LayoutChangeEvent, StyleSheet, Text, View} from 'react-native';
 import {isPlatformWeb} from "../../platform";
 import CardView from "../card/CardView";
-import {CardCarouselBase, CardCarouselBaseState, resizeCard} from "./CardCarousel.common";
+import {CardCarouselBase, CardCarouselBaseState, CardCarouselProps, resizeCard} from "./CardCarousel.common";
 import Button, {IconType} from "../button/Button";
 import {UIColorThemeMap} from "../../styles/UIColorTheme";
 import {preloadCards} from "../../utils/media/card";
@@ -46,6 +46,16 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
     }
     componentWillUnmount() {
         document.removeEventListener('keydown', this.onKeyDown);
+    }
+
+    componentDidUpdate(prevProps: Readonly<CardCarouselProps>/*, prevState: Readonly<CardCarouselState>, snapshot?: {}*/) {
+        const currCards = this.props.cards?.length || 0;
+        const prevCards = prevProps.cards?.length || 0;
+
+        // If card was added, or index out-of-range, go to last card
+        if (currCards > prevCards || this.state.index >= currCards) {
+            this.setIndex(currCards-1);
+        }
     }
 
     onLayout = (event: LayoutChangeEvent) => {
