@@ -19,11 +19,11 @@ As with most JS client apps, run `npm install` to pull dependencies.
 ### Checkout Backend Environment
 To start, you'll need to install and set up the [Amplify CLI](https://docs.amplify.aws/cli/start/install).  
 To checkout a backend branch, use `amplify pull --appId dxccldee9zefn --envName dev` to checkout the dev branch.  
-You'll need access to the app to do this, else you'll need to create a new app.  
+You'll need access to the app to do this, else you'll need to create a new app with `amplify init`, or potentially create it in the [Amplify Console](https://console.aws.amazon.com/amplify/) and run `amplify pull`. 
 If the compiled app complains that it cannot resolve `aws-exports`, it's because this has not been done.
   
 When asked some questions, you can select the defaults.
-```bash
+```
 ? Do you want to use an AWS profile? Yes
 ? Please choose the profile you want to use: default
 ? Choose your default editor: None
@@ -48,26 +48,26 @@ For example; if we have `Component.tsx` & `Component.native.tsx`, then the `.nat
 React Native also allows us to specify the platform (i.e. `.ios` & `.android`), but ***I don't have an iOS device*** to test on.  
 When a component needs to be split between platforms, I take two approaches.  
 #### Functional components
-I create a `Component.common.ts` file that I import in both web and native versions of the component.  
+I create a `Component.common.ts` file that is imported in both web and native versions of the component.  
 It defines the component properties, so they're consistent between both versions. It's important the component signature doesn't change.
 #### Class components
 Like the functional components, I define the properties in a `Component.common.ts` file.  
 I may also specify an abstract base class they both use, so they can share functionality.
-However, I tend to leave defining the State to the different implementations.
+However, I tend to leave defining the State to the different implementations, as state is tied to the View.
 
 ### DotEnv
 **.env** files contain constants that can differ between build types.
 The environment files are processed by [react-native-dotenv](https://github.com/zetachang/react-native-dotenv) 
 by adding it as a module to `babel.config.js` and can be accessed through `src/env.ts`.  
 * `.env`  
-The default file used for running the app. Not added to version control so incremental changes can be made during development.
+The default file used for running the app. Not added to version control so incremental changes can be made during local development.
 * `.env.development`
 The file used for development builds and running tests. Can be used as a template for making a `.env` on a fresh Git clone.
 * `.env.production`
 The file used for production builds of the app.
 
 ## Server Architecture
-For the back-end, I'm using [Amazon Web Services](https://aws.amazon.com/) with [Amplify](https://aws.amazon.com/amplify/) to streamline the process, as this is a simple app.  
+For the back-end, I'm using [Amazon Web Services](https://aws.amazon.com/). Because this is a relatively simple app, I'm using [Amplify](https://aws.amazon.com/amplify/) to streamline the process.  
 ### Services
 * **[Auth](https://docs.amplify.aws/lib/auth/getting-started/q/platform/js)**  
 Uses [AWS Cognito](https://aws.amazon.com/cognito/) for user authentication.
@@ -75,7 +75,7 @@ Uses [AWS Cognito](https://aws.amazon.com/cognito/) for user authentication.
 The [GraphQL](https://graphql.org/) API to request & submit app data. It uses [AWS DynamoDB](https://aws.amazon.com/dynamodb/) as the data store, but because we're using Amplify, that's behind the scenes.
 * **[Functions](https://docs.amplify.aws/cli/function)**  
 For a custom GraphQl resolver function using [AWS Lambda](https://aws.amazon.com/lambda/) that lets me connect to Cognito to pull the requested user.
-* **[Storage](https://docs.amplify.aws/lib/storage/getting-started/q/platform/js)**
+* **[Storage](https://docs.amplify.aws/lib/storage/getting-started/q/platform/js)**  
 An [AWS S3](https://aws.amazon.com/s3/) bucket is used to store the media users upload for their cards.
 
 ## Client Testing
@@ -92,27 +92,27 @@ but then adopted [React Testing Library](https://testing-library.com/docs/react-
 as its recommended in the official React documentation, and seems to be the direction the community's going.  
 
 ## Client Frameworks & Libraries
-### [React Native](https://reactnative.dev/)
+* **[React Native](https://reactnative.dev/)**  
 This is used to create the client for both browser and mobile app.
-### [Expo](https://expo.io/)
+* **[Expo](https://expo.io/)**  
 A tool to help with the creation, building & running of React Native apps.
-### [Amplify](https://aws.amazon.com/amplify/)
+* **[Amplify](https://aws.amazon.com/amplify/)**  
 A client library to help with using Amazon Web Services.
-### [React Redux](https://react-redux.js.org/)
+* **[React Redux](https://react-redux.js.org/)**  
 [Redux](https://redux.js.org/) integration for React, including the [Store](https://redux.js.org/api/store), to help manage the app's state.
-### [Material-UI](https://material-ui.com/)
+* **[Material-UI](https://material-ui.com/)**  
 This is a React Component Library used for browser builds of the client.
-### [NativeBase](https://nativebase.io/)
+* **[NativeBase](https://nativebase.io/)**  
 This is a React Component Library used for mobile app builds of the client.
-### [Immer](https://immerjs.github.io/immer/)
+* **[Immer](https://immerjs.github.io/immer/)**  
 This is used to facilitate immutability.  
 It's build into our **ImmutableComponent** and **ImmutablePureComponent** classes, and the Redux reducers.
 The [use-immer](https://github.com/immerjs/use-immer) hook has also been added.
 
 ## Testing Frameworks & Libraries
-### [Jest](https://jestjs.io/)
+* **[Jest](https://jestjs.io/)**  
 The default testing tool for React.
-### [Enzyme](https://enzymejs.github.io/enzyme/)
+* **[Enzyme](https://enzymejs.github.io/enzyme/)**  
 A tool to help with testing React components.
-### [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) 
+* **[React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)**  
 A tool to help with testing React components.
