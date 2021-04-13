@@ -13,6 +13,29 @@ Since these cards are digital they can contain media which physical cards don't,
 
 # Development
 
+## Installing
+As with most JS client apps, run `npm install` to pull dependencies.
+
+### Checkout Backend Environment
+To start, you'll need to install and set up the [Amplify CLI](https://docs.amplify.aws/cli/start/install).  
+To checkout a backend branch, use `amplify pull --appId dxccldee9zefn --envName dev` to checkout the dev branch.  
+You'll need access to the app to do this, else you'll need to create a new app.  
+If the compiled app complains that it cannot resolve `aws-exports`, it's because this has not been done.
+  
+When asked some questions, you can select the defaults.
+```bash
+? Do you want to use an AWS profile? Yes
+? Please choose the profile you want to use: default
+? Choose your default editor: None
+? Choose the type of app that you're building javascript
+Please tell us about your project
+? What javascript framework are you using: react-native
+? Source Directory Path: /
+? Distribution Directory Path: /
+? Build Command: npm.cmd run-script build
+? Start Command: npm.cmd run-script start
+```
+
 ## Client Architecture
 I'm using [React Native](https://reactnative.dev/) & [Expo](https://expo.io/) to build both a web and native mobile app using with one codebase.
   
