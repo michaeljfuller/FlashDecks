@@ -6,6 +6,7 @@ gulp.task('reports', shellTask(`node test/output/servers/run-all.js`));
 gulp.task('lint',     shellTask(`eslint src/**/*.ts src/**/*.tsx --config .eslintrc.js --format ./test/lint/eslint-formatter.js`));
 gulp.task('lint:fix', shellTask(`eslint src/**/*.ts src/**/*.tsx --config .eslintrc.js --format ./test/lint/eslint-formatter.js --fix`));
 
+gulp.task('default',        shellTask(`jest --coverage --coverageReporters=html text-summary`));
 gulp.task('test',           shellTask(`jest --coverage --coverageReporters=html text-summary`));
 gulp.task('test:dev',       shellTask(`jest --watch`));
 gulp.task('test:tdd',       shellTask(`jest --watch --notify`));
