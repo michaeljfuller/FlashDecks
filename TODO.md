@@ -58,3 +58,7 @@ Decks would only need a `file-key`, rather than an `S3Object`, since the bucket'
 * [Deploying a create-react-app with routing to GitHub pages](https://medium.com/@bennirus/deploying-a-create-react-app-with-routing-to-github-pages-f386b6ce84c2)
 * https://docs.expo.io/workflow/publishing/
 * https://docs.expo.io/distribution/building-standalone-apps/
+
+# NextJS
+* https://docs.expo.io/guides/using-nextjs/
+* https://docs.amplify.aws/guides/hosting/nextjs/q/platform/js

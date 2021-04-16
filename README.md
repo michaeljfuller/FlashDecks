@@ -116,3 +116,10 @@ The default testing tool for React.
 A tool to help with testing React components.
 * **[React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)**  
 A tool to help with testing React components.
+
+# Future Development Possibilities
+* Convert to [Next.js](https://nextjs.org/) app.
+* Create Media API  
+To access S3 from, rather than direct from client, which exposes the bucket.  
+An API also allows us to do some validation, such as file size/type checks.  
+Using this as a proxy would stop 403 error occurring when watching a video so long the temp S3 credentials expire (15mins).
