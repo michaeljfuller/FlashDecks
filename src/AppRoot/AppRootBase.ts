@@ -1,96 +1,100 @@
 import React from "react";
-import { Auth, Hub, API, graphqlOperation } from 'aws-amplify';
-import { getUser } from '../graphql/queries';
+import LoggedInUserStore from '../store/loggedInUser/LoggedInUserStore';
+import {CognitoUserModel, UserModel} from "../models";
+import userApi from "../api/UserApi";
+import auth from "../api/AuthApi";
+import ToastStore from "../store/toast/ToastStore";
+import {getErrorText} from "../utils/string";
+import logger from "../utils/Logger";
+import {Subscription} from "rxjs";
 
-export interface AppRootProps {}
+export interface AppRootProps {
+    manualStart?: boolean;
+}
 export interface AppRootState {
-    user?: User,
-    cognitoUser?: CognitoUser
+    user?: UserModel;
+    cognitoUser?: CognitoUserModel;
+    started: boolean;
+    initialized: boolean;
 }
 
-interface AuthEvent {
-    channel: 'auth',
-    source: 'Auth',
-    payload: {
-        event: AuthEventType,
-        message: string,
-        data: any|CognitoUser
-    }
-}
-enum AuthEventType { SIGN_IN = 'signIn', SIGN_UP = 'signUp', SIGN_OUT = 'signOut' }
-
-export abstract class AppRootBase extends React.Component<AppRootProps, AppRootState> {
+export abstract class AppRootBase extends React.PureComponent<AppRootProps, AppRootState> {
     state: AppRootState = {
         user: undefined,
         cognitoUser: undefined,
+        started: false,
+        initialized: false,
     };
+    toast = new ToastStore();
+    signInSub?: Subscription;
+    signOutSub?: Subscription;
 
     componentDidMount() {
-        this.fetchUserData();
-        Hub.listen('auth', data => this.onAuthEvent(data as AuthEvent));
+        if (!this.props.manualStart) this.start();
     }
 
-    /**
-     * @link https://docs.amplify.aws/lib/utilities/hub/q/platform/js
-     */
-    onAuthEvent(data: AuthEvent) {
-        console.info('AppRoot.onAuthEvent', data);
-        switch(data.payload.event) {
-            case AuthEventType.SIGN_IN: return this.fetchUserData();
-            case AuthEventType.SIGN_UP: return;
-            case AuthEventType.SIGN_OUT: return this.clearUser();
-            default: console.warn('AppRoot.onAuthEvent', 'No handled case for', data.payload.event);
-        }
+    async start() {
+        this.setState({started:true});
+        this.signInSub?.unsubscribe();
+        this.signOutSub?.unsubscribe();
+        this.signInSub = auth.onSignIn.subscribe(() => this.fetchUserData());
+        this.signOutSub = auth.onSignOut.subscribe(() => this.clearUser());
+        await this.fetchUserData(false);
+    }
+
+    componentWillUnmount() {
+        this.toast.removeByRef();
+        this.signInSub?.unsubscribe();
+        this.signOutSub?.unsubscribe();
+    }
+
+    onErrorMessage(message: string, details?: string) { // TODO Child implementations to use Toast
+        logger.warning('AppRoot Auth Error:', message, details)
+        this.toast.add({ title: 'Auth Error', text: message, type: "warning", duration: 3000 });
     }
 
     protected clearUser() {
-        this.setState({ user: undefined, cognitoUser: undefined });
-    }
-
-    signOut = async () => {
-        try {
-            await Auth.signOut();
-        } catch(e) {
-            console.error("Error signing out user", e);
-        }
+        this.setState({ user: undefined, cognitoUser: undefined, initialized: true });
+        LoggedInUserStore.clear();
     }
 
     /**
      * Try to add `cognitoUser` & `user` to the state.
      */
-    async fetchUserData(): Promise<boolean> {
-        let cognitoUser: CognitoUser|undefined = undefined;
-        let user: User|undefined = undefined;
+    async fetchUserData(showError = true): Promise<void> {
+        let cognitoUser: CognitoUserModel|undefined = undefined;
+        let user: UserModel|undefined = undefined;
 
         // Get user from Cognito.
         try {
-            cognitoUser = await Auth.currentAuthenticatedUser();
-            console.info('AppRoot.fetchUserData', cognitoUser);
-            this.setState({ cognitoUser: cognitoUser || undefined });
+            cognitoUser = await auth.getUser();
         } catch (e) {
-            console.log('AppRoot.fetchUserData cognito error:', e);
+            if (showError) this.onErrorMessage('Unable to sign in.', getErrorText(e));
         }
 
         // Get user data from DataBase.
         if (cognitoUser) {
             try {
-                const result: any = await API.graphql(graphqlOperation(getUser, {
-                    id: cognitoUser.attributes.sub
-                }));
-                user = (result && result.data && result.data.getUser);
-                console.info('AppRoot.fetchUserData user', user);
+                user = await userApi.getUser(cognitoUser.sub).toPromise();
             } catch (e) {
-                console.warn('AppRoot.fetchUserData user API error:', e);
+                this.onErrorMessage('Error getting current user.', getErrorText(e));
             }
         }
 
         // Update state
         if (cognitoUser && user) {
-            this.setState({ user, cognitoUser });
-            return true;
+            LoggedInUserStore.update(user);
+            logger.green.log(`Logged in as "${user.displayName}"`, LoggedInUserStore.state.value);
+            this.setState({ cognitoUser, user });
+        } else {
+            logger.red.log('AppRootBase.fetchUserData() No user.');
+            this.clearUser();
+            this.setState({ initialized: true });
         }
-        this.clearUser();
-        return false;
+    }
+
+    logInGuest() {
+        // LoggedInUserStore TODO Add guest log in and catch log out
     }
 
 }

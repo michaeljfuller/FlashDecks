@@ -1,0 +1,70 @@
+body {
+    background-color: dimgray;
+    color: lightgray;
+}
+h1 a {
+    color: lightskyblue;
+}
+
+.pad1 {
+    padding: 5px;
+}
+.pad1:first-child {
+    margin-top: 6px;
+}
+.pad1:first-child p {
+    margin: 0;
+}
+.pad1:first-child .pad1y {
+    padding: 5px 2px;
+}
+.fraction {
+    padding: 3px;
+}
+
+.quiet{
+    color: #bbb;
+}
+.status-line {
+    display: none;
+}
+
+.coverage-summary {
+    color: black;
+}
+.coverage-summary thead {
+    background-color: #bbb;
+}
+.coverage-summary td.empty {
+    opacity: 1;
+    background-color: #ddd;
+    color: #888;
+}
+.coverage-summary td.low {
+    color: #C21F39;
+}
+.coverage-summary td.medium {
+    color: #990;
+}
+.coverage-summary td.high {
+    color: #4D9221;
+}
+
+pre {
+    background-color: #f7f7f7;
+    padding: 2px 0
+}
+table.coverage {
+    margin: 0;
+}
+.cline-no {
+    background-color: #E8B8C0;
+}
+.cline-yes {
+    background-color: #9D9;
+    color: #4D9221;
+}
+
+.footer a {
+    color: lightskyblue;
+}

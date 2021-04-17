@@ -1,5 +1,5 @@
 projects:
-  flashdecks:
+  FlashDecksAPI:
     schemaPath: src/graphql/schema.json
     includes:
       - src/graphql/**/*.ts
@@ -8,8 +8,9 @@ projects:
     extensions:
       amplify:
         codeGenTarget: typescript
-        generatedFileName: src/API.ts
+        generatedFileName: src/graphql/API.ts
         docsFilePath: src/graphql
+        maxDepth: 6
 extensions:
   amplify:
     version: 3

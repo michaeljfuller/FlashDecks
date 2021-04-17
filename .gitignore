@@ -1,4 +1,18 @@
 .temp/
+.env
+*.log
+
+# Expo
+.expo/*
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+web-report/
 
 # Expo
 .expo/*
@@ -86,4 +100,4 @@ awsconfiguration.json
 amplifyconfiguration.json
 amplify-build-config.json
 amplify-gradle-config.json
-amplifyxc.config
+amplifytools.xcconfig

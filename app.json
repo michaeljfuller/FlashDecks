@@ -2,27 +2,22 @@
   "expo": {
     "name": "FlashDecks",
     "slug": "FlashDecks",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "scheme": "fdecks",
+    "description": "An app for creating and sharing flash cards.",
+    "platforms": [ "android", "web" ],
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#eeeeee"
     },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
+    "updates": { "fallbackToCacheTimeout": 0 },
+    "assetBundlePatterns": [ "**/*" ],
+    "android": {
+      "package": "io.github.michaeljfuller.flashdecks",
+      "versionCode": 1
     }
   }
 }

@@ -6,75 +6,8 @@ export const getUser = /* GraphQL */ `
   query GetUser($id: ID) {
     getUser(id: $id) {
       id
+      userName
       displayName
-    }
-  }
-`;
-export const getCard = /* GraphQL */ `
-  query GetCard($id: ID!) {
-    getCard(id: $id) {
-      id
-      ownerId
-      owner {
-        id
-        displayName
-      }
-      name
-      sides {
-        content {
-          type
-          value
-        }
-      }
-      tags
-      popularity
-      deck {
-        id
-        ownerId
-        owner {
-          id
-          displayName
-        }
-        name
-        description
-        tags
-        popularity
-        cards {
-          nextToken
-        }
-      }
-      deckID
-    }
-  }
-`;
-export const listCards = /* GraphQL */ `
-  query ListCards(
-    $filter: ModelCardFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listCards(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        ownerId
-        owner {
-          id
-          displayName
-        }
-        name
-        tags
-        popularity
-        deck {
-          id
-          ownerId
-          name
-          description
-          tags
-          popularity
-        }
-        deckID
-      }
-      nextToken
     }
   }
 `;
@@ -85,22 +18,23 @@ export const getDeck = /* GraphQL */ `
       ownerId
       owner {
         id
+        userName
         displayName
       }
-      name
+      createdAt
+      updatedAt
+      title
       description
       tags
-      popularity
       cards {
-        items {
-          id
-          ownerId
-          name
-          tags
-          popularity
-          deckID
+        title
+        sides {
+          content {
+            type
+            value
+            size
+          }
         }
-        nextToken
       }
     }
   }
@@ -117,30 +51,43 @@ export const listDecks = /* GraphQL */ `
         ownerId
         owner {
           id
+          userName
           displayName
         }
-        name
+        createdAt
+        updatedAt
+        title
         description
         tags
-        popularity
         cards {
-          nextToken
+          title
+          sides {
+            content {
+              type
+              value
+              size
+            }
+          }
         }
       }
       nextToken
     }
   }
 `;
-export const searchCards = /* GraphQL */ `
-  query SearchCards(
-    $filter: SearchableCardFilterInput
-    $sort: SearchableCardSortInput
+export const getDecksByOwner = /* GraphQL */ `
+  query GetDecksByOwner(
+    $ownerId: ID
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelDeckFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    searchCards(
+    getDecksByOwner(
+      ownerId: $ownerId
+      createdAt: $createdAt
+      sortDirection: $sortDirection
       filter: $filter
-      sort: $sort
       limit: $limit
       nextToken: $nextToken
     ) {
@@ -149,56 +96,26 @@ export const searchCards = /* GraphQL */ `
         ownerId
         owner {
           id
+          userName
           displayName
         }
-        name
-        tags
-        popularity
-        deck {
-          id
-          ownerId
-          name
-          description
-          tags
-          popularity
-        }
-        deckID
-      }
-      nextToken
-      total
-    }
-  }
-`;
-export const searchDecks = /* GraphQL */ `
-  query SearchDecks(
-    $filter: SearchableDeckFilterInput
-    $sort: SearchableDeckSortInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    searchDecks(
-      filter: $filter
-      sort: $sort
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        ownerId
-        owner {
-          id
-          displayName
-        }
-        name
+        createdAt
+        updatedAt
+        title
         description
         tags
-        popularity
         cards {
-          nextToken
+          title
+          sides {
+            content {
+              type
+              value
+              size
+            }
+          }
         }
       }
       nextToken
-      total
     }
   }
 `;

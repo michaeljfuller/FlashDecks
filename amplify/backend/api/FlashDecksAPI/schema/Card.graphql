@@ -1,0 +1,34 @@
+# The flash card.
+# Can have multiple "sides" to display different "content".
+type Card {
+    title: String!
+    sides: [CardSide!]
+}
+
+# A Side of a card that can have multiple Content items of different types.
+type CardSide {
+    content: [CardSideContent!]
+}
+
+# The content that goes on a CardSide.
+# Has a `type` field to help determine how to handle the `value`.
+type CardSideContent {
+    type: CardSideContentType!
+    value: String!
+    size: Float
+}
+enum CardSideContentType { Text, Image, Video, Link }
+
+# Input
+input CardInput {
+    title: String!
+    sides: [CardSideInput!]
+}
+input CardSideInput {
+    content: [CardSideContentInput!]
+}
+input CardSideContentInput {
+    type: CardSideContentType!
+    value: String!
+    size: Float
+}

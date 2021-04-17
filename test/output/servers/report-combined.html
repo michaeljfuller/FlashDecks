@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>$(TITLE)</title>
+    <style type="text/css">
+        body {
+            margin: 0;
+            background-color: dimgrey;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        #toggle-buttons {
+            display: flex;
+            width: 100%;
+        }
+        #toggle-buttons button {
+            white-space: nowrap;
+            width: 100%;
+            font-size: 10px;
+            font-family: monospace;
+            padding: 0;
+        }
+        #toggle-buttons button.off {
+            opacity: 0.8;
+        }
+
+        #script-buttons {
+            display: flex;
+            width: 100%;
+        }
+        #script-buttons button {
+            white-space: nowrap;
+            width: 100%;
+            font-size: 12px;
+            font-family: monospace;
+            padding: 2px;
+        }
+        #script-buttons button.loading {
+            opacity: 0.8;
+            font-style: italic;
+            font-weight: bold;
+        }
+        #script-buttons button.off {
+            display: none;
+        }
+
+        #container {
+            flex: 1;
+            display: flex;
+        }
+
+        iframe {
+            flex: 1 1 auto;
+            border-width: 0 1px;
+        }
+        iframe.off {
+            display: none;
+        }
+        iframe.disabled {
+            pointer-events: none;
+            user-select: none;
+        }
+        iframe.loading {
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+
+<div id="toggle-buttons">
+    <button id="toggle-btn-1" onclick="toggleOff(['frame1', 'toggle-btn-1', 'script-btn-1'])">Toggle $(NAME_1)</button>
+    <button id="toggle-btn-2" onclick="toggleOff(['frame2', 'toggle-btn-2', 'script-btn-2'])">Toggle $(NAME_2)</button>
+    <button id="toggle-btn-3" onclick="toggleOff(['frame3', 'toggle-btn-3', 'script-btn-3'])">Toggle $(NAME_3)</button>
+</div>
+<div id="script-buttons">
+    <button id="script-btn-1" onclick="npmRun('$(SCRIPT_1)', event.target, 'frame1')">Run $(NAME_1)</button>
+    <button id="script-btn-2" onclick="npmRun('$(SCRIPT_2)', event.target, 'frame2')">Run $(NAME_2)</button>
+    <button id="script-btn-3" onclick="npmRun('$(SCRIPT_3)', event.target, 'frame3')">Run $(NAME_3)</button>
+</div>
+<div id="container">
+    <iframe id="frame1" src="http://localhost:$(PORT_1)"></iframe>
+    <iframe id="frame2" src="http://localhost:$(PORT_2)"></iframe>
+    <iframe id="frame3" src="http://localhost:$(PORT_3)"></iframe>
+</div>
+
+<script type="application/javascript">
+    /**
+     * Remotely run an npm command
+     * @param {string} command
+     * @param {HTMLButtonElement} button
+     * @param {string} [frameId]
+     */
+    function npmRun(command, button, frameId) {
+        if (button.classList.contains('off')) return;
+        button.disabled = true;
+        button.classList.add('loading');
+        const frame = frameId ? document.getElementById(frameId) : null;
+        if (frame) frame.classList.add('loading');
+        fetch(
+            '$(RUN_API)' + command, { mode: 'cors' }
+        ).catch(error => {
+            return error; // TODO Handle properly
+        }).finally(
+            () => {
+                button.disabled = false;
+                button.classList.remove('loading');
+                if (frame) frame.classList.remove('loading');
+            }
+        );
+    }
+</script>
+
+<script type="application/javascript">
+    function toggleOff(ids) {
+        ids.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.classList.toggle('off');
+        });
+        resetSizes();
+    }
+    function resetSizes() {
+        Array.from(document.getElementsByTagName('iframe')).forEach(iframe => {
+            iframe.style.width = undefined;
+            iframe.style.flexGrow = '1';
+        });
+    }
+</script>
+
+</body>
+</html>
