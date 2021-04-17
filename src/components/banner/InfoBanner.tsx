@@ -9,7 +9,7 @@ import {capitalise} from "../../utils/string";
 export const InfoBanner = React.memo(function InfoBanner() {
     return <View style={styles.root}>
         <Text style={[styles.text, styles.left]}>{
-            `${capitalise(platformOS)} v${appDetails.version} ${commitId||''}`
+            `${capitalise(platformOS)} v${appDetails.version} [${commitId||'?'}]`
         }</Text>
         <Text style={[styles.text, styles.right]}>{
             `UI: ${frontendBranch||'?'}`
@@ -25,12 +25,14 @@ const styles = StyleSheet.create({
     root: {
         flexDirection: 'row',
         backgroundColor: 'lightblue',
-        padding: 4,
+        paddingHorizontal: 4,
+        paddingVertical: 1,
         flexGrow: 0,
         flexShrink: 1,
     },
     text: {
         color: 'white',
+        fontSize: 10,
     },
     left: {
         flexGrow: 1,
