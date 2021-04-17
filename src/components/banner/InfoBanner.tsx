@@ -2,14 +2,14 @@ import React from "react";
 import {StyleSheet, Text, View} from "react-native";
 
 import {deviceName, platformOS, isPlatformWeb} from "../../platform";
-import {envName, isProduction} from "../../env";
+import {envName, branchName, isProduction} from "../../env";
 import * as appDetails from "../../appDetails";
 
 export const InfoBanner = React.memo(function InfoBanner() {
-    if (isProduction) return null;
+    // if (isProduction) return null;
 
     const leftText = `${appDetails.appName} - ${appDetails.description}`;
-    const rightText = `${deviceName} (${platformOS}) [${envName}@${appDetails.version}]`;
+    const rightText = `${deviceName} (${platformOS}) [${branchName}@${envName} v${appDetails.version}]`;
 
     return <View  style={{ display: 'flex', flexDirection: 'row' }}>
         {isPlatformWeb && <Text style={styles.text}>{leftText}</Text>}
