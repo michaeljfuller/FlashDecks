@@ -3,13 +3,15 @@ This is a medium size project used to practice, explore and showcase using [Reac
 and [AWS Amplify](https://aws.amazon.com/amplify/).
 
 ## Hosting
-The app is hosted on AWS and can be accessed at [https://dev.dxccldee9zefn.amplifyapp.com/](https://dev.dxccldee9zefn.amplifyapp.com/).
+The web version of the app is hosted on AWS and can be accessed at [https://dev.dxccldee9zefn.amplifyapp.com/](https://dev.dxccldee9zefn.amplifyapp.com/).
 
 ## About the app
 FlashDecks is a web/mobile app that lets users create and share collections of "Flash Cards".
 
 Flash Cards are a study tool where a question is on one side, and answers are on the reverse.  
-Since these cards are digital they can contain media which physical cards don't, such as video and links.
+Since these cards are digital they can contain media which physical cards don't, such as video and links.  
+
+It is not available on iOS, as I don't have an iOS device to test it on.
 
 # Development
 
@@ -43,10 +45,9 @@ I'm using [React Native](https://reactnative.dev/) & [Expo](https://expo.io/) to
 Some components may need to be different between web and native builds, due to different layout or behavior requirements.  
 
 React Native allows us to split builds by adding platform suffixes to file extensions.  
-For example; if we have `Component.tsx` & `Component.native.tsx`, then the `.native` file replaces the original in native builds.  
+For example; if we have `Component.tsx` & `Component.native.tsx`, then the `.native` file replaces the original in native builds.    
 
-React Native also allows us to specify the platform (i.e. `.ios` & `.android`), but ***I don't have an iOS device*** to test on.  
-When a component needs to be split between platforms, I take two approaches.  
+When a component needs to be split between platforms, I take one of two approaches
 #### Functional components
 I create a `Component.common.ts` file that is imported in both web and native versions of the component.  
 It defines the component properties, so they're consistent between both versions. It's important the component signature doesn't change.

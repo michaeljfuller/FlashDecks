@@ -4,7 +4,7 @@
     "slug": "FlashDecks",
     "scheme": "fdecks",
     "description": "An app for creating and sharing flash cards.",
-    "platforms": [ "ios", "android", "web" ],
+    "platforms": [ "android", "web" ],
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
