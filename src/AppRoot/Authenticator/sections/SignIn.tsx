@@ -1,6 +1,6 @@
 import React from "react";
 import {Subscription} from "rxjs";
-import {isProduction, testPassword, testUsername} from "../../../env";
+import {samplePassword, sampleUsername, showSampleCredentials} from "../../../env";
 import authApi from "../../../api/AuthApi";
 import Column from "../../../components/layout/Column";
 import {StyleSheet, Text, View} from "react-native";
@@ -80,9 +80,9 @@ export class SignIn extends React.PureComponent<SignInProps, SignInState> {
         return <Column>
             <Text style={styles.title}>Sign In</Text>
 
-            {!isProduction && (testUsername || testPassword) ? <View style={{marginBottom: 10}}>
-                <Row><Text style={{fontWeight:"bold", width:80}}>Test User: </Text><Text>{testUsername}</Text></Row>
-                <Row><Text style={{fontWeight:"bold", width:80}}>Password:  </Text><Text>{testPassword}</Text></Row>
+            {showSampleCredentials ? <View style={{marginBottom: 10}}>
+                <Row><Text style={{fontWeight:"bold", width:80}}>Demo User: </Text><Text>{sampleUsername}</Text></Row>
+                <Row><Text style={{fontWeight:"bold", width:80}}>Password:  </Text><Text>{samplePassword}</Text></Row>
             </View> : null}
 
             <Text>Username</Text>

@@ -2,7 +2,7 @@ import React from "react";
 import {Text, View} from "react-native";
 
 import { Authenticator, AmplifyTheme } from 'aws-amplify-react';
-import {isProduction, testUsername, testPassword} from "../../../env";
+import {isProduction, sampleUsername, samplePassword} from "../../../env";
 
 /**
  * @link https://docs.amplify.aws/ui/auth/authenticator/q/framework/react#basic-usage
@@ -12,11 +12,11 @@ export function AmplifyAuthenticator(){
         {!isProduction && <slot name="sign-in">
             <View style={{flexDirection:"row"}}>
                 <Text style={{fontWeight:"bold", width: 80}}>Test User: </Text>
-                <Text>{testUsername}</Text>
+                <Text>{sampleUsername}</Text>
             </View>
             <View style={{flexDirection:"row"}}>
                 <Text style={{fontWeight:"bold", width: 80}}>Password: </Text>
-                <Text>{testPassword}</Text>
+                <Text>{samplePassword}</Text>
             </View>
         </slot>}
     </Authenticator>;
