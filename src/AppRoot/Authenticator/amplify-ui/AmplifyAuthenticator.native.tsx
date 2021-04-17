@@ -2,7 +2,7 @@ import React from "react";
 import {Text, View} from "react-native";
 // @ts-ignore
 import { Authenticator, AmplifyTheme } from 'aws-amplify-react-native';
-import {isProduction, testUsername, testPassword} from "../../../env";
+import {isProduction, sampleUsername, samplePassword} from "../../../env";
 import Row from "../../../components/layout/Row";
 
 /**
@@ -13,8 +13,8 @@ export function AmplifyAuthenticator(){
         {
             isProduction ? null : <Row space center style={{ marginBottom: 5 }}>
                 <Text style={{fontWeight:"bold", width: 80}}>Test Login: </Text>
-                <Text>{testUsername}</Text>
-                <Text>{testPassword}</Text>
+                <Text>{sampleUsername}</Text>
+                <Text>{samplePassword}</Text>
             </Row>
         }
         <Authenticator theme={authenticatorTheme} />

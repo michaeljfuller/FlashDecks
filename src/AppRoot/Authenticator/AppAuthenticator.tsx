@@ -9,8 +9,10 @@ import {SignIn} from "./sections/SignIn";
 import {SignUp} from "./sections/SignUp";
 import {ForgotPassword} from "./sections/ForgotPassword";
 import {AmplifyAuthenticator} from "./amplify-ui/AmplifyAuthenticator";
-import {isProduction, testPassword, testUsername} from "../../env";
+import {samplePassword, sampleUsername, showSampleCredentials} from "../../env";
 import {FormValidationText} from "../../components/ui/form/FormValidationText";
+import InfoBanner from "../../components/banner/InfoBanner";
+import Center from "../../components/layout/Center";
 
 export interface AppAuthenticatorProps {}
 export interface AppAuthenticatorState {
@@ -27,8 +29,8 @@ export interface AppAuthenticatorState {
 export class AppAuthenticator extends React.PureComponent<AppAuthenticatorProps, AppAuthenticatorState> {
     state = {
         tab: "SignIn",
-        username: isProduction ? '' : testUsername,
-        password: isProduction ? '' : testPassword,
+        username: showSampleCredentials ? sampleUsername : '',
+        password: showSampleCredentials ? samplePassword : '',
     } as AppAuthenticatorState;
 
     goToSignIn = () => this.setState({ tab: "SignIn", success: '', error: '' });
@@ -57,6 +59,7 @@ export class AppAuthenticator extends React.PureComponent<AppAuthenticatorProps,
         const isAmazon = tab === "Amazon";
 
         return <Column center space style={styles.root}>
+            <InfoBanner />
             <Row wrap style={styles.tabRow}>
                 <TabButton title="Sign In"         onClick={this.goToSignIn} disabled={isSignIn} color="Blue"   />
                 <TabButton title="Register"        onClick={this.goToSignUp} disabled={isSignUp} color="Green"  />
