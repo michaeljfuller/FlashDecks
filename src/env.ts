@@ -1,12 +1,12 @@
 // @ts-ignore
-import { ENVIRONMENT_NAME, TESTUSER_USERNAME, TESTUSER_PASSWORD } from 'react-native-dotenv';
+import { SAMPLE_USER_NAME, SAMPLE_USER_PASS, USER_BRANCH, AWS_BRANCH, AWS_COMMIT_ID } from 'react-native-dotenv';
 
-// Environment details
+// Values from AWS Amplify environment variables on AWS builds, or from `.env` file for local builds.
 export const isTest = window.process?.env?.NODE_ENV === 'test';
-export const envName: string = (isTest ? 'test-' : '') + (ENVIRONMENT_NAME || 'unknown');
-export const isProduction = envName.toLowerCase() === 'production';
+export const backendBranch: string = USER_BRANCH || ''; // Backend Environment (i.e. "dev" | "prod")
+export const frontendBranch: string = AWS_BRANCH || ''; // The branch name of the current build (i.e. main, develop, beta, v2.0)
+export const commitId: string = ((AWS_COMMIT_ID || '') as string).substr(0, 7); // Short hash
 
-export const testUsername: string = TESTUSER_USERNAME || '';
-export const testPassword: string = TESTUSER_PASSWORD || '';
-
-// console.log('env', { ENVIRONMENT_NAME, TESTUSER_USERNAME, TESTUSER_PASSWORD });
+export const sampleUsername: string = SAMPLE_USER_NAME || '';
+export const samplePassword: string = SAMPLE_USER_PASS || '';
+export const showSampleCredentials = Boolean(sampleUsername && samplePassword);

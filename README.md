@@ -19,7 +19,8 @@ It is not available on iOS, as I don't have an iOS device to test it on.
 # Development
 
 ## Installing
-As with most JS client apps, run `npm install` to pull dependencies.
+As with most JS client apps, run `npm install` to pull dependencies.  
+Copy `.env.template` and name it `.env`.
 
 ### Checkout Backend Environment
 To start, you'll need to install and set up the [Amplify CLI](https://docs.amplify.aws/cli/start/install).  
@@ -59,16 +60,12 @@ Like the functional components, I define the properties in a `Component.common.t
 I may also specify an abstract base class they both use, so they can share functionality.
 However, I tend to leave defining the State to the different implementations, as state is tied to the View.
 
-### DotEnv
-**.env** files contain constants that can differ between build types.
-The environment files are processed by [react-native-dotenv](https://github.com/zetachang/react-native-dotenv) 
+### Environment Variables
+Environment variables are processed by [react-native-dotenv](https://github.com/zetachang/react-native-dotenv) 
 by adding it as a module to `babel.config.js` and can be accessed through `src/env.ts`.  
-* `.env`  
-The default file used for running the app. Not added to version control so incremental changes can be made during local development.
-* `.env.development`
-The file used for development builds and running tests. Can be used as a template for making a `.env` on a fresh Git clone.
-* `.env.production`
-The file used for production builds of the app.
+It's been configured so it can read environment variables added on remote AWS builds, or it can read from an `.env` file on local builds.  
+The `.env` file should not be added to source control so it **react-native-dotenv** doesn't prioritise it over environment variables on remote builds.   
+It also shouldn't be added to source control in case sensitive information is added.
 
 ## Server Architecture
 For the back-end, I'm using [Amazon Web Services](https://aws.amazon.com/). Because this is a relatively simple app, I'm using [Amplify](https://aws.amazon.com/amplify/) to streamline the process.  
