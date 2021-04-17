@@ -15,6 +15,9 @@
     },
     "updates": { "fallbackToCacheTimeout": 0 },
     "assetBundlePatterns": [ "**/*" ],
-    "ios": { "supportsTablet": true }
+    "android": {
+      "package": "io.github.michaeljfuller.flashdecks",
+      "versionCode": 1
+    }
   }
 }

@@ -9,6 +9,7 @@
     "test": "gulp test -f gulpfile.testing.js",
     "test:dev": "gulp test:dev -f gulpfile.testing.js",
     "test:debug": "gulp debug:test -f gulpfile.testing.js",
+    "build:apk": "expo build:android -t apk",
     "amplify:console": "amplify console"
   },
   "dependencies": {
