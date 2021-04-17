@@ -2,17 +2,21 @@ import React from "react";
 import {StyleSheet, Text, View} from "react-native";
 
 import {platformOS} from "../../platform";
-import {branchName} from "../../env";
+import {backendBranch, frontendBranch, commitId} from "../../env";
 import * as appDetails from "../../appDetails";
 import {capitalise} from "../../utils/string";
 
 export const InfoBanner = React.memo(function InfoBanner() {
-    const frontEnd = `${capitalise(platformOS)} v${appDetails.version}`;
-    const backEnd = branchName || 'Unknown';
-
     return <View style={styles.root}>
-        <Text style={[styles.text, styles.left]}>{frontEnd}</Text>
-        <Text style={[styles.text, styles.right]}>{backEnd}</Text>
+        <Text style={[styles.text, styles.left]}>{
+            `${capitalise(platformOS)} v${appDetails.version} ${commitId||''}`
+        }</Text>
+        <Text style={[styles.text, styles.right]}>{
+            `UI: ${frontendBranch||'?'}`
+        }</Text>
+        <Text style={[styles.text, styles.right]}>{
+            `API: ${backendBranch||'?'}`
+        }</Text>
     </View>;
 });
 export default InfoBanner;
