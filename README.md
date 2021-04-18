@@ -65,7 +65,8 @@ Environment variables are processed by [react-native-dotenv](https://github.com/
 by adding it as a module to `babel.config.js` and can be accessed through `src/env.ts`.  
 It's been configured so it can read environment variables added on remote AWS builds, or it can read from an `.env` file on local builds.  
 The `.env` file should not be added to source control so it **react-native-dotenv** doesn't prioritise it over environment variables on remote builds.   
-It also shouldn't be added to source control in case sensitive information is added.
+It also shouldn't be added to source control in case sensitive information is added.  
+If changes to the `.env` file are not reflected in the build (because `src/env.ts` was not changed), run `npm run start:clear`.
 
 ## Server Architecture
 For the back-end, I'm using [Amazon Web Services](https://aws.amazon.com/). Because this is a relatively simple app, I'm using [Amplify](https://aws.amazon.com/amplify/) to streamline the process.  
