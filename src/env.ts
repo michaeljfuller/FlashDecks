@@ -10,8 +10,3 @@ export const {
     samplePassword='',
     showSampleCredentials=false,
 } = ExpoConstants?.manifest?.extra || {};
-
-
-
-
-
