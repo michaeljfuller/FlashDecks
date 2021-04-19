@@ -59,7 +59,7 @@ export class AppAuthenticator extends React.PureComponent<AppAuthenticatorProps,
         const isAmazon = tab === "Amazon";
 
         return <Column center space style={styles.root}>
-            <InfoBanner />
+            <InfoBanner style={{margin: 1}} />
             <Row wrap style={styles.tabRow}>
                 <TabButton title="Sign In"         onClick={this.goToSignIn} disabled={isSignIn} color="Blue"   />
                 <TabButton title="Register"        onClick={this.goToSignUp} disabled={isSignUp} color="Green"  />
