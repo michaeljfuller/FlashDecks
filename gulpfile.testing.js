@@ -1,33 +1,20 @@
-const gulp = require('gulp');
-const shell = require('gulp-shell');
+const tests = require('./gulp/scripts/testScripts');
 
-gulp.task('reports', shellTask(`node test/output/servers/run-all.js`));
+exports.default = tests.reports;
+exports['reports'] = tests.reports;
 
-gulp.task('lint',     shellTask(`eslint src/**/*.ts src/**/*.tsx --config .eslintrc.js --format ./test/lint/eslint-formatter.js`));
-gulp.task('lint:fix', shellTask(`eslint src/**/*.ts src/**/*.tsx --config .eslintrc.js --format ./test/lint/eslint-formatter.js --fix`));
+exports['lint'] = tests.lint.standard;
+exports['lint:fix'] = tests.lint.fix;
 
-gulp.task('default',        shellTask(`jest --coverage --coverageReporters=html text-summary`));
-gulp.task('test',           shellTask(`jest --coverage --coverageReporters=html text-summary`));
-gulp.task('test:dev',       shellTask(`jest --watch`));
-gulp.task('test:tdd',       shellTask(`jest --watch --notify`));
-gulp.task('test:android',   shellTask(`jest --config="jest.config.android.js"`));
-gulp.task('test:universal', shellTask(`jest --config="jest.config.universal.js"`));
+exports['test'] = tests.unit.standard;
+exports['test:dev'] = tests.unit.watch;
+exports['test:tdd'] = tests.unit.notify;
+exports['test:android'] = tests.unit.android;
+exports['test:universal'] = tests.unit.universal;
 
-gulp.task('coverage',           shellTask(`jest --coverage --silent --reporters="<rootDir>/test/jest/silent-report.js"`));
-gulp.task('coverage:verbose',   shellTask(`jest --coverage --verbose`));
-gulp.task('coverage:universal', shellTask(`jest --coverage --config="jest.config.universal.js"`));
+exports['coverage'] = tests.coverage.standard;
+exports['coverage:verbose'] = tests.coverage.verbose;
+exports['coverage:universal'] = tests.coverage.universal;
 
-gulp.task('debug:config', shellTask(`jest --showConfig`));
-gulp.task('debug:test',   shellTask(`jest --runInBand --verbose --bail=1`));
-
-function shellTask(command) {
-    return () => {
-        const task = shell.task(command);
-        const promise = task();
-        return promise.catch( error => { throw ShellTaskError(error.message); } );
-    }
-}
-function ShellTaskError(msg) {
-    Error.call(this);
-    Error.prepareStackTrace = (err, stack) => msg;
-}
+exports['debug:config'] = tests.debug.jestConfig;
+exports['debug:test'] = tests.debug.unitTest;
