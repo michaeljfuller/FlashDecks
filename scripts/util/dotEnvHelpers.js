@@ -3,16 +3,30 @@ const {exec} = require('child_process');
 const {getCurrentEnv} = require("./amplifyHelpers");
 
 /**
- * Get the contents of the env file
+ * Get the contents of the env file.
  * @param {string} path
  * @returns {string}
  */
 const getEnvFile = (path) => {
     try {
-        return fs.readFileSync(path).toString();
+        return fs.readFileSync(path, 'utf8');
     } catch (e) {
         return "";
     }
+}
+
+/**
+ * Get the contents of the env file as an object.
+ * @param {string} path
+ * @returns {object}
+ */
+const getEnvFileObject = (path) => {
+    const result = {};
+    getEnvFile(path).split("\n").filter(s => s).forEach(line => {
+        const [key, value=''] = line.split("=", 2);
+        result[key] = value.trim();
+    });
+    return result;
 }
 
 /**
@@ -86,6 +100,7 @@ async function updateEnvFile() {
 
 module.exports = {
     getEnvFile,
+    getEnvFileObject,
     updateEnvFile,
     updateEnvVar,
     getBranch,
