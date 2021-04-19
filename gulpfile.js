@@ -1,8 +1,8 @@
 const {series} = require('gulp');
-const metro = require('./gulp/scripts/metroScripts');
-const dotEnv = require('./gulp/scripts/dotEnvScripts');
-const tests = require('./gulp/scripts/testScripts');
-const amplify = require('./gulp/scripts/amplifyScripts');
+const metro = require('./scripts/gulp-tasks/metroTasks');
+const dotEnv = require('./scripts/gulp-tasks/dotEnvTasks');
+const tests = require('./scripts/gulp-tasks/testTasks');
+const amplify = require('./scripts/gulp-tasks/amplifyTasks');
 
 const noopTask = () => Promise.resolve();
 

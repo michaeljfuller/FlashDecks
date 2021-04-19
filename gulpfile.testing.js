@@ -1,4 +1,4 @@
-const tests = require('./gulp/scripts/testScripts');
+const tests = require('./scripts/gulp-tasks/testTasks');
 
 exports.default = tests.reports;
 exports['reports'] = tests.reports;
