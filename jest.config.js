@@ -71,7 +71,6 @@ module.exports = {
     globals: Object.assign({
             window: {}
         },
-        parseEnvFile(__dirname + '/.env.development') // use same version used on watch re-run
     ),
 
     //</editor-fold>
@@ -80,29 +79,6 @@ module.exports = {
 // logModule("JEST CONFIG", module.exports);
 
 //<editor-fold desc="Helpers">
-
-/**
- * Log the contents of the module.
- * @param {string} name     - The name of the module.
- * @param {object} [module] - The module data. Of not passed, use require(name).
- */
-function logModule(name, module) {
-    try {
-        module = module || require(name);
-        console.log(name, JSON.stringify(module, null, 4));
-    } catch (e) {
-        console.error("[ERROR]", name, e.message ? ":\n\t"+e.message : JSON.stringify(e, null, 4));
-    }
-    return module;
-}
-
-/** Return output of either Array.concat() or Object.assign() */
-function extend(source, ...others) {
-    if (Array.isArray(source)) {
-        return source.concat(...others);
-    }
-    return Object.assign({}, source, ...others);
-}
 
 /** Return output of either Array.concat() or Object.assign() */
 function extendPreset(name, extension) {
@@ -120,20 +96,6 @@ function extendPreset(name, extension) {
         return result;
     }
     return Object.assign({}, ...allValues);
-}
-
-/**
- * Convert env file into an object.
- */
-function parseEnvFile(path) {
-    const result = {};
-    const text = require('fs').readFileSync(path, 'utf8');
-    const lines = text.split('\n').filter(s => s);
-    lines.forEach(line => {
-        const [key, value] = line.split('=', 2);
-        result[key] = value.trim();
-    });
-    return result;
 }
 
 //</editor-fold>
