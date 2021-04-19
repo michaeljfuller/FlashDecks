@@ -1,4 +1,6 @@
-const expo = require('./gulp/scripts/expoScripts');
+const {series} = require('gulp');
+const metro = require('./gulp/scripts/metroScripts');
+const dotEnv = require('./gulp/scripts/dotEnvScripts');
 const tests = require('./gulp/scripts/testScripts');
 const amplify = require('./gulp/scripts/amplifyScripts');
 
@@ -6,8 +8,11 @@ const noopTask = () => Promise.resolve();
 
 exports.default = noopTask; // Do nothing for now, so remote build doesn't fail, as this is in the Build Settings.
 
-exports['start'] = expo.standard;
-exports['start:prod'] = expo.prod;
+exports['prebuild'] = series(
+    dotEnv.updateEnv,
+);
+exports['dotenv:update'] = dotEnv.updateEnv;
+exports['metro:config'] = metro.logConfig;
 
 exports['reports'] = tests.reports;
 

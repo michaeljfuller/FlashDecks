@@ -1,15 +1,15 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start --web",
-    "start:prod": "expo start --web --no-dev --minify",
-    "start:clear": "expo start --clear",
+    "start": "gulp prebuild && expo start --web",
+    "start:prod": "gulp prebuild && expo start --web --no-dev --minify",
+    "start:clear": "gulp prebuild && expo start --clear",
     "setup": "react-native link",
     "test:reports": "gulp reports -f gulpfile.testing.js",
     "test": "gulp test -f gulpfile.testing.js",
     "test:dev": "gulp test:dev -f gulpfile.testing.js",
     "test:debug": "gulp debug:test -f gulpfile.testing.js",
-    "build:apk": "expo build:android -t apk",
+    "build:apk": "gulp prebuild && expo build:android -t apk",
     "amplify:console": "amplify console"
   },
   "dependencies": {
