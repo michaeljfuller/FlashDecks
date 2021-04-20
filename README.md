@@ -20,7 +20,8 @@ It is not available on iOS, as I don't have an iOS device to test it on.
 
 ## Installing
 As with most JS client apps, run `npm install` to pull dependencies.  
-Copy `.env.template` and name it `.env`.
+You'll also want to `npm install --global` [@aws-amplify/cli](https://docs.amplify.aws/start/getting-started/installation/q/integration/react) and [expo-cli](https://docs.expo.io/).  
+Once **@aws-amplify/cli** is installed, you'll need to run `amplify configure` to sign in. 
 
 ### Checkout Backend Environment
 To start, you'll need to install and set up the [Amplify CLI](https://docs.amplify.aws/cli/start/install).  
@@ -61,12 +62,9 @@ I may also specify an abstract base class they both use, so they can share funct
 However, I tend to leave defining the State to the different implementations, as state is tied to the View.
 
 ### Environment Variables
-Environment variables are processed by [react-native-dotenv](https://github.com/zetachang/react-native-dotenv) 
-by adding it as a module to `babel.config.js` and can be accessed through `src/env.ts`.  
-It's been configured so it can read environment variables added on remote AWS builds, or it can read from an `.env` file on local builds.  
-The `.env` file should not be added to source control so it **react-native-dotenv** doesn't prioritise it over environment variables on remote builds.   
-It also shouldn't be added to source control in case sensitive information is added.  
-If changes to the `.env` file are not reflected in the build (because `src/env.ts` was not changed), run `npm run start:clear`.
+Environment variables are injected into `app.config.js`'s [extra](https://docs.expo.io/guides/environment-variables/#using-app-manifest--extra) property when Expo runs.  
+If a value is not found, I make it fall back onto a `.env` file, which is helpful for local development.  
+The environment variables are set on the [Amplify server](https://docs.aws.amazon.com/amplify/latest/userguide/environment-variables.html).
 
 ## Server Architecture
 For the back-end, I'm using [Amazon Web Services](https://aws.amazon.com/). Because this is a relatively simple app, I'm using [Amplify](https://aws.amazon.com/amplify/) to streamline the process.  

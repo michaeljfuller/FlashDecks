@@ -1,22 +1,25 @@
 import React from "react";
-import {StyleSheet, Text, View} from "react-native";
+import {StyleProp, StyleSheet, Text, View, ViewStyle} from "react-native";
 
 import {platformOS} from "../../platform";
-import {backendBranch, frontendBranch, commitId} from "../../env";
+import {backendBranch, frontendBranch, frontendCommit} from "../../env";
 import * as appDetails from "../../appDetails";
 import {capitalise} from "../../utils/string";
 
-export const InfoBanner = React.memo(function InfoBanner() {
-    return <View style={styles.root}>
+export interface InfoBannerProps {
+    style?: StyleProp<ViewStyle>;
+}
+export const InfoBanner = React.memo(function InfoBanner(props: InfoBannerProps) {
+    return <View style={[styles.root, props.style]}>
         <Text style={[styles.text, styles.left]}>{
-            `${capitalise(platformOS)} v${appDetails.version} [${commitId||'?'}]`
+            [
+                capitalise(platformOS),
+                appDetails.version ? `v${appDetails.version}` : null,
+                frontendCommit ? `[${frontendCommit}]` : ''
+            ].filter(v => v).join(' ')
         }</Text>
-        <Text style={[styles.text, styles.right]}>{
-            `UI: ${frontendBranch||'?'}`
-        }</Text>
-        <Text style={[styles.text, styles.right]}>{
-            `API: ${backendBranch||'?'}`
-        }</Text>
+        {frontendBranch ? <Text style={[styles.text, styles.right]}>{`UI: ${frontendBranch}`}</Text> : null}
+        {backendBranch ? <Text style={[styles.text, styles.right]}>{`API: ${backendBranch}`}</Text> : null}
     </View>;
 });
 export default InfoBanner;

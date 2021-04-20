@@ -31,6 +31,11 @@ module.exports = {
             version: "detect"
         }
     },
+    ignorePatterns: [
+        "*.test.*",
+        "**/__mocks__/*",
+        "**/graphql/*"
+    ],
     rules: { // https://eslint.org/docs/user-guide/configuring#configuring-rules
         // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#supported-rules
         // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#extension-rules

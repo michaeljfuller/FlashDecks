@@ -1,32 +1,27 @@
 //<editor-fold desc="Mocks">
+// Use getters and spies to change the values with `mySpy.mockReturnValueOnce("new-value"))`
 
 jest.mock("../../platform", () => ({
-    get deviceName () { return "mock-deviceName"; },
-    get platformOS () { return "mock-platformOS"; },
-    get isPlatformWeb () { return true; },
+    get platformOS() { return "mock-platformOS"; },
 }));
-import * as platform from "../../platform";
-const deviceName = jest.spyOn((platform as any).default, 'deviceName', 'get');
-const platformOS = jest.spyOn((platform as any).default, 'platformOS', 'get');
-const isPlatformWeb = jest.spyOn((platform as any).default, 'isPlatformWeb', 'get');
+// import * as platform from "../../platform";
+// const platformOS = jest.spyOn((platform as any).default, 'platformOS', 'get');
 
 jest.mock("../../env", () => ({
-    get envName () { return "mock-envName"; },
-    get isProduction () { return false; },
+    get backendBranch()  { return "mock-backend"; },
+    get frontendBranch() { return "mock-frontend"; },
+    get frontendCommit() { return "mock-commit"; },
 }))
-import * as env from "../../env";
-const envName = jest.spyOn((env as any).default, 'envName', 'get');
-const isProduction = jest.spyOn((env as any).default, 'isProduction', 'get');
+// import * as env from "../../env";
+// const backendBranch = jest.spyOn((env as any).default, 'backendBranch', 'get');
+// const frontendBranch = jest.spyOn((env as any).default, 'frontendBranch', 'get');
+// const frontendCommit = jest.spyOn((env as any).default, 'frontendCommit', 'get');
 
 jest.mock("../../appDetails", () => ({
-    get appName () { return "mock-appName"; },
-    get description () { return "mock-description"; },
-    get version () { return "mock-version"; },
+    get version() { return "mock-version"; },
 }));
-import * as appDetails from "../../appDetails";
-const appName = jest.spyOn((appDetails as any).default, 'appName', 'get');
-const description = jest.spyOn((appDetails as any).default, 'description', 'get');
-const version = jest.spyOn((appDetails as any).default, 'version', 'get');
+// import * as appDetails from "../../appDetails";
+// const version = jest.spyOn((appDetails as any).default, 'version', 'get');
 
 //</editor-fold>
 //<editor-fold desc="Imports">
@@ -34,45 +29,24 @@ const version = jest.spyOn((appDetails as any).default, 'version', 'get');
 import React from "react";
 import {render} from "@testing-library/react";
 import InfoBanner from "./InfoBanner";
+import {capitalise} from "../../utils/string";
 
 //</editor-fold>
 
 describe("InfoBanner", () => {
-    it("shows the device name", () => {
-        expect(render(<InfoBanner />).container.innerHTML).toContain("mock-deviceName");
-    });
     it("shows the platform name", () => {
-        expect(render(<InfoBanner />).container.innerHTML).toContain("mock-platformOS");
-    });
-    it("shows the environment name", () => {
-        expect(render(<InfoBanner />).container.innerHTML).toContain("mock-envName");
+        expect(render(<InfoBanner />).container.innerHTML).toContain(capitalise("mock-platformOS"));
     });
     it("shows the version number", () => {
         expect(render(<InfoBanner />).container.innerHTML).toContain("mock-version");
     });
-    it("isn't shown in production", () => {
-        isProduction.mockReturnValueOnce(true);
-        expect(render(<InfoBanner />).container).toBeEmptyDOMElement();
+    it("shows the commit hash", () => {
+        expect(render(<InfoBanner />).container.innerHTML).toContain("mock-commit");
     });
-
-    describe("web", () => {
-        beforeEach(() => isPlatformWeb.mockReturnValueOnce(true));
-        it("shows app name", () => {
-            expect(render(<InfoBanner />).container.innerHTML).toContain("mock-appName");
-        });
-        it("shows app description", () => {
-            expect(render(<InfoBanner />).container.innerHTML).toContain("mock-description");
-        });
+    it("shows the frontend branch", () => {
+        expect(render(<InfoBanner />).container.innerHTML).toContain("mock-frontend");
     });
-
-    describe("native", () => {
-        beforeEach(() => isPlatformWeb.mockReturnValueOnce(false));
-        it("doesn't show app name", () => {
-            expect(render(<InfoBanner />).container.innerHTML).not.toContain("mock-appName");
-        });
-        it("doesn't show app description", () => {
-            expect(render(<InfoBanner />).container.innerHTML).not.toContain("mock-description");
-        });
+    it("shows the backend branch", () => {
+        expect(render(<InfoBanner />).container.innerHTML).toContain("mock-backend");
     });
-
 });
