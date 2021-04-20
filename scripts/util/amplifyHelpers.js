@@ -10,7 +10,9 @@ function getUserPoolClientId() {
 function getCurrentEnv() {
     return new Promise(resolve => {
         exec('amplify env list', (err, stdout, stderr) => {
-            resolve((stdout || '').match(/\*\w+/)?.pop()?.substr(1) || ''); // "| *prod   |" -> "prod"
+            const found = (stdout || '').match(/\*\w+/) || []; // "| *prod   |" -> ["*prod"]
+            const name = (found.pop() || '').substr(1); // ["*prod"] -> "prod"
+            resolve(name);
         });
     });
 }
