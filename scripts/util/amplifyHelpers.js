@@ -2,8 +2,9 @@ const { exec } = require('child_process');
 
 function getUserPoolClientId() {
     const {auth} = require('../../amplify/backend/amplify-meta.json');
-    const app = auth && Object.values(auth).pop();
-    return app?.output?.AppClientIDWeb || '';
+    const app = (auth && Object.values(auth).pop()) || {};
+    const {AppClientIDWeb} = app.output || {};
+    return AppClientIDWeb || '';
 }
 
 function getCurrentEnv() {
