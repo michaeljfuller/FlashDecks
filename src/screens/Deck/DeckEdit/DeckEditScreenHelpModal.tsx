@@ -14,7 +14,7 @@ export default function DeckEditScreenHelpModal(props: AlertModalProps) {
 
         <Paragraph>
             <Text>This screen shows your deck and its cards, with edit options.</Text>
-            <Text>By clicking on the info button next to the deck's title, you can change it along with the deck's description.</Text>
+            <Text>By clicking on the info button next to the deck&apos;s title, you can change it along with the deck&apos;s description.</Text>
         </Paragraph>
 
         <Paragraph>
@@ -27,8 +27,8 @@ export default function DeckEditScreenHelpModal(props: AlertModalProps) {
             <Heading>Editing a Side</Heading>
             <Text>At the top of the card is a menu button which presents you with options to edit/delete the current side, or add a new side to the card.</Text>
             <Text>If the side is empty when you enter edit mode, a button is shown to add the first content item.</Text>
-            <Text>When the side isn't empty, a menu button appears next to each content item, which allows you to edit/resize/remove an item, as well as add another one.</Text>
-            <Text>When you're done, you can click the colored buttons at the top of the card to accept/cancel your discard. These changes are not saved until you click the save button.</Text>
+            <Text>When the side isn&apos;t empty, a menu button appears next to each content item, which allows you to edit/resize/remove an item, as well as add another one.</Text>
+            <Text>When you&apos;re done, you can click the colored buttons at the top of the card to accept/cancel your discard. These changes are not saved until you click the save button.</Text>
         </Paragraph>
 
         <Paragraph>
@@ -39,7 +39,7 @@ export default function DeckEditScreenHelpModal(props: AlertModalProps) {
 
         <Paragraph>
             <Heading>Finishing</Heading>
-            <Text>When you've made changes, the Save/Undo buttons at the top of the screen are enabled.</Text>
+            <Text>When you&apos;ve made changes, the Save/Undo buttons at the top of the screen are enabled.</Text>
         </Paragraph>
 
     </AlertModal>;

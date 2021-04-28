@@ -13,7 +13,7 @@ export default function ModifyContentHelpModal(props: AlertModalProps) {
     return <AlertModal title={title} bodyStyle={[{paddingHorizontal: 5}, bodyStyle]} {...alertProps}>
 
         <Paragraph>
-            <Text>Here you can select the type of content you'd like and set its value.</Text>
+            <Text>Here you can select the type of content you&apos;d like and set its value.</Text>
             <Text>These are the content types available:</Text>
         </Paragraph>
 
@@ -34,7 +34,7 @@ export default function ModifyContentHelpModal(props: AlertModalProps) {
 
         <Paragraph>
             <Heading>Link</Heading>
-            <Text>Displays a button linking to an external site, with a prompt warning the user they're leaving the site and confirming the location.</Text>
+            <Text>Displays a button linking to an external site, with a prompt warning the user they&apos;re leaving the site and confirming the location.</Text>
         </Paragraph>
 
     </AlertModal>;

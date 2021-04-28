@@ -24,7 +24,7 @@ export default function DeckViewScreenHelpModal(props: AlertModalProps) {
             <Heading>Card Sides</Heading>
             <Text>Each card can have multiple sides to reveal more content.</Text>
             <Text>An example use case is having a question on one side, and an answer on the other.</Text>
-            <Text>If the card has multiple "sides" (indicated at the bottom of the card), then clicking the card will flip it.</Text>
+            <Text>If the card has multiple &quot;sides&quot; (indicated at the bottom of the card), then clicking the card will flip it.</Text>
         </Paragraph>
 
         <Paragraph>

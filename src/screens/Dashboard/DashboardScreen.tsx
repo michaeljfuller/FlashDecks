@@ -16,7 +16,7 @@ export default class DashboardScreen extends PureComponent<NavigationScreenProps
                 <View style={styles.box}>
 
                     <Paragraph>
-                        <Text>This is a purely technical exercise, so there's room for the UX to be improved.</Text>
+                        <Text>This is a purely technical exercise, so there&apos;s room for the UX to be improved.</Text>
                         <View style={styles.row}>
                             <Text style={styles.iconText}>In lieu of a better UX design, you can use the</Text>
                             <Icon style={styles.icon} size={iconSize} type={IconType.QuestionMark} />
