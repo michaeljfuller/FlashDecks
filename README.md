@@ -3,10 +3,12 @@ This is a medium size project used to practice, explore and showcase using [Reac
 and [AWS Amplify](https://aws.amazon.com/amplify/).
 
 ## Hosting
+To confirm what's being seen, the app includes a light blue info bar that displays the app version + commit with the UI branch and API environment.
 * **Web Version**  
-[https://dev.dxccldee9zefn.amplifyapp.com](https://dev.dxccldee9zefn.amplifyapp.com) 
-* **Mobile App Version (via Expo App)**  
-[https://expo.io/@michaelfuller/projects/FlashDecks](https://expo.io/@michaelfuller/projects/FlashDecks)
+  * [Production Branch](https://master.dxccldee9zefn.amplifyapp.com) 
+  * [Development Branch](https://dev.dxccldee9zefn.amplifyapp.com) 
+* **Mobile Version**  
+  * [Expo App](https://expo.io/@michaelfuller/projects/FlashDecks)
 
 ## About the app
 FlashDecks is a web/mobile app that lets users create and share collections of "Flash Cards".
