@@ -3,7 +3,8 @@ This is a medium size project used to practice, explore and showcase using [Reac
 and [AWS Amplify](https://aws.amazon.com/amplify/).
 
 ## Hosting
-To confirm what's being seen, the app includes a light blue info bar that displays the app version + commit with the UI branch and API environment.
+To confirm what's being seen, the app includes a light blue `InfoBanner` which displays the version number + commit, with the UI branch and API environment.  
+![Info Banner](docs/images/InfoBanner.png "InfoBanner")
 * **Web Version**  
   * [Production Branch](https://master.dxccldee9zefn.amplifyapp.com) 
   * [Development Branch](https://dev.dxccldee9zefn.amplifyapp.com) 
