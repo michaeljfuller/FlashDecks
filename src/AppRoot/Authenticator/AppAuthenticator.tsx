@@ -12,7 +12,6 @@ import {AmplifyAuthenticator} from "./amplify-ui/AmplifyAuthenticator";
 import {samplePassword, sampleUsername, showSampleCredentials} from "../../env";
 import {FormValidationText} from "../../components/ui/form/FormValidationText";
 import InfoBanner from "../../components/banner/InfoBanner";
-import Center from "../../components/layout/Center";
 
 export interface AppAuthenticatorProps {}
 export interface AppAuthenticatorState {

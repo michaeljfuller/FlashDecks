@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet, Text} from "react-native";
+import {StyleSheet} from "react-native";
 import {Button} from "../../../components/button/Button";
 import {ToastStore} from "../../../store/toast/ToastStore";
 import navigationStore from "../../../store/navigation/NavigationStore";
@@ -7,7 +7,6 @@ import {ToastQueueItem} from "../../../store/toast/toast_actions";
 import {randomIntString} from "../../../utils/math";
 import TempScreenSubsection from "../ui/TempScreenSubsection";
 import Row from "../../../components/layout/Row";
-import {ToastProps} from "../../../components/toast/Toast.common";
 
 interface TempScreenMiscProps {}
 interface TempScreenMiscState {

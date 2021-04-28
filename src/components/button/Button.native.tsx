@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, TextStyle, View, ViewStyle} from "react-native";
+import {StyleSheet, TextStyle, ViewStyle} from "react-native";
 import {Button as NativeBaseButton, RnViewStyleProp, Text as NativeBaseText} from 'native-base';
 
 import ButtonWrapper from "./core/ButtonWrapper";

@@ -1,6 +1,5 @@
 import React from "react";
 
-import {CardContentModel} from "../../../models";
 import {CardMediaError} from "./media/CardMediaError";
 import {CardMediaImage} from "./media/CardMediaImage";
 import {CardMediaLink} from "./media/CardMediaLink";
