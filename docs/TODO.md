@@ -61,3 +61,4 @@ Decks would only need a `file-key`, rather than an `S3Object`, since the bucket'
 * Add a Rich Text editor for Text CardContent, such as [Draft.js](https://draftjs.org/)
 * Ability to align content (i.e. vertical center, horizontal center, bottom, etc).
 * Shuffle deck (option to shuffle by default)
+* Drag & Drop content to upload.

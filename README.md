@@ -124,3 +124,4 @@ If the app us converted to a Next.js app, this can be achieved using [server-sid
 * Add a Rich Text editor for Text CardContent, such as [Draft.js](https://draftjs.org/)
 * Ability to align content (i.e. vertical center, horizontal center, bottom, etc).
 * Shuffle deck (option to shuffle by default)
+* Drag & Drop content to upload.
