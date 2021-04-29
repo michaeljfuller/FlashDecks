@@ -121,3 +121,6 @@ To access S3 from, rather than direct from client, which exposes the bucket.
 An API also allows us to do some validation, such as file size/type checks.  
 Using this as a proxy would stop 403 error occurring when watching a video so long the temporary S3 credentials expire (15mins).  
 If the app us converted to a Next.js app, this can be achieved using [server-side rendering](https://nextjs.org/docs/basic-features/pages#server-side-rendering).
+* Add a Rich Text editor for Text CardContent, such as [Draft.js](https://draftjs.org/)
+* Ability to align content (i.e. vertical center, horizontal center, bottom, etc).
+* Shuffle deck (option to shuffle by default)
