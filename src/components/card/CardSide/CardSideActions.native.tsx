@@ -49,9 +49,9 @@ function showActions(
     onAddAfter: () => void,
     onDelete: () => void,
 ) {
-    const DeleteLabel = 'Delete', CancelLabel = 'Cancel';
+    const DeleteLabel = 'Delete Side', CancelLabel = 'Cancel';
     const buttons: Record<string, Function|null> = {
-        'Edit': onEdit,
+        'Edit Side': onEdit,
         'Add Before': onAddBefore,
         'Add After': onAddAfter,
         [DeleteLabel]: onDelete,

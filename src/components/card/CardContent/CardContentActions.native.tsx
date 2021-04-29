@@ -51,10 +51,10 @@ function showActions(
     onResize: () => void,
     onDelete: () => void,
 ) {
-    const DeleteLabel = 'Delete', CancelLabel = 'Cancel';
+    const DeleteLabel = 'Delete Content', CancelLabel = 'Cancel';
     const buttons: Record<string, Function|null> = {
-        'Edit': onEdit,
-        'Resize': onResize,
+        'Edit Content': onEdit,
+        'Resize Content': onResize,
         'Add Before': onAddBefore,
         'Add After': onAddAfter,
         [DeleteLabel]: onDelete,
