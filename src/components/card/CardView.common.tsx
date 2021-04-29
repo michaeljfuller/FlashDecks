@@ -59,7 +59,7 @@ export abstract class CardViewBase<
     }
 
     componentDidUpdate(prevProps: Readonly<CardViewProps>/*, prevState: Readonly<CardViewState>, snapshot?: any*/) {
-        if (prevProps.item.transientKey !== this.props.item.transientKey) { // Card changed TODO Not rely on just key?
+        if (prevProps.item?.transientKey !== this.props.item?.transientKey) {
             this.setStateTo({
                 sideIndex: 0,
                 modifiedCard: null,
