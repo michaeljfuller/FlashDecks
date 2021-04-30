@@ -125,3 +125,8 @@ If the app us converted to a Next.js app, this can be achieved using [server-sid
 * Ability to align content (i.e. vertical center, horizontal center, bottom, etc).
 * Shuffle deck (option to shuffle by default)
 * Drag & Drop content to upload.
+* Reorder cards.
+* Duplicate cards.
+* Manage uploaded media.
+* Faster carousel navigation
+* Investigate using Facebook's [Hermes](https://hermesengine.dev/) JS engine to optimise the native app.
