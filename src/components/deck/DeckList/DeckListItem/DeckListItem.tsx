@@ -3,7 +3,7 @@ import React, {useCallback} from "react";
 import {makeStyles} from '@material-ui/core/styles';
 import UICard from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-import CardCardActionArea from '@material-ui/core/CardActionArea';
+import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
@@ -69,15 +69,15 @@ export function DeckListItem(props: DeckListItemProps) {
             title={deck.title}
             subheader={owner?.displayName || ''}
         />
-            <CardCardActionArea onClick={handleOnClick} disabled={!onClick} >
-                <Fadeout maxHeight={listItemActionMaxHeight} fadeColor={contentBackgroundColor}>
-                    <CardContent className={classes.content}>
-                        <Typography variant="body1" component="p">
-                            {deck.descriptionOrPlaceholder}
-                        </Typography>
-                    </CardContent>
-                </Fadeout>
-            </CardCardActionArea>
+        <CardActionArea onClick={handleOnClick} disabled={!onClick} >
+            <Fadeout maxHeight={listItemActionMaxHeight} fadeColor={contentBackgroundColor}>
+                <CardContent className={classes.content}>
+                    <Typography variant="body1" component="p" style={{ wordBreak: "break-word" }}>
+                        {deck.descriptionOrPlaceholder}
+                    </Typography>
+                </CardContent>
+            </Fadeout>
+        </CardActionArea>
     </UICard>;
 }
 export default DeckListItem;
