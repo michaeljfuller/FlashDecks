@@ -140,7 +140,6 @@ export abstract class CardViewBase<
     }
 
     onSideChange = (side: CardSideModel|null) => {
-        console.log('CardView.onSideChange', side);
         let card = this.card;
 
         if (side) {

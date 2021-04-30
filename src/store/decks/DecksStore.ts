@@ -45,7 +45,6 @@ export class DecksStore extends AStoreHelper<DecksState> {
 
     /** Return an array based on a passed filter. */
     static list(collection: DecksState['collection'], filter?: DeckFilter) {
-        console.log('DecksStore.list', {collection, filter});
         return simpleFilter(Object.values(collection), filter);
     }
 }

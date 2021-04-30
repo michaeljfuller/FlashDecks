@@ -28,11 +28,7 @@ export default class CardView extends CardViewBase {
         this.updateCard();
         this.stopEditing();
     }
-    onEditCard = (info: CardInfo) => {
-        console.log('CardView.onEditCard', info);
-        this.updateCard(this.card.update(info));
-    }
-
+    onEditCard = (info: CardInfo) => this.updateCard(this.card.update(info));
     onCreateCard = (info: CardInfo) => this.updateCard(CardModel.create(info));
     onAddSideBefore = () => this.addSideBefore();
     onAddSideAfter = () => this.addSideAfter();
