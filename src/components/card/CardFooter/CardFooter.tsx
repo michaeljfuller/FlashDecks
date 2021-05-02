@@ -1,18 +1,19 @@
 import React from "react";
-import {StyleSheet, Text, TextStyle, View, ViewStyle} from "react-native";
+import {StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle} from "react-native";
 import IconButton, {IconType} from "../../button/IconButton";
 import {padNumber} from "../../../utils/string";
 
 export interface CardFooterProps {
     sideNumber: number;
     totalSides: number;
-    style?: ViewStyle;
-    textStyle?: TextStyle;
+    style?: StyleProp<ViewStyle>;
+    textStyle?: StyleProp<TextStyle>;
     onAddSide?: () => void;
     onRemoveSide?: () => void;
+    disabled?: boolean;
 }
 export const CardFooter = React.memo(function CardFooter(
-    {sideNumber, totalSides, style, textStyle, onAddSide, onRemoveSide}: CardFooterProps
+    {sideNumber, totalSides, style, textStyle, onAddSide, onRemoveSide, disabled}: CardFooterProps
 ) {
     let footerText = '';
     if (onAddSide || totalSides > 1) {
@@ -27,12 +28,14 @@ export const CardFooter = React.memo(function CardFooter(
                 onClick={onAddSide}
                 color="Black"
                 style={styles.button}
+                disabled={disabled}
             /> : null}
             {onRemoveSide ? <IconButton
                 icon={IconType.Remove}
                 onClick={onRemoveSide}
                 color="Black"
                 style={styles.button}
+                disabled={disabled}
             /> : null}
         </View>
     </View>;

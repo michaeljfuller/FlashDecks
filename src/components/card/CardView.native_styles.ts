@@ -1,5 +1,5 @@
 import {StyleSheet} from "react-native";
-import {Color} from "../../styles/Color";
+import {Color, DisabledColor} from "../../styles/Color";
 
 export const edgeRadius = 15;
 export const titleHeight = 20;
@@ -18,8 +18,12 @@ export const styles = StyleSheet.create({
     headerRow: {
         flexDirection: "row",
         justifyContent: "center",
+        backgroundColor: Color.OffWhite,
         borderBottomWidth: borderWidth,
         borderColor,
+    },
+    headerDisabled: {
+        backgroundColor: DisabledColor.OffWhite,
     },
     renameButton: {
         position: "absolute",
@@ -42,17 +46,24 @@ export const styles = StyleSheet.create({
         lineHeight: headerHeight,
     },
     scrollView: {
-        backgroundColor: Color.White,
         flex: 1,
         flexDirection: "column",
         marginHorizontal: 1,
     },
     body: {
+        backgroundColor: Color.White,
+    },
+    bodyDisabled: {
+        backgroundColor: DisabledColor.White,
     },
     footer: {
         height: footerHeight,
         borderTopWidth: borderWidth,
+        backgroundColor: Color.OffWhite,
         borderColor,
+    },
+    footerDisabled: {
+        backgroundColor: DisabledColor.OffWhite,
     },
     footerText: {
         textAlign: "center",

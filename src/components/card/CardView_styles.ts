@@ -2,7 +2,7 @@ import {StyleSheet, ViewStyle} from "react-native";
 import {withStyles} from "@material-ui/core/styles";
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-import {Color} from "../../styles/Color";
+import {Color, DisabledColor} from "../../styles/Color";
 
 export const edgeRadius = 15;
 export const headerHeight = 35;
@@ -41,6 +41,10 @@ export const styles = StyleSheet.create({
     headerRow: {
         flexDirection: "row",
         justifyContent: "center",
+        backgroundColor: Color.OffWhite,
+    },
+    headerDisabled: {
+        backgroundColor: DisabledColor.OffWhite,
     },
     renameButton: {
         position: "absolute",
@@ -57,16 +61,23 @@ export const styles = StyleSheet.create({
         borderColor: Color.Grey,
         borderTopWidth: borderWidth,
         borderBottomWidth: borderWidth,
-        backgroundColor: Color.White,
     },
     body: {
         flex: 1,
         userSelect: "none",
+        backgroundColor: Color.White,
     } as ViewStyle & { userSelect: string },
+    bodyDisabled: {
+        backgroundColor: DisabledColor.White,
+    },
     side: {
         height: "100%",
     },
     footer: {
+        backgroundColor: Color.OffWhite,
+    },
+    footerDisabled: {
+        backgroundColor: DisabledColor.OffWhite,
     },
     footerText: {
         marginHorizontal: "auto",

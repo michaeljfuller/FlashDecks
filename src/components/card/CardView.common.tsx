@@ -18,6 +18,7 @@ export interface CardViewBaseState {
     sideIndex: number;
     viewLayout: LayoutRectangle;
     editing?: boolean;
+    editingContent: boolean
     showDeleteSidePrompt: boolean;
     showCreateCardModal: boolean;
     showEditCardModal: boolean;
@@ -30,6 +31,7 @@ export abstract class CardViewBase<
         modifiedCard: null,
         sideIndex: 0,
         viewLayout: { x: 0, y: 0, width: 0, height: 0 },
+        editingContent: false,
         showDeleteSidePrompt: false,
         showCreateCardModal: false,
         showEditCardModal: false,
@@ -137,6 +139,8 @@ export abstract class CardViewBase<
         const viewLayout = event.nativeEvent.layout;
         this.setStateTo(draft => draft.viewLayout = viewLayout);
     }
+
+    onEditingContent = (editingContent: boolean) => this.setStateTo({editingContent});
 
     onPress = () => {
         this.canPress && this.nextSide();
