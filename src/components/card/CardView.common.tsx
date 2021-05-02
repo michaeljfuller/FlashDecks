@@ -11,12 +11,14 @@ export interface CardViewProps {
     style?: ViewStyle|ViewStyle[];
     editable?: boolean;
     onUpdate?: (item: CardModel, index: number) => void;
+    onEditing?: (editing: boolean) => void;
 }
 export interface CardViewBaseState {
     modifiedCard: CardModel|null;
     sideIndex: number;
     viewLayout: LayoutRectangle;
     editing?: boolean;
+    editingContent: boolean
     showDeleteSidePrompt: boolean;
     showCreateCardModal: boolean;
     showEditCardModal: boolean;
@@ -29,6 +31,7 @@ export abstract class CardViewBase<
         modifiedCard: null,
         sideIndex: 0,
         viewLayout: { x: 0, y: 0, width: 0, height: 0 },
+        editingContent: false,
         showDeleteSidePrompt: false,
         showCreateCardModal: false,
         showEditCardModal: false,
@@ -77,9 +80,11 @@ export abstract class CardViewBase<
 
     startEditing() {
         this.setStateTo({ editing: true });
+        this.props.onEditing && this.props.onEditing(true);
     }
     stopEditing() {
         this.setStateTo({ editing: false, modifiedCard: null });
+        this.props.onEditing && this.props.onEditing(false);
     }
 
     /** Add a new slide before this one. */
@@ -134,6 +139,8 @@ export abstract class CardViewBase<
         const viewLayout = event.nativeEvent.layout;
         this.setStateTo(draft => draft.viewLayout = viewLayout);
     }
+
+    onEditingContent = (editingContent: boolean) => this.setStateTo({editingContent});
 
     onPress = () => {
         this.canPress && this.nextSide();

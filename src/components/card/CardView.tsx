@@ -35,6 +35,7 @@ export default class CardView extends CardViewBase {
     onAddSideToEnd = () => this.addSideToEnd();
 
     render() {
+        const {editingContent} = this.state;
         const totalHeight = this.state.viewLayout.height;
         const bodyHeight = Math.max(0, totalHeight - (headerHeight + footerHeight + marginBottom + borderWidth * 2));
 
@@ -43,7 +44,7 @@ export default class CardView extends CardViewBase {
 
                 <View style={styles.inner}>
 
-                    <View style={styles.headerRow}>
+                    <View style={[styles.headerRow, editingContent && styles.headerDisabled]}>
                         <View>
                             <StyledCardHeader title={this.card?.nameOrPlaceholder()}/>
                             {this.props.editable ? this.renderHeaderEdit() : null}
@@ -51,7 +52,7 @@ export default class CardView extends CardViewBase {
                         {this.hasActions ? this.renderHeaderActions() : null}
                     </View>
 
-                    <ScrollView style={styles.scrollView} contentContainerStyle={styles.body}>
+                    <ScrollView style={styles.scrollView} contentContainerStyle={[styles.body, editingContent && styles.bodyDisabled]}>
                         { this.renderCardSide(bodyHeight, this.props.editable, this.state.editing, this.canPress) }
                     </ScrollView>
 
@@ -60,10 +61,11 @@ export default class CardView extends CardViewBase {
                 <CardFooter
                     sideNumber={this.state.sideIndex+1}
                     totalSides={this.sides.length}
-                    style={styles.footer}
+                    style={[styles.footer, editingContent && styles.footerDisabled]}
                     textStyle={styles.footerText}
                     onAddSide={this.props.editable ? this.onAddSideToEnd : undefined}
                     onRemoveSide={this.props.editable ? this.showDeleteSidePrompt : undefined}
+                    disabled={editingContent}
                 />
 
             </StyledCard>
@@ -75,6 +77,7 @@ export default class CardView extends CardViewBase {
             <IconButton
                 icon={IconType.Edit}
                 onClick={this.showEditCardModal}
+                disabled={this.state.editingContent}
                 style={styles.renameButton}
                 color="Black"
             />
@@ -92,6 +95,7 @@ export default class CardView extends CardViewBase {
         return <View style={styles.headerActions}>
             <CardSideActions
                 editing={this.state.editing || false}
+                disabled={this.state.editingContent}
                 onPressDone={this.state.modifiedCard ? this.onClickDoneEditSide : undefined}
                 onPressCancel={this.onClickCancelEditSide}
                 onPressEdit={this.onClickEditSide}
@@ -121,6 +125,7 @@ export default class CardView extends CardViewBase {
             side={this.currentSide}
             onPress={canPress ? this.onPress : undefined}
             onModifications={this.onSideChange}
+            onEditing={this.onEditingContent}
             height={height}
             editing={editing}
             editable={editable}

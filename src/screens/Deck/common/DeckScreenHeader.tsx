@@ -7,6 +7,7 @@ import Row from "../../../components/layout/Row";
 import Button from "../../../components/button/Button";
 import {Visibility} from "../../../components/layout/Visibility";
 import Column from "../../../components/layout/Column";
+import {Color, DisabledColor} from "../../../styles/Color";
 
 const avatarSize = 35;
 
@@ -28,11 +29,13 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
             cardCount,
         } = this;
 
-        return <Column style={styles.root}>
+        return <Column style={[styles.root, {
+            backgroundColor: this.disabled ? DisabledColor.OffWhite : Color.OffWhite,
+        }]}>
 
             <Row center style={styles.titleRow}>
                 <Text style={styles.titleText}>{title || item.title}</Text>
-                <IconButton style={styles.iconButton} flat icon={IconType.Info} onClick={onOpenInfoModal} />
+                <IconButton style={styles.iconButton} flat icon={IconType.Info} onClick={onOpenInfoModal} disabled={this.disabled} />
                 <IconButton style={styles.iconButton} flat icon={IconType.QuestionMark} onClick={onOpenHelpModal} />
             </Row>
 
@@ -50,15 +53,15 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
                 <Visibility render={!!saveText}>
 
                     <Row>
-                        <Button title={saveText} onClick={onSave} square height={avatarSize} width={150} />
-                        <Button title="Undo"     onClick={onUndo} square height={avatarSize} style={styles.undoButton} />
+                        <Button title={saveText} disabled={this.disabled} onClick={onSave} square height={avatarSize} width={150} color={onSave && "Green"} />
+                        <Button title="Undo"     disabled={this.disabled} onClick={onUndo} square height={avatarSize} style={styles.undoButton} />
                     </Row>
 
                 </Visibility>
                 <Row flex right>
 
-                    {editable ? <IconButton icon={IconType.Add}    style={styles.cardCountButton} size={30} onClick={onAddCard}    /> : undefined}
-                    {editable ? <IconButton icon={IconType.Remove} style={styles.cardCountButton} size={30} onClick={onRemoveCard} /> : undefined}
+                    {editable ? <IconButton icon={IconType.Add}    style={styles.cardCountButton} size={30} disabled={this.disabled} onClick={onAddCard}    /> : undefined}
+                    {editable ? <IconButton icon={IconType.Remove} style={styles.cardCountButton} size={30} disabled={this.disabled} onClick={onRemoveCard} /> : undefined}
                     <Text style={styles.cardCount}>{cardCount} {cardCount !== 1 ? 'cards' : 'card'}</Text>
 
                 </Row>
@@ -70,7 +73,7 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
 
 const styles = StyleSheet.create({
     root: {
-        padding: 2.
+        padding: 2,
     },
     titleRow: {
         height: avatarSize

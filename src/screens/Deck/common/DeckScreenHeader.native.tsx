@@ -7,6 +7,7 @@ import Row from "../../../components/layout/Row";
 import Button from "../../../components/button/Button";
 import Column from "../../../components/layout/Column";
 import {Visibility} from "../../../components/layout/Visibility";
+import {Color, DisabledColor} from "../../../styles/Color";
 
 const avatarSize = 24;
 
@@ -28,13 +29,15 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
             cardCount,
         } = this;
 
-        return <Column>
+        return <Column style={{
+            backgroundColor: this.disabled ? DisabledColor.OffWhite: Color.OffWhite,
+        }}>
 
             <Row style={styles.padSides}>
                 <View style={styles.titleView}>
                     <Text style={styles.titleText}>{title || item.title}</Text>
                 </View>
-                <IconButton style={styles.infoButton} flat icon={IconType.Info} onClick={onOpenInfoModal} />
+                <IconButton style={styles.infoButton} flat icon={IconType.Info} onClick={onOpenInfoModal} disabled={this.disabled} />
                 <IconButton style={styles.helpButton} flat icon={IconType.QuestionMark} onClick={onOpenHelpModal} />
             </Row>
 
@@ -52,8 +55,8 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
                 </Row>
                 <Row flex right>
 
-                    {editable ? <IconButton icon={IconType.Add} style={styles.cardCountButton} onClick={onAddCard} /> : undefined}
-                    {editable ? <IconButton icon={IconType.Remove} style={styles.cardCountButton} onClick={onRemoveCard} /> : undefined}
+                    {editable ? <IconButton disabled={this.disabled} icon={IconType.Add}    style={styles.cardCountButton} onClick={onAddCard} /> : undefined}
+                    {editable ? <IconButton disabled={this.disabled} icon={IconType.Remove} style={styles.cardCountButton} onClick={onRemoveCard} /> : undefined}
                     <Text style={styles.cardCount}>{cardCount} {cardCount !== 1 ? 'cards' : 'card'}</Text>
 
                 </Row>
@@ -61,8 +64,8 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
 
             <Visibility render={!!saveText}>
                 <Row>
-                    <Button title={saveText} onClick={onSave} square height={30} style={styles.saveButton} />
-                    <Button title="Undo"     onClick={onUndo} square height={30} style={styles.undoButton} />
+                    <Button title={saveText} onClick={onSave} square height={30} disabled={this.disabled} style={styles.saveButton} color={onSave && "Green"} />
+                    <Button title="Undo"     onClick={onUndo} square height={30} disabled={this.disabled} style={styles.undoButton} />
                 </Row>
             </Visibility>
 

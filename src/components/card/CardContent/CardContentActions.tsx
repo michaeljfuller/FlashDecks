@@ -22,7 +22,7 @@ export const CardContentActions = React.memo(function CardContentActions(props: 
 
     const buttons = [] as React.ReactElement[];
     if (props.resizing) {
-        buttons.push(<IconButton key="done" icon={IconType.Done} onClick={props.onPressDone} color="Black" />);
+        buttons.push(<IconButton key="done" icon={IconType.Done} onClick={props.onPressDone} color="Green" />);
     } else {
         buttons.push(<IconButton key="open" icon={IconType.More} onClick={openActions} color="Black" />);
     }

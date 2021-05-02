@@ -18,6 +18,7 @@ interface CardCarouselState extends CardCarouselBaseState{
     isAnimating: boolean;
     cardWidth: number;
     cardHeight: number;
+    editingCard: boolean;
 }
 export class CardCarousel extends CardCarouselBase<CardCarouselState>{
     state = {
@@ -26,13 +27,14 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
         cardWidth: 0,
         cardHeight: 0,
         showCreateCardModal: false,
+        editingCard: false,
     } as Readonly<CardCarouselState>;
 
     get canGoToPrevious() {
-        return !this.state.isAnimating && this.state.index > 0;
+        return !this.state.editingCard && !this.state.isAnimating && this.state.index > 0;
     }
     get canGoToNext() {
-        return !this.state.isAnimating && this.state.index + 1 < (this.props.cards||[]).length;
+        return !this.state.editingCard && !this.state.isAnimating && this.state.index + 1 < (this.props.cards||[]).length;
     }
 
     // https://reactnative.dev/docs/animations
@@ -63,6 +65,10 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
         const size = resizeCard(width, height, 30, 10, 100);
         this.setStateTo({ cardWidth: size.width, cardHeight: size.height });
     };
+    onEditingCard = (editingCard: boolean) => {
+        this.setStateTo({ editingCard });
+        this.props.onEditingCard && this.props.onEditingCard(editingCard);
+    }
 
     onKeyDown = (event: KeyboardEvent) => {
         if (!this.props.editable) {
@@ -139,6 +145,7 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
                         style={[styles.cardView, { width: cardWidth, height: cardHeight }]}
                         editable={this.props.editable}
                         onUpdate={this.onSetCard}
+                        onEditing={this.onEditingCard}
                     />
                 </Animated.View>
             </View>

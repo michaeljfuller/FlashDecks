@@ -12,6 +12,7 @@ export default class DeckView extends DeckViewBase {
                 editable={this.props.editable}
                 onSetCard={this.onSetCard}
                 onScrollCards={this.props.onScrollCards}
+                onEditingCard={this.props.onEditingCard}
             />
         </View>;
     }

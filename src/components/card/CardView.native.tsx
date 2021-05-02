@@ -18,10 +18,7 @@ export default class CardView extends CardViewBase {
         this.updateCard();
         this.stopEditing();
     }
-    onEditCard = (info: CardInfo) => {
-        console.log('CardView.onEditCard', info);
-        this.updateCard(this.card.update(info));
-    }
+    onEditCard = (info: CardInfo) => this.updateCard(this.card.update(info));
 
     onCreateCard = (info: CardInfo) => this.updateCard(CardModel.create(info));
     onAddSideBefore = () => this.addSideBefore();
@@ -29,12 +26,13 @@ export default class CardView extends CardViewBase {
     onAddSideToEnd = () => this.addSideToEnd();
 
     render() {
+        const {editingContent} = this.state;
         const totalHeight = this.state.viewLayout.height;
         const bodyHeight = Math.max(0, totalHeight - (headerHeight + footerHeight + borderWidth * 2));
 
         return <View style={[styles.root, this.props.style]} onLayout={this.onLayout}>
 
-            <View style={styles.headerRow}>
+            <View style={[styles.headerRow, editingContent && styles.headerDisabled]}>
                 <View>
                     <Text style={styles.title}>{this.card?.nameOrPlaceholder()}</Text>
                     {this.props.editable ? this.renderHeaderEdit() : null}
@@ -44,7 +42,7 @@ export default class CardView extends CardViewBase {
 
             <ScrollView
                 style={styles.scrollView}
-                contentContainerStyle={[styles.body, { minHeight: bodyHeight || undefined }]}
+                contentContainerStyle={[styles.body, editingContent && styles.bodyDisabled, { minHeight: bodyHeight || undefined }]}
                 persistentScrollbar={true}
             >
                 { this.renderCardSide(bodyHeight, this.state.editing, true) }
@@ -53,10 +51,11 @@ export default class CardView extends CardViewBase {
             <CardFooter
                 sideNumber={this.state.sideIndex+1}
                 totalSides={this.sides.length}
-                style={styles.footer}
+                style={[styles.footer, editingContent && styles.footerDisabled]}
                 textStyle={styles.footerText}
                 onAddSide={this.props.editable ? this.onAddSideToEnd : undefined}
                 onRemoveSide={this.props.editable ? this.showDeleteSidePrompt : undefined}
+                disabled={this.state.editingContent}
             />
 
             <CardInfoModal
@@ -74,6 +73,7 @@ export default class CardView extends CardViewBase {
             <IconButton
                 icon={IconType.Edit}
                 onClick={this.showEditCardModal}
+                disabled={this.state.editingContent}
                 style={styles.renameButton}
                 color="Black"
             />
@@ -91,6 +91,7 @@ export default class CardView extends CardViewBase {
         return <View style={styles.headerActions}>
             <CardSideActions
                 editing={this.state.editing || false}
+                disabled={this.state.editingContent}
                 onPressDone={this.state.modifiedCard ? this.onClickDone : undefined}
                 onPressCancel={this.onClickCancel}
                 onPressEdit={this.onClickEdit}
@@ -114,6 +115,7 @@ export default class CardView extends CardViewBase {
             side={this.currentSide}
             onPress={canPress ? this.onPress : undefined}
             onModifications={this.onSideChange}
+            onEditing={this.onEditingContent}
             height={height}
             editing={editing}
             editable={this.props.editable}

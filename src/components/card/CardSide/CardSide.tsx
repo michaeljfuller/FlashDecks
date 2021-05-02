@@ -20,6 +20,7 @@ export interface CardSideProps {
     editable?: boolean;
     onPress?: () => void;
     onModifications?: (side: CardSideModel|null) => void;
+    onEditing?: (editing: boolean) => void;
 }
 
 export interface CardSideState {
@@ -57,9 +58,14 @@ export class CardSide extends ImmutablePureComponent<CardSideProps, CardSideStat
         return this.state.contentIndexToDelete >= 0;
     }
 
-    componentDidUpdate(prevProps: Readonly<CardSideProps>) {
+    componentDidUpdate(prevProps: Readonly<CardSideProps>, prevState: Readonly<CardSideState>/*, snapshot?: {}*/) {
         if (prevProps.side !== this.props.side) {
             this.setStateTo(draft => draft.updatedSide = castDraft(this.props.side));
+        }
+        if (this.props.onEditing && prevState !== this.state) { // Callback if modifying, adding or resizing
+            this.props.onEditing(Math.max(
+                this.state.modifyContentIndex, this.state.addContentIndex, this.state.resizeContentIndex
+            ) >= 0);
         }
     }
 
@@ -225,7 +231,6 @@ export default CardSide;
 
 const styles = StyleSheet.create({
     root: {
-        backgroundColor: Color.White,
         paddingHorizontal: 8,
     },
     emptySideText: {

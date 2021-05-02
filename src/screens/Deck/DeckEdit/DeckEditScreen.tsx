@@ -27,6 +27,7 @@ export interface DeckEditScreenState {
     modifiedDeck?: DeckModel;
     loading: boolean;
     saving?: SaveDeckProgress;
+    editingCard?: boolean;
     showInfoModal: boolean;
     showHelpModal: boolean;
     showSaveModal: boolean;
@@ -178,6 +179,10 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
     onOpenHelpModal = () => this.setStateTo({ showHelpModal: true });
     onCloseHelpModal = () => this.setStateTo({ showHelpModal: false });
 
+    onEditingCard = (editingCard: boolean) => {
+        this.setStateTo({ editingCard });
+    }
+
     render() {
         return (
             <ScreenContainer>
@@ -210,6 +215,7 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
         return <React.Fragment>
             <DeckScreenHeader
                 editable={editable}
+                disabled={this.state.editingCard}
                 item={this.deck}
                 onOpenInfoModal={this.onOpenInfoModal}
                 onOpenHelpModal={this.onOpenHelpModal}
@@ -225,6 +231,7 @@ export class DeckEditScreen extends BaseDeckEditScreen<DeckEditScreenState>
                 item={this.deck}
                 onSetCard={this.onSetCard}
                 onScrollCards={this.onScrollCards}
+                onEditingCard={this.onEditingCard}
             />
 
             <DeckInfoModal
