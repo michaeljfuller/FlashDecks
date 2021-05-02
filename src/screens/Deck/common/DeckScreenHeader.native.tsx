@@ -64,7 +64,7 @@ export default class DeckScreenHeader extends DeckScreenHeaderBase {
 
             <Visibility render={!!saveText}>
                 <Row>
-                    <Button title={saveText} onClick={onSave} square height={30} disabled={this.disabled} style={styles.saveButton} />
+                    <Button title={saveText} onClick={onSave} square height={30} disabled={this.disabled} style={styles.saveButton} color={onSave && "Green"} />
                     <Button title="Undo"     onClick={onUndo} square height={30} disabled={this.disabled} style={styles.undoButton} />
                 </Row>
             </Visibility>

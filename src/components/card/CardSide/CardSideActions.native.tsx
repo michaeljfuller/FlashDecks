@@ -24,8 +24,8 @@ export const CardSideActions = React.memo(function CardSideActions(props: CardAc
     let button: React.ReactElement;
     if (props.editing) {
         button = <React.Fragment>
-            <IconButton icon={IconType.Done}   onClick={props.onPressDone}   disabled={props.disabled} color="Black" />
-            <IconButton icon={IconType.Cancel} onClick={props.onPressCancel} disabled={props.disabled} color="Black" />
+            <IconButton icon={IconType.Done}   onClick={props.onPressDone}   disabled={props.disabled} color={props.onPressDone ? "Green" : "Grey"} />
+            <IconButton icon={IconType.Cancel} onClick={props.onPressCancel} disabled={props.disabled} color="Red" />
         </React.Fragment>;
     } else {
         button = <IconButton icon={IconType.More} onClick={onPress} disabled={props.disabled} color="Black" />;
