@@ -2,10 +2,9 @@ import React from "react";
 import {VideoPlayer} from "../../../video/VideoPlayer";
 import {BaseCardMedia} from "./core/BaseCardMedia";
 import {CardMediaError} from "./CardMediaError";
-import {StyleSheet, View} from "react-native";
+import {View} from "react-native";
 import Center from "../../../layout/Center";
 import ProgressCircle from "../../../progress/ProgressCircle";
-import {Color} from "../../../../styles/Color";
 import stopTouchPropagation from "../../../../utils/hoc/stopTouchPropagation";
 import withDefaultProps from "../../../../utils/hoc/withDefaultProps/withDefaultProps";
 
@@ -31,7 +30,7 @@ export class CardMediaVideo extends BaseCardMedia {
             return <CardMediaError message={error} />;
         }
 
-        return <View style={[styles.root, {height, minHeight, maxHeight}]}>
+        return <View style={{height, minHeight, maxHeight}}>
             {!this.mediaUri
             ?   <Center><ProgressCircle /></Center>
             :   <CardVideoPlayer sourceUri={this.mediaUri} onError={this.onError} />
@@ -40,14 +39,3 @@ export class CardMediaVideo extends BaseCardMedia {
     }
 
 }
-
-const styles = StyleSheet.create({
-    root: {
-        flex: 1,
-    },
-    error: {
-        color: Color.White,
-        backgroundColor: Color.Red,
-        textAlign: "center",
-    },
-});
