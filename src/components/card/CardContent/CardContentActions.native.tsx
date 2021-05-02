@@ -55,8 +55,8 @@ function showActions(
     const buttons: Record<string, Function|null> = {
         'Edit Content': onEdit,
         'Resize Content': onResize,
+        'Add Content': onAddAfter,
         'Add Before': onAddBefore,
-        'Add After': onAddAfter,
         [DeleteLabel]: onDelete,
         [CancelLabel]: null
     };

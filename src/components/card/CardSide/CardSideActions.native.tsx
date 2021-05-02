@@ -52,8 +52,8 @@ function showActions(
     const DeleteLabel = 'Delete Side', CancelLabel = 'Cancel';
     const buttons: Record<string, Function|null> = {
         'Edit Side': onEdit,
+        'Add Side': onAddAfter,
         'Add Before': onAddBefore,
-        'Add After': onAddAfter,
         [DeleteLabel]: onDelete,
         [CancelLabel]: null
     };

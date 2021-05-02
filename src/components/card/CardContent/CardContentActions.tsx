@@ -93,8 +93,8 @@ export function CardContentActionsMenu(props: CardContentActionsMenuProps) {
             <Typography align="center">Card Content</Typography>
             <Button square title="Edit Content"     icon={IconType.Edit}   onClick={onPressEdit} />
             <Button square title="Resize Content"   icon={IconType.Resize} onClick={onPressResize}    style={styles.paddedButton} />
+            <Button square title="Add Content"      icon={IconType.Add}    onClick={onPressAddAfter}  style={styles.paddedButton} />
             <Button square title="Add Before"       icon={IconType.Add}    onClick={onPressAddBefore} style={styles.paddedButton} />
-            <Button square title="Add After"        icon={IconType.Add}    onClick={onPressAddAfter}  style={styles.paddedButton} />
             <Button square title="Delete Content"   icon={IconType.Delete} onClick={onPressDelete}    style={styles.paddedButton} />
         </View>
     </StyledPopover>
