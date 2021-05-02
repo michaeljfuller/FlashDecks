@@ -11,6 +11,7 @@ export interface CardCarouselProps {
     editable?: boolean;
     onSetCard?: CardCarouselOnSetCard;
     onScrollCards?: CardCarouselScrollCards;
+    onEditingCard?: (editing: boolean) => void;
 }
 export type CardCarouselOnSetCard = (card: CardModel, index: number) => void;
 export type CardCarouselScrollCards = (index: number) => void;

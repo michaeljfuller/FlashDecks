@@ -7,6 +7,7 @@ export interface DeckScreenHeaderProps {
     title?: string;
     saveText?: string;
     editable?: boolean;
+    disabled?: boolean;
     onOpenInfoModal?: () => void;
     onOpenHelpModal?: () => void;
     onAddCard?: () => void;
@@ -16,6 +17,9 @@ export interface DeckScreenHeaderProps {
 }
 
 export default class DeckScreenHeaderBase<State=any> extends ImmutablePureComponent<DeckScreenHeaderProps, State>{
+    get disabled() {
+        return Boolean(this.props.disabled);
+    }
     get cardCount() {
         return this.props.item.cards?.length || 0;
     }

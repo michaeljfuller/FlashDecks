@@ -11,6 +11,7 @@ export interface CardViewProps {
     style?: ViewStyle|ViewStyle[];
     editable?: boolean;
     onUpdate?: (item: CardModel, index: number) => void;
+    onEditing?: (editing: boolean) => void;
 }
 export interface CardViewBaseState {
     modifiedCard: CardModel|null;
@@ -77,9 +78,11 @@ export abstract class CardViewBase<
 
     startEditing() {
         this.setStateTo({ editing: true });
+        this.props.onEditing && this.props.onEditing(true);
     }
     stopEditing() {
         this.setStateTo({ editing: false, modifiedCard: null });
+        this.props.onEditing && this.props.onEditing(false);
     }
 
     /** Add a new slide before this one. */

@@ -13,6 +13,7 @@ export interface CardCarouselState extends CardCarouselBaseState {
     width: number;
     cardWidth: number;
     cardHeight: number;
+    editingCard: boolean;
 }
 
 export class CardCarousel extends CardCarouselBase<CardCarouselState>{
@@ -21,6 +22,7 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
         cardWidth: 0,
         cardHeight: 0,
         showCreateCardModal: false,
+        editingCard: false,
     } as Readonly<CardCarouselState>;
 
     get index() { return this._index; }
@@ -58,6 +60,10 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
             cardHeight: size.height,
         });
     }
+    onEditingCard = (editingCard: boolean) => {
+        this.setStateTo({ editingCard });
+        this.props.onEditingCard && this.props.onEditingCard(editingCard);
+    }
 
     render() {
         const {cards, style} = this.props;
@@ -87,10 +93,12 @@ export class CardCarousel extends CardCarouselBase<CardCarouselState>{
                             style={[styles.cardView, cardStyle]}
                             editable={this.props.editable}
                             onUpdate={this.onSetCard}
+                            onEditing={this.onEditingCard}
                         />
                     </View>;
                 }}
                 horizontal
+                scrollEnabled={!this.state.editingCard}
                 snapToInterval={width}
                 decelerationRate="fast"
                 onLayout={this.onLayout}

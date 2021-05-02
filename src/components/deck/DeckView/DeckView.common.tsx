@@ -8,6 +8,7 @@ export interface DeckViewProps {
     editable?: boolean;
     onSetCard?: DeckViewSetCard;
     onScrollCards?: DeckViewScrollCards;
+    onEditingCard?: (editing: boolean) => void;
 }
 
 export type DeckViewSetCard = (card: CardModel, index: number) => void;
